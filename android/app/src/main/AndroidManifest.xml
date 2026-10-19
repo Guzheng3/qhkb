@@ -61,7 +61,14 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
-    
+
+    <!-- 天气「使用当前位置」。
+         COARSE 必须与 FINE 同时声明：Android 12+ 只声明 FINE 会直接 lint 失败，
+         且两者同在时系统才会弹「精确 / 大致」二选一；用户选「大致」时功能照常，
+         天气本来就按区级算。只在用户点「使用当前位置」时才申请，不随启动索取。 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name=".QhkbApplication"
         android:label="${appLabel}"

@@ -205,6 +205,12 @@ class MainActivity : FlutterActivity() {
             }
         }
 
+        // ── 天气「使用当前位置」：一次性取坐标（网络优先）──
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, LocationFix.CHANNEL)
+            .setMethodCallHandler { call, result ->
+                LocationFix.handle(call, applicationContext, result)
+            }
+
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, SYSTEM_UI_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
