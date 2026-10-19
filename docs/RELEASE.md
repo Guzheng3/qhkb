@@ -120,12 +120,13 @@
 
 ## 一、当前发布机制
 
-当前仓库有两条 GitHub Actions 线：
+当前仓库有三条 GitHub Actions 线：
 
 - [.github/workflows/ci.yml](../.github/workflows/ci.yml)：`push` / `pull_request` 时执行依赖安装、静态分析和测试。
 - [.github/workflows/android-build.yml](../.github/workflows/android-build.yml)：推送 `v*` tag 时先执行检查，再签名构建 `arm64-v8a` APK 并创建 / 更新 GitHub Release。
+- [.github/workflows/gradle-cache-warm.yml](../.github/workflows/gradle-cache-warm.yml)：`main` 上 Gradle 相关文件变更、每周一定时与手动触发时预热 Gradle 缓存，供 tag 构建命中；失败不影响其它流程。
 
-适配脚本随应用内置在 `assets/warehouse/` 下，应用运行时不访问任何外部适配仓库。
+适配脚本随应用内置在 `assets/warehouse/` 下，应用运行时不访问任何外部适配仓库；`lib/models/warehouse_repository_models.dart` 里的仓库地址只用于在调试页拼出对外可访问的脚本链接（「复制脚本地址」），不参与导入流程。
 
 也就是说：
 
