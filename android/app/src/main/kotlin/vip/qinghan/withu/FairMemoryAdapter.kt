@@ -251,7 +251,7 @@ object FairMemoryAdapter {
         if (callback != null) {
             val resultCode = if (handledOk) RESULT_OK else RESULT_FAILED
             val replyExtra = Bundle().apply {
-                putString("reply", "qingyu_fair_memory_${actionKind.name.lowercase(Locale.US)}")
+                putString("reply", "qinghan_fair_memory_${actionKind.name.lowercase(Locale.US)}")
             }
             replyToSystem(
                 callback = callback,

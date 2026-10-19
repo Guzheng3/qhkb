@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/course_action_sheet_reveal.dart';
+import 'package:qhkb/widgets/course_action_sheet_reveal.dart';
 
 void main() {
   testWidgets('reveals visible content and waits for offscreen content', (

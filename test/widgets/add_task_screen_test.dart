@@ -3,11 +3,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/course_task.dart';
-import 'package:university_timetable/screens/add_task_screen.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/course_task.dart';
+import 'package:qhkb/screens/add_task_screen.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 import '../helpers_test_app.dart';
 

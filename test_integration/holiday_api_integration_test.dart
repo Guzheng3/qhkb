@@ -15,8 +15,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_timetable/models/holiday_entry.dart';
-import 'package:university_timetable/services/holiday_service.dart';
+import 'package:qhkb/models/holiday_entry.dart';
+import 'package:qhkb/services/holiday_service.dart';
 
 void main() {
   // 集成测试需要网络，标记为 skip 可在 CI 中跳过

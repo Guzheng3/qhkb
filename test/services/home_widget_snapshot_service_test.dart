@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/home_widget_snapshot_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/home_widget_snapshot_service.dart';
 
 void main() {
   test(

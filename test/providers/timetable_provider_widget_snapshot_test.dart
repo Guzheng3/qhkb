@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 /// 2026-02-23 是周一，作为学期第 1 周周一；测试日期取第 4 周的普通周一
 /// （2026-03-16），避开内置节假日数据里的春节假期。

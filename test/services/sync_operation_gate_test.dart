@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/sync_operation_gate.dart';
+import 'package:qhkb/services/sync_operation_gate.dart';
 
 void main() {
   test('runExclusive serializes overlapping operations', () async {

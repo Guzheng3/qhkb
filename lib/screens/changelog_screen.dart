@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_miuix/miuix.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 import 'about_screen.dart';
 
 /// `docs/releases/<version>.md` 的 asset key 匹配规则。

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/transfer_diff_service.dart';
-import 'package:university_timetable/services/transfer_package.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/transfer_diff_service.dart';
+import 'package:qhkb/services/transfer_package.dart';
 
 Course _course(String id) {
   return Course(

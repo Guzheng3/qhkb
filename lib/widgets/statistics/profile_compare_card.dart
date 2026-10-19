@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 /// 单个课表（profile）的对比条目
 class ProfileCompareEntry {

@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'package:university_timetable/ui/hyperos/frosted/frosted_appearance.dart';
-import 'package:university_timetable/models/class_reminder.dart';
+import 'package:qhkb/ui/hyperos/frosted/frosted_appearance.dart';
+import 'package:qhkb/models/class_reminder.dart';
 
 /// Bundled default wallpaper used when no user wallpaper is configured.
 const String defaultHomePageWallpaperPath =

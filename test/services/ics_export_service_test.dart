@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/exam.dart';
-import 'package:university_timetable/models/schedule_item.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/ics_export_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/exam.dart';
+import 'package:qhkb/models/schedule_item.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/ics_export_service.dart';
 
 void main() {
   final service = IcsExportService();

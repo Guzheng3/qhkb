@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/domain/week_calculator.dart';
+import 'package:qhkb/domain/week_calculator.dart';
 
 // 2026-08-24 为周一（本周），2026-08-29 为周六，2026-08-30 为周日。
 void main() {

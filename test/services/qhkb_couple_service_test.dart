@@ -7,18 +7,18 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/couple_timetable_history.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/data_transfer_service.dart';
-import 'package:university_timetable/services/partner_timetable_service.dart';
-import 'package:university_timetable/services/withu_couple_auth_service.dart';
-import 'package:university_timetable/services/withu_couple_config.dart';
-import 'package:university_timetable/services/withu_couple_session_store.dart';
-import 'package:university_timetable/services/withu_couple_timetable_service.dart';
-import 'package:university_timetable/services/withu_couple_auto_sync_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/couple_timetable_history.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/data_transfer_service.dart';
+import 'package:qhkb/services/partner_timetable_service.dart';
+import 'package:qhkb/services/qhkb_couple_auth_service.dart';
+import 'package:qhkb/services/qhkb_couple_config.dart';
+import 'package:qhkb/services/qhkb_couple_session_store.dart';
+import 'package:qhkb/services/qhkb_couple_timetable_service.dart';
+import 'package:qhkb/services/qhkb_couple_auto_sync_service.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 class _FakeClient extends http.BaseClient {
   final Map<String, http.Response> responses;
@@ -48,7 +48,7 @@ class _FakeClient extends http.BaseClient {
   }
 }
 
-class _MemorySecureStorage implements WithuCoupleSecureStorage {
+class _MemorySecureStorage implements QhkbCoupleSecureStorage {
   final Map<String, String> values = {};
 
   @override
@@ -65,18 +65,18 @@ class _MemorySecureStorage implements WithuCoupleSecureStorage {
   }
 }
 
-const _loginUrl = 'https://withu.example.com/api/timetable.php?action=login';
+const _loginUrl = 'https://qhkb.example.com/api/timetable.php?action=login';
 const _bootstrapUrl =
-    'https://withu.example.com/api/timetable.php?action=bootstrap';
+    'https://qhkb.example.com/api/timetable.php?action=bootstrap';
 const _partnerUrl =
-    'https://withu.example.com/api/timetable.php?action=partner';
-const _saveUrl = 'https://withu.example.com/api/timetable.php?action=save';
+    'https://qhkb.example.com/api/timetable.php?action=partner';
+const _saveUrl = 'https://qhkb.example.com/api/timetable.php?action=save';
 const _saveSettingsUrl =
-    'https://withu.example.com/api/timetable.php?action=save_settings';
+    'https://qhkb.example.com/api/timetable.php?action=save_settings';
 const _historyUrl =
-    'https://withu.example.com/api/timetable.php?action=history';
+    'https://qhkb.example.com/api/timetable.php?action=history';
 const _rollbackUrl =
-    'https://withu.example.com/api/timetable.php?action=rollback';
+    'https://qhkb.example.com/api/timetable.php?action=rollback';
 
 http.Response _jsonResponse(
   Map<String, dynamic> payload, {
@@ -196,16 +196,16 @@ http.Response _bootstrapResponse(
   });
 }
 
-Future<WithuCoupleAuthService> _connectedAuthService(
+Future<QhkbCoupleAuthService> _connectedAuthService(
   _FakeClient client,
   _MemorySecureStorage storage,
 ) async {
-  final service = WithuCoupleAuthService(
+  final service = QhkbCoupleAuthService(
     client: client,
-    sessionStore: WithuCoupleSessionStore(storage: storage),
+    sessionStore: QhkbCoupleSessionStore(storage: storage),
   );
   await service.connect(
-    baseUrl: 'https://withu.example.com',
+    baseUrl: 'https://qhkb.example.com',
     username: ' alice ',
     password: 'password',
   );
@@ -234,18 +234,18 @@ void main() {
 
   test('normalizes withU server URLs', () {
     expect(
-      const WithuCoupleConfig(baseUrl: 'https://withu.example.com').apiUri,
-      Uri.parse('https://withu.example.com/api/timetable.php'),
+      const QhkbCoupleConfig(baseUrl: 'https://qhkb.example.com').apiUri,
+      Uri.parse('https://qhkb.example.com/api/timetable.php'),
     );
     expect(
-      const WithuCoupleConfig(baseUrl: 'https://withu.example.com/').apiUri,
-      Uri.parse('https://withu.example.com/api/timetable.php'),
+      const QhkbCoupleConfig(baseUrl: 'https://qhkb.example.com/').apiUri,
+      Uri.parse('https://qhkb.example.com/api/timetable.php'),
     );
     expect(
-      const WithuCoupleConfig(
-        baseUrl: 'https://withu.example.com/custom',
+      const QhkbCoupleConfig(
+        baseUrl: 'https://qhkb.example.com/custom',
       ).apiUri,
-      Uri.parse('https://withu.example.com/custom/api/timetable.php'),
+      Uri.parse('https://qhkb.example.com/custom/api/timetable.php'),
     );
   });
 
@@ -282,42 +282,42 @@ void main() {
   test('gender derives from the couple role slots only', () {
     // 服务端把性别编码进角色槽位：男=user1，女=user2；其余角色不推断。
     expect(
-      WithuCoupleDisplayProfile.genderFromRole('user1'),
-      WithuCoupleDisplayProfile.genderMale,
+      QhkbCoupleDisplayProfile.genderFromRole('user1'),
+      QhkbCoupleDisplayProfile.genderMale,
     );
     expect(
-      WithuCoupleDisplayProfile.genderFromRole('user2'),
-      WithuCoupleDisplayProfile.genderFemale,
+      QhkbCoupleDisplayProfile.genderFromRole('user2'),
+      QhkbCoupleDisplayProfile.genderFemale,
     );
-    expect(WithuCoupleDisplayProfile.genderFromRole('couple'), '');
-    expect(WithuCoupleDisplayProfile.genderFromRole(null), '');
+    expect(QhkbCoupleDisplayProfile.genderFromRole('couple'), '');
+    expect(QhkbCoupleDisplayProfile.genderFromRole(null), '');
   });
 
   test('display profile round-trips both genders', () async {
     final storage = _MemorySecureStorage();
-    final store = WithuCoupleSessionStore(storage: storage);
+    final store = QhkbCoupleSessionStore(storage: storage);
 
     await store.saveDisplayProfile(
-      const WithuCoupleDisplayProfile(
+      const QhkbCoupleDisplayProfile(
         userNickname: 'Me',
         partnerNickname: 'Her',
-        userGender: WithuCoupleDisplayProfile.genderFemale,
-        partnerGender: WithuCoupleDisplayProfile.genderMale,
+        userGender: QhkbCoupleDisplayProfile.genderFemale,
+        partnerGender: QhkbCoupleDisplayProfile.genderMale,
       ),
     );
 
     final profile = await store.loadDisplayProfile();
 
-    expect(profile?.userGender, WithuCoupleDisplayProfile.genderFemale);
-    expect(profile?.partnerGender, WithuCoupleDisplayProfile.genderMale);
+    expect(profile?.userGender, QhkbCoupleDisplayProfile.genderFemale);
+    expect(profile?.partnerGender, QhkbCoupleDisplayProfile.genderMale);
   });
 
   test('display profile does not persist an unknown gender', () async {
     final storage = _MemorySecureStorage();
-    final store = WithuCoupleSessionStore(storage: storage);
+    final store = QhkbCoupleSessionStore(storage: storage);
 
     await store.saveDisplayProfile(
-      const WithuCoupleDisplayProfile(
+      const QhkbCoupleDisplayProfile(
         userNickname: 'Me',
         partnerNickname: 'Her',
         userGender: 'mystery',
@@ -343,16 +343,16 @@ void main() {
       ),
     });
 
-    await WithuCoupleAuthService(
+    await QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     ).connect(
-      baseUrl: 'https://withu.example.com',
+      baseUrl: 'https://qhkb.example.com',
       username: 'alice',
       password: 'password',
     );
 
-    final session = await WithuCoupleSessionStore(storage: storage).load();
+    final session = await QhkbCoupleSessionStore(storage: storage).load();
 
     expect(
       session?.cookieHeader,
@@ -368,7 +368,7 @@ void main() {
       'withu_couple_phpsessid': 'session-id',
       'withu_couple_csrf_token': 'csrf-token',
     });
-    final store = WithuCoupleSessionStore(storage: storage);
+    final store = QhkbCoupleSessionStore(storage: storage);
 
     final session = await store.load();
 
@@ -386,11 +386,11 @@ void main() {
       _partnerUrl: _partnerResponse(content, contentHash),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
 
     final imported = await service.pullPartnerTimetable(provider: provider);
-    expect(imported.status, WithuCouplePullStatus.imported);
+    expect(imported.status, QhkbCouplePullStatus.imported);
     expect(provider.hasPartnerBinding, isTrue);
     expect(provider.partnerProfile?.name, 'Bob');
 
@@ -401,10 +401,10 @@ void main() {
       updatedHash,
     );
     final updated = await service.pullPartnerTimetable(provider: provider);
-    expect(updated.status, WithuCouplePullStatus.updated);
+    expect(updated.status, QhkbCouplePullStatus.updated);
 
     final unchanged = await service.pullPartnerTimetable(provider: provider);
-    expect(unchanged.status, WithuCouplePullStatus.unchanged);
+    expect(unchanged.status, QhkbCouplePullStatus.unchanged);
 
     final config = await service.loadConfig();
     expect(config.lastRemoteContentHash, updatedHash);
@@ -427,14 +427,14 @@ void main() {
       ),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
 
     final result = await service.pullPartnerTimetable(provider: provider);
 
     expect(
       result.status,
-      isIn([WithuCouplePullStatus.imported, WithuCouplePullStatus.updated]),
+      isIn([QhkbCouplePullStatus.imported, QhkbCouplePullStatus.updated]),
     );
     expect(provider.partnerProfile?.courses, hasLength(1));
     expect(provider.partnerProfile?.courses.single.name, 'Legacy Math');
@@ -448,11 +448,11 @@ void main() {
       _partnerUrl: _jsonResponse({'success': true, 'partner': null}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
 
     final result = await service.pullPartnerTimetable(provider: _provider());
 
-    expect(result.status, WithuCouplePullStatus.unchanged);
+    expect(result.status, QhkbCouplePullStatus.unchanged);
     expect(result.errorCode, isNull);
   });
 
@@ -466,12 +466,12 @@ void main() {
       }),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
 
     final result = await service.pullPartnerTimetable(provider: _provider());
 
-    expect(result.status, WithuCouplePullStatus.failed);
-    expect(result.errorCode, 'withu_partner_timetable_missing');
+    expect(result.status, QhkbCouplePullStatus.failed);
+    expect(result.errorCode, 'qhkb_partner_timetable_missing');
   });
 
   test('clears the stored session after an authenticated 401', () async {
@@ -487,12 +487,12 @@ void main() {
     client.responses[_partnerUrl] = _jsonResponse({
       'success': false,
     }, statusCode: 401);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
 
     final result = await service.pullPartnerTimetable(provider: _provider());
 
-    expect(result.status, WithuCouplePullStatus.failed);
-    expect(result.errorCode, 'withu_session_expired');
+    expect(result.status, QhkbCouplePullStatus.failed);
+    expect(result.errorCode, 'qhkb_session_expired');
     expect(await auth.loadSession(), isNull);
     expect(storage.values, isEmpty);
   });
@@ -503,7 +503,7 @@ void main() {
       _loginUrl: _loginResponse(),
       _partnerUrl: _partnerResponse(
         jsonEncode({
-          'app': 'mikcb',
+          'app': 'qhkb',
           'schemaVersion': DataTransferService.schemaVersion,
           'courses': const [],
         }),
@@ -511,11 +511,11 @@ void main() {
       ),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
 
     final result = await service.pullPartnerTimetable(provider: _provider());
 
-    expect(result.status, WithuCouplePullStatus.failed);
+    expect(result.status, QhkbCouplePullStatus.failed);
     expect(result.errorCode, 'missing_settings_data');
   });
 
@@ -526,7 +526,7 @@ void main() {
       _saveUrl: _jsonResponse({'success': true}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
     await provider.initialize();
 
@@ -557,8 +557,8 @@ void main() {
         _saveSettingsUrl: _jsonResponse({'success': true}),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
-      final autoSync = WithuCoupleAutoSyncService(
+      final service = QhkbCoupleTimetableService(authService: auth);
+      final autoSync = QhkbCoupleAutoSyncService(
         timetableService: service,
         debounceDelay: Duration.zero,
         pullOnBind: false,
@@ -607,8 +607,8 @@ void main() {
       _saveSettingsUrl: _jsonResponse({'success': true}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
-    final autoSync = WithuCoupleAutoSyncService(
+    final service = QhkbCoupleTimetableService(authService: auth);
+    final autoSync = QhkbCoupleAutoSyncService(
       timetableService: service,
       debounceDelay: Duration.zero,
       pullOnBind: false,
@@ -644,7 +644,7 @@ void main() {
         _saveUrl: _jsonResponse({'success': true}),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
+      final service = QhkbCoupleTimetableService(authService: auth);
       final provider = _provider();
       await provider.initialize();
       await provider.updateSettings(
@@ -686,12 +686,12 @@ void main() {
         _partnerUrl: _partnerResponse(content, contentHash),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
+      final service = QhkbCoupleTimetableService(authService: auth);
       final provider = _provider();
 
       final result = await service.syncAfterLogin(provider: provider);
 
-      expect(result.status, WithuCouplePullStatus.imported);
+      expect(result.status, QhkbCouplePullStatus.imported);
       final saveRequest = client.requests.singleWhere(
         (request) => request.url.queryParameters['action'] == 'save',
       );
@@ -719,12 +719,12 @@ void main() {
       _partnerUrl: _partnerResponse(partnerContent, partnerHash),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
 
     final result = await service.syncAfterLogin(provider: provider);
 
-    expect(result.status, WithuCouplePullStatus.imported);
+    expect(result.status, QhkbCouplePullStatus.imported);
     final myCourse = provider.myTimetableProfile?.courses.single;
     expect(myCourse?.id, 'cloud-course');
     expect(myCourse?.name, 'Math');
@@ -753,7 +753,7 @@ void main() {
       _partnerUrl: _jsonResponse({'success': true, 'partner': null}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
     await provider.initialize();
     await provider.addCourse(
@@ -785,7 +785,7 @@ void main() {
     );
     final result = await service.syncAfterLogin(provider: provider);
 
-    expect(result.status, WithuCouplePullStatus.unchanged);
+    expect(result.status, QhkbCouplePullStatus.unchanged);
     expect(provider.myTimetableProfile?.courses.map((course) => course.id), [
       'local-course',
       'newer-local-course',
@@ -802,7 +802,7 @@ void main() {
       _partnerUrl: _jsonResponse({'success': true, 'partner': null}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
     await provider.initialize();
     await provider.updateSettings(
@@ -823,7 +823,7 @@ void main() {
     );
 
     final result = await service.syncAfterLogin(provider: provider);
-    expect(result.status, WithuCouplePullStatus.unchanged);
+    expect(result.status, QhkbCouplePullStatus.unchanged);
     expect(provider.myTimetableProfile?.courses.single.id, 'cloud-course');
   });
 
@@ -848,7 +848,7 @@ void main() {
       }),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
 
     final history = await service.fetchMyHistory();
 
@@ -888,7 +888,7 @@ void main() {
         }),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
+      final service = QhkbCoupleTimetableService(authService: auth);
 
       final history = await service.fetchMyHistory();
 
@@ -905,7 +905,7 @@ void main() {
       _bootstrapUrl: _bootstrapResponse(cloudContent, null),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
     await provider.initialize();
     await provider.addCourse(
@@ -921,7 +921,7 @@ void main() {
         endTime: '09:40',
       ),
     );
-    final autoSync = WithuCoupleAutoSyncService(
+    final autoSync = QhkbCoupleAutoSyncService(
       timetableService: service,
       pullOnBind: false,
     );
@@ -934,7 +934,7 @@ void main() {
     );
     await autoSync.syncNow();
 
-    expect(result.status, WithuCouplePullStatus.updated);
+    expect(result.status, QhkbCouplePullStatus.updated);
     expect(provider.myTimetableProfile?.courses.single.id, 'history-course');
     final rollbackRequest = client.requests.singleWhere(
       (request) => request.url.toString() == _rollbackUrl,
@@ -955,8 +955,8 @@ void main() {
     final storage = _MemorySecureStorage();
     final client = _FakeClient({_loginUrl: _loginResponse()});
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
-    final autoSync = WithuCoupleAutoSyncService(
+    final service = QhkbCoupleTimetableService(authService: auth);
+    final autoSync = QhkbCoupleAutoSyncService(
       timetableService: service,
       pullOnBind: false,
     );
@@ -989,8 +989,8 @@ void main() {
       _partnerUrl: _partnerResponse(content, contentHash),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
-    final autoSync = WithuCoupleAutoSyncService(
+    final service = QhkbCoupleTimetableService(authService: auth);
+    final autoSync = QhkbCoupleAutoSyncService(
       timetableService: service,
       debounceDelay: Duration.zero,
       pullOnBind: false,
@@ -1037,8 +1037,8 @@ void main() {
         _saveSettingsUrl: _jsonResponse({'success': true}),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
-      final autoSync = WithuCoupleAutoSyncService(
+      final service = QhkbCoupleTimetableService(authService: auth);
+      final autoSync = QhkbCoupleAutoSyncService(
         timetableService: service,
         debounceDelay: Duration.zero,
         pullOnBind: false,
@@ -1075,8 +1075,8 @@ void main() {
         _saveSettingsUrl: _jsonResponse({'success': true}),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
-      final autoSync = WithuCoupleAutoSyncService(
+      final service = QhkbCoupleTimetableService(authService: auth);
+      final autoSync = QhkbCoupleAutoSyncService(
         timetableService: service,
         debounceDelay: Duration.zero,
         pullOnBind: false,
@@ -1114,8 +1114,8 @@ void main() {
       _partnerUrl: _partnerResponse(content, contentHash),
     });
     final auth = await _connectedAuthService(client, storage);
-    final autoSync = WithuCoupleAutoSyncService(
-      timetableService: WithuCoupleTimetableService(authService: auth),
+    final autoSync = QhkbCoupleAutoSyncService(
+      timetableService: QhkbCoupleTimetableService(authService: auth),
       debounceDelay: Duration.zero,
     );
     final provider = _provider();
@@ -1141,9 +1141,9 @@ void main() {
 
   test('auto sync makes no requests when withU is not connected', () async {
     final client = _FakeClient({});
-    final auth = WithuCoupleAuthService(client: client);
-    final autoSync = WithuCoupleAutoSyncService(
-      timetableService: WithuCoupleTimetableService(authService: auth),
+    final auth = QhkbCoupleAuthService(client: client);
+    final autoSync = QhkbCoupleAutoSyncService(
+      timetableService: QhkbCoupleTimetableService(authService: auth),
       debounceDelay: Duration.zero,
     );
     final provider = _provider();
@@ -1168,8 +1168,8 @@ void main() {
       _saveSettingsUrl: _jsonResponse({'success': true}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final autoSync = WithuCoupleAutoSyncService(
-      timetableService: WithuCoupleTimetableService(authService: auth),
+    final autoSync = QhkbCoupleAutoSyncService(
+      timetableService: QhkbCoupleTimetableService(authService: auth),
       // 防抖窗口故意拉到 1 小时：只有 flush 才会立即上传。
       debounceDelay: const Duration(hours: 1),
       pullOnBind: false,
@@ -1222,7 +1222,7 @@ void main() {
         _saveSettingsUrl: _jsonResponse({'success': true}),
       });
       final auth = await _connectedAuthService(client, storage);
-      final service = WithuCoupleTimetableService(authService: auth);
+      final service = QhkbCoupleTimetableService(authService: auth);
       final provider = _provider();
       await provider.initialize();
       await provider.addCourse(
@@ -1258,7 +1258,7 @@ void main() {
         ),
       );
 
-      final autoSync = WithuCoupleAutoSyncService(
+      final autoSync = QhkbCoupleAutoSyncService(
         timetableService: service,
         debounceDelay: const Duration(hours: 1),
         pullOnBind: false,
@@ -1284,7 +1284,7 @@ void main() {
       _saveUrl: _jsonResponse({'success': true}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final provider = _provider();
     await provider.initialize();
     await provider.addCourse(
@@ -1307,7 +1307,7 @@ void main() {
     );
     expect((await service.myTimetableSyncPoint()).hash, isNotNull);
 
-    const store = WithuCoupleConfigStore();
+    const store = QhkbCoupleConfigStore();
     final config = await store.load();
     expect(config.lastMyTimetableAccount, 'alice');
 
@@ -1327,8 +1327,8 @@ void main() {
       _saveSettingsUrl: _jsonResponse({'success': true}),
     });
     final auth = await _connectedAuthService(client, storage);
-    final autoSync = WithuCoupleAutoSyncService(
-      timetableService: WithuCoupleTimetableService(authService: auth),
+    final autoSync = QhkbCoupleAutoSyncService(
+      timetableService: QhkbCoupleTimetableService(authService: auth),
       debounceDelay: Duration.zero,
       pullOnBind: false,
     );
@@ -1382,22 +1382,22 @@ void main() {
         'message': 'couple account required',
       }, statusCode: 403),
     });
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
 
     await expectLater(
       auth.connect(
-        baseUrl: 'https://withu.example.com',
+        baseUrl: 'https://qhkb.example.com',
         username: 'alice',
         password: 'password',
       ),
       throwsA(
-        isA<WithuCoupleApiException>().having(
+        isA<QhkbCoupleApiException>().having(
           (error) => error.code,
           'code',
-          'withu_auth_failed',
+          'qhkb_auth_failed',
         ),
       ),
     );
@@ -1408,36 +1408,36 @@ void main() {
       'withu_couple_csrf_token': 'csrf-token',
     };
     storage.values.addAll(values);
-    await const WithuCoupleConfigStore().save(
-      const WithuCoupleConfig(baseUrl: 'https://withu.example.com'),
+    await const QhkbCoupleConfigStore().save(
+      const QhkbCoupleConfig(baseUrl: 'https://qhkb.example.com'),
     );
-    final service = WithuCoupleTimetableService(authService: auth);
+    final service = QhkbCoupleTimetableService(authService: auth);
     final result = await service.pullPartnerTimetable(provider: _provider());
 
-    expect(result.errorCode, 'withu_couple_account_required');
+    expect(result.errorCode, 'qhkb_couple_account_required');
   });
 
   // ── 会话的唯一真相源 ────────────────────────────────────────────
   // 每个 UI 组件（首页 provider、设置页、登录弹窗、自动同步）都会创建一个
-  // WithuCoupleAuthService，它们共享同一份安全存储。任何长期缓存都会让
+  // QhkbCoupleAuthService，它们共享同一份安全存储。任何长期缓存都会让
   // 「别人登录/退出了」这件事看不到。
 
   test('a login made by another instance is visible immediately', () async {
     final storage = _MemorySecureStorage();
     final client = MockClient((request) async => _loginResponse());
-    final reader = WithuCoupleAuthService(
+    final reader = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
     // 先读一次「没有会话」，把任何可能的缓存填上。
     expect(await reader.loadSession(), isNull);
 
-    final writer = WithuCoupleAuthService(
+    final writer = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
     await writer.connect(
-      baseUrl: 'https://withu.example.com',
+      baseUrl: 'https://qhkb.example.com',
       username: 'alice',
       password: 'password',
     );
@@ -1452,12 +1452,12 @@ void main() {
       requests++;
       return _loginResponse();
     });
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
     await auth.connect(
-      baseUrl: 'https://withu.example.com',
+      baseUrl: 'https://qhkb.example.com',
       username: 'alice',
       password: 'password',
     );
@@ -1486,12 +1486,12 @@ void main() {
       }
       return _loginResponse();
     });
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
     await auth.connect(
-      baseUrl: 'https://withu.example.com',
+      baseUrl: 'https://qhkb.example.com',
       username: 'alice',
       password: 'password',
     );
@@ -1514,12 +1514,12 @@ void main() {
         }
         return _loginResponse();
       });
-      final auth = WithuCoupleAuthService(
+      final auth = QhkbCoupleAuthService(
         client: client,
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       );
       await auth.connect(
-        baseUrl: 'https://withu.example.com',
+        baseUrl: 'https://qhkb.example.com',
         username: 'alice',
         password: 'password',
       );
@@ -1533,36 +1533,36 @@ void main() {
   );
 
   test('per-action timeouts keep logout snappy and sync generous', () {
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: MockClient((request) async => _loginResponse()),
     );
 
     // 注销只影响提示，短；同步类请求可能带 2MB 课表内容，宽裕。
     expect(
       auth.timeoutForAction('logout'),
-      WithuCoupleAuthService.logoutTimeout,
+      QhkbCoupleAuthService.logoutTimeout,
     );
-    expect(auth.timeoutForAction('login'), WithuCoupleAuthService.loginTimeout);
+    expect(auth.timeoutForAction('login'), QhkbCoupleAuthService.loginTimeout);
     expect(
       auth.timeoutForAction('save'),
-      WithuCoupleAuthService.defaultTimeout,
+      QhkbCoupleAuthService.defaultTimeout,
     );
     expect(
       auth.timeoutForAction('bootstrap'),
-      WithuCoupleAuthService.defaultTimeout,
+      QhkbCoupleAuthService.defaultTimeout,
     );
     expect(
       auth.timeoutForAction('partner'),
-      WithuCoupleAuthService.defaultTimeout,
+      QhkbCoupleAuthService.defaultTimeout,
     );
     expect(
-      WithuCoupleAuthService.logoutTimeout <
-          WithuCoupleAuthService.defaultTimeout,
+      QhkbCoupleAuthService.logoutTimeout <
+          QhkbCoupleAuthService.defaultTimeout,
       isTrue,
     );
 
     // 测试注入的覆盖值对所有 action 生效。
-    final overridden = WithuCoupleAuthService(
+    final overridden = QhkbCoupleAuthService(
       client: MockClient((request) async => _loginResponse()),
       requestTimeout: const Duration(milliseconds: 5),
     );
@@ -1578,18 +1578,18 @@ void main() {
 
   test('a request that never answers times out as a network failure', () async {
     final storage = _MemorySecureStorage();
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       // 黑洞连接：请求永远不返回，只能靠超时兜底。
       client: MockClient((request) => Completer<http.Response>().future),
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
       requestTimeout: const Duration(milliseconds: 50),
     );
-    await const WithuCoupleConfigStore().save(
-      const WithuCoupleConfig(baseUrl: 'https://withu.example.com'),
+    await const QhkbCoupleConfigStore().save(
+      const QhkbCoupleConfig(baseUrl: 'https://qhkb.example.com'),
     );
-    final store = WithuCoupleSessionStore(storage: storage);
+    final store = QhkbCoupleSessionStore(storage: storage);
     await store.save(
-      const WithuCoupleSession(
+      const QhkbCoupleSession(
         username: 'alice',
         sessionId: 'session-id',
         csrfToken: 'csrf-token',
@@ -1599,10 +1599,10 @@ void main() {
     await expectLater(
       auth.getJson('bootstrap'),
       throwsA(
-        isA<WithuCoupleApiException>().having(
+        isA<QhkbCoupleApiException>().having(
           (error) => error.code,
           'code',
-          'withu_network_failed',
+          'qhkb_network_failed',
         ),
       ),
     );
@@ -1621,12 +1621,12 @@ void main() {
         headers: {'content-type': 'text/html; charset=utf-8'},
       );
     });
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
     await auth.connect(
-      baseUrl: 'https://withu.example.com',
+      baseUrl: 'https://qhkb.example.com',
       username: 'alice',
       password: 'password',
     );
@@ -1636,10 +1636,10 @@ void main() {
     await expectLater(
       auth.getJson('partner'),
       throwsA(
-        isA<WithuCoupleApiException>().having(
+        isA<QhkbCoupleApiException>().having(
           (error) => error.code,
           'code',
-          'withu_session_expired',
+          'qhkb_session_expired',
         ),
       ),
     );
@@ -1650,22 +1650,22 @@ void main() {
 
   test('an authenticated 401 does not delete a newer stored session', () async {
     final storage = _MemorySecureStorage();
-    final store = WithuCoupleSessionStore(storage: storage);
+    final store = QhkbCoupleSessionStore(storage: storage);
     await store.save(
-      const WithuCoupleSession(
+      const QhkbCoupleSession(
         username: 'old',
         sessionId: 'old-session',
         csrfToken: 'old-csrf',
       ),
     );
-    await const WithuCoupleConfigStore().save(
-      const WithuCoupleConfig(baseUrl: 'https://withu.example.com'),
+    await const QhkbCoupleConfigStore().save(
+      const QhkbCoupleConfig(baseUrl: 'https://qhkb.example.com'),
     );
 
     final client = MockClient((request) async {
       // 请求在途时用户重新登录了另一个账号：存储里已经是新凭证。
       await store.save(
-        const WithuCoupleSession(
+        const QhkbCoupleSession(
           username: 'new',
           sessionId: 'new-session',
           deviceToken: 'new-device',
@@ -1677,18 +1677,18 @@ void main() {
         'message': 'Login required',
       }, statusCode: 401);
     });
-    final auth = WithuCoupleAuthService(
+    final auth = QhkbCoupleAuthService(
       client: client,
-      sessionStore: WithuCoupleSessionStore(storage: storage),
+      sessionStore: QhkbCoupleSessionStore(storage: storage),
     );
 
     await expectLater(
       auth.getJson('bootstrap'),
       throwsA(
-        isA<WithuCoupleApiException>().having(
+        isA<QhkbCoupleApiException>().having(
           (error) => error.code,
           'code',
-          'withu_session_expired',
+          'qhkb_session_expired',
         ),
       ),
     );

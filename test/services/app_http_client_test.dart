@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
-import 'package:university_timetable/blackbox_adapters.dart';
-import 'package:university_timetable/services/app_http_client.dart';
-import 'package:university_timetable/services/holiday_service.dart';
+import 'package:qhkb/blackbox_adapters.dart';
+import 'package:qhkb/services/app_http_client.dart';
+import 'package:qhkb/services/holiday_service.dart';
 
 void main() {
   setUp(resetAppHttpClientForTesting);

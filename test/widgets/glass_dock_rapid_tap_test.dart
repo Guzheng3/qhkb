@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/ui/hyperos/frosted/frosted_appearance.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/ui/hyperos/frosted/frosted_appearance.dart';
 
 /// 快速连点回归：玻璃坞 日/周 两 Tab 快速交替连点不允许丢拍
 /// （原 1→3→1→3 三 Tab 场景随「设置」Tab 移除而改为两态交替）。

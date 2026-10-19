@@ -2,7 +2,7 @@ package vip.qinghan.withu
 
 import android.app.Application
 
-class WithuApplication : Application() {
+class QhkbApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 

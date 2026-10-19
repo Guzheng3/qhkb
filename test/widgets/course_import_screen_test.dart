@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/screens/course_import_screen.dart';
-import 'package:university_timetable/services/warehouse_import_preferences_service.dart';
+import 'package:qhkb/screens/course_import_screen.dart';
+import 'package:qhkb/services/warehouse_import_preferences_service.dart';
 import '../helpers_test_app.dart';
 
 void main() {

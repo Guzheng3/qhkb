@@ -24,7 +24,7 @@ class AiCourseImportParseResult {
 }
 
 class AiCourseImportService {
-  static const String schema = 'mikcb_ai_import_v1';
+  static const String schema = 'qhkb_ai_import_v1';
   static const Set<String> _rootKeys = {'schema', 'courses', 'warnings'};
   static const Set<String> _courseKeys = {
     'name',
@@ -39,7 +39,7 @@ class AiCourseImportService {
   };
 
   static const String prompt = '''
-你是轻屿课表的专属视觉解析引擎，你的任务是精准识别课程表截图，并将其转化为严格的 JSON 数据供本地解析，
+你是清涵课表的专属视觉解析引擎，你的任务是精准识别课程表截图，并将其转化为严格的 JSON 数据供本地解析，
 
 【核心阅读策略：按列与单元格读取】
 图片是一个二维表格，表头是星期（周一至周日），左侧是节次，
@@ -49,7 +49,7 @@ class AiCourseImportService {
 你只能输出一个纯粹的 JSON 对象，绝不能包含任何 markdown 标记（如 ```json ）、前言、后语或注释，
 
 {
-  "schema": "mikcb_ai_import_v1",
+  "schema": "qhkb_ai_import_v1",
   "courses": [
     {
       "name": "课程名",

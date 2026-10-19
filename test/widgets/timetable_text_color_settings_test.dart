@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/widgets/timetable_text_color_settings.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/widgets/timetable_text_color_settings.dart';
 
 Future<void> _pump(WidgetTester tester, {required TextColorScope scope}) async {
   await tester.pumpWidget(

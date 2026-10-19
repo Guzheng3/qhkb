@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 /// Locates the MiuixSwitch thumb: the only circle-shaped [Container]
 /// inside [HyperosSwitch] (the track is a rounded-rect AnimatedContainer).

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Design constants transcribed from [Miuix](https://github.com/compose-miuix-ui/miuix)
-/// (Compose Multiplatform, Apache-2.0). Canonical reference for mikcb HyperOS — not a
+/// (Compose Multiplatform, Apache-2.0). Canonical reference for qhkb HyperOS — not a
 /// runtime dependency. We hand-port Miuix because there is no official Flutter package.
 ///
 /// Source files (main branch, v0.9+):
@@ -55,7 +55,7 @@ abstract final class HyperosMiuixSpec {
   static const appBarIconPadding = HyperosMiuixTopAppBar.actionIconPadding;
 
   // ---------------------------------------------------------------------------
-  // mikcb measured overrides — HyperOS 系统「设置」首页（Miuix 通用值之上）
+  // qhkb measured overrides — HyperOS 系统「设置」首页（Miuix 通用值之上）
   // ---------------------------------------------------------------------------
 
   static const settingsBackground = Color(0xFFF2F2F2);

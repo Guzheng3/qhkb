@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/services/withu_app_update_service.dart';
-import 'package:university_timetable/services/withu_couple_config.dart';
+import 'package:qhkb/services/qhkb_app_update_service.dart';
+import 'package:qhkb/services/qhkb_couple_config.dart';
 
 const _sha256 =
     '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
@@ -13,8 +13,8 @@ const _sha256 =
 void main() {
   test('parses a valid withU update release', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
     });
     Uri? requestedUri;
@@ -28,7 +28,7 @@ void main() {
             'version': '1.2.3',
             'title': 'withU 1.2.3',
             'body': 'fixed scheduling sync',
-            'download_url': 'https://withu.example.com/uploads/mikcb-1.2.3.apk',
+            'download_url': 'https://qhkb.example.com/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
             'updated_at': '2026-09-07T10:00:00+08:00',
             'force_update': false,
@@ -38,7 +38,7 @@ void main() {
         headers: {'content-type': 'application/json; charset=utf-8'},
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -53,10 +53,10 @@ void main() {
 
   test('non-forced ignored version stays silent', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
-      WithuAppUpdateService.ignoredVersionPrefsKey: '1.2.3',
+      QhkbAppUpdateService.ignoredVersionPrefsKey: '1.2.3',
     });
     final client = MockClient((request) async {
       return http.Response(
@@ -65,14 +65,14 @@ void main() {
           'has_update': true,
           'release': {
             'version': '1.2.3',
-            'download_url': 'https://withu.example.com/uploads/mikcb-1.2.3.apk',
+            'download_url': 'https://qhkb.example.com/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
           },
         }),
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -82,10 +82,10 @@ void main() {
 
   test('forced update overrides the ignored version', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
-      WithuAppUpdateService.ignoredVersionPrefsKey: '1.2.3',
+      QhkbAppUpdateService.ignoredVersionPrefsKey: '1.2.3',
     });
     final client = MockClient((request) async {
       return http.Response(
@@ -94,7 +94,7 @@ void main() {
           'has_update': true,
           'release': {
             'version': '1.2.3',
-            'download_url': 'https://withu.example.com/uploads/mikcb-1.2.3.apk',
+            'download_url': 'https://qhkb.example.com/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
             'force_update': true,
           },
@@ -102,7 +102,7 @@ void main() {
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -113,8 +113,8 @@ void main() {
 
   test('rejects non-HTTPS or malformed downloads', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
     });
     final client = MockClient((request) async {
@@ -131,7 +131,7 @@ void main() {
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -141,8 +141,8 @@ void main() {
 
   test('rejects download hosts outside the configured withU domain', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
     });
     final client = MockClient((request) async {
@@ -152,14 +152,14 @@ void main() {
           'has_update': true,
           'release': {
             'version': '1.2.3',
-            'download_url': 'https://cdn.example.com/mikcb-1.2.3.apk',
+            'download_url': 'https://cdn.example.com/qhkb-1.2.3.apk',
             'sha256': _sha256,
           },
         }),
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -169,7 +169,7 @@ void main() {
 
   test('allows HTTP on the same local Android emulator host', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
+      QhkbCoupleConfig.prefsKey: jsonEncode({
         'baseUrl': 'http://10.0.2.2:8080',
       }),
     });
@@ -180,14 +180,14 @@ void main() {
           'has_update': true,
           'release': {
             'version': '1.2.3',
-            'download_url': 'http://10.0.2.2:8080/uploads/mikcb-1.2.3.apk',
+            'download_url': 'http://10.0.2.2:8080/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
           },
         }),
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -195,20 +195,20 @@ void main() {
     expect(result!.hasUpdate, isTrue);
     expect(
       result.latestRelease?.downloadUrl,
-      'http://10.0.2.2:8080/uploads/mikcb-1.2.3.apk',
+      'http://10.0.2.2:8080/uploads/qhkb-1.2.3.apk',
     );
   });
 
   test('HTTP failures return null', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
     });
     final client = MockClient((request) async {
       throw Exception('offline');
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -216,21 +216,21 @@ void main() {
   });
 
   test('version comparison orders normal and prerelease versions', () {
-    expect(WithuAppUpdateService.isRemoteNewer('1.2.3', '1.2.2'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('1.0.10', '1.0.9'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('1.2.0', '1.2.0-rc1'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('1.2.0', '1.2.0'), isFalse);
-    expect(WithuAppUpdateService.isRemoteNewer('1.2.0-rc1', '1.2.0'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.2.3', '1.2.2'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.0.10', '1.0.9'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.2.0', '1.2.0-rc1'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.2.0', '1.2.0'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.2.0-rc1', '1.2.0'), isFalse);
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.2.0-beta', '1.2.0-alpha'),
+      QhkbAppUpdateService.isRemoteNewer('1.2.0-beta', '1.2.0-alpha'),
       isTrue,
     );
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.2.0-rc.10', '1.2.0-rc.9'),
+      QhkbAppUpdateService.isRemoteNewer('1.2.0-rc.10', '1.2.0-rc.9'),
       isTrue,
     );
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.2.0-rc.2', '1.2.0-rc.10'),
+      QhkbAppUpdateService.isRemoteNewer('1.2.0-rc.2', '1.2.0-rc.10'),
       isFalse,
     );
   });
@@ -238,32 +238,32 @@ void main() {
   test('compares the four-segment release versions this project ships', () {
     // versionName 是四段号（5.2.0.5），pub_semver 解析不了它，曾导致新版本
     // 一律比不出来、云端更新永远提示「已是最新」。
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0.4'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0.4', '5.2.0.5'), isFalse);
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0.10', '5.2.0.9'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0.5'), isFalse);
-    expect(WithuAppUpdateService.isRemoteNewer('v5.2.0.5', '5.2.0.4'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0.4'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0.4', '5.2.0.5'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0.10', '5.2.0.9'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0.5'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('v5.2.0.5', '5.2.0.4'), isTrue);
   });
 
   test('ranks a four-segment version above the three-segment baseline', () {
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('5.2.0', '5.2.0.5'), isFalse);
-    expect(WithuAppUpdateService.isRemoteNewer('1.1.11', '1.1.10.6'), isTrue);
-    expect(WithuAppUpdateService.isRemoteNewer('1.1.10.6', '1.1.11'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0.5', '5.2.0'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('5.2.0', '5.2.0.5'), isFalse);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.1.11', '1.1.10.6'), isTrue);
+    expect(QhkbAppUpdateService.isRemoteNewer('1.1.10.6', '1.1.11'), isFalse);
   });
 
   test('maps the pubspec prerelease form onto the fourth segment', () {
     // docs/RELEASE.md 约定：1.1.10-6+36 与 1.1.10.6 视为同一版本。
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.1.10-6+36', '1.1.10.6'),
+      QhkbAppUpdateService.isRemoteNewer('1.1.10-6+36', '1.1.10.6'),
       isFalse,
     );
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.1.10.6', '1.1.10-6+36'),
+      QhkbAppUpdateService.isRemoteNewer('1.1.10.6', '1.1.10-6+36'),
       isFalse,
     );
     expect(
-      WithuAppUpdateService.isRemoteNewer('1.1.10-7+37', '1.1.10.6'),
+      QhkbAppUpdateService.isRemoteNewer('1.1.10-7+37', '1.1.10.6'),
       isTrue,
     );
   });
@@ -289,14 +289,14 @@ void main() {
           'release': {
             'version': '1.2.3',
             'download_url':
-                'https://gzr.xjy.xn--6qq986b3xl/uploads/mikcb-1.2.3.apk',
+                'https://qhkb.qinghan.vip/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
           },
         }),
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -306,12 +306,12 @@ void main() {
         .where((uri) => uri.path == '/api/app_update.php')
         .toList();
     expect(updateCalls, hasLength(1));
-    expect(updateCalls.first.host, 'gzr.xjy.xn--6qq986b3xl');
+    expect(updateCalls.first.host, 'qhkb.qinghan.vip');
   });
 
   test('custom non-built-in baseUrl skips probing', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
+      QhkbCoupleConfig.prefsKey: jsonEncode({
         'baseUrl': 'https://my-custom-server.com',
       }),
     });
@@ -328,7 +328,7 @@ void main() {
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -339,7 +339,7 @@ void main() {
 
   test('accepts HTTP download URLs for built-in hosts', () async {
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
+      QhkbCoupleConfig.prefsKey: jsonEncode({
         'baseUrl': 'http://withu.qinghan.vip/',
       }),
     });
@@ -353,14 +353,14 @@ void main() {
           'has_update': true,
           'release': {
             'version': '1.2.3',
-            'download_url': 'http://withu.qinghan.vip/uploads/mikcb-1.2.3.apk',
+            'download_url': 'http://withu.qinghan.vip/uploads/qhkb-1.2.3.apk',
             'sha256': _sha256,
           },
         }),
         200,
       );
     });
-    final service = WithuAppUpdateService(client: client);
+    final service = QhkbAppUpdateService(client: client);
 
     final result = await service.checkForUpdates(currentVersion: '1.2.2');
 
@@ -368,7 +368,7 @@ void main() {
     expect(result!.hasUpdate, isTrue);
     expect(
       result.latestRelease?.downloadUrl,
-      'http://withu.qinghan.vip/uploads/mikcb-1.2.3.apk',
+      'http://withu.qinghan.vip/uploads/qhkb-1.2.3.apk',
     );
   });
 }

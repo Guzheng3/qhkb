@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/data/timetable_repository.dart';
-import 'package:university_timetable/models/schedule_date_rule.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/data/timetable_repository.dart';
+import 'package:qhkb/models/schedule_date_rule.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 TimetableProfile _profile(String id, {String name = '默认课表'}) {
   return TimetableProfile(

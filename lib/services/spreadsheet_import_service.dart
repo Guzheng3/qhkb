@@ -68,11 +68,11 @@ class _SpreadsheetColumnMap {
 }
 
 class SpreadsheetImportService {
-  static const String formatMikcb = 'mikcb_course_v1';
+  static const String formatQhkb = 'qhkb_course_v1';
   static const String formatWakeUp = 'wakeup_compatible';
   static const String formatUnknown = 'unknown';
 
-  static const String _mikcbMetadataMarker = '# mikcb-course-import-v1';
+  static const String _qhkbMetadataMarker = '# qhkb-course-import-v1';
   static const String _defaultColor = '#2196F3';
 
   static const List<String> _nameAliases = ['课程名称'];
@@ -124,7 +124,7 @@ class SpreadsheetImportService {
     final courses = <Course>[];
     final warnings = <String>[];
     final dataStartIndex = detected.headerRowIndex + 1;
-    final columnMap = detected.format == formatMikcb
+    final columnMap = detected.format == formatQhkb
         ? _SpreadsheetColumnMap(rows[detected.headerRowIndex])
         : null;
 
@@ -143,7 +143,7 @@ class SpreadsheetImportService {
                 settings: settings,
                 warnings: warnings,
               )
-            : _parseMikcbDataRow(
+            : _parseQhkbDataRow(
                 row,
                 rowNumber: rowNumber,
                 settings: settings,
@@ -180,13 +180,13 @@ class SpreadsheetImportService {
     if (_isHeaderRow(headerRow, _wakeUpHeaders)) {
       return (headerRowIndex: headerRowIndex, format: formatWakeUp);
     }
-    if (_isMikcbFormat(headerRow)) {
-      return (headerRowIndex: headerRowIndex, format: formatMikcb);
+    if (_isQhkbFormat(headerRow)) {
+      return (headerRowIndex: headerRowIndex, format: formatQhkb);
     }
     return null;
   }
 
-  bool _isMikcbFormat(List<String> headerRow) {
+  bool _isQhkbFormat(List<String> headerRow) {
     final columns = _SpreadsheetColumnMap(headerRow);
     if (!columns.hasColumn('课程名', _nameAliases)) {
       return false;
@@ -279,7 +279,7 @@ class SpreadsheetImportService {
     if (row.isEmpty) {
       return false;
     }
-    return row.first.trim() == _mikcbMetadataMarker;
+    return row.first.trim() == _qhkbMetadataMarker;
   }
 
   bool _isHeaderRow(List<String> row, List<String> expectedHeaders) {
@@ -358,7 +358,7 @@ class SpreadsheetImportService {
     );
   }
 
-  Course? _parseMikcbDataRow(
+  Course? _parseQhkbDataRow(
     List<String> row, {
     required int rowNumber,
     required TimetableSettings settings,

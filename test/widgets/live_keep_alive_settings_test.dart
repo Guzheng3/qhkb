@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/screens/live_settings_subpages.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/screens/live_settings_subpages.dart';
 import '../helpers_test_app.dart';
 
 /// ColorOS 一系（OPPO / realme / 一加）会在应用退到后台后冻结整个进程，通知里的

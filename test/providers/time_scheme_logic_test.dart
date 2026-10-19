@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/location_time_group.dart';
-import 'package:university_timetable/models/schedule_date_rule.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/domain/time_scheme_logic.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/location_time_group.dart';
+import 'package:qhkb/models/schedule_date_rule.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/domain/time_scheme_logic.dart';
 
 Course _course({
   required String id,

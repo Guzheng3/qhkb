@@ -33,7 +33,7 @@ void resetAppHttpClientForTesting() {
   _sharedObservedHttpClient = null;
 }
 
-/// Default HTTP client for mikcb network services.
+/// Default HTTP client for qhkb network services.
 ///
 /// - Debug / profile (after BlackBox setup): shared observing client.
 /// - Release, or before setup: a new plain [http.Client] (caller owns it).

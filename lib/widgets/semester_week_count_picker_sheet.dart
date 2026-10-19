@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 import 'miuix_number_picker_sheet.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/schedule_date_rule.dart';
-import 'package:university_timetable/domain/schedule_date_rule_logic.dart';
+import 'package:qhkb/models/schedule_date_rule.dart';
+import 'package:qhkb/domain/schedule_date_rule_logic.dart';
 
 void main() {
   group('ScheduleDateRuleLogic', () {

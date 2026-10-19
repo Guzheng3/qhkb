@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +20,7 @@ import '../services/app_analytics.dart';
 import 'changelog_screen.dart';
 import 'open_source_licenses_screen.dart';
 import '../services/app_update_service.dart';
-import '../services/withu_app_update_service.dart';
+import '../services/qhkb_app_update_service.dart';
 import '../services/bundled_assets.dart';
 import '../widgets/about_info_sheet.dart';
 import '../widgets/third_party_disclaimer_card.dart';
@@ -455,7 +455,7 @@ class AboutUpdateScreen extends StatefulWidget {
 
 class _AboutUpdateScreenState extends State<AboutUpdateScreen> {
   final AppUpdateService _updateService = AppUpdateService();
-  final WithuAppUpdateService _withuAppUpdateService = WithuAppUpdateService();
+  final QhkbAppUpdateService _qhkbAppUpdateService = QhkbAppUpdateService();
   final AppAnalytics _analytics = AppAnalytics.instance;
   Future<AppUpdateCheckResult>? _updateFuture;
   bool _isDownloading = false;
@@ -907,7 +907,7 @@ class _AboutUpdateScreenState extends State<AboutUpdateScreen> {
     }
     _analytics.logEventLater(name: 'update_check_requested');
     setState(() {
-    _updateFuture = _withuAppUpdateService
+    _updateFuture = _qhkbAppUpdateService
         .checkForUpdates(
           currentVersion: widget.packageInfo!.version,
           respectIgnoredVersion: false,
@@ -919,7 +919,7 @@ class _AboutUpdateScreenState extends State<AboutUpdateScreen> {
                   hasRelease: false,
                   hasUpdate: false,
                   currentVersion: widget.packageInfo!.version,
-                  message: 'withu_update_check_failed',
+                  message: 'qhkb_update_check_failed',
                 ),
           );
     });
@@ -1008,8 +1008,8 @@ class _AboutUpdateScreenState extends State<AboutUpdateScreen> {
     try {
       final normalizedVersion = (version ?? '').trim().replaceAll(' ', '_');
       final fileName = normalizedVersion.isEmpty
-          ? 'mikcb_update.apk'
-          : 'mikcb_v$normalizedVersion.apk';
+          ? 'qhkb_update.apk'
+          : 'qhkb_v$normalizedVersion.apk';
       final downloadId = await _updateService.enqueueSystemDownload(
         url: url,
         fileName: fileName,
@@ -1554,7 +1554,7 @@ class _ContributorsScreenState extends State<ContributorsScreen> {
             title: l10n.aboutDevelopersTitle,
             child: HyperosControlCardInset(
               child: _ContributorRow(
-                name: 'Mutx163',
+                name: 'Guzheng3',
                 subtitle: l10n.aboutDeveloperMaintainerSubtitle,
               ),
             ),

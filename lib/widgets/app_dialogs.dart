@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 Future<bool?> showAppConfirmDialog(
   BuildContext context, {

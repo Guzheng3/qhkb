@@ -5,10 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/screens/live_settings_subpages.dart';
-import 'package:university_timetable/screens/timetable_settings_screen.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/screens/live_settings_subpages.dart';
+import 'package:qhkb/screens/timetable_settings_screen.dart';
 import '../helpers_test_app.dart';
 
 /// 岛左侧文字图标 / 展开态图标只对小米系生效：原生 `resolveIslandLabelBitmap()`

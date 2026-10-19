@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/screens/about_screen.dart';
+import 'package:qhkb/screens/about_screen.dart';
 import '../helpers_test_app.dart';
 
 void main() {

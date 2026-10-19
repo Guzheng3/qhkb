@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-class WithuCoupleConfig {
+class QhkbCoupleConfig {
   static const String prefsKey = 'withu_couple_config_v1';
-  static const String defaultBaseUrl = 'https://gzr.xjy.xn--6qq986b3xl/';
+  static const String defaultBaseUrl = 'https://qhkb.qinghan.vip/';
   static const List<String> builtInBaseUrls = [
-    'https://gzr.xjy.xn--6qq986b3xl/',
+    'https://qhkb.qinghan.vip/',
     'http://withu.qinghan.vip/',
   ];
 
@@ -22,7 +22,7 @@ class WithuCoupleConfig {
   /// 「已同步」，于是跳过拉取、甚至把本地内容覆盖到新账号的云端。
   final String? lastMyTimetableAccount;
 
-  const WithuCoupleConfig({
+  const QhkbCoupleConfig({
     this.baseUrl = defaultBaseUrl,
     this.lastPulledAt,
     this.lastRemoteContentHash,
@@ -50,11 +50,11 @@ class WithuCoupleConfig {
   Uri get apiUri {
     final value = baseUrl.trim();
     if (!value.startsWith('http://') && !value.startsWith('https://')) {
-      throw const FormatException('withu_invalid_url');
+      throw const FormatException('qhkb_invalid_url');
     }
     final uri = Uri.parse(value);
     if (uri.host.trim().isEmpty) {
-      throw const FormatException('withu_invalid_url');
+      throw const FormatException('qhkb_invalid_url');
     }
 
     var path = uri.path;
@@ -75,11 +75,11 @@ class WithuCoupleConfig {
   Uri get appUpdateApiUri {
     final value = baseUrl.trim();
     if (!value.startsWith('http://') && !value.startsWith('https://')) {
-      throw const FormatException('withu_invalid_url');
+      throw const FormatException('qhkb_invalid_url');
     }
     final uri = Uri.parse(value);
     if (uri.host.trim().isEmpty) {
-      throw const FormatException('withu_invalid_url');
+      throw const FormatException('qhkb_invalid_url');
     }
 
     var path = uri.path;
@@ -107,7 +107,7 @@ class WithuCoupleConfig {
     );
   }
 
-  WithuCoupleConfig copyWith({
+  QhkbCoupleConfig copyWith({
     String? baseUrl,
     DateTime? lastPulledAt,
     String? lastRemoteContentHash,
@@ -119,7 +119,7 @@ class WithuCoupleConfig {
     bool clearLastMyTimetableHash = false,
     bool clearLastMyTimetableSyncedAt = false,
   }) {
-    return WithuCoupleConfig(
+    return QhkbCoupleConfig(
       baseUrl: baseUrl ?? this.baseUrl,
       lastPulledAt: clearLastPulledAt
           ? null
@@ -147,8 +147,8 @@ class WithuCoupleConfig {
     'lastMyTimetableAccount': lastMyTimetableAccount,
   };
 
-  factory WithuCoupleConfig.fromJson(Map<String, dynamic> json) {
-    return WithuCoupleConfig(
+  factory QhkbCoupleConfig.fromJson(Map<String, dynamic> json) {
+    return QhkbCoupleConfig(
       baseUrl: json['baseUrl'] as String? ?? defaultBaseUrl,
       lastPulledAt: DateTime.tryParse(json['lastPulledAt'] as String? ?? ''),
       lastRemoteContentHash: json['lastRemoteContentHash'] as String?,
@@ -161,30 +161,30 @@ class WithuCoupleConfig {
   }
 }
 
-class WithuCoupleConfigStore {
-  const WithuCoupleConfigStore();
+class QhkbCoupleConfigStore {
+  const QhkbCoupleConfigStore();
 
-  Future<WithuCoupleConfig> load() async {
+  Future<QhkbCoupleConfig> load() async {
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(WithuCoupleConfig.prefsKey);
+    final raw = prefs.getString(QhkbCoupleConfig.prefsKey);
     if (raw == null || raw.isEmpty) {
-      return const WithuCoupleConfig();
+      return const QhkbCoupleConfig();
     }
     try {
       final decoded = jsonDecode(raw);
       if (decoded is! Map) {
-        return const WithuCoupleConfig();
+        return const QhkbCoupleConfig();
       }
-      return WithuCoupleConfig.fromJson(Map<String, dynamic>.from(decoded));
+      return QhkbCoupleConfig.fromJson(Map<String, dynamic>.from(decoded));
     } catch (_) {
-      return const WithuCoupleConfig();
+      return const QhkbCoupleConfig();
     }
   }
 
-  Future<void> save(WithuCoupleConfig config) async {
+  Future<void> save(QhkbCoupleConfig config) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(
-      WithuCoupleConfig.prefsKey,
+      QhkbCoupleConfig.prefsKey,
       jsonEncode(config.toJson()),
     );
   }

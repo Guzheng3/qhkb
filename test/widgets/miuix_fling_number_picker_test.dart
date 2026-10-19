@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_miuix/miuix.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/miuix_fling_number_picker.dart';
+import 'package:qhkb/widgets/miuix_fling_number_picker.dart';
 
 /// 回归：滚轮猛甩必须带惯性滚过多格（flutter_miuix 1.0.9 上游缺陷是
 /// 松手直接弹簧吸附到相邻一格，见 ChuxinNeko/flutter_miuix#2）。

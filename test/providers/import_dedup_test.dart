@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
 
 Course _course({
   required String id,

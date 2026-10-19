@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/widgets/home_menu_catalog.dart';
-import 'package:university_timetable/widgets/home_top_menu.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/widgets/home_menu_catalog.dart';
+import 'package:qhkb/widgets/home_top_menu.dart';
 
 import '../helpers_test_app.dart';
 
@@ -113,9 +113,9 @@ void main() {
   ) async {
     final anchorKey = GlobalKey();
     late Future<String?> menuResult;
-    final sessionProvider = WithuCoupleSessionProvider()
-      ..debugSetStatus(WithuCoupleLoginStatus.connected)
-      ..serverBaseUrl = 'https://withu.example.com'
+    final sessionProvider = QhkbCoupleSessionProvider()
+      ..debugSetStatus(QhkbCoupleLoginStatus.connected)
+      ..serverBaseUrl = 'https://qhkb.example.com'
       ..userAvatarPath = 'cached-me.png'
       ..partnerAvatarPath = 'cached-partner.svg';
     final entries = [
@@ -157,7 +157,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(
-      find.byKey(const ValueKey('withu_couple_login_menu_avatar')),
+      find.byKey(const ValueKey('qhkb_couple_login_menu_avatar')),
       findsOneWidget,
     );
     final avatarRowHeights = tester
@@ -172,20 +172,20 @@ void main() {
     expect(find.text('账号登录'), findsNothing);
 
     await tester.tap(
-      find.byKey(const ValueKey('withu_couple_login_menu_avatar')),
+      find.byKey(const ValueKey('qhkb_couple_login_menu_avatar')),
     );
     await tester.pumpAndSettle();
 
-    expect(await menuResult, 'withuCoupleLogin');
+    expect(await menuResult, 'qhkbCoupleLogin');
   });
 
   testWidgets('stored couple session menu row shows paired avatars', (
     tester,
   ) async {
     final anchorKey = GlobalKey();
-    final sessionProvider = WithuCoupleSessionProvider()
-      ..debugSetStatus(WithuCoupleLoginStatus.staleOffline)
-      ..serverBaseUrl = 'https://withu.example.com'
+    final sessionProvider = QhkbCoupleSessionProvider()
+      ..debugSetStatus(QhkbCoupleLoginStatus.staleOffline)
+      ..serverBaseUrl = 'https://qhkb.example.com'
       ..userAvatarPath = 'cached-me.png'
       ..partnerAvatarPath = 'cached-partner.svg';
     final entries = [
@@ -227,7 +227,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 50));
 
     expect(
-      find.byKey(const ValueKey('withu_couple_login_menu_avatar')),
+      find.byKey(const ValueKey('qhkb_couple_login_menu_avatar')),
       findsOneWidget,
     );
     expect(find.text('\u8d26\u53f7\u767b\u5f55'), findsNothing);
@@ -238,8 +238,8 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     final timetableProvider = await createInitializedTestProvider(tester);
-    final sessionProvider = WithuCoupleSessionProvider()
-      ..debugSetStatus(WithuCoupleLoginStatus.connected)
+    final sessionProvider = QhkbCoupleSessionProvider()
+      ..debugSetStatus(QhkbCoupleLoginStatus.connected)
       ..userNickname = 'Ming'
       ..partnerNickname = 'Xiao';
 
@@ -273,7 +273,7 @@ void main() {
   ) async {
     SharedPreferences.setMockInitialValues({});
     final timetableProvider = await createInitializedTestProvider(tester);
-    final sessionProvider = WithuCoupleSessionProvider();
+    final sessionProvider = QhkbCoupleSessionProvider();
 
     await tester.pumpWidget(
       TestApp(

@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 import '../providers/timetable_provider.dart';
 import '../services/app_log_service.dart';
@@ -182,7 +182,7 @@ Widget _buildWarehouseImportViewer(
     onExport: (text) async {
       final directory = await getTemporaryDirectory();
       final fileName =
-          'qingyu-warehouse-import-log-${DateTime.now().millisecondsSinceEpoch}.txt';
+          'qinghan-warehouse-import-log-${DateTime.now().millisecondsSinceEpoch}.txt';
       final file = File('${directory.path}/$fileName');
       await file.writeAsString(text, flush: true);
       await SharePlus.instance.share(

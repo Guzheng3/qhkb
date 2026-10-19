@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course_task.dart';
+import 'package:qhkb/models/course_task.dart';
 
 void main() {
   test('task round-trips dates, source, and completion state', () {

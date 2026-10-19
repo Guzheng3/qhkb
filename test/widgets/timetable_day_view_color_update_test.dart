@@ -6,14 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/screens/add_course_screen.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/widgets/course_surface.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/screens/add_course_screen.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/widgets/course_surface.dart';
 
 import '../helpers_test_app.dart';
 

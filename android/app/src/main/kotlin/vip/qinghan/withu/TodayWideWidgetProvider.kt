@@ -9,8 +9,8 @@ import android.widget.RemoteViews
  * 今日课程横宽版 4×2：左栏当前/下一节课主信息，右栏接下来两节课列表。
  * 横向大矩形形态，与竖向"概览 2×4"互为补充。
  */
-class TodayWideWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class TodayWideWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayWideWidgetProvider::class.java
 
     companion object {

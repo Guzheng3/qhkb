@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter/services.dart';
 import 'package:flutter_miuix/miuix.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 import '../logging/app_log_message_localizer.dart';
 import '../logging/diagnostics_log_parser.dart';

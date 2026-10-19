@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/utils/import_result_message.dart';
-import 'package:university_timetable/l10n/app_localizations_zh.dart';
+import 'package:qhkb/utils/import_result_message.dart';
+import 'package:qhkb/l10n/app_localizations_zh.dart';
 
 void main() {
   test('buildImportResultMessage appends warnings when no courses imported', () {

@@ -9,7 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 import '../ui/hyperos/hyperos.dart';
 

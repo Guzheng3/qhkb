@@ -12,7 +12,7 @@ class WarehouseRepositoryException implements Exception {
 /// 应用当前只读取打包进 assets 的适配资源，不发起任何网络请求；这里仅用于
 /// 拼出对外可访问的脚本地址（调试页的「复制脚本地址」）。
 class WarehouseRepositorySource {
-  static const String defaultBaseUrl = 'https://gzr.xjy.xn--6qq986b3xl';
+  static const String defaultBaseUrl = 'https://qhkb.qinghan.vip';
 
   final String baseUrl;
 

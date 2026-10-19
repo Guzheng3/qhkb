@@ -13,8 +13,8 @@
 
 Send a private report to the maintainer:
 
-- GitHub: [@Mutx163](https://github.com/Mutx163) (Security Advisories or private message)
-- Or open a [GitHub Security Advisory](https://github.com/Guzheng3/mikcb/security/advisories/new) on this repository
+- GitHub: [@Guzheng3](https://github.com/Guzheng3) (Security Advisories or private message)
+- Or open a [GitHub Security Advisory](https://github.com/Guzheng3/qhkb/security/advisories/new) on this repository
 
 Include:
 
@@ -30,6 +30,6 @@ Include:
 
 ## Out of Scope
 
-- Issues in school adapters bundled with the app — report via [Issues](https://github.com/Guzheng3/mikcb/issues)
+- Issues in school adapters bundled with the app — report via [Issues](https://github.com/Guzheng3/qhkb/issues)
 - Social engineering against end users
-- Missing features or general product feedback — use [Issues](https://github.com/Guzheng3/mikcb/issues)
+- Missing features or general product feedback — use [Issues](https://github.com/Guzheng3/qhkb/issues)

@@ -5,14 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/screens/timetable_settings_screen.dart';
-import 'package:university_timetable/services/live_testing_trigger.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/screens/timetable_settings_screen.dart';
+import 'package:qhkb/services/live_testing_trigger.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 import '../helpers_test_app.dart';
 
 Future<void> _pumpScreen(WidgetTester tester) async {

@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
-import 'package:university_timetable/services/holiday_service.dart';
+import 'package:qhkb/models/holiday_entry.dart';
+import 'package:qhkb/services/holiday_service.dart';
 
 class _FakeClient extends http.BaseClient {
   final Map<String, http.Response> responses;

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/widgets/live_island_preview.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/widgets/live_island_preview.dart';
 
 /// 实时活动摘要态胶囊预览与原生 ColorOS 分支的一致性测试。
 ///

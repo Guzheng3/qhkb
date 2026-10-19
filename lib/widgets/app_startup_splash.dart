@@ -51,7 +51,7 @@ class AppStartupSplash extends StatelessWidget {
             ),
             const SizedBox(height: 36),
             Text(
-              '轻屿课表',
+              '清涵课表',
               style: TextStyle(
                 fontSize: 30,
                 // 品牌字口径（用户明确要求）：常规字重，勿加粗。

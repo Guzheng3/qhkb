@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/statistics_export_options.dart';
+import 'package:qhkb/models/statistics_export_options.dart';
 
 void main() {
   group('StatisticsExportOptions', () {
@@ -39,11 +39,11 @@ void main() {
     test('exposes stable public brand urls', () {
       expect(
         StatisticsExportBrand.websiteUrl,
-        contains('gzr.xjy.xn--6qq986b3xl'),
+        contains('qhkb.qinghan.vip'),
       );
-      expect(StatisticsExportBrand.websiteDisplay, 'gzr.xjy.我爱你');
-      expect(StatisticsExportBrand.githubUrl, contains('Guzheng3/mikcb'));
-      expect(StatisticsExportBrand.githubDisplay, 'github.com/Guzheng3/mikcb');
+      expect(StatisticsExportBrand.websiteDisplay, 'qhkb.qinghan.vip');
+      expect(StatisticsExportBrand.githubUrl, contains('Guzheng3/qhkb'));
+      expect(StatisticsExportBrand.githubDisplay, 'github.com/Guzheng3/qhkb');
     });
   });
 }

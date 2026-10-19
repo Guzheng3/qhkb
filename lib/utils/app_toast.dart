@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 enum AppToastKind { info, success, warning, error }
 

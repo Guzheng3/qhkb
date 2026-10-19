@@ -95,7 +95,7 @@ enum TransferEntityKind {
 /// Lists are intentionally kept typed at the boundary. A transport adapter
 /// should never decode individual model maps on its own.
 class TransferPackage {
-  static const String appId = 'mikcb';
+  static const String appId = 'qhkb';
   static const String packageType = 'transfer';
   static const int schemaVersion = 1;
 

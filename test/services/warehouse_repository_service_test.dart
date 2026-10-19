@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/models/warehouse_repository_models.dart';
-import 'package:university_timetable/services/warehouse_repository_service.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/models/warehouse_repository_models.dart';
+import 'package:qhkb/services/warehouse_repository_service.dart';
 
 /// 远程适配仓已移除：本文件只验证「一切来自打包 assets」，
 /// 不再构造任何 HTTP 客户端 —— 服务本身已无网络依赖。

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/utils/course_color_palette.dart';
-import 'package:university_timetable/utils/hex_color.dart';
+import 'package:qhkb/utils/course_color_palette.dart';
+import 'package:qhkb/utils/hex_color.dart';
 
 void main() {
   group('kPresetCourseColorHexes', () {

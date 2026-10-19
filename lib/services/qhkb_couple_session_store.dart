@@ -1,12 +1,12 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class WithuCoupleSession {
+class QhkbCoupleSession {
   final String username;
   final String sessionId;
   final String? deviceToken;
   final String csrfToken;
 
-  const WithuCoupleSession({
+  const QhkbCoupleSession({
     required this.username,
     required this.sessionId,
     required this.csrfToken,
@@ -27,13 +27,13 @@ class WithuCoupleSession {
     return parts.join('; ');
   }
 
-  WithuCoupleSession copyWith({
+  QhkbCoupleSession copyWith({
     String? username,
     String? sessionId,
     String? deviceToken,
     String? csrfToken,
   }) {
-    return WithuCoupleSession(
+    return QhkbCoupleSession(
       username: username ?? this.username,
       sessionId: sessionId ?? this.sessionId,
       deviceToken: deviceToken ?? this.deviceToken,
@@ -43,7 +43,7 @@ class WithuCoupleSession {
 
   @override
   bool operator ==(Object other) =>
-      other is WithuCoupleSession &&
+      other is QhkbCoupleSession &&
       other.username == username &&
       other.sessionId == sessionId &&
       other.deviceToken == deviceToken &&
@@ -53,7 +53,7 @@ class WithuCoupleSession {
   int get hashCode => Object.hash(username, sessionId, deviceToken, csrfToken);
 }
 
-class WithuCoupleDisplayProfile {
+class QhkbCoupleDisplayProfile {
   /// 服务端把性别编码进角色槽位（男=user1，女=user2），登录与 bootstrap
   /// 载荷里都带 role，因此客户端不必新增接口即可判定双方性别。
   static const String genderMale = 'male';
@@ -80,7 +80,7 @@ class WithuCoupleDisplayProfile {
   final String userGender;
   final String partnerGender;
 
-  const WithuCoupleDisplayProfile({
+  const QhkbCoupleDisplayProfile({
     required this.userNickname,
     required this.partnerNickname,
     this.userAvatar,
@@ -90,8 +90,8 @@ class WithuCoupleDisplayProfile {
   });
 }
 
-abstract class WithuCoupleSecureStorage {
-  const WithuCoupleSecureStorage();
+abstract class QhkbCoupleSecureStorage {
+  const QhkbCoupleSecureStorage();
 
   Future<String?> read({required String key});
 
@@ -100,8 +100,8 @@ abstract class WithuCoupleSecureStorage {
   Future<void> delete({required String key});
 }
 
-class FlutterWithuCoupleSecureStorage extends WithuCoupleSecureStorage {
-  const FlutterWithuCoupleSecureStorage({FlutterSecureStorage? storage})
+class FlutterQhkbCoupleSecureStorage extends QhkbCoupleSecureStorage {
+  const FlutterQhkbCoupleSecureStorage({FlutterSecureStorage? storage})
     : _storage = storage ?? _defaultStorage;
 
   static const FlutterSecureStorage _defaultStorage = FlutterSecureStorage();
@@ -119,7 +119,7 @@ class FlutterWithuCoupleSecureStorage extends WithuCoupleSecureStorage {
   Future<void> delete({required String key}) => _storage.delete(key: key);
 }
 
-class WithuCoupleSessionStore {
+class QhkbCoupleSessionStore {
   static const String _usernameKey = 'withu_couple_username';
   static const String _sessionIdKey = 'withu_couple_phpsessid';
   static const String _deviceTokenKey = 'withu_couple_device';
@@ -136,10 +136,10 @@ class WithuCoupleSessionStore {
   /// 密码在客户端从未被读取；读取会话时顺手清掉历史遗留值。
   static const String _legacyPasswordKey = 'withu_couple_password';
 
-  const WithuCoupleSessionStore({WithuCoupleSecureStorage? storage})
-    : _storage = storage ?? const FlutterWithuCoupleSecureStorage();
+  const QhkbCoupleSessionStore({QhkbCoupleSecureStorage? storage})
+    : _storage = storage ?? const FlutterQhkbCoupleSecureStorage();
 
-  final WithuCoupleSecureStorage _storage;
+  final QhkbCoupleSecureStorage _storage;
 
   /// 凭证写入代次：每次 [save] / [clear] 开始前同步自增。
   ///
@@ -149,7 +149,7 @@ class WithuCoupleSessionStore {
   /// 之后所有读写都会永久阻塞（widget 测试里立刻就会死锁）。
   static int _writeEpoch = 0;
 
-  Future<WithuCoupleSession?> load() async {
+  Future<QhkbCoupleSession?> load() async {
     final username = await _storage.read(key: _usernameKey);
     final sessionId = await _storage.read(key: _sessionIdKey);
     final deviceToken = await _storage.read(key: _deviceTokenKey);
@@ -158,7 +158,7 @@ class WithuCoupleSessionStore {
     if (username == null || sessionId == null || csrfToken == null) {
       return null;
     }
-    return WithuCoupleSession(
+    return QhkbCoupleSession(
       username: username,
       sessionId: sessionId,
       deviceToken: deviceToken,
@@ -166,7 +166,7 @@ class WithuCoupleSessionStore {
     );
   }
 
-  Future<void> save(WithuCoupleSession session) async {
+  Future<void> save(QhkbCoupleSession session) async {
     _writeEpoch++;
     await _storage.write(key: _usernameKey, value: session.username);
     await _storage.write(key: _sessionIdKey, value: session.sessionId);
@@ -178,7 +178,7 @@ class WithuCoupleSessionStore {
     }
   }
 
-  Future<WithuCoupleDisplayProfile?> loadDisplayProfile() async {
+  Future<QhkbCoupleDisplayProfile?> loadDisplayProfile() async {
     final userNickname = await _storage.read(key: _userNicknameKey);
     final partnerNickname = await _storage.read(key: _partnerNicknameKey);
     final userAvatar = (await _storage.read(key: _userAvatarKey))?.trim();
@@ -191,7 +191,7 @@ class WithuCoupleSessionStore {
         partnerNickname.trim().isEmpty) {
       return null;
     }
-    return WithuCoupleDisplayProfile(
+    return QhkbCoupleDisplayProfile(
       userNickname: userNickname.trim(),
       partnerNickname: partnerNickname.trim(),
       userAvatar: userAvatar?.isEmpty ?? true ? null : userAvatar,
@@ -201,7 +201,7 @@ class WithuCoupleSessionStore {
     );
   }
 
-  Future<void> saveDisplayProfile(WithuCoupleDisplayProfile profile) async {
+  Future<void> saveDisplayProfile(QhkbCoupleDisplayProfile profile) async {
     final userNickname = profile.userNickname.trim();
     final partnerNickname = profile.partnerNickname.trim();
     if (userNickname.isEmpty || partnerNickname.isEmpty) {
@@ -227,10 +227,10 @@ class WithuCoupleSessionStore {
 
   static String _normalizeGender(String? value) {
     return switch (value?.trim().toLowerCase()) {
-      WithuCoupleDisplayProfile.genderMale =>
-        WithuCoupleDisplayProfile.genderMale,
-      WithuCoupleDisplayProfile.genderFemale =>
-        WithuCoupleDisplayProfile.genderFemale,
+      QhkbCoupleDisplayProfile.genderMale =>
+        QhkbCoupleDisplayProfile.genderMale,
+      QhkbCoupleDisplayProfile.genderFemale =>
+        QhkbCoupleDisplayProfile.genderFemale,
       _ => '',
     };
   }
@@ -272,7 +272,7 @@ class WithuCoupleSessionStore {
   /// 写入新凭证）。这样「新登录刚落盘就被旧会话的 401 删掉」不会发生；极端情况下
   /// 仍可能与一次写入交错（表现为半份凭证，需要重新登录），这里不做串行化是因为
   /// 跨 zone 的 Future 队列一旦卡住会让之后所有读写永久阻塞。
-  Future<void> clearIfSession(WithuCoupleSession session) async {
+  Future<void> clearIfSession(QhkbCoupleSession session) async {
     final epoch = _writeEpoch;
     final current = await load();
     if (current != null && current != session) {

@@ -339,7 +339,7 @@ class AppLogService {
     );
     final exportDir = await getTemporaryDirectory();
     final file = File(
-      '${exportDir.path}/mikcb-app-logs-${DateTime.now().millisecondsSinceEpoch}.log',
+      '${exportDir.path}/qhkb-app-logs-${DateTime.now().millisecondsSinceEpoch}.log',
     );
     await file.writeAsString(text, flush: true);
     return file.path;

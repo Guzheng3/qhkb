@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 /// Returns disclaimer body copy without the localized title prefix.
 @visibleForTesting

@@ -9,13 +9,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Qingyu Timetable';
+  String get appTitle => 'Qinghan Timetable';
 
   @override
-  String get appTitleDebug => 'Qingyu Timetable Debug';
+  String get appTitleDebug => 'Qinghan Timetable Debug';
 
   @override
-  String get appTitleProfile => 'Qingyu Timetable Profile';
+  String get appTitleProfile => 'Qinghan Timetable Profile';
 
   @override
   String get appearanceTitle => 'Appearance';
@@ -286,10 +286,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get coupleTimetableShareText =>
-      'Here is my timetable. Import it in Qingyu Timetable > Couple Timetable to view together.';
+      'Here is my timetable. Import it in Qinghan Timetable > Couple Timetable to view together.';
 
   @override
-  String get coupleTimetableShareSubject => 'Qingyu Timetable · Couple share';
+  String get coupleTimetableShareSubject => 'Qinghan Timetable · Couple share';
 
   @override
   String get coupleTimetableWeekOffsetTitle => 'Week offset';
@@ -316,69 +316,69 @@ class AppLocalizationsEn extends AppLocalizations {
       'Please import a single-profile backup, not a full backup';
 
   @override
-  String get withuCoupleTitle => 'withU sync';
+  String get qhkbCoupleTitle => 'withU sync';
 
   @override
-  String get withuCoupleNotConnected => 'Not connected to withU';
+  String get qhkbCoupleNotConnected => 'Not connected to withU';
 
   @override
-  String withuCoupleConnectedAs(String username) {
+  String qhkbCoupleConnectedAs(String username) {
     return 'Connected as $username';
   }
 
   @override
-  String withuCoupleServerHint(String url) {
+  String qhkbCoupleServerHint(String url) {
     return 'Server: $url';
   }
 
   @override
-  String withuCoupleLastPulledAt(String time) {
+  String qhkbCoupleLastPulledAt(String time) {
     return 'Last pulled: $time';
   }
 
   @override
-  String get withuCoupleConnect => 'Connect withU';
+  String get qhkbCoupleConnect => 'Connect withU';
 
   @override
-  String get withuCoupleDisconnect => 'Log out';
+  String get qhkbCoupleDisconnect => 'Log out';
 
   @override
-  String get withuCoupleLogoutUnconfirmed =>
+  String get qhkbCoupleLogoutUnconfirmed =>
       'Signed out on this device, but the server could not be reached. The server-side session may still be active.';
 
   @override
-  String get withuCouplePullNow => 'Pull partner timetable';
+  String get qhkbCouplePullNow => 'Pull partner timetable';
 
   @override
-  String get withuCoupleCenterTitle => '情侣中心';
+  String get qhkbCoupleCenterTitle => '情侣中心';
 
   @override
-  String get withuCoupleSettings => '情侣课表设置';
+  String get qhkbCoupleSettings => '情侣课表设置';
 
   @override
-  String get withuCoupleSyncNow => '立即同步课表';
+  String get qhkbCoupleSyncNow => '立即同步课表';
 
   @override
-  String get withuCouplePartnerImported => '对方课表已导入';
+  String get qhkbCouplePartnerImported => '对方课表已导入';
 
   @override
-  String get withuCouplePartnerNotImported => '尚未导入对方课表';
+  String get qhkbCouplePartnerNotImported => '尚未导入对方课表';
 
   @override
-  String get withuCoupleUploadForPartner => 'Upload my timetable';
+  String get qhkbCoupleUploadForPartner => 'Upload my timetable';
 
   @override
-  String get withuCoupleLoginSheetTitle => 'Connect withU (couple timetable)';
+  String get qhkbCoupleLoginSheetTitle => 'Connect withU (couple timetable)';
 
   @override
-  String get withuCoupleLoginSheetSubtitle =>
+  String get qhkbCoupleLoginSheetSubtitle =>
       'Sign in with your withU couple account to pull your partner\'s timetable';
 
   @override
-  String get withuCoupleConfirmConnect => 'Connect and pull';
+  String get qhkbCoupleConfirmConnect => 'Connect and pull';
 
   @override
-  String get withuCoupleServerLabel => 'withU server';
+  String get qhkbCoupleServerLabel => 'withU server';
 
   @override
   String get coupleTimetableSwitchSubtitle =>
@@ -410,23 +410,23 @@ class AppLocalizationsEn extends AppLocalizations {
       'Desktop cards are coming later; this section is reserved';
 
   @override
-  String get withuCoupleLoginPageTitle => 'Sign in to withU';
+  String get qhkbCoupleLoginPageTitle => 'Sign in to withU';
 
   @override
-  String get withuCoupleLoginPageSubtitle =>
+  String get qhkbCoupleLoginPageSubtitle =>
       'Use your withU couple account, then pull your partner\'s timetable automatically';
 
   @override
-  String get withuCoupleLoginAction => 'Sign in and pull';
+  String get qhkbCoupleLoginAction => 'Sign in and pull';
 
   @override
-  String get withuCoupleLoginMenuTitle => 'Account login';
+  String get qhkbCoupleLoginMenuTitle => 'Account login';
 
   @override
-  String get withuCoupleNotLoggedInPrompt => 'Not signed in · Tap to sign in';
+  String get qhkbCoupleNotLoggedInPrompt => 'Not signed in · Tap to sign in';
 
   @override
-  String get withuLoginConfirm => 'Log in';
+  String get qhkbLoginConfirm => 'Log in';
 
   @override
   String get coupleHistorySheetTitle => 'Timetable history';
@@ -452,57 +452,57 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get withuCouplePullImported => 'Partner timetable imported from withU';
+  String get qhkbCouplePullImported => 'Partner timetable imported from withU';
 
   @override
-  String get withuCouplePullUpdated => 'Partner timetable updated from withU';
+  String get qhkbCouplePullUpdated => 'Partner timetable updated from withU';
 
   @override
-  String get withuCouplePullUnchanged => 'Partner timetable is up to date';
+  String get qhkbCouplePullUnchanged => 'Partner timetable is up to date';
 
   @override
-  String get withuCoupleUploadSuccess =>
+  String get qhkbCoupleUploadSuccess =>
       'Timetable uploaded for your partner to pull';
 
   @override
-  String get withuCoupleMissingCredentials =>
+  String get qhkbCoupleMissingCredentials =>
       'Enter the withU server, username, and password';
 
   @override
-  String get withuCoupleUsernameLabel => 'withU username';
+  String get qhkbCoupleUsernameLabel => 'withU username';
 
   @override
-  String get withuCoupleUsernameHint => 'Enter your withU username';
+  String get qhkbCoupleUsernameHint => 'Enter your withU username';
 
   @override
-  String get withuCouplePasswordLabel => 'withU password';
+  String get qhkbCouplePasswordLabel => 'withU password';
 
   @override
-  String get withuCouplePasswordHint => 'Enter your withU password';
+  String get qhkbCouplePasswordHint => 'Enter your withU password';
 
   @override
-  String get withuCoupleNotConnectedError => 'Connect withU first';
+  String get qhkbCoupleNotConnectedError => 'Connect withU first';
 
   @override
-  String get withuCoupleAuthFailed => 'Incorrect withU username or password';
+  String get qhkbCoupleAuthFailed => 'Incorrect withU username or password';
 
   @override
-  String get withuCoupleSessionExpired =>
+  String get qhkbCoupleSessionExpired =>
       'withU session expired. Sign in again.';
 
   @override
-  String get withuCoupleAccountRequired => 'A withU couple account is required';
+  String get qhkbCoupleAccountRequired => 'A withU couple account is required';
 
   @override
-  String get withuCouplePartnerTimetableMissing =>
+  String get qhkbCouplePartnerTimetableMissing =>
       'Partner timetable not found. Ask them to upload first.';
 
   @override
-  String get withuCoupleRequestFailed =>
+  String get qhkbCoupleRequestFailed =>
       'withU request failed. Try again later.';
 
   @override
-  String get withuCoupleSessionCookieMissing =>
+  String get qhkbCoupleSessionCookieMissing =>
       'withU did not return a login session';
 
   @override
@@ -652,7 +652,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spreadsheetScenarioIntro =>
-      'The mikcb template maps columns by header: required fields are course name, weekday, sections, and weeks; others are optional. Download the full template or keep only required columns. WakeUp 7-column layout is also supported';
+      'The qhkb template maps columns by header: required fields are course name, weekday, sections, and weeks; others are optional. Download the full template or keep only required columns. WakeUp 7-column layout is also supported';
 
   @override
   String get spreadsheetStep1Subtitle =>
@@ -674,7 +674,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseSpreadsheetFileAction => 'Choose spreadsheet file';
 
   @override
-  String get downloadSpreadsheetTemplateAction => 'Download mikcb template';
+  String get downloadSpreadsheetTemplateAction => 'Download qhkb template';
 
   @override
   String get spreadsheetImportWarningsTitle => 'Import warnings';
@@ -688,7 +688,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get spreadsheetFormatUnrecognized =>
-      'Unrecognized format. Please use the mikcb template; WakeUp-like column layouts are also supported.';
+      'Unrecognized format. Please use the qhkb template; WakeUp-like column layouts are also supported.';
 
   @override
   String get icsImportTitle => '.ics Calendar Import';
@@ -731,7 +731,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chooseIcsFileAction => 'Choose .ics File';
 
   @override
-  String get timetableAppName => 'Qingyu Timetable';
+  String get timetableAppName => 'Qinghan Timetable';
 
   @override
   String get switchProfileHint => 'Tap to switch timetable';
@@ -1077,14 +1077,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      'Return to the new version, choose the .mikcb backup file from Download, and restore it. Only uninstall the old app after confirming everything works here';
+      'Return to the new version, choose the .qhkb backup file from Download, and restore it. Only uninstall the old app after confirming everything works here';
 
   @override
   String get migrationNoSaveToFilesTitle => 'If “Save to Files” is unavailable';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      'You can first share the backup to any WeChat chat, then open the file in WeChat and save it. It usually ends up in Download or the WeiXin folder. Then return here and import that .mikcb file';
+      'You can first share the backup to any WeChat chat, then open the file in WeChat and save it. It usually ends up in Download or the WeiXin folder. Then return here and import that .qhkb file';
 
   @override
   String get openingOldApp => 'Opening old app...';
@@ -1427,7 +1427,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      'If you know packet capture, web debugging, or JavaScript, you are welcome to contribute adapters in qingyu_warehouse.';
+      'If you know packet capture, web debugging, or JavaScript, you are welcome to contribute adapters in qinghan_warehouse.';
 
   @override
   String get aboutContributorsTitle => 'Contributors';
@@ -1451,7 +1451,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutOpenSourceLicensesAppLicenseLabel =>
-      'Qingyu Timetable source code is released under GPL-3.0-or-later.';
+      'Qinghan Timetable source code is released under GPL-3.0-or-later.';
 
   @override
   String get aboutOpenSourceLicensesIntro =>
@@ -1488,10 +1488,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appLogsShareText =>
-      'These are the app logs exported from Qingyu Timetable. They include local runtime records across the whole app for troubleshooting updates, imports, notifications, screens, and crashes.';
+      'These are the app logs exported from Qinghan Timetable. They include local runtime records across the whole app for troubleshooting updates, imports, notifications, screens, and crashes.';
 
   @override
-  String get appLogsShareSubject => 'Qingyu Timetable - App logs';
+  String get appLogsShareSubject => 'Qinghan Timetable - App logs';
 
   @override
   String get appLogsRecordingEnabled => 'App log recording is on';
@@ -2044,7 +2044,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'When enabled, the app will try not to appear in the recent tasks list';
 
   @override
-  String get keepAliveServiceTitle => 'Qingyu Timetable Keep-alive Service';
+  String get keepAliveServiceTitle => 'Qinghan Timetable Keep-alive Service';
 
   @override
   String get keepAliveServiceEnabledSubtitle =>
@@ -2052,7 +2052,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get keepAliveServiceDisabledSubtitle =>
-      'Currently disabled. You can open system accessibility settings and enable the Qingyu Timetable keep-alive service manually';
+      'Currently disabled. You can open system accessibility settings and enable the Qinghan Timetable keep-alive service manually';
 
   @override
   String get goEnableAction => 'Enable Now';
@@ -2744,19 +2744,19 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get liveDiagnosticsShareText =>
-      'These are the Super Island related logs exported from Qingyu Timetable. They can help investigate issues such as the Island not appearing.';
+      'These are the Super Island related logs exported from Qinghan Timetable. They can help investigate issues such as the Island not appearing.';
 
   @override
   String get liveDiagnosticsShareSubject =>
-      'Qingyu Timetable - Super Island logs';
+      'Qinghan Timetable - Super Island logs';
 
   @override
   String get liveDiagnosticsSnapshotShareText =>
-      'This is the Island status snapshot exported from the current test diagnostics page in Qingyu Timetable. It can help investigate issues such as the Island not appearing.';
+      'This is the Island status snapshot exported from the current test diagnostics page in Qinghan Timetable. It can help investigate issues such as the Island not appearing.';
 
   @override
   String get liveDiagnosticsSnapshotShareSubject =>
-      'Qingyu Timetable - Island status snapshot';
+      'Qinghan Timetable - Island status snapshot';
 
   @override
   String get liveDiagnosticsNothingToExport =>
@@ -3007,7 +3007,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeWidgetPinUnsupported =>
-      'If the current launcher does not support in-app widget pinning, long-press the home screen → Widgets → Qingyu Timetable to add it manually.';
+      'If the current launcher does not support in-app widget pinning, long-press the home screen → Widgets → Qinghan Timetable to add it manually.';
 
   @override
   String get homeWidgetBackgroundStyleLabel => 'Background style';
@@ -3098,7 +3098,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String homeWidgetPinUnsupportedManual(String label) {
-    return 'Your current launcher does not support in-app widget pinning. Long-press the home screen → Widgets → Qingyu Timetable, then add \"$label\" manually.';
+    return 'Your current launcher does not support in-app widget pinning. Long-press the home screen → Widgets → Qinghan Timetable, then add \"$label\" manually.';
   }
 
   @override
@@ -3107,7 +3107,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String homeWidgetPinFailedManual(String label) {
-    return 'Failed to request widget pinning. Long-press the home screen → Widgets → Qingyu Timetable, then add \"$label\" manually.';
+    return 'Failed to request widget pinning. Long-press the home screen → Widgets → Qinghan Timetable, then add \"$label\" manually.';
   }
 
   @override
@@ -3651,7 +3651,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'The installation package is ready and the installer page has been opened. If no system prompt appears, install it later from notifications or your file manager.';
 
   @override
-  String get aboutUpdatePackageTitle => 'Qingyu Timetable update package';
+  String get aboutUpdatePackageTitle => 'Qinghan Timetable update package';
 
   @override
   String get aboutUpdatePackageDescription =>
@@ -3699,7 +3699,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutDeveloperMaintainerSubtitle =>
-      'Qingyu Timetable development and maintenance';
+      'Qinghan Timetable development and maintenance';
 
   @override
   String get aboutWarehouseMaintainersTitle =>
@@ -3707,7 +3707,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      'The names below are summarized from the maintainer field in the qingyu_warehouse adapter repository. If cached data already exists locally, the cache is shown first and then refreshed in the background';
+      'The names below are summarized from the maintainer field in the qinghan_warehouse adapter repository. If cached data already exists locally, the cache is shown first and then refreshed in the background';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -3954,11 +3954,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get warehouseImportExecutionLogShareText =>
-      'This is the academic-system import execution log exported from Qingyu Timetable. It includes script injection, bridge messages, timeouts, and import results for troubleshooting.';
+      'This is the academic-system import execution log exported from Qinghan Timetable. It includes script injection, bridge messages, timeouts, and import results for troubleshooting.';
 
   @override
   String get warehouseImportExecutionLogShareSubject =>
-      'Qingyu Timetable - Import execution log';
+      'Qinghan Timetable - Import execution log';
 
   @override
   String get warehouseImportExecutionLogEmpty =>
@@ -6385,15 +6385,15 @@ class AppLocalizationsEn extends AppLocalizations {
       'No recoverable timetables were found in the backup file.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbDataFile =>
-      'Not a recognizable mikcb data file.';
+  String get serviceMsgUnrecognizedQhkbDataFile =>
+      'Not a recognizable qhkb data file.';
 
   @override
   String get serviceMsgMissingSettingsData => 'Settings data is missing.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbFullBackup =>
-      'Not a recognizable mikcb full backup file.';
+  String get serviceMsgUnrecognizedQhkbFullBackup =>
+      'Not a recognizable qhkb full backup file.';
 
   @override
   String get serviceMsgMissingFullBackupData =>
@@ -6795,11 +6795,11 @@ class AppLocalizationsEn extends AppLocalizations {
       'This is a full backup of the current timetable. Import it to restore courses and settings.';
 
   @override
-  String get serviceMsgShareBackupSubject => 'Qingyu Timetable backup';
+  String get serviceMsgShareBackupSubject => 'Qinghan Timetable backup';
 
   @override
   String serviceMsgShareBackupSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
@@ -6808,7 +6808,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serviceMsgShareFullBackupSubject =>
-      'Qingyu Timetable - full data backup';
+      'Qinghan Timetable - full data backup';
 
   @override
   String get serviceMsgInvalidRepositoryUrl =>
@@ -6846,7 +6846,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qingyu_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
@@ -6974,23 +6974,23 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dataTransferProfileShareText =>
-      'This is a full backup of the current timetable from Qingyu Timetable. Import it to restore courses and settings.';
+      'This is a full backup of the current timetable from Qinghan Timetable. Import it to restore courses and settings.';
 
   @override
-  String get dataTransferProfileShareSubject => 'Qingyu Timetable backup';
+  String get dataTransferProfileShareSubject => 'Qinghan Timetable backup';
 
   @override
   String dataTransferProfileShareSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
   String get dataTransferFullBackupShareText =>
-      'This is a full data backup from Qingyu Timetable, including all timetables, the active timetable, and time schemes.';
+      'This is a full data backup from Qinghan Timetable, including all timetables, the active timetable, and time schemes.';
 
   @override
   String get dataTransferFullBackupShareSubject =>
-      'Qingyu Timetable - Full data backup';
+      'Qinghan Timetable - Full data backup';
 
   @override
   String courseWeekCustomDescription(String weeks) {
@@ -7235,7 +7235,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hyperosShowcaseSectionSummary => 'Summary card';
 
   @override
-  String get hyperosShowcaseKitSubtitle => 'mikcb HyperOS-style components';
+  String get hyperosShowcaseKitSubtitle => 'qhkb HyperOS-style components';
 
   @override
   String get hyperosShowcaseSectionTags => 'Tags / Accordion / Hints';
@@ -8257,7 +8257,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logCatDebugSnapshot => 'debug snapshot';
 
   @override
-  String get logExportTitle => 'Qingyu Timetable - App logs';
+  String get logExportTitle => 'Qinghan Timetable - App logs';
 
   @override
   String get appUpdateMirrorPresetGhfast => 'Default mirror';
@@ -8282,7 +8282,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enter a custom mirror URL prefix';
 
   @override
-  String get statisticsShareText => 'Semester statistics from mikcb';
+  String get statisticsShareText => 'Semester statistics from qhkb';
 
   @override
   String get aboutUpdateAvailableHeadline => 'Update available';
@@ -9093,10 +9093,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get icsExportShareText => 'Calendar file from Qingyu Timetable';
+  String get icsExportShareText => 'Calendar file from Qinghan Timetable';
 
   @override
-  String get icsExportShareSubject => 'Qingyu Timetable calendar';
+  String get icsExportShareSubject => 'Qinghan Timetable calendar';
 
   @override
   String get homeNavigationTitle => 'Home & Navigation';

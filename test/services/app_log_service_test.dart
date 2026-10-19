@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/services/app_log_service.dart';
+import 'package:qhkb/services/app_log_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ void main() {
 
   test('watchMergedLogsText emits on appends and stays quiet while idle', () async {
     // path_provider 指到临时目录，写入走真实文件（plugin_boundary_smoke_test 同款做法）。
-    final tempDir = await Directory.systemTemp.createTemp('mikcb-log-watch-');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb-log-watch-');
     addTearDown(() => tempDir.delete(recursive: true));
     const pathProviderChannel = MethodChannel(
       'plugins.flutter.io/path_provider',

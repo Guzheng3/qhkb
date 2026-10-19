@@ -9,8 +9,8 @@ import android.widget.RemoteViews
  * 今日课程横向长条 4×1：单行展示 [状态徽章 | 课程名 | 时间/倒计时 | 周数]。
  * 渲染规范与 Today 系列同源：背景全家桶、状态 chip、尺寸画像自适应。
  */
-class TodayStripWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayStripWidgetProvider::class.java
 
     companion object {

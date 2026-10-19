@@ -8,10 +8,10 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 import 'app_http_client.dart';
-import 'withu_couple_config.dart';
+import 'qhkb_couple_config.dart';
 
-class WithuCoupleAvatarCacheResult {
-  const WithuCoupleAvatarCacheResult({
+class QhkbCoupleAvatarCacheResult {
+  const QhkbCoupleAvatarCacheResult({
     required this.path,
     required this.changed,
   });
@@ -22,8 +22,8 @@ class WithuCoupleAvatarCacheResult {
 
 /// Keeps withU avatars on disk so menus can render the previous image before
 /// the next background check completes.
-class WithuCoupleAvatarCache {
-  WithuCoupleAvatarCache({
+class QhkbCoupleAvatarCache {
+  QhkbCoupleAvatarCache({
     http.Client? client,
     Future<Directory> Function()? directoryFactory,
   }) : _client = client ?? createAppHttpClient(),
@@ -37,14 +37,14 @@ class WithuCoupleAvatarCache {
   final http.Client _client;
   final Future<Directory> Function() _directoryFactory;
   final Map<String, String> _cachedPaths = {};
-  final Map<String, Future<WithuCoupleAvatarCacheResult?>> _pending = {};
+  final Map<String, Future<QhkbCoupleAvatarCacheResult?>> _pending = {};
   late final bool _ownsClient;
   Directory? _directory;
 
   static Uri resolveUri(String baseUrl, String? source) {
     final base =
         Uri.tryParse(baseUrl.trim()) ??
-        Uri.parse(WithuCoupleConfig.defaultBaseUrl);
+        Uri.parse(QhkbCoupleConfig.defaultBaseUrl);
     final avatar = (source ?? '').trim();
     if (avatar.isEmpty) {
       return base.resolve('/assets/images/default-avatar.svg');
@@ -69,9 +69,9 @@ class WithuCoupleAvatarCache {
     return _existingPath(uri, key);
   }
 
-  Future<WithuCoupleAvatarCacheResult?> refresh(Uri? uri) {
+  Future<QhkbCoupleAvatarCacheResult?> refresh(Uri? uri) {
     if (uri == null) {
-      return Future<WithuCoupleAvatarCacheResult?>.value();
+      return Future<QhkbCoupleAvatarCacheResult?>.value();
     }
 
     final key = _keyFor(uri);
@@ -87,7 +87,7 @@ class WithuCoupleAvatarCache {
     return future;
   }
 
-  Future<WithuCoupleAvatarCacheResult?> _refresh(Uri uri, String key) async {
+  Future<QhkbCoupleAvatarCacheResult?> _refresh(Uri uri, String key) async {
     try {
       return await _fetch(uri, key);
     } catch (_) {
@@ -98,11 +98,11 @@ class WithuCoupleAvatarCache {
       } catch (_) {
         path = null;
       }
-      return WithuCoupleAvatarCacheResult(path: path, changed: false);
+      return QhkbCoupleAvatarCacheResult(path: path, changed: false);
     }
   }
 
-  Future<WithuCoupleAvatarCacheResult?> _fetch(Uri uri, String key) async {
+  Future<QhkbCoupleAvatarCacheResult?> _fetch(Uri uri, String key) async {
     final directory = await _ensureDirectory();
     final file = File('${directory.path}/$key');
     final existingBytes = await _readBytes(file);
@@ -122,12 +122,12 @@ class WithuCoupleAvatarCache {
     final streamedResponse = await _client.send(request);
     final response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode == 304 && existingBytes != null) {
-      return WithuCoupleAvatarCacheResult(path: file.path, changed: false);
+      return QhkbCoupleAvatarCacheResult(path: file.path, changed: false);
     }
     if (response.statusCode != 200 ||
         response.bodyBytes.isEmpty ||
         response.bodyBytes.length > _maxAvatarBytes) {
-      return WithuCoupleAvatarCacheResult(
+      return QhkbCoupleAvatarCacheResult(
         path: existingBytes == null ? null : file.path,
         changed: false,
       );
@@ -138,7 +138,7 @@ class WithuCoupleAvatarCache {
         !_bytesEqual(existingBytes, response.bodyBytes);
     if (!hasChanged) {
       await _writeValidators(key, response);
-      return WithuCoupleAvatarCacheResult(path: file.path, changed: false);
+      return QhkbCoupleAvatarCacheResult(path: file.path, changed: false);
     }
 
     final tempFile = File('${file.path}.tmp');
@@ -147,7 +147,7 @@ class WithuCoupleAvatarCache {
     await _writeValidators(key, response);
     PaintingBinding.instance.imageCache.evict(FileImage(file));
     _cachedPaths[key] = file.path;
-    return WithuCoupleAvatarCacheResult(path: file.path, changed: true);
+    return QhkbCoupleAvatarCacheResult(path: file.path, changed: true);
   }
 
   Future<Directory> _ensureDirectory() async {

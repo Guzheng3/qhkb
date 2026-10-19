@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/services/warehouse_import_preferences_service.dart';
+import 'package:qhkb/services/warehouse_import_preferences_service.dart';
 
 class _MemoryWarehouseSecureStorage extends WarehouseSecureStorage {
   final Map<String, String> _values = <String, String>{};

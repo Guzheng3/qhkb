@@ -1,4 +1,4 @@
-/// mikcb HyperOS / MIUI-style UI kit.
+/// qhkb HyperOS / MIUI-style UI kit.
 library;
 
 export 'hyperos_accordion.dart';

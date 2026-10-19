@@ -5,13 +5,13 @@ import 'package:crypto/crypto.dart';
 
 import '../providers/timetable_provider.dart';
 import 'app_log_service.dart';
-import 'withu_couple_timetable_service.dart';
+import 'qhkb_couple_timetable_service.dart';
 
-class WithuCoupleAutoSyncService {
+class QhkbCoupleAutoSyncService {
   // Named parameter keeps the public API (`timetableService:`); a private
   // initializing formal would rename it, so the assignment stays explicit.
-  WithuCoupleAutoSyncService({
-    required WithuCoupleTimetableService timetableService,
+  QhkbCoupleAutoSyncService({
+    required QhkbCoupleTimetableService timetableService,
     this.debounceDelay = const Duration(seconds: 3),
     this.maxDebounceDelay = const Duration(seconds: 15),
     this.pullOnBind = true,
@@ -19,7 +19,7 @@ class WithuCoupleAutoSyncService {
     // ignore: prefer_initializing_formals
   }) : _timetableService = timetableService;
 
-  final WithuCoupleTimetableService _timetableService;
+  final QhkbCoupleTimetableService _timetableService;
   final Duration debounceDelay;
 
   /// 连续编辑的上传上限：从第一次改动算起超过这个时长就立即上传。
@@ -122,7 +122,7 @@ class WithuCoupleAutoSyncService {
           _clearUploadDirty();
         } else {
           // 保持 dirty：下一个周期 tick / 冷启动补传会重试。
-          _logSyncError('withu_auto_timetable_upload_failed', error);
+          _logSyncError('qhkb_auto_timetable_upload_failed', error);
         }
       }
 
@@ -133,7 +133,7 @@ class WithuCoupleAutoSyncService {
         if (error == null) {
           _lastSettingsHash = settingsHash;
         } else {
-          _logSyncError('withu_auto_settings_upload_failed', error);
+          _logSyncError('qhkb_auto_settings_upload_failed', error);
         }
       }
     } finally {
@@ -196,8 +196,8 @@ class WithuCoupleAutoSyncService {
         provider: provider,
         force: force,
       );
-      if (result.status == WithuCouplePullStatus.failed) {
-        _logSyncError('withu_auto_partner_pull_failed', result.errorCode ?? '');
+      if (result.status == QhkbCouplePullStatus.failed) {
+        _logSyncError('qhkb_auto_partner_pull_failed', result.errorCode ?? '');
       }
     } finally {
       _isSyncing = false;

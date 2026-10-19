@@ -1,12 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/screens/about_screen.dart';
+import 'package:qhkb/screens/about_screen.dart';
 
 void main() {
   test('Android with a download URL uses in-app download', () {
     expect(
       resolveAboutUpdatePrimaryAction(
         isAndroid: true,
-        downloadUrl: 'https://withu.example.com/uploads/app.apk',
+        downloadUrl: 'https://qhkb.example.com/uploads/app.apk',
       ),
       AboutUpdatePrimaryAction.downloadInApp,
     );
@@ -16,7 +16,7 @@ void main() {
     expect(
       resolveAboutUpdatePrimaryAction(
         isAndroid: false,
-        downloadUrl: 'https://withu.example.com/uploads/app.apk',
+        downloadUrl: 'https://qhkb.example.com/uploads/app.apk',
       ),
       AboutUpdatePrimaryAction.openDownloadLink,
     );

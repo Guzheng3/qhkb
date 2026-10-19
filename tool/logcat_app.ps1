@@ -1,4 +1,4 @@
-# 轻屿课表 — 本应用 logcat（默认 Warn+，调试可用 -MinLevel I）
+# 清涵课表 — 本应用 logcat（默认 Warn+，调试可用 -MinLevel I）
 param(
     [switch]$IncludeProd,
 
@@ -33,7 +33,7 @@ function Get-RunningPid([string]$packageName) {
     return $null
 }
 
-Write-Host "等待轻屿课表进程…（先 flutter run --flavor dev / debug_run.ps1）" -ForegroundColor Cyan
+Write-Host "等待清涵课表进程…（先 flutter run --flavor dev / debug_run.ps1）" -ForegroundColor Cyan
 $appPid = $null
 $activePkg = $null
 while (-not $appPid) {

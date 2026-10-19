@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/exam.dart';
+import 'package:qhkb/models/exam.dart';
 
 void main() {
   group('ExamReminderPreset', () {

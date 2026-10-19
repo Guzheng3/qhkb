@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
-import 'package:university_timetable/widgets/home_page_region_blur.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/utils/home_page_background.dart';
+import 'package:qhkb/widgets/home_page_region_blur.dart';
 
 void main() {
   group('homePageHasAnyChromeBlur', () {

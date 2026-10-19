@@ -3,7 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_overscroll.dart';
+import 'package:qhkb/ui/hyperos/hyperos_overscroll.dart';
 
 /// Sets [ScrollPosition] pixels including out-of-range overscroll values.
 void _forceScrollPixels(ScrollPosition position, double pixels) {

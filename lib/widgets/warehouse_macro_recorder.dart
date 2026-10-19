@@ -3,12 +3,12 @@ import '../models/warehouse_macro_models.dart';
 /// 录制 JS —— 注入到 WebView 中捕获用户交互
 class MacroRecorderJs {
   /// 生成用于注入的录制脚本。
-  /// 该脚本会在每个页面加载后注入，监听用户操作并通过 QingyuBridge 发送回 Flutter。
+  /// 该脚本会在每个页面加载后注入，监听用户操作并通过 QinghanBridge 发送回 Flutter。
   static String get injectScript => '''
 (() => {
-  if (window.__qingyuMacroRecorderInstalled) return;
-  window.__qingyuMacroRecorderInstalled = true;
-  window.__qingyuMacroRecordedSteps = [];
+  if (window.__qinghanMacroRecorderInstalled) return;
+  window.__qinghanMacroRecorderInstalled = true;
+  window.__qinghanMacroRecordedSteps = [];
 
   function _macroMakeSelector(el) {
     if (!el || el === document.body) return 'body';
@@ -50,16 +50,16 @@ class MacroRecorderJs {
   }
 
   function _macroEmit(entry) {
-    window.__qingyuMacroRecordedSteps.push(entry);
+    window.__qinghanMacroRecordedSteps.push(entry);
     try {
-      QingyuBridge.postMessage(JSON.stringify({
+      QinghanBridge.postMessage(JSON.stringify({
         type: 'macro:event',
         payload: JSON.stringify(entry)
       }));
     } catch(e) {
       // bridge 不可用时事件仍留在 window 缓冲，停止录制时的 dumpScript
       // 会补收；console.warn 留痕便于排查「录完是空的」类反馈。
-      console.warn('[qingyu-macro] bridge postMessage failed:', e);
+      console.warn('[qinghan-macro] bridge postMessage failed:', e);
     }
   }
 
@@ -148,7 +148,7 @@ class MacroRecorderJs {
   static String get dumpScript => '''
 (() => {
   try {
-    return JSON.stringify(window.__qingyuMacroRecordedSteps || []);
+    return JSON.stringify(window.__qinghanMacroRecordedSteps || []);
   } catch(e) {
     return '[]';
   }

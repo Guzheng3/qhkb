@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/utils/home_page_background.dart';
 
 Future<File> _writeWallpaper(Directory dir) async {
   final recorder = ui.PictureRecorder();
@@ -26,7 +26,7 @@ void main() {
   testWidgets(
     'backdrop shows splash-colored background before the image decodes',
     (tester) async {
-      final dir = Directory.systemTemp.createTempSync('mikcb_backdrop_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_backdrop_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {

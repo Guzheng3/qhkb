@@ -365,7 +365,7 @@ class IcsExportService {
     final digest = sha256.convert(utf8.encode(uidMaterial)).toString();
 
     return _IcsEvent(
-      uid: '$digest@qingyu-timetable.local',
+      uid: '$digest@qinghan-timetable.local',
       kind: kind,
       start: start,
       end: end,
@@ -387,14 +387,14 @@ class IcsExportService {
     final calendarName = '${profile.name.trim()} $from - $to'.trim();
     final lines = <String>[
       'BEGIN:VCALENDAR',
-      'PRODID:-//Mutx163//Qingyu Timetable//EN',
+      'PRODID:-//qhkb//Qinghan Timetable//EN',
       'VERSION:2.0',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'X-WR-TIMEZONE:UTC',
-      'X-MIKCB-SOURCE:Qingyu Timetable',
-      'X-MIKCB-GENERATED-AT:${_formatUtcDateTime(generatedAt)}',
-      'X-MIKCB-DATE-RANGE:$from/$to',
+      'X-QHKB-SOURCE:Qinghan Timetable',
+      'X-QHKB-GENERATED-AT:${_formatUtcDateTime(generatedAt)}',
+      'X-QHKB-DATE-RANGE:$from/$to',
       'X-WR-CALNAME:${_escapeText(calendarName)}',
     ];
 
@@ -410,7 +410,7 @@ class IcsExportService {
           'LOCATION:${_escapeText(event.location!.trim())}',
         if (_hasText(event.description))
           'DESCRIPTION:${_escapeText(event.description!.trim())}',
-        'X-MIKCB-EVENT-TYPE:${event.kind.value}',
+        'X-QHKB-EVENT-TYPE:${event.kind.value}',
         'END:VEVENT',
       ]);
     }

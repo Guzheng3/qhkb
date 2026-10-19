@@ -1,15 +1,15 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/location_time_group.dart';
-import 'package:university_timetable/models/schedule_date_rule.dart';
-import 'package:university_timetable/models/schedule_item.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/services/transfer_package.dart';
-import 'package:university_timetable/services/unified_transfer_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/location_time_group.dart';
+import 'package:qhkb/models/schedule_date_rule.dart';
+import 'package:qhkb/models/schedule_item.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/services/transfer_package.dart';
+import 'package:qhkb/services/unified_transfer_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

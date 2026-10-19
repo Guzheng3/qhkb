@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 import '../services/app_update_service.dart';
 import '../ui/hyperos/hyperos.dart';

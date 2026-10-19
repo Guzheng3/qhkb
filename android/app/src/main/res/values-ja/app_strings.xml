@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_display_name">軽屿時間割</string>
+    <string name="app_display_name">清涵時間割</string>
 
     <string name="notification_channel_live_update_name">時間割リアルタイム更新</string>
     <string name="notification_channel_live_update_desc">現在の授業進捗を表示</string>

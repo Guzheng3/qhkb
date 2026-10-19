@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/schedule_item.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/schedule_item.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 class _BlockingStorageService extends StorageService {
   _BlockingStorageService(this.started, this.release) : super.forTesting();

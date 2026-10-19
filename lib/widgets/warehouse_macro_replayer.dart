@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 
 import '../models/warehouse_macro_models.dart';
 import 'warehouse_macro_recorder.dart';

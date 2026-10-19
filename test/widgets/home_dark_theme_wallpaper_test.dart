@@ -14,14 +14,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/utils/home_page_background.dart';
 
 import '../helpers_test_app.dart';
 
@@ -265,7 +265,7 @@ void main() {
     'flips white',
     (tester) async {
       _seedInitializedPrefs();
-      final dir = Directory.systemTemp.createTempSync('mikcb_dark_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_dark_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {
@@ -287,7 +287,7 @@ void main() {
         reason: 'wallpaper layer must paint in dark theme',
       );
       // Dark wallpaper → light chrome ink everywhere, like light mode.
-      expect(_textColor(tester, '轻屿课表'), homePageChromeForegroundOnDark);
+      expect(_textColor(tester, '清涵课表'), homePageChromeForegroundOnDark);
       expect(_textColor(tester, '周一'), homePageChromeForegroundOnDark);
       expect(_keyTextColor(tester, const ValueKey('timetable-week-number-1')), homePageChromeForegroundOnDark);
       await tester.binding.setSurfaceSize(null);
@@ -298,7 +298,7 @@ void main() {
     'dark theme + light wallpaper: chrome ink flips dark over the photo',
     (tester) async {
       _seedInitializedPrefs();
-      final dir = Directory.systemTemp.createTempSync('mikcb_dark_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_dark_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {
@@ -315,7 +315,7 @@ void main() {
 
       // Light band → the header chrome (logo) flips to dark ink so it never
       // reads white-on-white under a dark theme.
-      expect(_textColor(tester, '轻屿课表'), homePageChromeForegroundOnLight);
+      expect(_textColor(tester, '清涵课表'), homePageChromeForegroundOnLight);
       // 周栏保留自身默认墨色（homePageOverWallpaperInk 的
       // keepDefaultColorOverWallpaper 分支）：默认色不随壁纸亮度翻转，
       // 仅用户自定义色在对比度不足时才回落。深色模式下默认色即白。
@@ -370,7 +370,7 @@ void main() {
     'dark theme + wallpaper: no bright hairline under the weekday bar',
     (tester) async {
       _seedInitializedPrefs();
-      final dir = Directory.systemTemp.createTempSync('mikcb_dark_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_dark_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {

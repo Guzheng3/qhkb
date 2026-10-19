@@ -1,55 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/screens/couple_timetable_settings_screen.dart';
-import 'package:university_timetable/services/withu_couple_config.dart';
-import 'package:university_timetable/services/withu_couple_timetable_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/utils/app_toast.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/screens/couple_timetable_settings_screen.dart';
+import 'package:qhkb/services/qhkb_couple_config.dart';
+import 'package:qhkb/services/qhkb_couple_timetable_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/utils/app_toast.dart';
 
 import 'home_top_menu.dart';
 
-Future<void> showWithuCoupleCenterSheet({
+Future<void> showQhkbCoupleCenterSheet({
   required BuildContext context,
-  required WithuCoupleSessionProvider sessionProvider,
+  required QhkbCoupleSessionProvider sessionProvider,
   required TimetableProvider timetableProvider,
 }) {
   return showHyperosSheet<void>(
     context: context,
-    builder: (_) => WithuCoupleCenterSheet(
+    builder: (_) => QhkbCoupleCenterSheet(
       sessionProvider: sessionProvider,
       timetableProvider: timetableProvider,
     ),
   );
 }
 
-class WithuCoupleCenterSheet extends StatefulWidget {
-  const WithuCoupleCenterSheet({
+class QhkbCoupleCenterSheet extends StatefulWidget {
+  const QhkbCoupleCenterSheet({
     super.key,
     required this.sessionProvider,
     required this.timetableProvider,
   });
 
-  final WithuCoupleSessionProvider sessionProvider;
+  final QhkbCoupleSessionProvider sessionProvider;
   final TimetableProvider timetableProvider;
 
   @override
-  State<WithuCoupleCenterSheet> createState() => _WithuCoupleCenterSheetState();
+  State<QhkbCoupleCenterSheet> createState() => _QhkbCoupleCenterSheetState();
 }
 
-class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
-  late final WithuCoupleTimetableService _timetableService;
+class _QhkbCoupleCenterSheetState extends State<QhkbCoupleCenterSheet> {
+  late final QhkbCoupleTimetableService _timetableService;
   bool _isSyncing = false;
   bool _isDisconnecting = false;
-  WithuCoupleConfig _config = const WithuCoupleConfig();
+  QhkbCoupleConfig _config = const QhkbCoupleConfig();
 
   @override
   void initState() {
     super.initState();
     // 复用首页 provider 的认证服务：退出登录必须在同一份状态上发生。
-    _timetableService = WithuCoupleTimetableService(
+    _timetableService = QhkbCoupleTimetableService(
       authService: widget.sessionProvider.authService,
     );
     _loadConfig();
@@ -76,7 +76,7 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            l10n.withuCoupleCenterTitle,
+            l10n.qhkbCoupleCenterTitle,
             style: HyperosTypography.sheetTitle(context),
           ),
           const SizedBox(height: 16),
@@ -105,7 +105,7 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
 
     return Row(
       children: [
-        WithuCoupleAvatarGroup(
+        QhkbCoupleAvatarGroup(
           userAvatarPath: session.userAvatarPath,
           partnerAvatarPath: session.partnerAvatarPath,
         ),
@@ -144,7 +144,7 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
               ),
               const SizedBox(height: 4),
               Text(
-                l10n.withuCoupleConnectedAs(
+                l10n.qhkbCoupleConnectedAs(
                   account.isNotEmpty ? account : userName,
                 ),
                 maxLines: 1,
@@ -188,8 +188,8 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
               Expanded(
                 child: Text(
                   hasPartnerTimetable
-                      ? l10n.withuCouplePartnerImported
-                      : l10n.withuCouplePartnerNotImported,
+                      ? l10n.qhkbCouplePartnerImported
+                      : l10n.qhkbCouplePartnerNotImported,
                   style: HyperosTypography.listDetail(context),
                 ),
               ),
@@ -198,7 +198,7 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
           if (lastPulledAt != null) ...[
             const SizedBox(height: 6),
             Text(
-              l10n.withuCoupleLastPulledAt(_formatDateTime(lastPulledAt)),
+              l10n.qhkbCoupleLastPulledAt(_formatDateTime(lastPulledAt)),
               style: HyperosTypography.listDetail(context),
             ),
           ],
@@ -215,21 +215,21 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
       runSpacing: 8,
       children: [
         HyperosButton(
-          label: l10n.withuCoupleSettings,
+          label: l10n.qhkbCoupleSettings,
           variant: HyperosButtonVariant.secondary,
           onPressed: _openSettings,
         ),
         HyperosButton(
           label: _isSyncing
-              ? '${l10n.withuCoupleSyncNow}...'
-              : l10n.withuCoupleSyncNow,
+              ? '${l10n.qhkbCoupleSyncNow}...'
+              : l10n.qhkbCoupleSyncNow,
           loading: _isSyncing,
           onPressed: _isSyncing ? null : _syncNow,
         ),
         HyperosButton(
           label: _isDisconnecting
-              ? '${l10n.withuCoupleDisconnect}...'
-              : l10n.withuCoupleDisconnect,
+              ? '${l10n.qhkbCoupleDisconnect}...'
+              : l10n.qhkbCoupleDisconnect,
           variant: HyperosButtonVariant.secondary,
           onPressed: _isDisconnecting ? null : _disconnect,
         ),
@@ -259,26 +259,26 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
         return;
       }
       switch (result.status) {
-        case WithuCouplePullStatus.imported:
+        case QhkbCouplePullStatus.imported:
           showAppToast(
             context,
-            message: l10n.withuCouplePullImported,
+            message: l10n.qhkbCouplePullImported,
             kind: AppToastKind.success,
           );
-        case WithuCouplePullStatus.updated:
+        case QhkbCouplePullStatus.updated:
           showAppToast(
             context,
-            message: l10n.withuCouplePullUpdated,
+            message: l10n.qhkbCouplePullUpdated,
             kind: AppToastKind.success,
           );
-        case WithuCouplePullStatus.unchanged:
-          showAppToast(context, message: l10n.withuCouplePullUnchanged);
-        case WithuCouplePullStatus.failed:
+        case QhkbCouplePullStatus.unchanged:
+          showAppToast(context, message: l10n.qhkbCouplePullUnchanged);
+        case QhkbCouplePullStatus.failed:
           showAppToast(
             context,
             message: localizeServiceMessage(
               l10n,
-              result.errorCode ?? 'withu_request_failed',
+              result.errorCode ?? 'qhkb_request_failed',
             ),
             kind: AppToastKind.error,
           );
@@ -318,7 +318,7 @@ class _WithuCoupleCenterSheetState extends State<WithuCoupleCenterSheet> {
         showAppToast(
           null,
           overlay: toastOverlay,
-          message: l10n.withuCoupleLogoutUnconfirmed,
+          message: l10n.qhkbCoupleLogoutUnconfirmed,
           kind: AppToastKind.warning,
         );
       }

@@ -918,7 +918,7 @@ class MainActivity : FlutterActivity() {
 
     /**
      * Debug-only deep links for adb / Android CLI automation.
-     * Scheme: mikcb-debug://path?query=value
+     * Scheme: qhkb-debug://path?query=value
      * Only honored on non-release package ids (*.debug / *.profile).
      */
     private fun handleDebugDeepLinkIntent(intent: Intent) {
@@ -930,11 +930,11 @@ class MainActivity : FlutterActivity() {
             return
         }
         val data = intent.data ?: return
-        if (data.scheme != "mikcb-debug") {
+        if (data.scheme != "qhkb-debug") {
             return
         }
-        // Prefer path-absolute form: mikcb-debug:///settings/live
-        // (empty host). Host-based form mikcb-debug://settings/live is also
+        // Prefer path-absolute form: qhkb-debug:///settings/live
+        // (empty host). Host-based form qhkb-debug://settings/live is also
         // accepted for convenience.
         val host = data.host?.trim().orEmpty()
         val pathSegment = data.path
@@ -981,14 +981,14 @@ class MainActivity : FlutterActivity() {
 
         // Debug automation deep links share ACTION_VIEW with file imports.
         // Never open them as content URIs — that floods logcat with
-        // FileNotFoundException: No content provider: mikcb-debug://...
+        // FileNotFoundException: No content provider: qhkb-debug://...
         val dataScheme = intent.data?.scheme
-        if (dataScheme == "mikcb-debug") {
+        if (dataScheme == "qhkb-debug") {
             return
         }
 
         val uri = resolveImportUri(intent) ?: return
-        if (uri.scheme == "mikcb-debug") {
+        if (uri.scheme == "qhkb-debug") {
             return
         }
         // 跨进程 ContentResolver I/O（getType/query/全量读文件）不能在主线程做：
@@ -1035,7 +1035,7 @@ class MainActivity : FlutterActivity() {
                 if (kind == "ics" && !text.contains("VCALENDAR", ignoreCase = true)) {
                     return null
                 }
-                if (kind == "backup" && !text.contains("\"mikcb\"")) {
+                if (kind == "backup" && !text.contains("\"qhkb\"")) {
                     return null
                 }
                 PendingExternalImport(kind = kind, fileName = fileName, textContent = text)
@@ -1098,7 +1098,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun readImportBytes(uri: Uri): ByteArray? {
-        if (uri.scheme == "mikcb-debug") {
+        if (uri.scheme == "qhkb-debug") {
             return null
         }
         return try {
@@ -1126,7 +1126,7 @@ class MainActivity : FlutterActivity() {
             extension == "ics" || normalizedMime?.startsWith("text/calendar") == true -> {
                 return "ics"
             }
-            extension == "mikcb" -> return "backup"
+            extension == "qhkb" -> return "backup"
             extension == "json" || normalizedMime == "application/json" -> return "backup"
             extension == "csv" ||
                 normalizedMime == "text/csv" ||
@@ -1143,7 +1143,7 @@ class MainActivity : FlutterActivity() {
         if (normalizedMime == "application/octet-stream" || normalizedMime == "*/*") {
             when (extension) {
                 "ics" -> return "ics"
-                "mikcb", "json" -> return "backup"
+                "qhkb", "json" -> return "backup"
                 "csv", "xlsx" -> return "spreadsheet"
             }
         }
@@ -1151,7 +1151,7 @@ class MainActivity : FlutterActivity() {
         if (textPreview.contains("VCALENDAR", ignoreCase = true)) {
             return "ics"
         }
-        if (textPreview.trimStart().startsWith("{") && textPreview.contains("\"mikcb\"")) {
+        if (textPreview.trimStart().startsWith("{") && textPreview.contains("\"qhkb\"")) {
             return "backup"
         }
         if (bytes.size >= 4 &&
@@ -1398,7 +1398,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun sanitizeDownloadFileName(fileName: String): String {
-        val trimmed = fileName.trim().ifEmpty { "mikcb_update.apk" }
+        val trimmed = fileName.trim().ifEmpty { "qhkb_update.apk" }
         val normalized = trimmed.replace(Regex("[\\\\/:*?\"<>|]"), "_")
         return if (normalized.lowercase().endsWith(".apk")) {
             normalized

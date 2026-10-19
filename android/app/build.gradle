@@ -80,7 +80,7 @@ android {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             manifestPlaceholders = [
-                    appLabel: "轻屿课表调试版"
+                    appLabel: "清涵课表调试版"
             ]
         }
         perf {
@@ -88,13 +88,13 @@ android {
             applicationIdSuffix ".profile"
             versionNameSuffix "-profile"
             manifestPlaceholders = [
-                    appLabel: "轻屿课表性能版"
+                    appLabel: "清涵课表性能版"
             ]
         }
         prod {
             dimension "env"
             manifestPlaceholders = [
-                    appLabel: "轻屿课表"
+                    appLabel: "清涵课表"
             ]
         }
     }
@@ -134,7 +134,7 @@ tasks.configureEach { task ->
 
 // 无签名配置时，仅当任务图真的包含 release 打包任务（assemble/bundle 前缀
 // + release 名）才报错；纯 JVM 测试/分析任务不被连坐。报错文案与原配置期
-// 校验一致，指引不变。CNB/GitHub 发布流水线均注入真实签名，不受影响。
+// 校验一致，指引不变。GitHub 发布流水线注入真实签名，不受影响。
 gradle.taskGraph.whenReady { graph ->
     if (hasReleaseSigning) {
         return

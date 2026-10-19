@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/transfer_diff_service.dart';
 import '../services/transfer_package.dart';
 import '../ui/hyperos/hyperos.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 /// Shows the shared migration preview and requires an explicit merge or
 /// overwrite choice before a transport adapter can apply a package.

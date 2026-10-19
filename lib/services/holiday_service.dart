@@ -262,7 +262,7 @@ class HolidayService {
             uri,
             headers: const {
               'Accept': 'application/json',
-              'User-Agent': 'mikcb-holiday-sync',
+              'User-Agent': 'qhkb-holiday-sync',
             },
           )
           .timeout(const Duration(seconds: 8));
@@ -314,7 +314,7 @@ class HolidayService {
             uri,
             headers: const {
               'Accept': 'application/json',
-              'User-Agent': 'mikcb-holiday-sync',
+              'User-Agent': 'qhkb-holiday-sync',
             },
           )
           .timeout(const Duration(seconds: 8));

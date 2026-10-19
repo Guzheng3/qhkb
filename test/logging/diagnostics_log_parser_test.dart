@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/logging/diagnostics_log_parser.dart';
+import 'package:qhkb/logging/diagnostics_log_parser.dart';
 
 void main() {
   const sampleLog = '''

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_theme.dart';
-import 'package:university_timetable/ui/hyperos/widgets/layout.dart';
-import 'package:university_timetable/ui/hyperos/widgets/tiles.dart';
+import 'package:qhkb/ui/hyperos/hyperos_theme.dart';
+import 'package:qhkb/ui/hyperos/widgets/layout.dart';
+import 'package:qhkb/ui/hyperos/widgets/tiles.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

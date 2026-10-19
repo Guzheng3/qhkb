@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
-import 'package:university_timetable/services/withu_couple_avatar_cache.dart';
+import 'package:qhkb/services/qhkb_couple_avatar_cache.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -12,7 +12,7 @@ void main() {
     'keeps serving the cached file while remote bytes are unchanged',
     () async {
       final directory = await Directory.systemTemp.createTemp(
-        'mikcb_avatar_cache',
+        'qhkb_avatar_cache',
       );
       addTearDown(() async {
         if (directory.existsSync()) {
@@ -22,7 +22,7 @@ void main() {
 
       var bytes = <int>[1, 2, 3];
       final requests = <http.Request>[];
-      final cache = WithuCoupleAvatarCache(
+      final cache = QhkbCoupleAvatarCache(
         client: MockClient((request) async {
           requests.add(request);
           return http.Response.bytes(bytes, 200);
@@ -30,7 +30,7 @@ void main() {
         directoryFactory: () async => directory,
       );
       addTearDown(cache.dispose);
-      final uri = Uri.parse('https://withu.example.com/avatars/me.png');
+      final uri = Uri.parse('https://qhkb.example.com/avatars/me.png');
 
       final first = await cache.refresh(uri);
       expect(first?.changed, isTrue);
@@ -52,7 +52,7 @@ void main() {
 
   test('uses HTTP validators and keeps the image on a 304 response', () async {
     final directory = await Directory.systemTemp.createTemp(
-      'mikcb_avatar_cache',
+      'qhkb_avatar_cache',
     );
     addTearDown(() async {
       if (directory.existsSync()) {
@@ -63,7 +63,7 @@ void main() {
     const etag = '"avatar-v1"';
     var returnNotModified = false;
     final requests = <http.Request>[];
-    final cache = WithuCoupleAvatarCache(
+    final cache = QhkbCoupleAvatarCache(
       client: MockClient((request) async {
         requests.add(request);
         if (returnNotModified) {
@@ -78,7 +78,7 @@ void main() {
       directoryFactory: () async => directory,
     );
     addTearDown(cache.dispose);
-    final uri = Uri.parse('https://withu.example.com/avatars/partner.png');
+    final uri = Uri.parse('https://qhkb.example.com/avatars/partner.png');
 
     final first = await cache.refresh(uri);
     expect(first?.changed, isTrue);
@@ -94,7 +94,7 @@ void main() {
 
   test('network failures preserve the previous cache entry', () async {
     final directory = await Directory.systemTemp.createTemp(
-      'mikcb_avatar_cache',
+      'qhkb_avatar_cache',
     );
     addTearDown(() async {
       if (directory.existsSync()) {
@@ -103,7 +103,7 @@ void main() {
     });
 
     var failNetwork = false;
-    final cache = WithuCoupleAvatarCache(
+    final cache = QhkbCoupleAvatarCache(
       client: MockClient((request) async {
         if (failNetwork) {
           throw http.ClientException('offline');
@@ -113,7 +113,7 @@ void main() {
       directoryFactory: () async => directory,
     );
     addTearDown(cache.dispose);
-    final uri = Uri.parse('https://withu.example.com/avatars/old.png');
+    final uri = Uri.parse('https://qhkb.example.com/avatars/old.png');
 
     final first = await cache.refresh(uri);
     expect(first?.changed, isTrue);

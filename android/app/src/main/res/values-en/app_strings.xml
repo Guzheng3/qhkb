@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_display_name">Qingyu Timetable</string>
+    <string name="app_display_name">Qinghan Timetable</string>
 
     <string name="notification_channel_live_update_name">Timetable live updates</string>
     <string name="notification_channel_live_update_desc">Shows current class progress</string>
@@ -10,7 +10,7 @@
     <string name="notification_channel_weekly_report_name">Weekly report</string>
     <string name="notification_channel_weekly_report_desc">Weekly course summary every Sunday evening</string>
     <string name="notification_weekly_report_default_title">Weekly course summary</string>
-    <string name="notification_weekly_report_default_body">Open Qingyu Timetable to view this week\'s stats</string>
+    <string name="notification_weekly_report_default_body">Open Qinghan Timetable to view this week\'s stats</string>
     <string name="notification_exam_reminder_default_title">Exam reminder</string>
     <string name="notification_exam_reminder_default_body">You have an upcoming exam</string>
 

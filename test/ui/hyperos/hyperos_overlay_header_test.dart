@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_icon_button.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_overlay_header.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_proxies.dart';
+import 'package:qhkb/ui/hyperos/hyperos_icon_button.dart';
+import 'package:qhkb/ui/hyperos/hyperos_overlay_header.dart';
+import 'package:qhkb/ui/hyperos/hyperos_proxies.dart';
 
 import '../../helpers_test_app.dart';
 

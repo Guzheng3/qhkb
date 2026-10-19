@@ -3,7 +3,7 @@ from pathlib import Path
 p = Path('lib/screens/hyperos_showcase_screen.dart')
 s = p.read_text(encoding='utf-8')
 repls = [
-    ("subtitle: 'mikcb 澎湃风格组件一览'", "subtitle: l10n.hyperosShowcaseKitSubtitle"),
+    ("subtitle: 'qhkb 澎湃风格组件一览'", "subtitle: l10n.hyperosShowcaseKitSubtitle"),
     ("_section('标签 / 手风琴 / 提示')", "_section(l10n.hyperosShowcaseSectionTags)"),
     ("'第一节'", "l10n.hyperosShowcaseAccordionSection1"),
     ("'展开后显示的内容区域。'", "l10n.hyperosShowcaseAccordionSection1Body"),

@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/preblurred_wallpaper_glass.dart';
+import 'package:qhkb/widgets/preblurred_wallpaper_glass.dart';
 
 void main() {
   // Portrait screen with a wallpaper that is relatively taller than the screen,

@@ -98,7 +98,7 @@ void main() {
     keyToArb['log_cat_${entry.key}'] = arbKeyName;
   }
 
-  arb['logExportTitle'] = '轻屿课表 - 应用日志';
+  arb['logExportTitle'] = '清涵课表 - 应用日志';
 
   File('tool/.gen_log_arb_zh.json').writeAsStringSync(
     const JsonEncoder.withIndent('  ').convert(arb),

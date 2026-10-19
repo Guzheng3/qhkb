@@ -1198,9 +1198,9 @@ Future<CoupleTimetableWidgetSnapshot> _liveBuildCoupleWidgetSnapshot(
     );
   }
 
-  WithuCoupleSession? session;
+  QhkbCoupleSession? session;
   try {
-    session = await host._withuSessionStore.load();
+    session = await host._qhkbSessionStore.load();
   } catch (_) {
     return CoupleTimetableWidgetSnapshot.unavailable(
       CoupleTimetableWidgetStatus.notLoggedIn,
@@ -1209,7 +1209,7 @@ Future<CoupleTimetableWidgetSnapshot> _liveBuildCoupleWidgetSnapshot(
   final binding = host.partnerBinding;
   final partnerProfile = host.partnerProfile;
   final myProfile = host.myTimetableProfile;
-  final displayProfile = await host._withuSessionStore.loadDisplayProfile();
+  final displayProfile = await host._qhkbSessionStore.loadDisplayProfile();
   if (session == null || !session.isUsable) {
     return CoupleTimetableWidgetSnapshot.unavailable(
       CoupleTimetableWidgetStatus.notLoggedIn,

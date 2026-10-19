@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/schedule_item.dart';
+import 'package:qhkb/models/schedule_item.dart';
 
 void main() {
   final createdAt = DateTime.utc(2026, 4, 1, 10);

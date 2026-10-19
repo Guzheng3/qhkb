@@ -2,44 +2,44 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations_zh.dart';
-import 'package:university_timetable/l10n/app_localizations_en.dart';
-import 'package:university_timetable/l10n/app_localizations_ja.dart';
-import 'package:university_timetable/l10n/app_localizations_ko.dart';
+import 'package:qhkb/l10n/app_localizations_zh.dart';
+import 'package:qhkb/l10n/app_localizations_en.dart';
+import 'package:qhkb/l10n/app_localizations_ja.dart';
+import 'package:qhkb/l10n/app_localizations_ko.dart';
 
 void main() {
   group('Localization completeness', () {
-    test('withuCoupleUsernameLabel exists in all supported locales', () {
+    test('qhkbCoupleUsernameLabel exists in all supported locales', () {
       final zh = AppLocalizationsZh();
       expect(
-        zh.withuCoupleUsernameLabel,
+        zh.qhkbCoupleUsernameLabel,
         isNotEmpty,
-        reason: 'zh: withuCoupleUsernameLabel should not be empty',
+        reason: 'zh: qhkbCoupleUsernameLabel should not be empty',
       );
 
       final en = AppLocalizationsEn();
       expect(
-        en.withuCoupleUsernameLabel,
+        en.qhkbCoupleUsernameLabel,
         isNotEmpty,
-        reason: 'en: withuCoupleUsernameLabel should not be empty',
+        reason: 'en: qhkbCoupleUsernameLabel should not be empty',
       );
 
       final ja = AppLocalizationsJa();
       expect(
-        ja.withuCoupleUsernameLabel,
+        ja.qhkbCoupleUsernameLabel,
         isNotEmpty,
-        reason: 'ja: withuCoupleUsernameLabel should not be empty',
+        reason: 'ja: qhkbCoupleUsernameLabel should not be empty',
       );
 
       final ko = AppLocalizationsKo();
       expect(
-        ko.withuCoupleUsernameLabel,
+        ko.qhkbCoupleUsernameLabel,
         isNotEmpty,
-        reason: 'ko: withuCoupleUsernameLabel should not be empty',
+        reason: 'ko: qhkbCoupleUsernameLabel should not be empty',
       );
     });
 
-    test('ARB files contain withuCoupleUsernameLabel key', () {
+    test('ARB files contain qhkbCoupleUsernameLabel key', () {
       final arbFiles = [
         'lib/l10n/app_zh.arb',
         'lib/l10n/app_en.arb',
@@ -57,14 +57,14 @@ void main() {
 
         final json = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
         expect(
-          json.containsKey('withuCoupleUsernameLabel'),
+          json.containsKey('qhkbCoupleUsernameLabel'),
           isTrue,
-          reason: '$arbFile should contain withuCoupleUsernameLabel',
+          reason: '$arbFile should contain qhkbCoupleUsernameLabel',
         );
         expect(
-          json['withuCoupleUsernameLabel'],
+          json['qhkbCoupleUsernameLabel'],
           isNotEmpty,
-          reason: '$arbFile: withuCoupleUsernameLabel should not be empty',
+          reason: '$arbFile: qhkbCoupleUsernameLabel should not be empty',
         );
       }
     });

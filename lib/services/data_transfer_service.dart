@@ -91,7 +91,7 @@ class DataTransferService {
   }
 
   static const int schemaVersion = TransferPackage.schemaVersion;
-  static const String fileExtension = 'mikcb';
+  static const String fileExtension = 'qhkb';
 
   String buildBackupJson({
     String? profileName,
@@ -188,8 +188,8 @@ class DataTransferService {
     final app = json['app'] as String?;
     final version = (json['schemaVersion'] as num?)?.toInt() ?? 0;
 
-    if (app != 'mikcb' || version != schemaVersion) {
-      throw const FormatException('unrecognized_mikcb_data_file');
+    if (app != 'qhkb' || version != schemaVersion) {
+      throw const FormatException('unrecognized_qhkb_data_file');
     }
 
     final rawCourses = _parseOptionalList(json['courses'], Course.fromJson);
@@ -243,7 +243,7 @@ class DataTransferService {
   /// compact payload emitted by older withU deployments.
   AppDataBackup parsePartnerTimetableJson(String content) {
     final json = jsonDecode(content) as Map<String, dynamic>;
-    if (json['app'] == 'mikcb') {
+    if (json['app'] == 'qhkb') {
       return parseBackupJson(content);
     }
 
@@ -408,8 +408,8 @@ class DataTransferService {
     final version = (json['schemaVersion'] as num?)?.toInt() ?? 0;
     final backupType = json['backupType'] as String?;
 
-    if (app != 'mikcb' || version != schemaVersion || backupType != 'full') {
-      throw const FormatException('unrecognized_mikcb_full_backup');
+    if (app != 'qhkb' || version != schemaVersion || backupType != 'full') {
+      throw const FormatException('unrecognized_qhkb_full_backup');
     }
 
     final rawProfiles = json['profiles'];
@@ -463,7 +463,7 @@ class DataTransferService {
   }) async {
     final now = DateTime.now();
     final filename =
-        'mikcb-backup-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$fileExtension';
+        'qhkb-backup-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$fileExtension';
     final bytes = Uint8List.fromList(
       utf8.encode(
         buildBackupJson(
@@ -508,7 +508,7 @@ class DataTransferService {
   }) async {
     final now = DateTime.now();
     final filename =
-        'mikcb-full-backup-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$fileExtension';
+        'qhkb-full-backup-${now.year}${now.month.toString().padLeft(2, '0')}${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}.$fileExtension';
     final bytes = Uint8List.fromList(
       utf8.encode(
         buildFullBackupJson(

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_display_name">轻屿课表</string>
+    <string name="app_display_name">清涵课表</string>
 
     <!-- Notification channels -->
     <string name="notification_channel_live_update_name">课程表实时更新</string>
@@ -11,7 +11,7 @@
     <string name="notification_channel_weekly_report_name">每周周报</string>
     <string name="notification_channel_weekly_report_desc">每周日晚推送本周课程小结</string>
     <string name="notification_weekly_report_default_title">本周课程小结</string>
-    <string name="notification_weekly_report_default_body">打开轻屿课表查看本周课程统计</string>
+    <string name="notification_weekly_report_default_body">打开清涵课表查看本周课程统计</string>
     <string name="notification_exam_reminder_default_title">考试提醒</string>
     <string name="notification_exam_reminder_default_body">你有一场即将开始的考试</string>
 

@@ -166,10 +166,10 @@ object AppDiagnosticReporter {
             val exportDir = File(context.cacheDir, "exports").apply { mkdirs() }
             val exportFile = File(
                 exportDir,
-                "mikcb-live-diagnostics-${System.currentTimeMillis()}.log"
+                "qhkb-live-diagnostics-${System.currentTimeMillis()}.log"
             )
             val header = buildString {
-                appendLine("轻屿课表 - 应用日志")
+                appendLine("清涵课表 - 应用日志")
                 appendLine("exportedAt=${System.currentTimeMillis()}")
                 buildDiagnosticContext(context).forEach { (key, value) ->
                     appendLine("$key=${value ?: "null"}")
@@ -194,7 +194,7 @@ object AppDiagnosticReporter {
                 return@runCatching null
             }
             val header = buildString {
-                appendLine("轻屿课表 - 应用日志")
+                appendLine("清涵课表 - 应用日志")
                 appendLine("exportedAt=${System.currentTimeMillis()}")
                 buildDiagnosticContext(context).forEach { (key, value) ->
                     appendLine("$key=${value ?: "null"}")

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/services/diagnostics_log_viewer_preferences.dart';
+import 'package:qhkb/services/diagnostics_log_viewer_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

@@ -15,7 +15,7 @@ Future<void> main() async {
     packageUri.resolve('../test/files/default.xlsx'),
   );
 
-  final csv = File('assets/templates/mikcb_course_import_template.csv')
+  final csv = File('assets/templates/qhkb_course_import_template.csv')
       .readAsStringSync();
   final csvDecoder = TableParser.decodeCsv(csv);
   final csvSheet = csvDecoder.tables.values.first;
@@ -41,6 +41,6 @@ Future<void> main() async {
 
   final outDir = Directory('test/fixtures');
   outDir.createSync(recursive: true);
-  File('test/fixtures/mikcb_course_import_template.xlsx')
+  File('test/fixtures/qhkb_course_import_template.xlsx')
       .writeAsBytesSync(decoder.encode());
 }

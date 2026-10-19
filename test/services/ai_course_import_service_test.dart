@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/ai_course_import_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/ai_course_import_service.dart';
 
 void main() {
   final service = AiCourseImportService();
@@ -10,7 +10,7 @@ void main() {
   test('parses valid ai import json into courses', () {
     const content = '''
 {
-  "schema": "mikcb_ai_import_v1",
+  "schema": "qhkb_ai_import_v1",
   "courses": [
     {
       "name": "程序设计技术基础",
@@ -45,7 +45,7 @@ void main() {
     const content = '''
 ```json
 {
-  "schema": "mikcb_ai_import_v1",
+  "schema": "qhkb_ai_import_v1",
   "courses": [
     {
       "name": "就业指导",
@@ -75,7 +75,7 @@ void main() {
   test('rejects unsupported course fields', () {
     const content = '''
 {
-  "schema": "mikcb_ai_import_v1",
+  "schema": "qhkb_ai_import_v1",
   "courses": [
     {
       "name": "机电传动控制",
@@ -109,7 +109,7 @@ void main() {
   test('infers course nature from name and parses week expression string', () {
     const content = '''
 {
-  "schema": "mikcb_ai_import_v1",
+  "schema": "qhkb_ai_import_v1",
   "courses": [
     {
       "name": "数控技术及应用课程设计[32][必修]",

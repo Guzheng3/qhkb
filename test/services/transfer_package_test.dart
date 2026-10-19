@@ -1,18 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/course_task.dart';
-import 'package:university_timetable/models/exam.dart';
-import 'package:university_timetable/models/location_time_group.dart';
-import 'package:university_timetable/models/schedule_date_rule.dart';
-import 'package:university_timetable/models/schedule_item.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/transfer_diff_service.dart';
-import 'package:university_timetable/services/transfer_package.dart';
-import 'package:university_timetable/services/unified_transfer_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/course_task.dart';
+import 'package:qhkb/models/exam.dart';
+import 'package:qhkb/models/location_time_group.dart';
+import 'package:qhkb/models/schedule_date_rule.dart';
+import 'package:qhkb/models/schedule_item.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/transfer_diff_service.dart';
+import 'package:qhkb/services/transfer_package.dart';
+import 'package:qhkb/services/unified_transfer_service.dart';
 
 Course _course({String id = 'course-1', String name = '线性代数'}) {
   return Course(

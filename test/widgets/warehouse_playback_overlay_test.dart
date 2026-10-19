@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
-import 'package:university_timetable/widgets/warehouse_macro_replayer.dart';
-import 'package:university_timetable/widgets/warehouse_playback_overlay.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
+import 'package:qhkb/widgets/warehouse_macro_replayer.dart';
+import 'package:qhkb/widgets/warehouse_playback_overlay.dart';
 
 import '../helpers_test_app.dart';
 

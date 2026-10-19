@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 /// 复现环境：真实壁纸文件存在（hasBackdrop=true），与真机一致。
 ///

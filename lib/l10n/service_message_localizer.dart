@@ -75,37 +75,37 @@ String localizeServiceMessage(
       return l10n.serviceMsgImportUseOverwriteForFullBackup;
     case 'import_no_profiles_in_backup':
       return l10n.serviceMsgImportNoProfilesInBackup;
-    case 'unrecognized_mikcb_data_file':
-      return l10n.serviceMsgUnrecognizedMikcbDataFile;
+    case 'unrecognized_qhkb_data_file':
+      return l10n.serviceMsgUnrecognizedQhkbDataFile;
     case 'partner_import_requires_single_profile':
       return l10n.partnerImportRequiresSingleProfile;
-    case 'withu_missing_credentials':
-      return l10n.withuCoupleMissingCredentials;
-    case 'withu_invalid_url':
+    case 'qhkb_missing_credentials':
+      return l10n.qhkbCoupleMissingCredentials;
+    case 'qhkb_invalid_url':
       return l10n.serviceMsgInvalidUrl;
-    case 'withu_couple_not_connected':
-      return l10n.withuCoupleNotConnectedError;
-    case 'withu_auth_failed':
-      return l10n.withuCoupleAuthFailed;
-    case 'withu_session_expired':
-      return l10n.withuCoupleSessionExpired;
-    case 'withu_couple_account_required':
-      return l10n.withuCoupleAccountRequired;
-    case 'withu_partner_timetable_missing':
-      return l10n.withuCouplePartnerTimetableMissing;
-    case 'withu_network_failed':
-    case 'withu_http_failed':
+    case 'qhkb_couple_not_connected':
+      return l10n.qhkbCoupleNotConnectedError;
+    case 'qhkb_auth_failed':
+      return l10n.qhkbCoupleAuthFailed;
+    case 'qhkb_session_expired':
+      return l10n.qhkbCoupleSessionExpired;
+    case 'qhkb_couple_account_required':
+      return l10n.qhkbCoupleAccountRequired;
+    case 'qhkb_partner_timetable_missing':
+      return l10n.qhkbCouplePartnerTimetableMissing;
+    case 'qhkb_network_failed':
+    case 'qhkb_http_failed':
       return l10n.serviceMsgConnectionFailed;
-    case 'withu_invalid_response':
+    case 'qhkb_invalid_response':
       return l10n.serviceMsgInvalidResponse;
-    case 'withu_session_cookie_missing':
-      return l10n.withuCoupleSessionCookieMissing;
-    case 'withu_request_failed':
-      return l10n.withuCoupleRequestFailed;
+    case 'qhkb_session_cookie_missing':
+      return l10n.qhkbCoupleSessionCookieMissing;
+    case 'qhkb_request_failed':
+      return l10n.qhkbCoupleRequestFailed;
     case 'missing_settings_data':
       return l10n.serviceMsgMissingSettingsData;
-    case 'unrecognized_mikcb_full_backup':
-      return l10n.serviceMsgUnrecognizedMikcbFullBackup;
+    case 'unrecognized_qhkb_full_backup':
+      return l10n.serviceMsgUnrecognizedQhkbFullBackup;
     case 'missing_full_backup_data':
       return l10n.serviceMsgMissingFullBackupData;
     case 'use_profile_backup_not_full':

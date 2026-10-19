@@ -9,13 +9,13 @@ class AppLocalizationsJa extends AppLocalizations {
   AppLocalizationsJa([String locale = 'ja']) : super(locale);
 
   @override
-  String get appTitle => '軽屿時間割';
+  String get appTitle => '清涵時間割';
 
   @override
-  String get appTitleDebug => '軽屿時間割 デバッグ版';
+  String get appTitleDebug => '清涵時間割 デバッグ版';
 
   @override
-  String get appTitleProfile => '軽屿時間割 プロファイル版';
+  String get appTitleProfile => '清涵時間割 プロファイル版';
 
   @override
   String get appearanceTitle => '外観と配色';
@@ -272,10 +272,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get coupleTimetableShareText =>
-      'これは私の時間割です。軽屿時間割のペア時間割にインポートすると、一緒に確認できます';
+      'これは私の時間割です。清涵時間割のペア時間割にインポートすると、一緒に確認できます';
 
   @override
-  String get coupleTimetableShareSubject => '軽屿時間割・ペア時間割の共有';
+  String get coupleTimetableShareSubject => '清涵時間割・ペア時間割の共有';
 
   @override
   String get coupleTimetableWeekOffsetTitle => '週オフセット';
@@ -302,69 +302,69 @@ class AppLocalizationsJa extends AppLocalizations {
       '単一の時間割バックアップファイルをインポートしてください。全量バックアップには対応していません';
 
   @override
-  String get withuCoupleTitle => 'withU 同期';
+  String get qhkbCoupleTitle => 'withU 同期';
 
   @override
-  String get withuCoupleNotConnected => 'withU 未接続';
+  String get qhkbCoupleNotConnected => 'withU 未接続';
 
   @override
-  String withuCoupleConnectedAs(String username) {
+  String qhkbCoupleConnectedAs(String username) {
     return '接続済み：$username';
   }
 
   @override
-  String withuCoupleServerHint(String url) {
+  String qhkbCoupleServerHint(String url) {
     return 'サーバー：$url';
   }
 
   @override
-  String withuCoupleLastPulledAt(String time) {
+  String qhkbCoupleLastPulledAt(String time) {
     return '前回取得：$time';
   }
 
   @override
-  String get withuCoupleConnect => 'withU に接続';
+  String get qhkbCoupleConnect => 'withU に接続';
 
   @override
-  String get withuCoupleDisconnect => 'ログアウト';
+  String get qhkbCoupleDisconnect => 'ログアウト';
 
   @override
-  String get withuCoupleLogoutUnconfirmed =>
+  String get qhkbCoupleLogoutUnconfirmed =>
       'この端末ではログアウトしましたが、サーバーに通知できませんでした。サーバー側のセッションが有効なままの可能性があります。';
 
   @override
-  String get withuCouplePullNow => '相手の時間割を今すぐ取得';
+  String get qhkbCouplePullNow => '相手の時間割を今すぐ取得';
 
   @override
-  String get withuCoupleCenterTitle => '情侣中心';
+  String get qhkbCoupleCenterTitle => '情侣中心';
 
   @override
-  String get withuCoupleSettings => '情侣课表设置';
+  String get qhkbCoupleSettings => '情侣课表设置';
 
   @override
-  String get withuCoupleSyncNow => '立即同步课表';
+  String get qhkbCoupleSyncNow => '立即同步课表';
 
   @override
-  String get withuCouplePartnerImported => '对方课表已导入';
+  String get qhkbCouplePartnerImported => '对方课表已导入';
 
   @override
-  String get withuCouplePartnerNotImported => '尚未导入对方课表';
+  String get qhkbCouplePartnerNotImported => '尚未导入对方课表';
 
   @override
-  String get withuCoupleUploadForPartner => '自分の時間割をアップロード';
+  String get qhkbCoupleUploadForPartner => '自分の時間割をアップロード';
 
   @override
-  String get withuCoupleLoginSheetTitle => 'withU に接続（ペア時間割）';
+  String get qhkbCoupleLoginSheetTitle => 'withU に接続（ペア時間割）';
 
   @override
-  String get withuCoupleLoginSheetSubtitle =>
+  String get qhkbCoupleLoginSheetSubtitle =>
       'withU のペアアカウントでログインすると、相手のアカウントから時間割を取得します';
 
   @override
-  String get withuCoupleConfirmConnect => '接続して取得';
+  String get qhkbCoupleConfirmConnect => '接続して取得';
 
   @override
-  String get withuCoupleServerLabel => 'withU サーバー';
+  String get qhkbCoupleServerLabel => 'withU サーバー';
 
   @override
   String get coupleTimetableSwitchSubtitle => '時間割を重ねて表示し、右上メニューの先頭にログインを表示します';
@@ -394,23 +394,23 @@ class AppLocalizationsJa extends AppLocalizations {
       'デスクトップカードは今後提供予定です。この領域は予約されています';
 
   @override
-  String get withuCoupleLoginPageTitle => 'withU にログイン';
+  String get qhkbCoupleLoginPageTitle => 'withU にログイン';
 
   @override
-  String get withuCoupleLoginPageSubtitle =>
+  String get qhkbCoupleLoginPageSubtitle =>
       'withU のペアアカウントでログインすると、相手の時間割を自動的に取得します';
 
   @override
-  String get withuCoupleLoginAction => 'ログインして取得';
+  String get qhkbCoupleLoginAction => 'ログインして取得';
 
   @override
-  String get withuCoupleLoginMenuTitle => 'アカウントでログイン';
+  String get qhkbCoupleLoginMenuTitle => 'アカウントでログイン';
 
   @override
-  String get withuCoupleNotLoggedInPrompt => '未ログイン · タップしてログイン';
+  String get qhkbCoupleNotLoggedInPrompt => '未ログイン · タップしてログイン';
 
   @override
-  String get withuLoginConfirm => 'ログイン';
+  String get qhkbLoginConfirm => 'ログイン';
 
   @override
   String get coupleHistorySheetTitle => '履歴';
@@ -436,54 +436,53 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get withuCouplePullImported => 'withU から相手の時間割をインポートしました';
+  String get qhkbCouplePullImported => 'withU から相手の時間割をインポートしました';
 
   @override
-  String get withuCouplePullUpdated => 'withU から相手の時間割を更新しました';
+  String get qhkbCouplePullUpdated => 'withU から相手の時間割を更新しました';
 
   @override
-  String get withuCouplePullUnchanged => '相手の時間割に変更はありません';
+  String get qhkbCouplePullUnchanged => '相手の時間割に変更はありません';
 
   @override
-  String get withuCoupleUploadSuccess => '時間割をアップロードしました。相手は取得できます';
+  String get qhkbCoupleUploadSuccess => '時間割をアップロードしました。相手は取得できます';
 
   @override
-  String get withuCoupleMissingCredentials =>
-      'withU のサーバー、ユーザー名、パスワードを入力してください';
+  String get qhkbCoupleMissingCredentials => 'withU のサーバー、ユーザー名、パスワードを入力してください';
 
   @override
-  String get withuCoupleUsernameLabel => 'withU ユーザー名';
+  String get qhkbCoupleUsernameLabel => 'withU ユーザー名';
 
   @override
-  String get withuCoupleUsernameHint => 'withU ユーザー名を入力';
+  String get qhkbCoupleUsernameHint => 'withU ユーザー名を入力';
 
   @override
-  String get withuCouplePasswordLabel => 'withU パスワード';
+  String get qhkbCouplePasswordLabel => 'withU パスワード';
 
   @override
-  String get withuCouplePasswordHint => 'withU パスワードを入力';
+  String get qhkbCouplePasswordHint => 'withU パスワードを入力';
 
   @override
-  String get withuCoupleNotConnectedError => '先に withU に接続してください';
+  String get qhkbCoupleNotConnectedError => '先に withU に接続してください';
 
   @override
-  String get withuCoupleAuthFailed => 'withU のユーザー名またはパスワードが正しくありません';
+  String get qhkbCoupleAuthFailed => 'withU のユーザー名またはパスワードが正しくありません';
 
   @override
-  String get withuCoupleSessionExpired => 'withU のセッションが期限切れです。再度ログインしてください';
+  String get qhkbCoupleSessionExpired => 'withU のセッションが期限切れです。再度ログインしてください';
 
   @override
-  String get withuCoupleAccountRequired => 'withU のペアアカウントが必要です';
+  String get qhkbCoupleAccountRequired => 'withU のペアアカウントが必要です';
 
   @override
-  String get withuCouplePartnerTimetableMissing =>
+  String get qhkbCouplePartnerTimetableMissing =>
       '相手の時間割が見つかりません。先にアップロードしてもらってください';
 
   @override
-  String get withuCoupleRequestFailed => 'withU のリクエストに失敗しました。後でもう一度お試しください';
+  String get qhkbCoupleRequestFailed => 'withU のリクエストに失敗しました。後でもう一度お試しください';
 
   @override
-  String get withuCoupleSessionCookieMissing => 'withU からログインセッションが返されませんでした';
+  String get qhkbCoupleSessionCookieMissing => 'withU からログインセッションが返されませんでした';
 
   @override
   String get aboutSupportSectionTitle => 'アプリ情報とサポート';
@@ -695,7 +694,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get chooseIcsFileAction => '.icsファイルを選択';
 
   @override
-  String get timetableAppName => '軽屿時間割';
+  String get timetableAppName => '清涵時間割';
 
   @override
   String get switchProfileHint => 'タップで時間割切替';
@@ -1036,14 +1035,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      '新版に戻り、システムファイルセレクターでダウンロードフォルダの.mikcbバックアップファイルを選択して復元，新版のデータが正常であることを確認してから、旧バージョンをアンインストールしてください';
+      '新版に戻り、システムファイルセレクターでダウンロードフォルダの.qhkbバックアップファイルを選択して復元，新版のデータが正常であることを確認してから、旧バージョンをアンインストールしてください';
 
   @override
   String get migrationNoSaveToFilesTitle => '「ファイルに保存」がない場合';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      'WeChatの任意のチャットに共有し、WeChatでバックアップファイルを開いて保存，保存後、通常Download/WeiXinフォルダに表示されます，新版でこの.mikcbファイルを選択してインポート';
+      'WeChatの任意のチャットに共有し、WeChatでバックアップファイルを開いて保存，保存後、通常Download/WeiXinフォルダに表示されます，新版でこの.qhkbファイルを選択してインポート';
 
   @override
   String get openingOldApp => '旧バージョンを開いています...';
@@ -1375,7 +1374,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      'パケットキャプチャ、Webデバッグ、JavaScriptができる場合は、qingyu_warehouseで教務適応の補充に参加歓迎。';
+      'パケットキャプチャ、Webデバッグ、JavaScriptができる場合は、qinghan_warehouseで教務適応の補充に参加歓迎。';
 
   @override
   String get aboutContributorsTitle => 'コード貢献者';
@@ -1397,7 +1396,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get aboutOpenSourceLicensesAppLicenseLabel =>
-      '軽屿時間割のソースコードは GPL-3.0-or-later で公開されています。';
+      '清涵時間割のソースコードは GPL-3.0-or-later で公開されています。';
 
   @override
   String get aboutOpenSourceLicensesIntro =>
@@ -1434,10 +1433,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get appLogsShareText =>
-      '軽屿時間割がエクスポートしたアプリログです。ローカル実行記録を含み、更新、インポート、通知、ページ、クラッシュ問題のトラブルシュートに使用できます。';
+      '清涵時間割がエクスポートしたアプリログです。ローカル実行記録を含み、更新、インポート、通知、ページ、クラッシュ問題のトラブルシュートに使用できます。';
 
   @override
-  String get appLogsShareSubject => '軽屿時間割 - アプリログ';
+  String get appLogsShareSubject => '清涵時間割 - アプリログ';
 
   @override
   String get appLogsRecordingEnabled => 'アプリログを記録中';
@@ -1967,7 +1966,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hideFromRecentsSubtitle => 'オンにすると最近のタスクリストに表示されないようにします';
 
   @override
-  String get keepAliveServiceTitle => '軽屿時間割バックグラウンド常駐サービス';
+  String get keepAliveServiceTitle => '清涵時間割バックグラウンド常駐サービス';
 
   @override
   String get keepAliveServiceEnabledSubtitle =>
@@ -2509,7 +2508,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homePageHeaderBlurSubtitle =>
-      'タイトルバー（軽屿時間割）領域をぼかします。「ステータスバー」にチェックするとステータスバーも一緒にぼかします';
+      'タイトルバー（清涵時間割）領域をぼかします。「ステータスバー」にチェックするとステータスバーも一緒にぼかします';
 
   @override
   String get homePageWeekdayBarBlurTitle => '情報バーのガウスぼかし';
@@ -2639,18 +2638,18 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get liveDiagnosticsShareText =>
-      '軽屿時間割がエクスポートしたスーパーアイランド診断ログです。「スーパーアイランドが表示されない」などの問題のトラブルシュートに使用可能。';
+      '清涵時間割がエクスポートしたスーパーアイランド診断ログです。「スーパーアイランドが表示されない」などの問題のトラブルシュートに使用可能。';
 
   @override
-  String get liveDiagnosticsShareSubject => '軽屿時間割 - スーパーアイランド診断ログ';
+  String get liveDiagnosticsShareSubject => '清涵時間割 - スーパーアイランド診断ログ';
 
   @override
   String get liveDiagnosticsSnapshotShareText =>
-      '軽屿時間割の現在のテスト診断ページがエクスポートしたスーパーアイランドステータススナップショットです。「スーパーアイランドが表示されない」などの問題のトラブルシュートに使用可能。';
+      '清涵時間割の現在のテスト診断ページがエクスポートしたスーパーアイランドステータススナップショットです。「スーパーアイランドが表示されない」などの問題のトラブルシュートに使用可能。';
 
   @override
   String get liveDiagnosticsSnapshotShareSubject =>
-      '軽屿時間割 - スーパーアイランドステータススナップショット';
+      '清涵時間割 - スーパーアイランドステータススナップショット';
 
   @override
   String get liveDiagnosticsNothingToExport =>
@@ -2890,7 +2889,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get homeWidgetPinUnsupported =>
-      '現在のホームがアプリ内直接追加に未対応の場合、ホームを長押し → ウィジェット → 轻屿時間割で手動追加可能。';
+      '現在のホームがアプリ内直接追加に未対応の場合、ホームを長押し → ウィジェット → 清涵時間割で手動追加可能。';
 
   @override
   String get homeWidgetBackgroundStyleLabel => '背景スタイル';
@@ -2975,7 +2974,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String homeWidgetPinUnsupportedManual(String label) {
-    return '現在のシステムホームがアプリ内直接ウィジェット追加に未対応。ホームを長押し → ウィジェット → 轻屿時間割で「$label」を手動追加。';
+    return '現在のシステムホームがアプリ内直接ウィジェット追加に未対応。ホームを長押し → ウィジェット → 清涵時間割で「$label」を手動追加。';
   }
 
   @override
@@ -2983,7 +2982,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String homeWidgetPinFailedManual(String label) {
-    return '追加リクエスト失敗。ホームを長押し → ウィジェット → 轻屿時間割で「$label」を手動追加。';
+    return '追加リクエスト失敗。ホームを長押し → ウィジェット → 清涵時間割で「$label」を手動追加。';
   }
 
   @override
@@ -3505,7 +3504,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'インストールパッケージ準備完了。インストール画面を開こうとしました。システムが表示しない場合、通知またはファイルマネージャーから手動インストール';
 
   @override
-  String get aboutUpdatePackageTitle => '軽屿時間割更新パッケージ';
+  String get aboutUpdatePackageTitle => '清涵時間割更新パッケージ';
 
   @override
   String get aboutUpdatePackageDescription =>
@@ -3551,14 +3550,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get aboutDevelopersTitle => '開発者';
 
   @override
-  String get aboutDeveloperMaintainerSubtitle => '軽屿時間割の開発とメンテナンス';
+  String get aboutDeveloperMaintainerSubtitle => '清涵時間割の開発とメンテナンス';
 
   @override
   String get aboutWarehouseMaintainersTitle => '教務インポート適応者';
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下のリストはqingyu_warehouse適応倉庫のmaintainerフィールドからの集計，ローカルキャッシュがある場合はキャッシュを先に表示し、バックグラウンドで更新';
+      '以下のリストはqinghan_warehouse適応倉庫のmaintainerフィールドからの集計，ローカルキャッシュがある場合はキャッシュを先に表示し、バックグラウンドで更新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -3793,10 +3792,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get warehouseImportExecutionLogShareText =>
-      '軽屿時間割から書き出した教務インポート実行ログです。スクリプト注入、ブリッジ通信、タイムアウト、インポート結果などの過程記録が含まれ、開発者へのフィードバックに使えます。';
+      '清涵時間割から書き出した教務インポート実行ログです。スクリプト注入、ブリッジ通信、タイムアウト、インポート結果などの過程記録が含まれ、開発者へのフィードバックに使えます。';
 
   @override
-  String get warehouseImportExecutionLogShareSubject => '軽屿時間割 - 時間割インポート実行ログ';
+  String get warehouseImportExecutionLogShareSubject => '清涵時間割 - 時間割インポート実行ログ';
 
   @override
   String get warehouseImportExecutionLogEmpty =>
@@ -6159,15 +6158,15 @@ class AppLocalizationsJa extends AppLocalizations {
       'No recoverable timetables were found in the backup file.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbDataFile =>
-      'Not a recognizable mikcb data file.';
+  String get serviceMsgUnrecognizedQhkbDataFile =>
+      'Not a recognizable qhkb data file.';
 
   @override
   String get serviceMsgMissingSettingsData => 'Settings data is missing.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbFullBackup =>
-      'Not a recognizable mikcb full backup file.';
+  String get serviceMsgUnrecognizedQhkbFullBackup =>
+      'Not a recognizable qhkb full backup file.';
 
   @override
   String get serviceMsgMissingFullBackupData =>
@@ -6569,11 +6568,11 @@ class AppLocalizationsJa extends AppLocalizations {
       'This is a full backup of the current timetable. Import it to restore courses and settings.';
 
   @override
-  String get serviceMsgShareBackupSubject => 'Qingyu Timetable backup';
+  String get serviceMsgShareBackupSubject => 'Qinghan Timetable backup';
 
   @override
   String serviceMsgShareBackupSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
@@ -6582,7 +6581,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get serviceMsgShareFullBackupSubject =>
-      'Qingyu Timetable - full data backup';
+      'Qinghan Timetable - full data backup';
 
   @override
   String get serviceMsgInvalidRepositoryUrl =>
@@ -6620,7 +6619,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qingyu_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
@@ -6748,23 +6747,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get dataTransferProfileShareText =>
-      'This is a full backup of the current timetable from Qingyu Timetable. Import it to restore courses and settings.';
+      'This is a full backup of the current timetable from Qinghan Timetable. Import it to restore courses and settings.';
 
   @override
-  String get dataTransferProfileShareSubject => 'Qingyu Timetable backup';
+  String get dataTransferProfileShareSubject => 'Qinghan Timetable backup';
 
   @override
   String dataTransferProfileShareSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
   String get dataTransferFullBackupShareText =>
-      'This is a full data backup from Qingyu Timetable, including all timetables, the active timetable, and time schemes.';
+      'This is a full data backup from Qinghan Timetable, including all timetables, the active timetable, and time schemes.';
 
   @override
   String get dataTransferFullBackupShareSubject =>
-      'Qingyu Timetable - Full data backup';
+      'Qinghan Timetable - Full data backup';
 
   @override
   String courseWeekCustomDescription(String weeks) {
@@ -7009,7 +7008,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get hyperosShowcaseSectionSummary => 'Summary card';
 
   @override
-  String get hyperosShowcaseKitSubtitle => 'mikcb HyperOS-style components';
+  String get hyperosShowcaseKitSubtitle => 'qhkb HyperOS-style components';
 
   @override
   String get hyperosShowcaseSectionTags => 'Tags / Accordion / Hints';
@@ -8028,7 +8027,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get logCatDebugSnapshot => 'debug snapshot';
 
   @override
-  String get logExportTitle => 'Qingyu Timetable - App logs';
+  String get logExportTitle => 'Qinghan Timetable - App logs';
 
   @override
   String get appUpdateMirrorPresetGhfast => 'Default mirror';
@@ -8053,7 +8052,7 @@ class AppLocalizationsJa extends AppLocalizations {
       'Enter a custom mirror URL prefix';
 
   @override
-  String get statisticsShareText => 'Semester statistics from mikcb';
+  String get statisticsShareText => 'Semester statistics from qhkb';
 
   @override
   String get aboutUpdateAvailableHeadline => 'Update available';
@@ -8850,10 +8849,10 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get icsExportShareText => '軽屿課表からのカレンダーファイル';
+  String get icsExportShareText => '清涵課表からのカレンダーファイル';
 
   @override
-  String get icsExportShareSubject => '軽屿課表カレンダー';
+  String get icsExportShareSubject => '清涵課表カレンダー';
 
   @override
   String get homeNavigationTitle => 'ホームとナビゲーション';

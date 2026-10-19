@@ -1,8 +1,8 @@
 import 'package:flutter/animation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/android_animation_scale_service.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_miuix_spec.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_navigation.dart';
+import 'package:qhkb/services/android_animation_scale_service.dart';
+import 'package:qhkb/ui/hyperos/hyperos_miuix_spec.dart';
+import 'package:qhkb/ui/hyperos/hyperos_navigation.dart';
 
 void main() {
   test('Hyperos navigation uses tuned transition base duration', () {

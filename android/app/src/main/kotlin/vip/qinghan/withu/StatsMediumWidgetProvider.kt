@@ -10,8 +10,8 @@ import android.widget.RemoteViews
 import java.util.Locale
 import kotlin.math.roundToInt
 
-class StatsMediumWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class StatsMediumWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         StatsMediumWidgetProvider::class.java
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

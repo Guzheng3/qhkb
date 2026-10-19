@@ -5,14 +5,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/services/withu_couple_auth_service.dart';
-import 'package:university_timetable/services/withu_couple_avatar_cache.dart';
-import 'package:university_timetable/services/withu_couple_config.dart';
-import 'package:university_timetable/services/withu_couple_session_store.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/services/qhkb_couple_auth_service.dart';
+import 'package:qhkb/services/qhkb_couple_avatar_cache.dart';
+import 'package:qhkb/services/qhkb_couple_config.dart';
+import 'package:qhkb/services/qhkb_couple_session_store.dart';
 
 /// 内存版安全存储：预置/清空 withU 凭证，避免测试触碰平台通道。
-class _FakeSecureStorage extends WithuCoupleSecureStorage {
+class _FakeSecureStorage extends QhkbCoupleSecureStorage {
   _FakeSecureStorage([Map<String, String>? initial]) : _values = initial ?? {};
 
   final Map<String, String> _values;
@@ -49,15 +49,15 @@ Map<String, String> _seededCachedAvatarProfileValues() => {
   'withu_couple_partner_avatar': 'https://cdn.example.com/partner.png',
 };
 
-class _FakeAvatarCache extends WithuCoupleAvatarCache {
+class _FakeAvatarCache extends QhkbCoupleAvatarCache {
   _FakeAvatarCache({
     Map<Uri, String> cachedPaths = const {},
-    Map<Uri, WithuCoupleAvatarCacheResult> refreshResults = const {},
+    Map<Uri, QhkbCoupleAvatarCacheResult> refreshResults = const {},
   }) : _cachedPaths = Map.of(cachedPaths),
        _refreshResults = Map.of(refreshResults);
 
   final Map<Uri, String> _cachedPaths;
-  final Map<Uri, WithuCoupleAvatarCacheResult> _refreshResults;
+  final Map<Uri, QhkbCoupleAvatarCacheResult> _refreshResults;
   final List<Uri> cacheLookups = <Uri>[];
   final List<Uri> refreshes = <Uri>[];
 
@@ -70,7 +70,7 @@ class _FakeAvatarCache extends WithuCoupleAvatarCache {
   }
 
   @override
-  Future<WithuCoupleAvatarCacheResult?> refresh(Uri? uri) async {
+  Future<QhkbCoupleAvatarCacheResult?> refresh(Uri? uri) async {
     if (uri != null) {
       refreshes.add(uri);
     }
@@ -94,24 +94,24 @@ void main() {
   setUp(() {
     // bootstrap 请求前会读 withU 配置，预置一个合法 baseUrl。
     SharedPreferences.setMockInitialValues({
-      WithuCoupleConfig.prefsKey: jsonEncode({
-        'baseUrl': 'https://withu.example.com',
+      QhkbCoupleConfig.prefsKey: jsonEncode({
+        'baseUrl': 'https://qhkb.example.com',
       }),
     });
   });
 
   test('no stored session stays logged out with empty nicknames', () async {
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient((request) async => http.Response('{}', 200)),
-        sessionStore: WithuCoupleSessionStore(storage: _FakeSecureStorage()),
+        sessionStore: QhkbCoupleSessionStore(storage: _FakeSecureStorage()),
       ),
     );
 
     await provider.restoreSession();
 
     expect(provider.isLoggedIn, isFalse);
-    expect(provider.status, WithuCoupleLoginStatus.signedOut);
+    expect(provider.status, QhkbCoupleLoginStatus.signedOut);
     expect(provider.hasStoredSession, isFalse);
     expect(provider.isRestoring, isFalse);
     expect(provider.session, isNull);
@@ -121,8 +121,8 @@ void main() {
   });
 
   test('bootstrap with logged_in true exposes both nicknames', () async {
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient(
           (request) async => _bootstrapResponse({
             'logged_in': true,
@@ -142,7 +142,7 @@ void main() {
             },
           }),
         ),
-        sessionStore: WithuCoupleSessionStore(
+        sessionStore: QhkbCoupleSessionStore(
           storage: _FakeSecureStorage(_seededSessionValues()),
         ),
       ),
@@ -153,7 +153,7 @@ void main() {
     expect(provider.isLoggedIn, isTrue);
     expect(provider.userNickname, '小明');
     expect(provider.partnerNickname, '小红');
-    expect(provider.serverBaseUrl, 'https://withu.example.com');
+    expect(provider.serverBaseUrl, 'https://qhkb.example.com');
     expect(provider.userAvatar, '/avatars/me.png');
     expect(provider.partnerAvatar, 'https://cdn.example.com/her.jpg');
     expect(provider.session, isNotNull);
@@ -161,8 +161,8 @@ void main() {
 
   test('bootstrap derives both genders from the role slots', () async {
     final storage = _FakeSecureStorage(_seededSessionValues());
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient(
           (request) async => _bootstrapResponse({
             'logged_in': true,
@@ -181,7 +181,7 @@ void main() {
             },
           }),
         ),
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       ),
     );
 
@@ -189,22 +189,22 @@ void main() {
 
     expect(
       await storage.read(key: 'withu_couple_user_gender'),
-      WithuCoupleDisplayProfile.genderFemale,
+      QhkbCoupleDisplayProfile.genderFemale,
     );
     expect(
       await storage.read(key: 'withu_couple_partner_gender'),
-      WithuCoupleDisplayProfile.genderMale,
+      QhkbCoupleDisplayProfile.genderMale,
     );
   });
 
   test('bootstrap without a role keeps the cached gender', () async {
     final storage = _FakeSecureStorage({
       ..._seededCachedProfileValues(),
-      'withu_couple_user_gender': WithuCoupleDisplayProfile.genderFemale,
-      'withu_couple_partner_gender': WithuCoupleDisplayProfile.genderMale,
+      'withu_couple_user_gender': QhkbCoupleDisplayProfile.genderFemale,
+      'withu_couple_partner_gender': QhkbCoupleDisplayProfile.genderMale,
     });
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient(
           (request) async => _bootstrapResponse({
             'logged_in': true,
@@ -212,7 +212,7 @@ void main() {
             'partner': {'id': 2, 'username': 'her', 'nickname': 'Fresh Her'},
           }),
         ),
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       ),
     );
 
@@ -221,11 +221,11 @@ void main() {
     expect(provider.userNickname, 'Fresh Me');
     expect(
       await storage.read(key: 'withu_couple_user_gender'),
-      WithuCoupleDisplayProfile.genderFemale,
+      QhkbCoupleDisplayProfile.genderFemale,
     );
     expect(
       await storage.read(key: 'withu_couple_partner_gender'),
-      WithuCoupleDisplayProfile.genderMale,
+      QhkbCoupleDisplayProfile.genderMale,
     );
   });
 
@@ -233,10 +233,10 @@ void main() {
     'cached nicknames render before bootstrap, without claiming a login',
     () async {
       final bootstrap = Completer<http.Response>();
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient((request) async => bootstrap.future),
-          sessionStore: WithuCoupleSessionStore(
+          sessionStore: QhkbCoupleSessionStore(
             storage: _FakeSecureStorage(_seededCachedProfileValues()),
           ),
         ),
@@ -248,7 +248,7 @@ void main() {
       // 缓存资料先显示（冷启动不闪「未登录」），但服务端还没确认，不能算已登录。
       expect(provider.hasStoredSession, isTrue);
       expect(provider.isLoggedIn, isFalse);
-      expect(provider.status, WithuCoupleLoginStatus.restoring);
+      expect(provider.status, QhkbCoupleLoginStatus.restoring);
       expect(provider.userNickname, 'Cached Me');
       expect(provider.partnerNickname, 'Cached Her');
 
@@ -272,7 +272,7 @@ void main() {
       await restoring;
 
       expect(provider.isLoggedIn, isTrue);
-      expect(provider.status, WithuCoupleLoginStatus.connected);
+      expect(provider.status, QhkbCoupleLoginStatus.connected);
       expect(provider.userNickname, 'Fresh Me');
       expect(provider.partnerNickname, 'Fresh Her');
     },
@@ -281,7 +281,7 @@ void main() {
   test(
     'cached avatar files render first and unchanged bytes stay quiet',
     () async {
-      final userUri = Uri.parse('https://withu.example.com/avatars/me.png');
+      final userUri = Uri.parse('https://qhkb.example.com/avatars/me.png');
       final partnerUri = Uri.parse('https://cdn.example.com/partner.png');
       final cache = _FakeAvatarCache(
         cachedPaths: {
@@ -289,18 +289,18 @@ void main() {
           partnerUri: '/cache/partner-v1.png',
         },
         refreshResults: {
-          userUri: const WithuCoupleAvatarCacheResult(
+          userUri: const QhkbCoupleAvatarCacheResult(
             path: '/cache/me-v1.png',
             changed: false,
           ),
-          partnerUri: const WithuCoupleAvatarCacheResult(
+          partnerUri: const QhkbCoupleAvatarCacheResult(
             path: '/cache/partner-v1.png',
             changed: false,
           ),
         },
       );
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient(
             (request) async => _bootstrapResponse({
               'logged_in': true,
@@ -320,7 +320,7 @@ void main() {
               },
             }),
           ),
-          sessionStore: WithuCoupleSessionStore(
+          sessionStore: QhkbCoupleSessionStore(
             storage: _FakeSecureStorage(_seededCachedAvatarProfileValues()),
           ),
         ),
@@ -344,12 +344,12 @@ void main() {
     'fresh avatar bytes publish the new local file after bootstrap',
     () async {
       final freshUserUri = Uri.parse(
-        'https://withu.example.com/avatars/new.png',
+        'https://qhkb.example.com/avatars/new.png',
       );
       final cache = _FakeAvatarCache(
         cachedPaths: {},
         refreshResults: {
-          freshUserUri: const WithuCoupleAvatarCacheResult(
+          freshUserUri: const QhkbCoupleAvatarCacheResult(
             path: '/cache/me-v2.png',
             changed: true,
           ),
@@ -360,8 +360,8 @@ void main() {
         'withu_couple_user_avatar': '/avatars/old.png',
         'withu_couple_partner_avatar': 'https://cdn.example.com/partner.png',
       });
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient(
             (request) async => _bootstrapResponse({
               'logged_in': true,
@@ -381,7 +381,7 @@ void main() {
               },
             }),
           ),
-          sessionStore: WithuCoupleSessionStore(storage: storage),
+          sessionStore: QhkbCoupleSessionStore(storage: storage),
         ),
         avatarCache: cache,
       );
@@ -404,19 +404,19 @@ void main() {
 
   test('bootstrap logged_in false falls back to logged out', () async {
     final storage = _FakeSecureStorage(_seededSessionValues());
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient(
           (request) async => _bootstrapResponse({'logged_in': false}),
         ),
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       ),
     );
 
     await provider.restoreSession();
 
     expect(provider.isLoggedIn, isFalse);
-    expect(provider.status, WithuCoupleLoginStatus.signedOut);
+    expect(provider.status, QhkbCoupleLoginStatus.signedOut);
     expect(provider.hasStoredSession, isFalse);
     expect(provider.userNickname, isEmpty);
     expect(provider.partnerNickname, isEmpty);
@@ -427,8 +427,8 @@ void main() {
   test(
     'empty nickname from server stays empty for the UI to fall back',
     () async {
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient(
             (request) async => _bootstrapResponse({
               'logged_in': true,
@@ -441,7 +441,7 @@ void main() {
               'partner': null,
             }),
           ),
-          sessionStore: WithuCoupleSessionStore(
+          sessionStore: QhkbCoupleSessionStore(
             storage: _FakeSecureStorage(_seededSessionValues()),
           ),
         ),
@@ -456,12 +456,12 @@ void main() {
   );
 
   test('cached nicknames survive bootstrap connection failure', () async {
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient((request) async {
           throw http.ClientException('offline');
         }),
-        sessionStore: WithuCoupleSessionStore(
+        sessionStore: QhkbCoupleSessionStore(
           storage: _FakeSecureStorage(_seededCachedProfileValues()),
         ),
       ),
@@ -471,7 +471,7 @@ void main() {
 
     // 服务端问不到：展示缓存资料，但不宣称已登录，凭证也不该被清掉。
     expect(provider.isLoggedIn, isFalse);
-    expect(provider.status, WithuCoupleLoginStatus.staleOffline);
+    expect(provider.status, QhkbCoupleLoginStatus.staleOffline);
     expect(provider.hasStoredSession, isTrue);
     expect(provider.userNickname, 'Cached Me');
     expect(provider.partnerNickname, 'Cached Her');
@@ -482,8 +482,8 @@ void main() {
     'logout from another service instance is picked up by the next restore',
     () async {
       final storage = _FakeSecureStorage(_seededCachedProfileValues());
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient(
             (request) async => _bootstrapResponse({
               'logged_in': true,
@@ -491,18 +491,18 @@ void main() {
               'partner': {'id': 2, 'username': 'her', 'nickname': 'Her'},
             }),
           ),
-          sessionStore: WithuCoupleSessionStore(storage: storage),
+          sessionStore: QhkbCoupleSessionStore(storage: storage),
         ),
       );
       await provider.restoreSession();
       expect(provider.isLoggedIn, isTrue);
 
       // 设置页 / 情侣中心里的另一个认证服务实例执行退出登录：只动共享存储。
-      final other = WithuCoupleAuthService(
+      final other = QhkbCoupleAuthService(
         client: MockClient(
           (request) async => http.Response('{"success":true}', 200),
         ),
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       );
       await other.clearLocalCredentials();
 
@@ -511,7 +511,7 @@ void main() {
       // 会话的唯一真相源是存储：别的实例退出后，这里必须跟着退出，
       // 而不是拿着自己缓存的旧会话继续当成已登录。
       expect(provider.isLoggedIn, isFalse);
-      expect(provider.status, WithuCoupleLoginStatus.signedOut);
+      expect(provider.status, QhkbCoupleLoginStatus.signedOut);
       expect(provider.hasStoredSession, isFalse);
       expect(provider.session, isNull);
       expect(provider.userNickname, isEmpty);
@@ -524,31 +524,31 @@ void main() {
     () async {
       final storage = _FakeSecureStorage();
       var requests = 0;
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient((request) async {
             requests++;
             return http.Response('{}', 200);
           }),
-          sessionStore: WithuCoupleSessionStore(storage: storage),
+          sessionStore: QhkbCoupleSessionStore(storage: storage),
         ),
       );
 
       await provider.restoreSession();
-      expect(provider.status, WithuCoupleLoginStatus.signedOut);
+      expect(provider.status, QhkbCoupleLoginStatus.signedOut);
       expect(requests, 0);
 
       // 登录弹窗（借用同一个 provider）已经写入凭证与展示资料。
-      final store = WithuCoupleSessionStore(storage: storage);
+      final store = QhkbCoupleSessionStore(storage: storage);
       await store.save(
-        const WithuCoupleSession(
+        const QhkbCoupleSession(
           username: 'alice',
           sessionId: 'session-2',
           csrfToken: 'csrf-2',
         ),
       );
       await store.saveDisplayProfile(
-        const WithuCoupleDisplayProfile(
+        const QhkbCoupleDisplayProfile(
           userNickname: 'Alice',
           partnerNickname: 'Bob',
         ),
@@ -556,7 +556,7 @@ void main() {
 
       await provider.refreshFromLocal();
 
-      expect(provider.status, WithuCoupleLoginStatus.connected);
+      expect(provider.status, QhkbCoupleLoginStatus.connected);
       expect(provider.userNickname, 'Alice');
       expect(provider.partnerNickname, 'Bob');
       // 登录请求本身已经确认过身份，不需要再补一次 bootstrap。
@@ -582,10 +582,10 @@ void main() {
         'partner': null,
       });
     });
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: client,
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       ),
     );
 
@@ -593,8 +593,8 @@ void main() {
     await pumpEventQueue();
 
     // 恢复在途时用户重新登录了：凭证被替换，并要求再刷新一次登录态。
-    await WithuCoupleSessionStore(storage: storage).save(
-      const WithuCoupleSession(
+    await QhkbCoupleSessionStore(storage: storage).save(
+      const QhkbCoupleSession(
         username: 'other',
         sessionId: 'session-2',
         csrfToken: 'csrf-2',
@@ -606,7 +606,7 @@ void main() {
     await Future.wait([first, second]);
 
     expect(provider.isLoggedIn, isTrue);
-    expect(provider.status, WithuCoupleLoginStatus.connected);
+    expect(provider.status, QhkbCoupleLoginStatus.connected);
     expect(provider.userNickname, 'Fresh');
     expect(provider.session?.sessionId, 'session-2');
   });
@@ -616,8 +616,8 @@ void main() {
     () async {
       final storage = _FakeSecureStorage(_seededCachedProfileValues());
       final logoutResponse = Completer<http.Response>();
-      final provider = WithuCoupleSessionProvider(
-        authService: WithuCoupleAuthService(
+      final provider = QhkbCoupleSessionProvider(
+        authService: QhkbCoupleAuthService(
           client: MockClient((request) async {
             if (request.url.queryParameters['action'] == 'logout') {
               return logoutResponse.future;
@@ -628,7 +628,7 @@ void main() {
               'partner': {'id': 2, 'username': 'her', 'nickname': 'Her'},
             });
           }),
-          sessionStore: WithuCoupleSessionStore(storage: storage),
+          sessionStore: QhkbCoupleSessionStore(storage: storage),
         ),
       );
       await provider.restoreSession();
@@ -638,7 +638,7 @@ void main() {
 
       // 服务端注销还在途（logoutResponse 未完成），本地必须已经是未登录。
       expect(logoutResponse.isCompleted, isFalse);
-      expect(provider.status, WithuCoupleLoginStatus.signedOut);
+      expect(provider.status, QhkbCoupleLoginStatus.signedOut);
       expect(provider.isLoggedIn, isFalse);
       expect(provider.session, isNull);
       expect(provider.userNickname, isEmpty);
@@ -652,21 +652,21 @@ void main() {
 
   test('completeServerLogout reports an unreachable server', () async {
     final storage = _FakeSecureStorage(_seededSessionValues());
-    final provider = WithuCoupleSessionProvider(
-      authService: WithuCoupleAuthService(
+    final provider = QhkbCoupleSessionProvider(
+      authService: QhkbCoupleAuthService(
         client: MockClient((request) async {
           if (request.url.queryParameters['action'] == 'logout') {
             throw http.ClientException('offline');
           }
           return _bootstrapResponse({'logged_in': true});
         }),
-        sessionStore: WithuCoupleSessionStore(storage: storage),
+        sessionStore: QhkbCoupleSessionStore(storage: storage),
       ),
     );
 
     await provider.signOutLocally();
     // 本地已退出；服务端没确认，调用方据此提示用户。
-    expect(provider.status, WithuCoupleLoginStatus.signedOut);
+    expect(provider.status, QhkbCoupleLoginStatus.signedOut);
     expect(await provider.completeServerLogout(), isFalse);
     // 没有待注销会话时也不该谎报成功。
     expect(await provider.completeServerLogout(), isFalse);

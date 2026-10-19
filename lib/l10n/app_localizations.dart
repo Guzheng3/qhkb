@@ -107,19 +107,19 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表'**
+  /// **'清涵课表'**
   String get appTitle;
 
   /// No description provided for @appTitleDebug.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表调试版'**
+  /// **'清涵课表调试版'**
   String get appTitleDebug;
 
   /// No description provided for @appTitleProfile.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表性能版'**
+  /// **'清涵课表性能版'**
   String get appTitleProfile;
 
   /// No description provided for @appearanceTitle.
@@ -605,13 +605,13 @@ abstract class AppLocalizations {
   /// No description provided for @coupleTimetableShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是我的课表，导入到轻屿课表的情侣课表即可一起查看'**
+  /// **'这是我的课表，导入到清涵课表的情侣课表即可一起查看'**
   String get coupleTimetableShareText;
 
   /// No description provided for @coupleTimetableShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 · 情侣课表分享'**
+  /// **'清涵课表 · 情侣课表分享'**
   String get coupleTimetableShareSubject;
 
   /// No description provided for @coupleTimetableWeekOffsetTitle.
@@ -650,119 +650,119 @@ abstract class AppLocalizations {
   /// **'请导入单课表备份文件，不支持全量备份'**
   String get partnerImportRequiresSingleProfile;
 
-  /// No description provided for @withuCoupleTitle.
+  /// No description provided for @qhkbCoupleTitle.
   ///
   /// In zh, this message translates to:
   /// **'withU 同步'**
-  String get withuCoupleTitle;
+  String get qhkbCoupleTitle;
 
-  /// No description provided for @withuCoupleNotConnected.
+  /// No description provided for @qhkbCoupleNotConnected.
   ///
   /// In zh, this message translates to:
   /// **'尚未连接 withU'**
-  String get withuCoupleNotConnected;
+  String get qhkbCoupleNotConnected;
 
-  /// No description provided for @withuCoupleConnectedAs.
+  /// No description provided for @qhkbCoupleConnectedAs.
   ///
   /// In zh, this message translates to:
   /// **'已连接：{username}'**
-  String withuCoupleConnectedAs(String username);
+  String qhkbCoupleConnectedAs(String username);
 
-  /// No description provided for @withuCoupleServerHint.
+  /// No description provided for @qhkbCoupleServerHint.
   ///
   /// In zh, this message translates to:
   /// **'服务器：{url}'**
-  String withuCoupleServerHint(String url);
+  String qhkbCoupleServerHint(String url);
 
-  /// No description provided for @withuCoupleLastPulledAt.
+  /// No description provided for @qhkbCoupleLastPulledAt.
   ///
   /// In zh, this message translates to:
   /// **'上次拉取：{time}'**
-  String withuCoupleLastPulledAt(String time);
+  String qhkbCoupleLastPulledAt(String time);
 
-  /// No description provided for @withuCoupleConnect.
+  /// No description provided for @qhkbCoupleConnect.
   ///
   /// In zh, this message translates to:
   /// **'连接 withU'**
-  String get withuCoupleConnect;
+  String get qhkbCoupleConnect;
 
-  /// No description provided for @withuCoupleDisconnect.
+  /// No description provided for @qhkbCoupleDisconnect.
   ///
   /// In zh, this message translates to:
   /// **'退出登录'**
-  String get withuCoupleDisconnect;
+  String get qhkbCoupleDisconnect;
 
-  /// No description provided for @withuCoupleLogoutUnconfirmed.
+  /// No description provided for @qhkbCoupleLogoutUnconfirmed.
   ///
   /// In zh, this message translates to:
   /// **'已在本机退出登录，但未能通知服务器；服务器上的会话可能仍然有效'**
-  String get withuCoupleLogoutUnconfirmed;
+  String get qhkbCoupleLogoutUnconfirmed;
 
-  /// No description provided for @withuCouplePullNow.
+  /// No description provided for @qhkbCouplePullNow.
   ///
   /// In zh, this message translates to:
   /// **'立即拉取对方课表'**
-  String get withuCouplePullNow;
+  String get qhkbCouplePullNow;
 
-  /// No description provided for @withuCoupleCenterTitle.
+  /// No description provided for @qhkbCoupleCenterTitle.
   ///
   /// In zh, this message translates to:
   /// **'情侣中心'**
-  String get withuCoupleCenterTitle;
+  String get qhkbCoupleCenterTitle;
 
-  /// No description provided for @withuCoupleSettings.
+  /// No description provided for @qhkbCoupleSettings.
   ///
   /// In zh, this message translates to:
   /// **'情侣课表设置'**
-  String get withuCoupleSettings;
+  String get qhkbCoupleSettings;
 
-  /// No description provided for @withuCoupleSyncNow.
+  /// No description provided for @qhkbCoupleSyncNow.
   ///
   /// In zh, this message translates to:
   /// **'立即同步课表'**
-  String get withuCoupleSyncNow;
+  String get qhkbCoupleSyncNow;
 
-  /// No description provided for @withuCouplePartnerImported.
+  /// No description provided for @qhkbCouplePartnerImported.
   ///
   /// In zh, this message translates to:
   /// **'对方课表已导入'**
-  String get withuCouplePartnerImported;
+  String get qhkbCouplePartnerImported;
 
-  /// No description provided for @withuCouplePartnerNotImported.
+  /// No description provided for @qhkbCouplePartnerNotImported.
   ///
   /// In zh, this message translates to:
   /// **'尚未导入对方课表'**
-  String get withuCouplePartnerNotImported;
+  String get qhkbCouplePartnerNotImported;
 
-  /// No description provided for @withuCoupleUploadForPartner.
+  /// No description provided for @qhkbCoupleUploadForPartner.
   ///
   /// In zh, this message translates to:
   /// **'上传我的课表'**
-  String get withuCoupleUploadForPartner;
+  String get qhkbCoupleUploadForPartner;
 
-  /// No description provided for @withuCoupleLoginSheetTitle.
+  /// No description provided for @qhkbCoupleLoginSheetTitle.
   ///
   /// In zh, this message translates to:
   /// **'连接 withU（情侣课表）'**
-  String get withuCoupleLoginSheetTitle;
+  String get qhkbCoupleLoginSheetTitle;
 
-  /// No description provided for @withuCoupleLoginSheetSubtitle.
+  /// No description provided for @qhkbCoupleLoginSheetSubtitle.
   ///
   /// In zh, this message translates to:
   /// **'使用 withU 情侣账号登录，从对方账号拉取课表'**
-  String get withuCoupleLoginSheetSubtitle;
+  String get qhkbCoupleLoginSheetSubtitle;
 
-  /// No description provided for @withuCoupleConfirmConnect.
+  /// No description provided for @qhkbCoupleConfirmConnect.
   ///
   /// In zh, this message translates to:
   /// **'连接并拉取'**
-  String get withuCoupleConfirmConnect;
+  String get qhkbCoupleConfirmConnect;
 
-  /// No description provided for @withuCoupleServerLabel.
+  /// No description provided for @qhkbCoupleServerLabel.
   ///
   /// In zh, this message translates to:
   /// **'withU 服务器'**
-  String get withuCoupleServerLabel;
+  String get qhkbCoupleServerLabel;
 
   /// No description provided for @coupleTimetableSwitchSubtitle.
   ///
@@ -812,41 +812,41 @@ abstract class AppLocalizations {
   /// **'桌面卡片功能开发中，当前仅供预留'**
   String get coupleTimetableDesktopCardPlaceholder;
 
-  /// No description provided for @withuCoupleLoginPageTitle.
+  /// No description provided for @qhkbCoupleLoginPageTitle.
   ///
   /// In zh, this message translates to:
   /// **'登录 withU'**
-  String get withuCoupleLoginPageTitle;
+  String get qhkbCoupleLoginPageTitle;
 
-  /// No description provided for @withuCoupleLoginPageSubtitle.
+  /// No description provided for @qhkbCoupleLoginPageSubtitle.
   ///
   /// In zh, this message translates to:
   /// **'使用 withU 情侣账号登录，登录后自动拉取对方课表'**
-  String get withuCoupleLoginPageSubtitle;
+  String get qhkbCoupleLoginPageSubtitle;
 
-  /// No description provided for @withuCoupleLoginAction.
+  /// No description provided for @qhkbCoupleLoginAction.
   ///
   /// In zh, this message translates to:
   /// **'登录并拉取'**
-  String get withuCoupleLoginAction;
+  String get qhkbCoupleLoginAction;
 
-  /// No description provided for @withuCoupleLoginMenuTitle.
+  /// No description provided for @qhkbCoupleLoginMenuTitle.
   ///
   /// In zh, this message translates to:
   /// **'账号登录'**
-  String get withuCoupleLoginMenuTitle;
+  String get qhkbCoupleLoginMenuTitle;
 
-  /// No description provided for @withuCoupleNotLoggedInPrompt.
+  /// No description provided for @qhkbCoupleNotLoggedInPrompt.
   ///
   /// In zh, this message translates to:
   /// **'未登录 · 点击登录'**
-  String get withuCoupleNotLoggedInPrompt;
+  String get qhkbCoupleNotLoggedInPrompt;
 
-  /// No description provided for @withuLoginConfirm.
+  /// No description provided for @qhkbLoginConfirm.
   ///
   /// In zh, this message translates to:
   /// **'登录'**
-  String get withuLoginConfirm;
+  String get qhkbLoginConfirm;
 
   /// No description provided for @coupleHistorySheetTitle.
   ///
@@ -890,101 +890,101 @@ abstract class AppLocalizations {
   /// **'{semester} · 共 {count} 节课'**
   String coupleHistoryEntryMeta(String semester, int count);
 
-  /// No description provided for @withuCouplePullImported.
+  /// No description provided for @qhkbCouplePullImported.
   ///
   /// In zh, this message translates to:
   /// **'已从 withU 导入对方课表'**
-  String get withuCouplePullImported;
+  String get qhkbCouplePullImported;
 
-  /// No description provided for @withuCouplePullUpdated.
+  /// No description provided for @qhkbCouplePullUpdated.
   ///
   /// In zh, this message translates to:
   /// **'已从 withU 更新对方课表'**
-  String get withuCouplePullUpdated;
+  String get qhkbCouplePullUpdated;
 
-  /// No description provided for @withuCouplePullUnchanged.
+  /// No description provided for @qhkbCouplePullUnchanged.
   ///
   /// In zh, this message translates to:
   /// **'对方课表无变化'**
-  String get withuCouplePullUnchanged;
+  String get qhkbCouplePullUnchanged;
 
-  /// No description provided for @withuCoupleUploadSuccess.
+  /// No description provided for @qhkbCoupleUploadSuccess.
   ///
   /// In zh, this message translates to:
   /// **'已上传课表，对方可拉取'**
-  String get withuCoupleUploadSuccess;
+  String get qhkbCoupleUploadSuccess;
 
-  /// No description provided for @withuCoupleMissingCredentials.
+  /// No description provided for @qhkbCoupleMissingCredentials.
   ///
   /// In zh, this message translates to:
   /// **'请填写 withU 服务器、用户名和密码'**
-  String get withuCoupleMissingCredentials;
+  String get qhkbCoupleMissingCredentials;
 
-  /// No description provided for @withuCoupleUsernameLabel.
+  /// No description provided for @qhkbCoupleUsernameLabel.
   ///
   /// In zh, this message translates to:
   /// **'withU 用户名'**
-  String get withuCoupleUsernameLabel;
+  String get qhkbCoupleUsernameLabel;
 
-  /// No description provided for @withuCoupleUsernameHint.
+  /// No description provided for @qhkbCoupleUsernameHint.
   ///
   /// In zh, this message translates to:
   /// **'请输入 withU 用户名'**
-  String get withuCoupleUsernameHint;
+  String get qhkbCoupleUsernameHint;
 
-  /// No description provided for @withuCouplePasswordLabel.
+  /// No description provided for @qhkbCouplePasswordLabel.
   ///
   /// In zh, this message translates to:
   /// **'withU 密码'**
-  String get withuCouplePasswordLabel;
+  String get qhkbCouplePasswordLabel;
 
-  /// No description provided for @withuCouplePasswordHint.
+  /// No description provided for @qhkbCouplePasswordHint.
   ///
   /// In zh, this message translates to:
   /// **'请输入 withU 密码'**
-  String get withuCouplePasswordHint;
+  String get qhkbCouplePasswordHint;
 
-  /// No description provided for @withuCoupleNotConnectedError.
+  /// No description provided for @qhkbCoupleNotConnectedError.
   ///
   /// In zh, this message translates to:
   /// **'请先连接 withU'**
-  String get withuCoupleNotConnectedError;
+  String get qhkbCoupleNotConnectedError;
 
-  /// No description provided for @withuCoupleAuthFailed.
+  /// No description provided for @qhkbCoupleAuthFailed.
   ///
   /// In zh, this message translates to:
   /// **'withU 用户名或密码不正确'**
-  String get withuCoupleAuthFailed;
+  String get qhkbCoupleAuthFailed;
 
-  /// No description provided for @withuCoupleSessionExpired.
+  /// No description provided for @qhkbCoupleSessionExpired.
   ///
   /// In zh, this message translates to:
   /// **'withU 会话已过期，请重新登录'**
-  String get withuCoupleSessionExpired;
+  String get qhkbCoupleSessionExpired;
 
-  /// No description provided for @withuCoupleAccountRequired.
+  /// No description provided for @qhkbCoupleAccountRequired.
   ///
   /// In zh, this message translates to:
   /// **'需要 withU 情侣账号'**
-  String get withuCoupleAccountRequired;
+  String get qhkbCoupleAccountRequired;
 
-  /// No description provided for @withuCouplePartnerTimetableMissing.
+  /// No description provided for @qhkbCouplePartnerTimetableMissing.
   ///
   /// In zh, this message translates to:
   /// **'未找到对方课表，请让对方先上传'**
-  String get withuCouplePartnerTimetableMissing;
+  String get qhkbCouplePartnerTimetableMissing;
 
-  /// No description provided for @withuCoupleRequestFailed.
+  /// No description provided for @qhkbCoupleRequestFailed.
   ///
   /// In zh, this message translates to:
   /// **'withU 请求失败，请稍后重试'**
-  String get withuCoupleRequestFailed;
+  String get qhkbCoupleRequestFailed;
 
-  /// No description provided for @withuCoupleSessionCookieMissing.
+  /// No description provided for @qhkbCoupleSessionCookieMissing.
   ///
   /// In zh, this message translates to:
   /// **'withU 未返回登录会话'**
-  String get withuCoupleSessionCookieMissing;
+  String get qhkbCoupleSessionCookieMissing;
 
   /// No description provided for @aboutSupportSectionTitle.
   ///
@@ -1241,7 +1241,7 @@ abstract class AppLocalizations {
   /// No description provided for @spreadsheetScenarioIntro.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿模板按表头识别列：必填列为课程名、星期、开始节、结束节及周次；其余列为可选，可下载完整模板，也可只保留必要列，也兼容 WakeUp 7 列格式'**
+  /// **'清涵模板按表头识别列：必填列为课程名、星期、开始节、结束节及周次；其余列为可选，可下载完整模板，也可只保留必要列，也兼容 WakeUp 7 列格式'**
   String get spreadsheetScenarioIntro;
 
   /// No description provided for @spreadsheetStep1Subtitle.
@@ -1277,7 +1277,7 @@ abstract class AppLocalizations {
   /// No description provided for @downloadSpreadsheetTemplateAction.
   ///
   /// In zh, this message translates to:
-  /// **'下载轻屿课表模板'**
+  /// **'下载清涵课表模板'**
   String get downloadSpreadsheetTemplateAction;
 
   /// No description provided for @spreadsheetImportWarningsTitle.
@@ -1301,7 +1301,7 @@ abstract class AppLocalizations {
   /// No description provided for @spreadsheetFormatUnrecognized.
   ///
   /// In zh, this message translates to:
-  /// **'未识别表格格式，请使用轻屿课表模板；也兼容 WakeUp 等同列格式'**
+  /// **'未识别表格格式，请使用清涵课表模板；也兼容 WakeUp 等同列格式'**
   String get spreadsheetFormatUnrecognized;
 
   /// No description provided for @icsImportTitle.
@@ -1373,7 +1373,7 @@ abstract class AppLocalizations {
   /// No description provided for @timetableAppName.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表'**
+  /// **'清涵课表'**
   String get timetableAppName;
 
   /// No description provided for @switchProfileHint.
@@ -1961,7 +1961,7 @@ abstract class AppLocalizations {
   /// No description provided for @migrationStep3Subtitle.
   ///
   /// In zh, this message translates to:
-  /// **'回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .mikcb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用'**
+  /// **'回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .qhkb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用'**
   String get migrationStep3Subtitle;
 
   /// No description provided for @migrationNoSaveToFilesTitle.
@@ -1973,7 +1973,7 @@ abstract class AppLocalizations {
   /// No description provided for @migrationNoSaveToFilesSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .mikcb 文件导入'**
+  /// **'可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .qhkb 文件导入'**
   String get migrationNoSaveToFilesSubtitle;
 
   /// No description provided for @openingOldApp.
@@ -2552,7 +2552,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutImportMigrationBullet4.
   ///
   /// In zh, this message translates to:
-  /// **'如果你会抓包、网页调试或 JavaScript，也欢迎去 qingyu_warehouse 参与教务适配补充'**
+  /// **'如果你会抓包、网页调试或 JavaScript，也欢迎去 qinghan_warehouse 参与教务适配补充'**
   String get aboutImportMigrationBullet4;
 
   /// No description provided for @aboutContributorsTitle.
@@ -2594,7 +2594,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutOpenSourceLicensesAppLicenseLabel.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表源码以 GPL-3.0-or-later 发布。'**
+  /// **'清涵课表源码以 GPL-3.0-or-later 发布。'**
   String get aboutOpenSourceLicensesAppLicenseLabel;
 
   /// No description provided for @aboutOpenSourceLicensesIntro.
@@ -2654,13 +2654,13 @@ abstract class AppLocalizations {
   /// No description provided for @appLogsShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表导出的应用日志，包含整个软件的本地运行记录，可用于排查更新、导入、通知、页面和崩溃问题'**
+  /// **'这是清涵课表导出的应用日志，包含整个软件的本地运行记录，可用于排查更新、导入、通知、页面和崩溃问题'**
   String get appLogsShareText;
 
   /// No description provided for @appLogsShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 应用日志'**
+  /// **'清涵课表 - 应用日志'**
   String get appLogsShareSubject;
 
   /// No description provided for @appLogsRecordingEnabled.
@@ -3607,7 +3607,7 @@ abstract class AppLocalizations {
   /// No description provided for @keepAliveServiceTitle.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表后台保活服务'**
+  /// **'清涵课表后台保活服务'**
   String get keepAliveServiceTitle;
 
   /// No description provided for @keepAliveServiceEnabledSubtitle.
@@ -3619,7 +3619,7 @@ abstract class AppLocalizations {
   /// No description provided for @keepAliveServiceDisabledSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'当前未开启，可进入系统无障碍设置手动打开轻屿课表后台保活服务'**
+  /// **'当前未开启，可进入系统无障碍设置手动打开清涵课表后台保活服务'**
   String get keepAliveServiceDisabledSubtitle;
 
   /// No description provided for @goEnableAction.
@@ -4578,7 +4578,7 @@ abstract class AppLocalizations {
   /// No description provided for @homePageHeaderBlurSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'模糊标题栏（轻屿课表）区域；勾选「状态栏」时一并模糊状态栏'**
+  /// **'模糊标题栏（清涵课表）区域；勾选「状态栏」时一并模糊状态栏'**
   String get homePageHeaderBlurSubtitle;
 
   /// No description provided for @homePageWeekdayBarBlurTitle.
@@ -4824,25 +4824,25 @@ abstract class AppLocalizations {
   /// No description provided for @liveDiagnosticsShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表导出的超级岛相关日志，可用于排查“超级岛没有弹出”等问题'**
+  /// **'这是清涵课表导出的超级岛相关日志，可用于排查“超级岛没有弹出”等问题'**
   String get liveDiagnosticsShareText;
 
   /// No description provided for @liveDiagnosticsShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 超级岛日志'**
+  /// **'清涵课表 - 超级岛日志'**
   String get liveDiagnosticsShareSubject;
 
   /// No description provided for @liveDiagnosticsSnapshotShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表当前测试诊断页导出的超级岛状态快照，可用于排查“超级岛没有弹出”等问题'**
+  /// **'这是清涵课表当前测试诊断页导出的超级岛状态快照，可用于排查“超级岛没有弹出”等问题'**
   String get liveDiagnosticsSnapshotShareText;
 
   /// No description provided for @liveDiagnosticsSnapshotShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 超级岛状态快照'**
+  /// **'清涵课表 - 超级岛状态快照'**
   String get liveDiagnosticsSnapshotShareSubject;
 
   /// No description provided for @liveDiagnosticsNothingToExport.
@@ -5274,7 +5274,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPinUnsupported.
   ///
   /// In zh, this message translates to:
-  /// **'当前桌面不支持应用内直接添加时，仍可长按桌面 → 小组件 → 轻屿课表 手动添加'**
+  /// **'当前桌面不支持应用内直接添加时，仍可长按桌面 → 小组件 → 清涵课表 手动添加'**
   String get homeWidgetPinUnsupported;
 
   /// No description provided for @homeWidgetBackgroundStyleLabel.
@@ -5424,7 +5424,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPinUnsupportedManual.
   ///
   /// In zh, this message translates to:
-  /// **'当前系统桌面不支持应用内直接添加小组件，请长按桌面 → 小组件 → 轻屿课表，再手动添加“{label}”'**
+  /// **'当前系统桌面不支持应用内直接添加小组件，请长按桌面 → 小组件 → 清涵课表，再手动添加“{label}”'**
   String homeWidgetPinUnsupportedManual(String label);
 
   /// No description provided for @homeWidgetInvalidType.
@@ -5436,7 +5436,7 @@ abstract class AppLocalizations {
   /// No description provided for @homeWidgetPinFailedManual.
   ///
   /// In zh, this message translates to:
-  /// **'发起添加失败，请长按桌面 → 小组件 → 轻屿课表，再手动添加“{label}”'**
+  /// **'发起添加失败，请长按桌面 → 小组件 → 清涵课表，再手动添加“{label}”'**
   String homeWidgetPinFailedManual(String label);
 
   /// No description provided for @homeWidgetBindingSectionTitle.
@@ -6342,7 +6342,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutUpdatePackageTitle.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表更新包'**
+  /// **'清涵课表更新包'**
   String get aboutUpdatePackageTitle;
 
   /// No description provided for @aboutUpdatePackageDescription.
@@ -6420,7 +6420,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutDeveloperMaintainerSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表开发与维护'**
+  /// **'清涵课表开发与维护'**
   String get aboutDeveloperMaintainerSubtitle;
 
   /// No description provided for @aboutWarehouseMaintainersTitle.
@@ -6432,7 +6432,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutWarehouseMaintainersIntro.
   ///
   /// In zh, this message translates to:
-  /// **'以下名单来自 qingyu_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新'**
+  /// **'以下名单来自 qinghan_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新'**
   String get aboutWarehouseMaintainersIntro;
 
   /// No description provided for @aboutWarehouseMaintainersLoadFailed.
@@ -6826,13 +6826,13 @@ abstract class AppLocalizations {
   /// No description provided for @warehouseImportExecutionLogShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表导出的教务导入执行日志，包含脚本注入、桥接消息、超时与导入结果等过程记录，可直接反馈给开发人员排查问题'**
+  /// **'这是清涵课表导出的教务导入执行日志，包含脚本注入、桥接消息、超时与导入结果等过程记录，可直接反馈给开发人员排查问题'**
   String get warehouseImportExecutionLogShareText;
 
   /// No description provided for @warehouseImportExecutionLogShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 课表导入执行日志'**
+  /// **'清涵课表 - 课表导入执行日志'**
   String get warehouseImportExecutionLogShareSubject;
 
   /// No description provided for @warehouseImportExecutionLogEmpty.
@@ -11036,11 +11036,11 @@ abstract class AppLocalizations {
   /// **'备份文件中没有可恢复的课表'**
   String get serviceMsgImportNoProfilesInBackup;
 
-  /// No description provided for @serviceMsgUnrecognizedMikcbDataFile.
+  /// No description provided for @serviceMsgUnrecognizedQhkbDataFile.
   ///
   /// In zh, this message translates to:
-  /// **'不是可识别的 mikcb 数据文件'**
-  String get serviceMsgUnrecognizedMikcbDataFile;
+  /// **'不是可识别的 qhkb 数据文件'**
+  String get serviceMsgUnrecognizedQhkbDataFile;
 
   /// No description provided for @serviceMsgMissingSettingsData.
   ///
@@ -11048,11 +11048,11 @@ abstract class AppLocalizations {
   /// **'缺少设置数据'**
   String get serviceMsgMissingSettingsData;
 
-  /// No description provided for @serviceMsgUnrecognizedMikcbFullBackup.
+  /// No description provided for @serviceMsgUnrecognizedQhkbFullBackup.
   ///
   /// In zh, this message translates to:
-  /// **'不是可识别的 mikcb 全量备份文件'**
-  String get serviceMsgUnrecognizedMikcbFullBackup;
+  /// **'不是可识别的 qhkb 全量备份文件'**
+  String get serviceMsgUnrecognizedQhkbFullBackup;
 
   /// No description provided for @serviceMsgMissingFullBackupData.
   ///
@@ -11604,31 +11604,31 @@ abstract class AppLocalizations {
   /// No description provided for @serviceMsgShareBackupText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表当前课表的完整备份文件，导入后可直接恢复课程和设置'**
+  /// **'这是清涵课表当前课表的完整备份文件，导入后可直接恢复课程和设置'**
   String get serviceMsgShareBackupText;
 
   /// No description provided for @serviceMsgShareBackupSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表备份'**
+  /// **'清涵课表备份'**
   String get serviceMsgShareBackupSubject;
 
   /// No description provided for @serviceMsgShareBackupSubjectNamed.
   ///
   /// In zh, this message translates to:
-  /// **'{profileName} - 轻屿课表备份'**
+  /// **'{profileName} - 清涵课表备份'**
   String serviceMsgShareBackupSubjectNamed(String profileName);
 
   /// No description provided for @serviceMsgShareFullBackupText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板'**
+  /// **'这是清涵课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板'**
   String get serviceMsgShareFullBackupText;
 
   /// No description provided for @serviceMsgShareFullBackupSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 全部数据备份'**
+  /// **'清涵课表 - 全部数据备份'**
   String get serviceMsgShareFullBackupSubject;
 
   /// No description provided for @serviceMsgInvalidRepositoryUrl.
@@ -11682,7 +11682,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceMsgWarehouseScriptChecksumFailed.
   ///
   /// In zh, this message translates to:
-  /// **'适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qingyu_warehouse 反馈该适配器'**
+  /// **'适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qinghan_warehouse 反馈该适配器'**
   String get serviceMsgWarehouseScriptChecksumFailed;
 
   /// No description provided for @serviceMsgManualInputCaptcha.
@@ -11894,31 +11894,31 @@ abstract class AppLocalizations {
   /// No description provided for @dataTransferProfileShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表当前课表的完整备份文件，导入后可直接恢复课程和设置'**
+  /// **'这是清涵课表当前课表的完整备份文件，导入后可直接恢复课程和设置'**
   String get dataTransferProfileShareText;
 
   /// No description provided for @dataTransferProfileShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表备份'**
+  /// **'清涵课表备份'**
   String get dataTransferProfileShareSubject;
 
   /// No description provided for @dataTransferProfileShareSubjectNamed.
   ///
   /// In zh, this message translates to:
-  /// **'{profileName} - 轻屿课表备份'**
+  /// **'{profileName} - 清涵课表备份'**
   String dataTransferProfileShareSubjectNamed(String profileName);
 
   /// No description provided for @dataTransferFullBackupShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是轻屿课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板'**
+  /// **'这是清涵课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板'**
   String get dataTransferFullBackupShareText;
 
   /// No description provided for @dataTransferFullBackupShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 全部数据备份'**
+  /// **'清涵课表 - 全部数据备份'**
   String get dataTransferFullBackupShareSubject;
 
   /// No description provided for @courseWeekCustomDescription.
@@ -12290,7 +12290,7 @@ abstract class AppLocalizations {
   /// No description provided for @hyperosShowcaseKitSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'mikcb 澎湃风格组件一览'**
+  /// **'qhkb 澎湃风格组件一览'**
   String get hyperosShowcaseKitSubtitle;
 
   /// No description provided for @hyperosShowcaseSectionTags.
@@ -14072,7 +14072,7 @@ abstract class AppLocalizations {
   /// No description provided for @logExportTitle.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表 - 应用日志'**
+  /// **'清涵课表 - 应用日志'**
   String get logExportTitle;
 
   /// No description provided for @appUpdateMirrorPresetGhfast.
@@ -14120,7 +14120,7 @@ abstract class AppLocalizations {
   /// No description provided for @statisticsShareText.
   ///
   /// In zh, this message translates to:
-  /// **'来自轻屿课表的学期统计'**
+  /// **'来自清涵课表的学期统计'**
   String get statisticsShareText;
 
   /// No description provided for @aboutUpdateAvailableHeadline.
@@ -15555,13 +15555,13 @@ abstract class AppLocalizations {
   /// No description provided for @icsExportShareText.
   ///
   /// In zh, this message translates to:
-  /// **'这是来自轻屿课表的日历文件'**
+  /// **'这是来自清涵课表的日历文件'**
   String get icsExportShareText;
 
   /// No description provided for @icsExportShareSubject.
   ///
   /// In zh, this message translates to:
-  /// **'轻屿课表日历'**
+  /// **'清涵课表日历'**
   String get icsExportShareSubject;
 
   /// No description provided for @homeNavigationTitle.

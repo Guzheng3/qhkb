@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/screens/live_diagnostics_log_viewer_screen.dart';
+import 'package:qhkb/screens/live_diagnostics_log_viewer_screen.dart';
 
 import '../helpers_test_app.dart';
 
@@ -10,7 +10,7 @@ void main() {
   // 分页窗口测试用：450 条日志，初始窗口只应渲染最新 200 条。
   String buildPagedLog(int count) {
     final buffer = StringBuffer(
-      '轻屿课表 - 应用日志\nexportedAt=1744166400000\nbrand=Xiaomi\n----\n',
+      '清涵课表 - 应用日志\nexportedAt=1744166400000\nbrand=Xiaomi\n----\n',
     );
     for (var i = 0; i < count; i++) {
       buffer.write(
@@ -46,7 +46,7 @@ void main() {
     fail('未能滚动到目标：$finder');
   }
 
-  const sampleLog = '''轻屿课表 - 应用日志
+  const sampleLog = '''清涵课表 - 应用日志
 exportedAt=1744166400000
 brand=Xiaomi
 ----
@@ -397,7 +397,7 @@ extras=
 
       // 长列表是复现关键：内容过短会走「短页弹回补偿」分支，掩盖死区。
       final longLog = StringBuffer(
-        '轻屿课表 - 应用日志\nexportedAt=1744166400000\nbrand=Xiaomi\n----\n',
+        '清涵课表 - 应用日志\nexportedAt=1744166400000\nbrand=Xiaomi\n----\n',
       );
       for (var i = 0; i < 40; i++) {
         longLog.write(

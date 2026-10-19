@@ -17,7 +17,7 @@ import android.content.Intent
  * widget_binding_* / widget_snapshot_* key），此前 Stats 系 3 个与
  * ExamCountdown 缺 onDeleted 覆盖，卡片删除后 key 永久残留。
  */
-abstract class BaseQingyuWidgetProvider : AppWidgetProvider() {
+abstract class BaseQinghanWidgetProvider : AppWidgetProvider() {
 
     override fun onAppWidgetOptionsChanged(
         context: Context,
@@ -79,7 +79,7 @@ abstract class BaseQingyuWidgetProvider : AppWidgetProvider() {
     }
 
     /** 子类声明自身组件，供按类查询已添加的 widget id。 */
-    protected abstract fun providerClass(): Class<out BaseQingyuWidgetProvider>
+    protected abstract fun providerClass(): Class<out BaseQinghanWidgetProvider>
 
     /** 子类唯一的差异点：渲染单张卡片。 */
     protected abstract fun renderWidget(

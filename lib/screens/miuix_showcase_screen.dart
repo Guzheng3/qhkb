@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_miuix/miuix.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 import 'miuix_showcase/buttons.dart';
 import 'miuix_showcase/common.dart';

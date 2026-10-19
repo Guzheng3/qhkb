@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/screens/user_guide_screen.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/screens/user_guide_screen.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/services/storage_service.dart';
 import '../helpers_test_app.dart';
 
 void main() {

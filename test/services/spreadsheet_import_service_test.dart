@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/spreadsheet_import_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/spreadsheet_import_service.dart';
 
 void main() {
   final service = SpreadsheetImportService();
   final settings = TimetableSettings.defaults();
 
-  const mikcbFullSample = '''
-# mikcb-course-import-v1
+  const qhkbFullSample = '''
+# qhkb-course-import-v1
 课程名,星期,开始节,结束节,教师,教室,上课周
 高等数学,1,1,2,张老师,A101,1-16
 大学英语,3,3,4,无,教学楼201,1-8、10-16
@@ -25,7 +25,7 @@ void main() {
 程序设计,5,5,6,李老师,实验室,1-5、7-11单
 ''';
 
-  test('parses minimal 5-column mikcb import', () {
+  test('parses minimal 5-column qhkb import', () {
     const csv = '''
 课程名,星期,开始节,结束节,上课周
 线性代数,2,3,4,1-16
@@ -37,7 +37,7 @@ void main() {
       settings: settings,
     );
 
-    expect(result.format, SpreadsheetImportService.formatMikcb);
+    expect(result.format, SpreadsheetImportService.formatQhkb);
     expect(result.warnings, isEmpty);
     expect(result.courses, hasLength(1));
 
@@ -83,7 +83,7 @@ void main() {
       settings: settings,
     );
 
-    expect(result.format, SpreadsheetImportService.formatMikcb);
+    expect(result.format, SpreadsheetImportService.formatQhkb);
     expect(result.warnings, isEmpty);
     expect(result.courses, hasLength(1));
 
@@ -115,7 +115,7 @@ void main() {
       settings: settings,
     );
 
-    expect(result.format, SpreadsheetImportService.formatMikcb);
+    expect(result.format, SpreadsheetImportService.formatQhkb);
     expect(result.warnings, isEmpty);
     expect(result.courses, hasLength(1));
 
@@ -129,9 +129,9 @@ void main() {
     expect(course.activeWeeks, [1, 3, 5, 7, 9, 11, 13, 15]);
   });
 
-  test('parses mikcb official template XLSX sample', () {
+  test('parses qhkb official template XLSX sample', () {
     final bytes = File(
-      'test/fixtures/mikcb_course_import_template.xlsx',
+      'test/fixtures/qhkb_course_import_template.xlsx',
     ).readAsBytesSync();
     final result = service.parseBytes(
       bytes,
@@ -139,7 +139,7 @@ void main() {
       settings: settings,
     );
 
-    expect(result.format, SpreadsheetImportService.formatMikcb);
+    expect(result.format, SpreadsheetImportService.formatQhkb);
     expect(result.warnings, isEmpty);
     expect(result.courses, hasLength(6));
     expect(result.courses.first.name, '概率论与数理统计');
@@ -165,14 +165,14 @@ void main() {
     expect(result.warnings.first, contains('16'));
   });
 
-  test('parses mikcb official template CSV sample', () {
+  test('parses qhkb official template CSV sample', () {
     final result = service.parseBytes(
-      utf8.encode(mikcbFullSample),
+      utf8.encode(qhkbFullSample),
       fileName: 'courses.csv',
       settings: settings,
     );
 
-    expect(result.format, SpreadsheetImportService.formatMikcb);
+    expect(result.format, SpreadsheetImportService.formatQhkb);
     expect(result.warnings, isEmpty);
     expect(result.courses, hasLength(3));
 

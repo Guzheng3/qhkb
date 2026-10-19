@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-IMPORT_LINE = "import 'package:university_timetable/ui/hyperos/hyperos.dart';\n"
+IMPORT_LINE = "import 'package:qhkb/ui/hyperos/hyperos.dart';\n"
 
 
 def migrate_file(path: Path) -> bool:

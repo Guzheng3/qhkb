@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
-import 'package:university_timetable/widgets/warehouse_macro_replayer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
+import 'package:qhkb/widgets/warehouse_macro_replayer.dart';
 
 void main() {
   final l10n = lookupAppLocalizations(const Locale('zh'));

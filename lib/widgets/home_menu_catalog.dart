@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/widgets/home_menu_route_catalog.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/withu_couple_login_screen.dart';
-import 'package:university_timetable/services/memory_stats_service.dart';
-import 'package:university_timetable/widgets/course_recolor_sheet.dart';
-import 'package:university_timetable/widgets/home_top_menu.dart';
-import 'package:university_timetable/widgets/profile_quick_switch_sheet.dart';
-import 'package:university_timetable/widgets/withu_couple_center_sheet.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/widgets/home_menu_route_catalog.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/qhkb_couple_login_screen.dart';
+import 'package:qhkb/services/memory_stats_service.dart';
+import 'package:qhkb/widgets/course_recolor_sheet.dart';
+import 'package:qhkb/widgets/home_top_menu.dart';
+import 'package:qhkb/widgets/profile_quick_switch_sheet.dart';
+import 'package:qhkb/widgets/qhkb_couple_center_sheet.dart';
 
 export 'home_top_menu.dart'
     show HomeMenuEntry, HomeMenuEntryCategory, homeMenuEntryCategoryLabel;
@@ -31,22 +31,22 @@ export 'home_menu_route_catalog.dart'
 /// Conditional top-menu action: shown only while the couple overlay is on.
 /// It intentionally stays out of the persistent menu catalog.
 final HomeMenuEntry coupleLoginHomeMenuEntry = HomeMenuEntry(
-  id: 'withuCoupleLogin',
-  title: (l10n) => l10n.withuCoupleLoginMenuTitle,
+  id: 'qhkbCoupleLogin',
+  title: (l10n) => l10n.qhkbCoupleLoginMenuTitle,
   icon: Icons.login_rounded,
   category: HomeMenuEntryCategory.features,
   open: (context) async {
     final provider = context.read<TimetableProvider>();
-    final sessionProvider = context.read<WithuCoupleSessionProvider>();
+    final sessionProvider = context.read<QhkbCoupleSessionProvider>();
     if (sessionProvider.isLoggedIn || sessionProvider.hasStoredSession) {
-      await showWithuCoupleCenterSheet(
+      await showQhkbCoupleCenterSheet(
         context: context,
         sessionProvider: sessionProvider,
         timetableProvider: provider,
       );
       return;
     }
-    final connected = await showWithuCoupleLoginSheet(
+    final connected = await showQhkbCoupleLoginSheet(
       context: context,
       authService: sessionProvider.authService,
       onPullPartner: (service) => service.syncAfterLogin(provider: provider),

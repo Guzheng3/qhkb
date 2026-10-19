@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/class_reminder.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/system_alarm_service.dart';
-import 'package:university_timetable/utils/app_toast.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/class_reminder.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/system_alarm_service.dart';
+import 'package:qhkb/utils/app_toast.dart';
 
 import '../ui/hyperos/hyperos.dart';
 import 'app_dialogs.dart';
@@ -105,7 +105,7 @@ class _ClassReminderSheetBodyState extends State<ClassReminderSheetBody> {
       final plan = SystemAlarmLogic.buildCourseWeeklyPlan(
         dayOfWeek: course.dayOfWeek,
         startTime: startText,
-        label: '轻屿 · $label',
+        label: '清涵 · $label',
         leadMinutes: lead,
         skipUi: settings.classAlarmSkipUi,
       );
@@ -114,7 +114,7 @@ class _ClassReminderSheetBodyState extends State<ClassReminderSheetBody> {
         finalPlan = SystemAlarmPlan(
           hour: minuteOfDay ~/ 60,
           minute: minuteOfDay % 60,
-          label: '轻屿 · $label',
+          label: '清涵 · $label',
           repeatDays:
               plan?.repeatDays ??
               [SystemAlarmLogic.calendarWeekday(course.dayOfWeek)],

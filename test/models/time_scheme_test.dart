@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_settings.dart';
 
 void main() {
   test('time scheme serializes complete state', () {

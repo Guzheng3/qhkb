@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/ui/hyperos/frosted/frosted_appearance.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/ui/hyperos/frosted/frosted_appearance.dart';
 
 // 玻璃坞底栏现只有 日/周 两个 Tab（设置入口走 ⋮ 列表菜单），
 // 原三个「设置 Tab」场景（渲染/切回/日→设置→日）随该 Tab 一并删除。

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/debug_deep_link_service.dart';
+import 'package:qhkb/services/debug_deep_link_service.dart';
 
 void main() {
   test('parses path and query from native payload', () {

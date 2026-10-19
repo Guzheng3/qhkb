@@ -1,14 +1,14 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/miui_live_activities_service.dart';
-import 'package:university_timetable/services/home_widget_binding_service.dart';
-import 'package:university_timetable/services/partner_timetable_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/services/widget_launch_router.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/miui_live_activities_service.dart';
+import 'package:qhkb/services/home_widget_binding_service.dart';
+import 'package:qhkb/services/partner_timetable_service.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/services/widget_launch_router.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

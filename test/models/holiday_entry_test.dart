@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
+import 'package:qhkb/models/holiday_entry.dart';
 
 void main() {
   group('HolidayEntry', () {

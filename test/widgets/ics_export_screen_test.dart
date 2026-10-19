@@ -6,12 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/data_transfer_screen.dart';
-import 'package:university_timetable/screens/ics_export_screen.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/data_transfer_screen.dart';
+import 'package:qhkb/screens/ics_export_screen.dart';
 
 import '../helpers_test_app.dart';
 

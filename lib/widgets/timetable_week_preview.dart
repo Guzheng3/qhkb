@@ -2,7 +2,7 @@ import 'dart:async' show unawaited;
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 import '../models/course.dart';
 import '../models/timetable_settings.dart';

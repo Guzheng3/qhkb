@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blackbox/flutter_blackbox.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/ui/debug/blackbox_host.dart';
-import 'package:university_timetable/ui/debug/blackbox_overlay_preferences.dart';
+import 'package:qhkb/ui/debug/blackbox_host.dart';
+import 'package:qhkb/ui/debug/blackbox_overlay_preferences.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

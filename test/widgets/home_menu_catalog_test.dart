@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/memory_stats_service.dart';
-import 'package:university_timetable/widgets/home_menu_catalog.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/memory_stats_service.dart';
+import 'package:qhkb/widgets/home_menu_catalog.dart';
 
 void main() {
   test('catalog ids are unique and non-empty', () {
@@ -19,7 +19,7 @@ void main() {
   test('couple login entry leads the top menu only while the switch is on', () {
     // 开关默认开启：登录入口置顶。
     final enabled = resolveHomeTopMenuEntries(TimetableSettings.defaults());
-    expect(enabled.first.id, 'withuCoupleLogin');
+    expect(enabled.first.id, 'qhkbCoupleLogin');
 
     // 开关关闭：登录入口从右上角菜单消失。
     final disabled = resolveHomeTopMenuEntries(
@@ -29,13 +29,13 @@ void main() {
     );
     expect(
       disabled.map((entry) => entry.id),
-      isNot(contains('withuCoupleLogin')),
+      isNot(contains('qhkbCoupleLogin')),
     );
 
     // 登录入口是瞬态条目，不进持久化候选目录。
     expect(
       kHomeMenuCatalog.map((entry) => entry.id),
-      isNot(contains('withuCoupleLogin')),
+      isNot(contains('qhkbCoupleLogin')),
     );
   });
 

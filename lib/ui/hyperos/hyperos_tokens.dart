@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'hyperos_miuix_spec.dart';
 
-/// Design tokens for mikcb HyperOS / MIUI-style surfaces.
+/// Design tokens for qhkb HyperOS / MIUI-style surfaces.
 ///
 /// Layout sizes/gaps are the primary public API. Color fields below are
 /// **light-mode measured constants** for [HyperosColors] only — UI code must

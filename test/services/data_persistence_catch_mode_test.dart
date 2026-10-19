@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
-import 'package:university_timetable/services/holiday_service.dart';
-import 'package:university_timetable/services/warehouse_macro_service.dart';
+import 'package:qhkb/models/holiday_entry.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
+import 'package:qhkb/services/holiday_service.dart';
+import 'package:qhkb/services/warehouse_macro_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

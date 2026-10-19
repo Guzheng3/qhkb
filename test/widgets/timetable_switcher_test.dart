@@ -7,16 +7,16 @@ import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/screens/timetable_profiles_screen.dart';
-import 'package:university_timetable/services/data_transfer_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/services/withu_couple_auth_service.dart';
-import 'package:university_timetable/services/withu_couple_session_store.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/screens/timetable_profiles_screen.dart';
+import 'package:qhkb/services/data_transfer_service.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/services/qhkb_couple_auth_service.dart';
+import 'package:qhkb/services/qhkb_couple_session_store.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 import '../helpers_test_app.dart';
 
 Future<void> _pumpTimetableFrame(WidgetTester tester) async {
@@ -25,7 +25,7 @@ Future<void> _pumpTimetableFrame(WidgetTester tester) async {
 }
 
 /// 内存版安全存储：预置 withU 凭证，让会话恢复走 MockClient 的 bootstrap。
-class _FakeSecureStorage extends WithuCoupleSecureStorage {
+class _FakeSecureStorage extends QhkbCoupleSecureStorage {
   _FakeSecureStorage(Map<String, String> initial) : _values = initial;
 
   final Map<String, String> _values;
@@ -45,8 +45,8 @@ class _FakeSecureStorage extends WithuCoupleSecureStorage {
 }
 
 /// 预置 withU 登录态的会话 Provider：bootstrap 返回双方昵称（小明/小红）。
-WithuCoupleSessionProvider createLoggedInTestSession() {
-  final authService = WithuCoupleAuthService(
+QhkbCoupleSessionProvider createLoggedInTestSession() {
+  final authService = QhkbCoupleAuthService(
     client: MockClient((request) async {
       // 中文昵称必须走 UTF-8 字节（http.Response(String) 默认 Latin-1）。
       return http.Response.bytes(
@@ -72,11 +72,11 @@ WithuCoupleSessionProvider createLoggedInTestSession() {
         headers: {'content-type': 'application/json; charset=utf-8'},
       );
     }),
-    sessionStore: WithuCoupleSessionStore(
+    sessionStore: QhkbCoupleSessionStore(
       storage: _FakeSecureStorage(_seededSessionValues()),
     ),
   );
-  return WithuCoupleSessionProvider(authService: authService);
+  return QhkbCoupleSessionProvider(authService: authService);
 }
 
 Map<String, String> _seededSessionValues() => {
@@ -108,7 +108,7 @@ void _seedInitializedPrefs() {
     'time_schemes': '[]',
     // 情侣标题登录态恢复会读 withU 配置；预置合法 baseUrl。
     'withu_couple_config_v1': jsonEncode({
-      'baseUrl': 'https://withu.example.com',
+      'baseUrl': 'https://qhkb.example.com',
     }),
   });
 }
@@ -163,7 +163,7 @@ void main() {
       find.byKey(const ValueKey('profile_switcher_trigger')),
       findsOneWidget,
     );
-    expect(find.text('轻屿课表'), findsOneWidget);
+    expect(find.text('清涵课表'), findsOneWidget);
     expect(find.text('默认课表'), findsNothing);
 
     await tester.tap(find.byKey(const ValueKey('profile_switcher_trigger')));
@@ -242,7 +242,7 @@ void main() {
     expect(find.byIcon(Icons.favorite_rounded), findsOneWidget);
     expect(find.text('小明'), findsOneWidget);
     expect(find.text('小红'), findsOneWidget);
-    expect(find.byKey(const ValueKey('withu_couple_login_chip')), findsNothing);
+    expect(find.byKey(const ValueKey('qhkb_couple_login_chip')), findsNothing);
   });
 
   testWidgets('signed-out home shows login prompt despite TA import', (
@@ -280,7 +280,7 @@ void main() {
       findsNothing,
     );
     expect(
-      find.byKey(const ValueKey('withu_couple_login_chip')),
+      find.byKey(const ValueKey('qhkb_couple_login_chip')),
       findsOneWidget,
     );
   });

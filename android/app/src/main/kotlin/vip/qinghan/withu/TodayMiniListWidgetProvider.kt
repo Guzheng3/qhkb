@@ -5,8 +5,8 @@ import android.content.Context
 import android.view.View
 import android.widget.RemoteViews
 
-class TodayMiniListWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayMiniListWidgetProvider::class.java
 
     companion object {

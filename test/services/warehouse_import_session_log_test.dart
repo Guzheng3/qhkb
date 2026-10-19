@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/warehouse_import_session_log.dart';
+import 'package:qhkb/services/warehouse_import_session_log.dart';
 
 void main() {
   late WarehouseImportSessionLog log;

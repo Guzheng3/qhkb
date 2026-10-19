@@ -14,8 +14,8 @@ import kotlin.math.roundToInt
  * 课程统计横向长条 4×1：单行展示 [周数徽章 | 本周节数 | 环比 | 迷你学期进度条]。
  * 进度条限宽防拉伸；高度过矮或无数据时自动隐藏。
  */
-class StatsStripWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class StatsStripWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         StatsStripWidgetProvider::class.java
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

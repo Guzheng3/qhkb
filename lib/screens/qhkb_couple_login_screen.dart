@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 
-import '../services/withu_couple_auth_service.dart';
-import '../services/withu_couple_config.dart';
-import '../services/withu_couple_timetable_service.dart';
+import '../services/qhkb_couple_auth_service.dart';
+import '../services/qhkb_couple_config.dart';
+import '../services/qhkb_couple_timetable_service.dart';
 import '../ui/hyperos/hyperos.dart';
 import '../utils/app_toast.dart';
 
-Future<bool?> showWithuCoupleLoginSheet({
+Future<bool?> showQhkbCoupleLoginSheet({
   required BuildContext context,
-  required WithuCoupleAuthService authService,
-  WithuCoupleConfig? initialConfig,
-  required Future<WithuCouplePullResult> Function(
-    WithuCoupleTimetableService service,
+  required QhkbCoupleAuthService authService,
+  QhkbCoupleConfig? initialConfig,
+  required Future<QhkbCouplePullResult> Function(
+    QhkbCoupleTimetableService service,
   )
   onPullPartner,
   bool useRootNavigator = false,
@@ -21,7 +21,7 @@ Future<bool?> showWithuCoupleLoginSheet({
   return showHyperosSheet<bool>(
     context: context,
     useRootNavigator: useRootNavigator,
-    builder: (_) => WithuCoupleLoginSheet(
+    builder: (_) => QhkbCoupleLoginSheet(
       authService: authService,
       initialConfig: initialConfig,
       onPullPartner: onPullPartner,
@@ -29,8 +29,8 @@ Future<bool?> showWithuCoupleLoginSheet({
   );
 }
 
-class WithuCoupleLoginSheet extends StatefulWidget {
-  const WithuCoupleLoginSheet({
+class QhkbCoupleLoginSheet extends StatefulWidget {
+  const QhkbCoupleLoginSheet({
     super.key,
     required this.authService,
     this.initialConfig,
@@ -39,34 +39,34 @@ class WithuCoupleLoginSheet extends StatefulWidget {
 
   /// 借用调用方（首页 provider）的认证服务：登录要立刻反映到全局登录态，
   /// 且凭证只有一份。借用方不得 dispose。
-  final WithuCoupleAuthService authService;
+  final QhkbCoupleAuthService authService;
 
-  final WithuCoupleConfig? initialConfig;
-  final Future<WithuCouplePullResult> Function(
-    WithuCoupleTimetableService service,
+  final QhkbCoupleConfig? initialConfig;
+  final Future<QhkbCouplePullResult> Function(
+    QhkbCoupleTimetableService service,
   )
   onPullPartner;
 
   @override
-  State<WithuCoupleLoginSheet> createState() => _WithuCoupleLoginSheetState();
+  State<QhkbCoupleLoginSheet> createState() => _QhkbCoupleLoginSheetState();
 }
 
-class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
+class _QhkbCoupleLoginSheetState extends State<QhkbCoupleLoginSheet> {
   late final TextEditingController _baseUrlController;
   late final TextEditingController _usernameController;
   late final TextEditingController _passwordController;
-  late final WithuCoupleTimetableService _timetableService;
+  late final QhkbCoupleTimetableService _timetableService;
   bool _isSubmitting = false;
 
-  WithuCoupleAuthService get _authService => widget.authService;
+  QhkbCoupleAuthService get _authService => widget.authService;
 
   @override
   void initState() {
     super.initState();
-    _timetableService = WithuCoupleTimetableService(
+    _timetableService = QhkbCoupleTimetableService(
       authService: widget.authService,
     );
-    final config = widget.initialConfig ?? const WithuCoupleConfig();
+    final config = widget.initialConfig ?? const QhkbCoupleConfig();
     _baseUrlController = TextEditingController(text: config.baseUrl);
     _usernameController = TextEditingController();
     _passwordController = TextEditingController();
@@ -87,11 +87,11 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
   Future<void> _loadSavedConfig() async {
     final config = await _authService.loadConfig();
     if (!mounted ||
-        _baseUrlController.text.trim() != WithuCoupleConfig.defaultBaseUrl) {
+        _baseUrlController.text.trim() != QhkbCoupleConfig.defaultBaseUrl) {
       return;
     }
     _baseUrlController.text = config.baseUrl.isEmpty
-        ? WithuCoupleConfig.defaultBaseUrl
+        ? QhkbCoupleConfig.defaultBaseUrl
         : config.baseUrl;
   }
 
@@ -107,7 +107,7 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
     if (baseUrl.isEmpty || username.isEmpty || password.isEmpty) {
       showAppToast(
         context,
-        message: l10n.withuCoupleMissingCredentials,
+        message: l10n.qhkbCoupleMissingCredentials,
         kind: AppToastKind.error,
       );
       return;
@@ -128,18 +128,18 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
       }
 
       final pullMessage = switch (result.status) {
-        WithuCouplePullStatus.imported => l10n.withuCouplePullImported,
-        WithuCouplePullStatus.updated => l10n.withuCouplePullUpdated,
-        WithuCouplePullStatus.unchanged => l10n.withuCouplePullUnchanged,
-        WithuCouplePullStatus.failed => localizeServiceMessage(
+        QhkbCouplePullStatus.imported => l10n.qhkbCouplePullImported,
+        QhkbCouplePullStatus.updated => l10n.qhkbCouplePullUpdated,
+        QhkbCouplePullStatus.unchanged => l10n.qhkbCouplePullUnchanged,
+        QhkbCouplePullStatus.failed => localizeServiceMessage(
           l10n,
-          result.errorCode ?? 'withu_request_failed',
+          result.errorCode ?? 'qhkb_request_failed',
         ),
       };
       showAppToast(
         context,
         message: pullMessage,
-        kind: result.status == WithuCouplePullStatus.failed
+        kind: result.status == QhkbCouplePullStatus.failed
             ? AppToastKind.error
             : AppToastKind.success,
       );
@@ -164,10 +164,10 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
   }
 
   String _errorCode(Object error) {
-    if (error is WithuCoupleApiException) {
+    if (error is QhkbCoupleApiException) {
       return error.code;
     }
-    return 'withu_request_failed';
+    return 'qhkb_request_failed';
   }
 
   @override
@@ -182,31 +182,31 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              l10n.withuCoupleLoginMenuTitle,
+              l10n.qhkbCoupleLoginMenuTitle,
               style: HyperosTypography.sheetTitle(context),
             ),
             const SizedBox(height: 6),
-            HyperosSectionDescription(text: l10n.withuCoupleLoginPageSubtitle),
+            HyperosSectionDescription(text: l10n.qhkbCoupleLoginPageSubtitle),
             const SizedBox(height: 18),
             HyperosTextField(
               controller: _baseUrlController,
-              label: l10n.withuCoupleServerLabel,
-              hint: WithuCoupleConfig.defaultBaseUrl,
+              label: l10n.qhkbCoupleServerLabel,
+              hint: QhkbCoupleConfig.defaultBaseUrl,
               keyboardType: TextInputType.url,
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 12),
             HyperosTextField(
               controller: _usernameController,
-              label: l10n.withuCoupleUsernameLabel,
-              hint: l10n.withuCoupleUsernameHint,
+              label: l10n.qhkbCoupleUsernameLabel,
+              hint: l10n.qhkbCoupleUsernameHint,
               textInputAction: TextInputAction.next,
             ),
             const SizedBox(height: 12),
             HyperosTextField(
               controller: _passwordController,
-              label: l10n.withuCouplePasswordLabel,
-              hint: l10n.withuCouplePasswordHint,
+              label: l10n.qhkbCouplePasswordLabel,
+              hint: l10n.qhkbCouplePasswordHint,
               obscureText: true,
               textInputAction: TextInputAction.done,
               onSubmitted: (_) => _submit(),
@@ -214,8 +214,8 @@ class _WithuCoupleLoginSheetState extends State<WithuCoupleLoginSheet> {
             const SizedBox(height: 18),
             HyperosButton(
               label: _isSubmitting
-                  ? '${l10n.withuCoupleLoginAction}...'
-                  : l10n.withuCoupleLoginAction,
+                  ? '${l10n.qhkbCoupleLoginAction}...'
+                  : l10n.qhkbCoupleLoginAction,
               loading: _isSubmitting,
               onPressed: _isSubmitting ? null : _submit,
             ),

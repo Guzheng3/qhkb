@@ -236,7 +236,7 @@ class AppUpdateService {
     try {
       final tempDir = await _temporaryDirectoryProvider();
       await _cleanupManagedInstallerFiles(tempDir);
-      final savePath = '${tempDir.path}/mikcb_update.apk';
+      final savePath = '${tempDir.path}/qhkb_update.apk';
       file = File(savePath);
       await _deleteFileIfExists(file);
 
@@ -351,7 +351,7 @@ class AppUpdateService {
           ? ''
           : entity.uri.pathSegments.last;
       final normalized = name.toLowerCase();
-      if (!normalized.startsWith('mikcb_update') ||
+      if (!normalized.startsWith('qhkb_update') ||
           !normalized.endsWith('.apk')) {
         continue;
       }

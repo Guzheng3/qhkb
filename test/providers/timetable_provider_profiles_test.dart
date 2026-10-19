@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
-import 'package:university_timetable/models/location_time_group.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/domain/live_activity_logic.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/home_widget_snapshot_service.dart';
-import 'package:university_timetable/services/miui_live_activities_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/holiday_entry.dart';
+import 'package:qhkb/models/location_time_group.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/domain/live_activity_logic.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/home_widget_snapshot_service.dart';
+import 'package:qhkb/services/miui_live_activities_service.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 final _liveSemesterStart2026 = DateTime(2026, 2, 23);
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_display_name">輕嶼課表</string>
+    <string name="app_display_name">清涵課表</string>
 
     <string name="notification_channel_live_update_name">課程表即時更新</string>
     <string name="notification_channel_live_update_desc">顯示當前課程進度</string>
@@ -10,7 +10,7 @@
     <string name="notification_channel_weekly_report_name">每週週報</string>
     <string name="notification_channel_weekly_report_desc">每週日晚上推送本週課程小結</string>
     <string name="notification_weekly_report_default_title">本週課程小結</string>
-    <string name="notification_weekly_report_default_body">打開輕嶼課表查看本週課程統計</string>
+    <string name="notification_weekly_report_default_body">打開清涵課表查看本週課程統計</string>
     <string name="notification_exam_reminder_default_title">考試提醒</string>
     <string name="notification_exam_reminder_default_body">你有一場即將開始的考試</string>
 

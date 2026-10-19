@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/services/fair_memory_service.dart';
+import 'package:qhkb/services/fair_memory_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();

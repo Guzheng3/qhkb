@@ -301,7 +301,7 @@ class _HyperosTransitionPageShell extends StatelessWidget {
   }
 }
 
-/// Standard sub-page route for mikcb (settings, import, about, etc.).
+/// Standard sub-page route for qhkb (settings, import, about, etc.).
 class HyperosPageRoute<T> extends PageRoute<T> {
   static final Set<HyperosPageRoute<dynamic>> _activeRoutes = {};
 

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/services/course_recolor_history_service.dart';
-import 'package:university_timetable/utils/course_recolor.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/services/course_recolor_history_service.dart';
+import 'package:qhkb/utils/course_recolor.dart';
 
 Course _course({
   required String id,

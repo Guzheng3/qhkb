@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/domain/holiday_resolver.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
+import 'package:qhkb/domain/holiday_resolver.dart';
+import 'package:qhkb/models/holiday_entry.dart';
 
 HolidayData _data(List<HolidayEntry> entries) =>
     HolidayData(year: 2026, version: 1, entries: entries);

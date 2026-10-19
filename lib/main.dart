@@ -7,8 +7,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -19,7 +19,7 @@ import 'blackbox_adapters.dart';
 import 'logging/app_log_messages.dart';
 import 'models/timetable_settings.dart';
 import 'providers/timetable_provider.dart';
-import 'providers/withu_couple_session_provider.dart';
+import 'providers/qhkb_couple_session_provider.dart';
 import 'screens/course_import_screen.dart';
 import 'screens/startup_flow_screens.dart';
 import 'screens/user_guide_screen.dart';
@@ -40,10 +40,10 @@ import 'services/app_migration_service.dart';
 import 'services/storage_service.dart';
 import 'services/android_animation_scale_service.dart';
 import 'services/app_diagnostic_service.dart';
-import 'services/withu_couple_auth_service.dart';
-import 'services/withu_couple_auto_sync_service.dart';
-import 'services/withu_couple_timetable_service.dart';
-import 'services/withu_app_update_service.dart';
+import 'services/qhkb_couple_auth_service.dart';
+import 'services/qhkb_couple_auto_sync_service.dart';
+import 'services/qhkb_couple_timetable_service.dart';
+import 'services/qhkb_app_update_service.dart';
 import 'services/app_update_service.dart';
 import 'services/frosted_blur_service.dart';
 import 'services/widget_launch_router.dart';
@@ -299,7 +299,7 @@ Future<void> main() async {
           ),
         );
         packageInfo = PackageInfo(
-          appName: '轻屿课表',
+          appName: '清涵课表',
           packageName: 'vip.qinghan.withu',
           version: '',
           buildNumber: '',
@@ -391,7 +391,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: timetableProvider),
-        ChangeNotifierProvider(create: (_) => WithuCoupleSessionProvider()),
+        ChangeNotifierProvider(create: (_) => QhkbCoupleSessionProvider()),
       ],
       child:
           Selector<
@@ -423,7 +423,7 @@ class MyApp extends StatelessWidget {
                 themeMode: _themeModeFromSettings(settings.themeMode),
                 theme: _appThemeData(Brightness.light, fontSpec: fontSpec),
                 darkTheme: _appThemeData(Brightness.dark, fontSpec: fontSpec),
-                // Android VIEW deep links (mikcb-debug://...) are also delivered
+                // Android VIEW deep links (qhkb-debug://...) are also delivered
                 // as Flutter pushNamed routes. We navigate via MethodChannel +
                 // DebugDeepLinkNavigator; swallow unknown platform routes so
                 // WidgetsApp does not assert "Could not find a generator".
@@ -508,12 +508,12 @@ class _AppEntryScreenState extends State<AppEntryScreen>
 
   final StorageService _storageService = StorageService();
   final AppMigrationService _migrationService = AppMigrationService();
-  final WithuCoupleAuthService _withuAuthService = WithuCoupleAuthService();
-  late final WithuCoupleTimetableService _withuTimetableService =
-      WithuCoupleTimetableService(authService: _withuAuthService);
-  late final WithuCoupleAutoSyncService _withuAutoSyncService =
-      WithuCoupleAutoSyncService(timetableService: _withuTimetableService);
-  final WithuAppUpdateService _withuAppUpdateService = WithuAppUpdateService();
+  final QhkbCoupleAuthService _qhkbAuthService = QhkbCoupleAuthService();
+  late final QhkbCoupleTimetableService _qhkbTimetableService =
+      QhkbCoupleTimetableService(authService: _qhkbAuthService);
+  late final QhkbCoupleAutoSyncService _qhkbAutoSyncService =
+      QhkbCoupleAutoSyncService(timetableService: _qhkbTimetableService);
+  final QhkbAppUpdateService _qhkbAppUpdateService = QhkbAppUpdateService();
   final AppUpdateService _appUpdateService = AppUpdateService();
   bool _startupHandled = false;
   bool _fairMemoryRecoveryHandled = false;
@@ -523,9 +523,9 @@ class _AppEntryScreenState extends State<AppEntryScreen>
   bool _splashGone = false;
   bool _splashFadingOut = false;
   bool _revealScheduled = false;
-  bool _withuUpdateCheckRunning = false;
-  bool _withuUpdatePromptShowing = false;
-  AppUpdateDownloadController? _withuUpdateDownloadController;
+  bool _qhkbUpdateCheckRunning = false;
+  bool _qhkbUpdatePromptShowing = false;
+  AppUpdateDownloadController? _qhkbUpdateDownloadController;
   final Stopwatch _splashClock = Stopwatch()..start();
   Timer? _splashReplayHold;
 
@@ -600,7 +600,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
     _forcedHomeRevealHook = _forceRevealHomeFromWatchdog;
     final provider = context.read<TimetableProvider>();
     // 恢复 withU 情侣登录态：首页情侣标题（昵称/爱心/登录提示）依赖它。
-    unawaited(context.read<WithuCoupleSessionProvider>().restoreSession());
+    unawaited(context.read<QhkbCoupleSessionProvider>().restoreSession());
     FairMemoryService.instance.registerSnapshotProvider(() async {
       return <String, Object?>{
         'activeProfileId': provider.activeProfileId,
@@ -649,10 +649,10 @@ class _AppEntryScreenState extends State<AppEntryScreen>
   @override
   void dispose() {
     _splashReplayHold?.cancel();
-    _withuUpdateDownloadController?.cancel();
-    _withuAutoSyncService.dispose();
-    _withuAuthService.dispose();
-    _withuAppUpdateService.dispose();
+    _qhkbUpdateDownloadController?.cancel();
+    _qhkbAutoSyncService.dispose();
+    _qhkbAuthService.dispose();
+    _qhkbAppUpdateService.dispose();
     if (!kReleaseMode) {
       DebugDeepLinkNavigator.detach();
     }
@@ -688,7 +688,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
     if (state == AppLifecycleState.resumed) {
       unawaited(refreshHyperosMotionFromAndroid());
       unawaited(_handleAppResumed());
-      unawaited(_checkWithuAppUpdate());
+      unawaited(_checkQhkbAppUpdate());
     } else {
       // 退到后台/被切走：把还在防抖窗口里的本地改动立刻上传——系统随时可能
       // 回收进程，等不到 3s 防抖这次改动就只剩冷启动补传了。
@@ -696,7 +696,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
           state == AppLifecycleState.hidden ||
           state == AppLifecycleState.paused ||
           state == AppLifecycleState.detached) {
-        unawaited(_withuAutoSyncService.handleAppPaused());
+        unawaited(_qhkbAutoSyncService.handleAppPaused());
       }
     }
   }
@@ -705,12 +705,12 @@ class _AppEntryScreenState extends State<AppEntryScreen>
     if (!mounted) {
       return;
     }
-    unawaited(_withuAutoSyncService.handleAppResumed());
+    unawaited(_qhkbAutoSyncService.handleAppResumed());
     await context.read<TimetableProvider>().handleAppResumed();
   }
 
-  Future<void> _checkWithuAppUpdate() async {
-    if (!mounted || _withuUpdateCheckRunning || _withuUpdatePromptShowing) {
+  Future<void> _checkQhkbAppUpdate() async {
+    if (!mounted || _qhkbUpdateCheckRunning || _qhkbUpdatePromptShowing) {
       return;
     }
     final currentVersion = widget.packageInfo.version.trim();
@@ -718,9 +718,9 @@ class _AppEntryScreenState extends State<AppEntryScreen>
       return;
     }
 
-    _withuUpdateCheckRunning = true;
+    _qhkbUpdateCheckRunning = true;
     try {
-      final result = await _withuAppUpdateService.checkForUpdates(
+      final result = await _qhkbAppUpdateService.checkForUpdates(
         currentVersion: currentVersion,
       );
       if (!mounted || result == null || !result.hasUpdate) {
@@ -734,37 +734,37 @@ class _AppEntryScreenState extends State<AppEntryScreen>
       // 这条日志就是最直接的证据，release 包没有它无从回溯。
       unawaited(
         AppLogService.instance.info(
-          'withu_update_available',
+          'qhkb_update_available',
           'current=$currentVersion remote=${release.version}',
         ),
       );
-      await _showWithuUpdatePrompt(release, currentVersion);
+      await _showQhkbUpdatePrompt(release, currentVersion);
     } catch (error, stackTrace) {
       unawaited(
         AppLogService.instance.warn(
-          'withu_update_check_failed',
+          'qhkb_update_check_failed',
           error.toString(),
           error: error,
           stackTrace: stackTrace,
         ),
       );
     } finally {
-      _withuUpdateCheckRunning = false;
+      _qhkbUpdateCheckRunning = false;
     }
   }
 
-  Future<void> _showWithuUpdatePrompt(
+  Future<void> _showQhkbUpdatePrompt(
     AppReleaseInfo release,
     String currentVersion,
   ) async {
-    if (!mounted || _withuUpdatePromptShowing) {
+    if (!mounted || _qhkbUpdatePromptShowing) {
       return;
     }
 
-    _withuUpdatePromptShowing = true;
+    _qhkbUpdatePromptShowing = true;
     final promptController = HomeUpdatePromptController();
     final downloadController = AppUpdateDownloadController();
-    _withuUpdateDownloadController = downloadController;
+    _qhkbUpdateDownloadController = downloadController;
 
     try {
       await showHomeUpdatePrompt(
@@ -772,7 +772,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
         release: release,
         currentVersion: currentVersion,
         controller: promptController,
-        onDownload: () => _downloadWithuUpdate(
+        onDownload: () => _downloadQhkbUpdate(
           release: release,
           promptController: promptController,
           downloadController: downloadController,
@@ -787,15 +787,15 @@ class _AppEntryScreenState extends State<AppEntryScreen>
           if (release.forceUpdate) {
             return;
           }
-          await _withuAppUpdateService.ignoreNonForcedVersion(release.version);
+          await _qhkbAppUpdateService.ignoreNonForcedVersion(release.version);
         },
         onCancelDownload: () {
-          _withuUpdateDownloadController?.cancel();
+          _qhkbUpdateDownloadController?.cancel();
           promptController.finishInAppDownload(success: false, cancelled: true);
         },
         onResumeDownload: () {
           downloadController.reset();
-          return _downloadWithuUpdate(
+          return _downloadQhkbUpdate(
             release: release,
             promptController: promptController,
             downloadController: downloadController,
@@ -803,15 +803,15 @@ class _AppEntryScreenState extends State<AppEntryScreen>
         },
       );
     } finally {
-      if (identical(_withuUpdateDownloadController, downloadController)) {
-        _withuUpdateDownloadController = null;
+      if (identical(_qhkbUpdateDownloadController, downloadController)) {
+        _qhkbUpdateDownloadController = null;
       }
-      _withuUpdatePromptShowing = false;
+      _qhkbUpdatePromptShowing = false;
       promptController.dispose();
     }
   }
 
-  Future<bool> _downloadWithuUpdate({
+  Future<bool> _downloadQhkbUpdate({
     required AppReleaseInfo release,
     required HomeUpdatePromptController promptController,
     required AppUpdateDownloadController downloadController,
@@ -823,7 +823,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
     }
 
     promptController.beginInAppDownload();
-    _withuUpdateDownloadController = downloadController;
+    _qhkbUpdateDownloadController = downloadController;
     final error = await _appUpdateService.downloadAndInstallUpdate(
       url,
       (downloadedBytes, totalBytes) {
@@ -877,9 +877,9 @@ class _AppEntryScreenState extends State<AppEntryScreen>
         // 就绪：放行后的第一帧必须是完整界面，不允许露出主题兜底的半成品
         // 底色。prime 内部有预算与异常兜底，不会拖死启动管线。
         await HomeStartupVisualPrimer.prime(provider.settings);
-        _withuAutoSyncService.bind(provider);
+        _qhkbAutoSyncService.bind(provider);
         _revealHomeOnce();
-        unawaited(_checkWithuAppUpdate());
+        unawaited(_checkQhkbAppUpdate());
         unawaited(_checkPendingExternalImport());
         unawaited(_checkPendingWidgetLaunch());
         unawaited(
@@ -909,7 +909,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
 
       await Future.wait([providerInitFuture, legacyPackageFuture]);
       await HomeStartupVisualPrimer.prime(provider.settings);
-      _withuAutoSyncService.bind(provider);
+      _qhkbAutoSyncService.bind(provider);
       _revealHomeOnce();
       final legacyPackage = await legacyPackageFuture;
       final shouldShowMigrationGuide =
@@ -968,7 +968,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
         ),
       );
       await _revealMainContent();
-      unawaited(_checkWithuAppUpdate());
+      unawaited(_checkQhkbAppUpdate());
     } catch (e, stackTrace) {
       // 初始化失败时降级换入主界面，避免白屏 hang
       _revealHomeOnce();
@@ -982,7 +982,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
       );
       if (mounted) {
         await _revealMainContent();
-        unawaited(_checkWithuAppUpdate());
+        unawaited(_checkQhkbAppUpdate());
       }
     }
   }
@@ -1175,7 +1175,7 @@ class _AppEntryScreenState extends State<AppEntryScreen>
         final result = await FilePicker.pickFiles(
           type: FileType.custom,
           withData: true,
-          allowedExtensions: const ['json', 'mikcb'],
+          allowedExtensions: const ['json', 'qhkb'],
         );
         final file = result?.files.single;
         if (file == null) {

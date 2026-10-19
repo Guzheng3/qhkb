@@ -5,17 +5,17 @@ import 'package:flutter/services.dart';
 
 /// Debug-only deep-link bridge for adb / Android CLI automation.
 ///
-/// Supported URIs (scheme `mikcb-debug`):
-/// - `mikcb-debug://home`
-/// - `mikcb-debug://settings`
-/// - `mikcb-debug://settings/live`
-/// - `mikcb-debug://settings/live/testing`
-/// - `mikcb-debug://settings/live/keep-alive`
-/// - `mikcb-debug://settings/couple`
-/// - `mikcb-debug://courses/import`
-/// - `mikcb-debug://action/resume`
-/// - `mikcb-debug://action/seed-soon?minutes=15`
-/// - `mikcb-debug://action/dump-live-status`
+/// Supported URIs (scheme `qhkb-debug`):
+/// - `qhkb-debug://home`
+/// - `qhkb-debug://settings`
+/// - `qhkb-debug://settings/live`
+/// - `qhkb-debug://settings/live/testing`
+/// - `qhkb-debug://settings/live/keep-alive`
+/// - `qhkb-debug://settings/couple`
+/// - `qhkb-debug://courses/import`
+/// - `qhkb-debug://action/resume`
+/// - `qhkb-debug://action/seed-soon?minutes=15`
+/// - `qhkb-debug://action/dump-live-status`
 class DebugDeepLinkService {
   DebugDeepLinkService._();
 

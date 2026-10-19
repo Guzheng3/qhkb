@@ -27,7 +27,7 @@ void main() {
     // 4409→4422: 桌面卡片按课表绑定快照（e7f77af4）+13——Provider 侧只新增
     // buildHomeWidgetSnapshotForProfile 转发入口与逐卡签名去重表，快照构建本体
     // 在 live_activity_controller，属正当增长；拆分归阶段 3 重构。
-    // 4422→4426: eec42680 周次口径修复 +19（当时未同步基线），同批自 CNB
+    // 4422→4426: eec42680 周次口径修复 +19（当时未同步基线），同批在
     // PR#6 内联三个单调用点私有方法（-15）瘦身，净 +4，按测试约定同步基线。
     // 4426→4398: issue#11 竞态修复（R1 迁移写回包 mutation gate+一致性校验/
     // R2 周次同步与 setCurrentWeek 包 gate/N5 考试提醒单飞收敛，+55）+
@@ -47,7 +47,7 @@ void main() {
     // 合并后实测 4440，按测试约定同步真实值。
     // 4440→4461: main 上既有漂移（未同步基线，与本次情侣历史课表无关），
     // 按测试约定并入基线。
-    // 4461→4608: 情侣历史课表（withu-home-heart-nickname 方案 follow-up）
+    // 4461→4608: 情侣历史课表（qhkb-home-heart-nickname 方案 follow-up）
     // +147——换学期/覆盖导入前的学期快照捕获、restoreCoupleTimetableHistory
     // 恢复入口与历史读取转发、服务注入参数，属正当功能增长；拆分归阶段 3
     // 重构，按测试约定同步基线。
@@ -69,7 +69,7 @@ void main() {
   });
 
   test('timetable_provider 的 lib 扇入棘轮：只减不增', () {
-    // 48→51：扇入检测原先只匹配相对路径 import，package:university_timetable/
+    // 48→51：扇入检测原先只匹配相对路径 import，package:qhkb/
     // 与 lib 根相对路径可绕过守卫（实际漏网 3 处：main.dart、class_reminder_sheet.dart、
     // home_menu_catalog.dart）。补漏后按真实扇入 51 设基线，后续只许下降。
     // 51→52：新增日程安排列表页 schedule_list_screen.dart（任务清单/考试安排的

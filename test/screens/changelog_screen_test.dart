@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/screens/changelog_screen.dart';
+import 'package:qhkb/screens/changelog_screen.dart';
 
 void main() {
   group('compareReleaseVersionsDesc', () {

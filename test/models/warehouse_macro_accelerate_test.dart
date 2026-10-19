@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
 
 void main() {
   group('sanitizeWarehouseScriptPageUrl', () {

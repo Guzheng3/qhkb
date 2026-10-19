@@ -290,7 +290,7 @@ class _LiveTestingSettingsScreenState extends State<_LiveTestingSettingsScreen>
     }
     final directory = await getTemporaryDirectory();
     final file = File(
-      '${directory.path}${Platform.pathSeparator}mikcb-live-debug-snapshot-${DateTime.now().millisecondsSinceEpoch}.json',
+      '${directory.path}${Platform.pathSeparator}qhkb-live-debug-snapshot-${DateTime.now().millisecondsSinceEpoch}.json',
     );
     final payload = <String, dynamic>{
       'exportedAtMillis': DateTime.now().millisecondsSinceEpoch,

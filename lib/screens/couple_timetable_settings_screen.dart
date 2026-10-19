@@ -4,22 +4,22 @@ import 'dart:async';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 import 'package:provider/provider.dart';
 
 import '../domain/couple_timetable_logic.dart';
 import '../providers/timetable_provider.dart';
-import '../providers/withu_couple_session_provider.dart';
+import '../providers/qhkb_couple_session_provider.dart';
 import '../services/partner_timetable_service.dart';
 import '../services/home_widget_service.dart';
-import '../services/withu_couple_auth_service.dart';
-import '../services/withu_couple_config.dart';
-import '../services/withu_couple_session_store.dart';
-import '../services/withu_couple_timetable_service.dart';
+import '../services/qhkb_couple_auth_service.dart';
+import '../services/qhkb_couple_config.dart';
+import '../services/qhkb_couple_session_store.dart';
+import '../services/qhkb_couple_timetable_service.dart';
 import '../ui/hyperos/hyperos.dart';
 import '../utils/app_toast.dart';
-import 'withu_couple_login_screen.dart';
+import 'qhkb_couple_login_screen.dart';
 
 class CoupleTimetableSettingsScreen extends StatefulWidget {
   const CoupleTimetableSettingsScreen({super.key});
@@ -34,32 +34,32 @@ class _CoupleTimetableSettingsScreenState
   bool _isExporting = false;
   bool _isImporting = false;
   bool _isUnlinking = false;
-  bool _isPullingWithu = false;
-  bool _isUploadingWithu = false;
+  bool _isPullingQhkb = false;
+  bool _isUploadingQhkb = false;
   bool _isPinningCoupleWidget = false;
 
-  late final WithuCoupleAuthService _withuAuthService;
+  late final QhkbCoupleAuthService _qhkbAuthService;
   final HomeWidgetService _homeWidgetService = HomeWidgetService();
-  late final WithuCoupleTimetableService _withuTimetableService;
-  WithuCoupleConfig _withuCoupleConfig = const WithuCoupleConfig();
-  WithuCoupleSession? _withuCoupleSession;
+  late final QhkbCoupleTimetableService _qhkbTimetableService;
+  QhkbCoupleConfig _qhkbCoupleConfig = const QhkbCoupleConfig();
+  QhkbCoupleSession? _qhkbCoupleSession;
 
   @override
   void initState() {
     super.initState();
     // 复用首页 provider 的认证服务：凭证只有一份，登录/退出都要立刻反映到
     // 首页登录态。借用方不负责 dispose（所有者是 provider）。
-    _withuAuthService = context.read<WithuCoupleSessionProvider>().authService;
-    _withuTimetableService = WithuCoupleTimetableService(
-      authService: _withuAuthService,
+    _qhkbAuthService = context.read<QhkbCoupleSessionProvider>().authService;
+    _qhkbTimetableService = QhkbCoupleTimetableService(
+      authService: _qhkbAuthService,
     );
-    _loadWithuCoupleState();
+    _loadQhkbCoupleState();
   }
 
-  bool get _isWithuCoupleConnected =>
-      _withuCoupleConfig.baseUrl.trim().isNotEmpty &&
-      _withuCoupleSession != null &&
-      _withuCoupleSession!.isUsable;
+  bool get _isQhkbCoupleConnected =>
+      _qhkbCoupleConfig.baseUrl.trim().isNotEmpty &&
+      _qhkbCoupleSession != null &&
+      _qhkbCoupleSession!.isUsable;
 
   @override
   Widget build(BuildContext context) {
@@ -149,10 +149,10 @@ class _CoupleTimetableSettingsScreenState
               ),
             ),
           const HyperosSectionGap(),
-          HyperosSectionLabel(text: l10n.withuCoupleTitle),
+          HyperosSectionLabel(text: l10n.qhkbCoupleTitle),
           HyperosControlCard(
             child: HyperosControlCardInset(
-              child: _buildWithuCoupleControl(context, l10n),
+              child: _buildQhkbCoupleControl(context, l10n),
             ),
           ),
           if (binding != null &&
@@ -276,15 +276,15 @@ class _CoupleTimetableSettingsScreenState
     );
   }
 
-  Future<void> _loadWithuCoupleState() async {
-    final config = await _withuAuthService.loadConfig();
-    final session = await _withuAuthService.loadSession();
+  Future<void> _loadQhkbCoupleState() async {
+    final config = await _qhkbAuthService.loadConfig();
+    final session = await _qhkbAuthService.loadSession();
     if (!mounted) {
       return;
     }
     setState(() {
-      _withuCoupleConfig = config;
-      _withuCoupleSession = session;
+      _qhkbCoupleConfig = config;
+      _qhkbCoupleSession = session;
     });
   }
 
@@ -309,7 +309,7 @@ class _CoupleTimetableSettingsScreenState
   }
 
   /// 开关关闭时若当前正停在 TA 课表，退回我的课表：关闭后课表界面
-  /// 回到原来的「轻屿课表」（我的课表），不停留在情侣课表上。
+  /// 回到原来的「清涵课表」（我的课表），不停留在情侣课表上。
   /// 极端情况：没有任何非 partner profile 可退时，恢复开关为开启，
   /// 保持「停在 TA 课表 ⇒ 开关开启」不变量，避免 UI 与内容不一致。
   Future<void> _leavePartnerTimetableIfActive(TimetableProvider provider) async {
@@ -326,27 +326,27 @@ class _CoupleTimetableSettingsScreenState
     }
   }
 
-  Widget _buildWithuCoupleControl(BuildContext context, AppLocalizations l10n) {
-    final connected = _isWithuCoupleConnected;
+  Widget _buildQhkbCoupleControl(BuildContext context, AppLocalizations l10n) {
+    final connected = _isQhkbCoupleConnected;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           connected
-              ? l10n.withuCoupleConnectedAs(_withuCoupleSession!.username)
-              : l10n.withuCoupleNotConnected,
+              ? l10n.qhkbCoupleConnectedAs(_qhkbCoupleSession!.username)
+              : l10n.qhkbCoupleNotConnected,
           style: HyperosTypography.listTitle(context),
         ),
         const SizedBox(height: 8),
         Text(
-          l10n.withuCoupleServerHint(_withuCoupleConfig.baseUrl),
+          l10n.qhkbCoupleServerHint(_qhkbCoupleConfig.baseUrl),
           style: HyperosTypography.listDetail(context),
         ),
-        if (_withuCoupleConfig.lastPulledAt != null) ...[
+        if (_qhkbCoupleConfig.lastPulledAt != null) ...[
           const SizedBox(height: 8),
           Text(
-            l10n.withuCoupleLastPulledAt(
-              _formatDateTime(_withuCoupleConfig.lastPulledAt!),
+            l10n.qhkbCoupleLastPulledAt(
+              _formatDateTime(_qhkbCoupleConfig.lastPulledAt!),
             ),
             style: HyperosTypography.listDetail(context),
           ),
@@ -358,31 +358,31 @@ class _CoupleTimetableSettingsScreenState
           children: [
             if (!connected)
               HyperosButton(
-                label: l10n.withuCoupleConnect,
-                onPressed: _connectWithuCouple,
+                label: l10n.qhkbCoupleConnect,
+                onPressed: _connectQhkbCouple,
               )
             else ...[
               HyperosButton(
-                label: _isPullingWithu
-                    ? '${l10n.withuCouplePullNow}...'
-                    : l10n.withuCouplePullNow,
-                loading: _isPullingWithu,
-                onPressed: _isPullingWithu ? null : _pullPartnerWithu,
+                label: _isPullingQhkb
+                    ? '${l10n.qhkbCouplePullNow}...'
+                    : l10n.qhkbCouplePullNow,
+                loading: _isPullingQhkb,
+                onPressed: _isPullingQhkb ? null : _pullPartnerQhkb,
               ),
               HyperosButton(
-                label: _isUploadingWithu
-                    ? '${l10n.withuCoupleUploadForPartner}...'
-                    : l10n.withuCoupleUploadForPartner,
+                label: _isUploadingQhkb
+                    ? '${l10n.qhkbCoupleUploadForPartner}...'
+                    : l10n.qhkbCoupleUploadForPartner,
                 variant: HyperosButtonVariant.secondary,
-                loading: _isUploadingWithu,
-                onPressed: _isUploadingWithu
+                loading: _isUploadingQhkb,
+                onPressed: _isUploadingQhkb
                     ? null
-                    : _uploadMyTimetableForWithu,
+                    : _uploadMyTimetableForQhkb,
               ),
               HyperosButton(
-                label: l10n.withuCoupleDisconnect,
+                label: l10n.qhkbCoupleDisconnect,
                 variant: HyperosButtonVariant.secondary,
-                onPressed: _disconnectWithuCouple,
+                onPressed: _disconnectQhkbCouple,
               ),
             ],
           ],
@@ -391,13 +391,13 @@ class _CoupleTimetableSettingsScreenState
     );
   }
 
-  Future<void> _connectWithuCouple() async {
+  Future<void> _connectQhkbCouple() async {
     final provider = context.read<TimetableProvider>();
-    final sessionProvider = context.read<WithuCoupleSessionProvider>();
-    final connected = await showWithuCoupleLoginSheet(
+    final sessionProvider = context.read<QhkbCoupleSessionProvider>();
+    final connected = await showQhkbCoupleLoginSheet(
       context: context,
       authService: sessionProvider.authService,
-      initialConfig: _withuCoupleConfig,
+      initialConfig: _qhkbCoupleConfig,
       onPullPartner: (service) => service.syncAfterLogin(provider: provider),
     );
     if (connected != true || !mounted) {
@@ -407,18 +407,18 @@ class _CoupleTimetableSettingsScreenState
     // 直接按本地凭证收敛，不再多发一次 bootstrap）。
     await sessionProvider.refreshFromLocal();
     await provider.syncCoupleTimetableWidgetSnapshot();
-    await _loadWithuCoupleState();
+    await _loadQhkbCoupleState();
   }
 
-  Future<void> _disconnectWithuCouple() async {
+  Future<void> _disconnectQhkbCouple() async {
     final l10n = AppLocalizations.of(context)!;
     final provider = context.read<TimetableProvider>();
-    final sessionProvider = context.read<WithuCoupleSessionProvider>();
+    final sessionProvider = context.read<QhkbCoupleSessionProvider>();
     // 1) 本机立即退出：只读本地凭证，返回时首页已经是未登录态，不等服务端。
     await sessionProvider.signOutLocally();
-    await _withuTimetableService.forgetPartnerPullMarkers();
+    await _qhkbTimetableService.forgetPartnerPullMarkers();
     await provider.syncCoupleTimetableWidgetSnapshot();
-    await _loadWithuCoupleState();
+    await _loadQhkbCoupleState();
     if (!mounted) {
       return;
     }
@@ -431,7 +431,7 @@ class _CoupleTimetableSettingsScreenState
     if (!serverConfirmed) {
       showAppToast(
         context,
-        message: l10n.withuCoupleLogoutUnconfirmed,
+        message: l10n.qhkbCoupleLogoutUnconfirmed,
         kind: AppToastKind.warning,
       );
     }
@@ -464,60 +464,60 @@ class _CoupleTimetableSettingsScreenState
     showAppToast(context, message: message);
   }
 
-  Future<void> _pullPartnerWithu({
+  Future<void> _pullPartnerQhkb({
     bool force = false,
     bool showProgress = true,
   }) async {
     final l10n = AppLocalizations.of(context)!;
     if (showProgress) {
-      setState(() => _isPullingWithu = true);
+      setState(() => _isPullingQhkb = true);
     }
     try {
-      final result = await _withuTimetableService.pullPartnerTimetable(
+      final result = await _qhkbTimetableService.pullPartnerTimetable(
         provider: context.read<TimetableProvider>(),
         force: force,
       );
-      await _loadWithuCoupleState();
+      await _loadQhkbCoupleState();
       if (!mounted) {
         return;
       }
       switch (result.status) {
-        case WithuCouplePullStatus.imported:
+        case QhkbCouplePullStatus.imported:
           showAppToast(
             context,
-            message: l10n.withuCouplePullImported,
+            message: l10n.qhkbCouplePullImported,
             kind: AppToastKind.success,
           );
-        case WithuCouplePullStatus.updated:
+        case QhkbCouplePullStatus.updated:
           showAppToast(
             context,
-            message: l10n.withuCouplePullUpdated,
+            message: l10n.qhkbCouplePullUpdated,
             kind: AppToastKind.success,
           );
-        case WithuCouplePullStatus.unchanged:
-          showAppToast(context, message: l10n.withuCouplePullUnchanged);
-        case WithuCouplePullStatus.failed:
+        case QhkbCouplePullStatus.unchanged:
+          showAppToast(context, message: l10n.qhkbCouplePullUnchanged);
+        case QhkbCouplePullStatus.failed:
           showAppToast(
             context,
             message: localizeServiceMessage(
               l10n,
-              result.errorCode ?? 'withu_request_failed',
+              result.errorCode ?? 'qhkb_request_failed',
             ),
             kind: AppToastKind.error,
           );
       }
     } finally {
       if (mounted && showProgress) {
-        setState(() => _isPullingWithu = false);
+        setState(() => _isPullingQhkb = false);
       }
     }
   }
 
-  Future<void> _uploadMyTimetableForWithu() async {
+  Future<void> _uploadMyTimetableForQhkb() async {
     final l10n = AppLocalizations.of(context)!;
-    setState(() => _isUploadingWithu = true);
+    setState(() => _isUploadingQhkb = true);
     try {
-      final errorCode = await _withuTimetableService
+      final errorCode = await _qhkbTimetableService
           .uploadMyTimetableForPartner(
             provider: context.read<TimetableProvider>(),
           );
@@ -534,12 +534,12 @@ class _CoupleTimetableSettingsScreenState
       }
       showAppToast(
         context,
-        message: l10n.withuCoupleUploadSuccess,
+        message: l10n.qhkbCoupleUploadSuccess,
         kind: AppToastKind.success,
       );
     } finally {
       if (mounted) {
-        setState(() => _isUploadingWithu = false);
+        setState(() => _isUploadingQhkb = false);
       }
     }
   }
@@ -660,7 +660,7 @@ class _CoupleTimetableSettingsScreenState
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
         withData: true,
-        allowedExtensions: const ['json', 'mikcb'],
+        allowedExtensions: const ['json', 'qhkb'],
       );
       final file = result?.files.single;
       if (file == null) {

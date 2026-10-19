@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/statistics_models.dart';
-import 'package:university_timetable/services/statistics_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/statistics_models.dart';
+import 'package:qhkb/services/statistics_service.dart';
 
 void main() {
   group('StatisticsService', () {

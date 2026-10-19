@@ -4,7 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
+import 'package:qhkb/utils/home_page_background.dart';
 
 /// Generates a [width]x[height] PNG: top [topLightFraction] rows white,
 /// the rest black.
@@ -76,7 +76,7 @@ void main() {
   late Directory dir;
 
   setUp(() {
-    dir = Directory.systemTemp.createTempSync('mikcb_lum_');
+    dir = Directory.systemTemp.createTempSync('qhkb_lum_');
   });
 
   tearDown(() {

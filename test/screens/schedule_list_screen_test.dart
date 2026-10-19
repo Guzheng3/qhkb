@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/schedule_item.dart';
-import 'package:university_timetable/screens/schedule_list_screen.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/schedule_item.dart';
+import 'package:qhkb/screens/schedule_list_screen.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 import '../helpers_test_app.dart';
 

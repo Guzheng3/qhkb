@@ -9,13 +9,13 @@ class AppLocalizationsZh extends AppLocalizations {
   AppLocalizationsZh([String locale = 'zh']) : super(locale);
 
   @override
-  String get appTitle => '轻屿课表';
+  String get appTitle => '清涵课表';
 
   @override
-  String get appTitleDebug => '轻屿课表调试版';
+  String get appTitleDebug => '清涵课表调试版';
 
   @override
-  String get appTitleProfile => '轻屿课表性能版';
+  String get appTitleProfile => '清涵课表性能版';
 
   @override
   String get appearanceTitle => '外观与配色';
@@ -268,10 +268,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get coupleTimetableNotBoundMessage => '请先导入对方课表后再查看叠加视图';
 
   @override
-  String get coupleTimetableShareText => '这是我的课表，导入到轻屿课表的情侣课表即可一起查看';
+  String get coupleTimetableShareText => '这是我的课表，导入到清涵课表的情侣课表即可一起查看';
 
   @override
-  String get coupleTimetableShareSubject => '轻屿课表 · 情侣课表分享';
+  String get coupleTimetableShareSubject => '清涵课表 · 情侣课表分享';
 
   @override
   String get coupleTimetableWeekOffsetTitle => '周次偏移';
@@ -297,67 +297,67 @@ class AppLocalizationsZh extends AppLocalizations {
   String get partnerImportRequiresSingleProfile => '请导入单课表备份文件，不支持全量备份';
 
   @override
-  String get withuCoupleTitle => 'withU 同步';
+  String get qhkbCoupleTitle => 'withU 同步';
 
   @override
-  String get withuCoupleNotConnected => '尚未连接 withU';
+  String get qhkbCoupleNotConnected => '尚未连接 withU';
 
   @override
-  String withuCoupleConnectedAs(String username) {
+  String qhkbCoupleConnectedAs(String username) {
     return '已连接：$username';
   }
 
   @override
-  String withuCoupleServerHint(String url) {
+  String qhkbCoupleServerHint(String url) {
     return '服务器：$url';
   }
 
   @override
-  String withuCoupleLastPulledAt(String time) {
+  String qhkbCoupleLastPulledAt(String time) {
     return '上次拉取：$time';
   }
 
   @override
-  String get withuCoupleConnect => '连接 withU';
+  String get qhkbCoupleConnect => '连接 withU';
 
   @override
-  String get withuCoupleDisconnect => '退出登录';
+  String get qhkbCoupleDisconnect => '退出登录';
 
   @override
-  String get withuCoupleLogoutUnconfirmed => '已在本机退出登录，但未能通知服务器；服务器上的会话可能仍然有效';
+  String get qhkbCoupleLogoutUnconfirmed => '已在本机退出登录，但未能通知服务器；服务器上的会话可能仍然有效';
 
   @override
-  String get withuCouplePullNow => '立即拉取对方课表';
+  String get qhkbCouplePullNow => '立即拉取对方课表';
 
   @override
-  String get withuCoupleCenterTitle => '情侣中心';
+  String get qhkbCoupleCenterTitle => '情侣中心';
 
   @override
-  String get withuCoupleSettings => '情侣课表设置';
+  String get qhkbCoupleSettings => '情侣课表设置';
 
   @override
-  String get withuCoupleSyncNow => '立即同步课表';
+  String get qhkbCoupleSyncNow => '立即同步课表';
 
   @override
-  String get withuCouplePartnerImported => '对方课表已导入';
+  String get qhkbCouplePartnerImported => '对方课表已导入';
 
   @override
-  String get withuCouplePartnerNotImported => '尚未导入对方课表';
+  String get qhkbCouplePartnerNotImported => '尚未导入对方课表';
 
   @override
-  String get withuCoupleUploadForPartner => '上传我的课表';
+  String get qhkbCoupleUploadForPartner => '上传我的课表';
 
   @override
-  String get withuCoupleLoginSheetTitle => '连接 withU（情侣课表）';
+  String get qhkbCoupleLoginSheetTitle => '连接 withU（情侣课表）';
 
   @override
-  String get withuCoupleLoginSheetSubtitle => '使用 withU 情侣账号登录，从对方账号拉取课表';
+  String get qhkbCoupleLoginSheetSubtitle => '使用 withU 情侣账号登录，从对方账号拉取课表';
 
   @override
-  String get withuCoupleConfirmConnect => '连接并拉取';
+  String get qhkbCoupleConfirmConnect => '连接并拉取';
 
   @override
-  String get withuCoupleServerLabel => 'withU 服务器';
+  String get qhkbCoupleServerLabel => 'withU 服务器';
 
   @override
   String get coupleTimetableSwitchSubtitle => '开启后在课表中叠加双方课程，并在右上角菜单优先显示登录';
@@ -385,22 +385,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get coupleTimetableDesktopCardPlaceholder => '桌面卡片功能开发中，当前仅供预留';
 
   @override
-  String get withuCoupleLoginPageTitle => '登录 withU';
+  String get qhkbCoupleLoginPageTitle => '登录 withU';
 
   @override
-  String get withuCoupleLoginPageSubtitle => '使用 withU 情侣账号登录，登录后自动拉取对方课表';
+  String get qhkbCoupleLoginPageSubtitle => '使用 withU 情侣账号登录，登录后自动拉取对方课表';
 
   @override
-  String get withuCoupleLoginAction => '登录并拉取';
+  String get qhkbCoupleLoginAction => '登录并拉取';
 
   @override
-  String get withuCoupleLoginMenuTitle => '账号登录';
+  String get qhkbCoupleLoginMenuTitle => '账号登录';
 
   @override
-  String get withuCoupleNotLoggedInPrompt => '未登录 · 点击登录';
+  String get qhkbCoupleNotLoggedInPrompt => '未登录 · 点击登录';
 
   @override
-  String get withuLoginConfirm => '登录';
+  String get qhkbLoginConfirm => '登录';
 
   @override
   String get coupleHistorySheetTitle => '历史课表';
@@ -426,52 +426,52 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get withuCouplePullImported => '已从 withU 导入对方课表';
+  String get qhkbCouplePullImported => '已从 withU 导入对方课表';
 
   @override
-  String get withuCouplePullUpdated => '已从 withU 更新对方课表';
+  String get qhkbCouplePullUpdated => '已从 withU 更新对方课表';
 
   @override
-  String get withuCouplePullUnchanged => '对方课表无变化';
+  String get qhkbCouplePullUnchanged => '对方课表无变化';
 
   @override
-  String get withuCoupleUploadSuccess => '已上传课表，对方可拉取';
+  String get qhkbCoupleUploadSuccess => '已上传课表，对方可拉取';
 
   @override
-  String get withuCoupleMissingCredentials => '请填写 withU 服务器、用户名和密码';
+  String get qhkbCoupleMissingCredentials => '请填写 withU 服务器、用户名和密码';
 
   @override
-  String get withuCoupleUsernameLabel => 'withU 用户名';
+  String get qhkbCoupleUsernameLabel => 'withU 用户名';
 
   @override
-  String get withuCoupleUsernameHint => '请输入 withU 用户名';
+  String get qhkbCoupleUsernameHint => '请输入 withU 用户名';
 
   @override
-  String get withuCouplePasswordLabel => 'withU 密码';
+  String get qhkbCouplePasswordLabel => 'withU 密码';
 
   @override
-  String get withuCouplePasswordHint => '请输入 withU 密码';
+  String get qhkbCouplePasswordHint => '请输入 withU 密码';
 
   @override
-  String get withuCoupleNotConnectedError => '请先连接 withU';
+  String get qhkbCoupleNotConnectedError => '请先连接 withU';
 
   @override
-  String get withuCoupleAuthFailed => 'withU 用户名或密码不正确';
+  String get qhkbCoupleAuthFailed => 'withU 用户名或密码不正确';
 
   @override
-  String get withuCoupleSessionExpired => 'withU 会话已过期，请重新登录';
+  String get qhkbCoupleSessionExpired => 'withU 会话已过期，请重新登录';
 
   @override
-  String get withuCoupleAccountRequired => '需要 withU 情侣账号';
+  String get qhkbCoupleAccountRequired => '需要 withU 情侣账号';
 
   @override
-  String get withuCouplePartnerTimetableMissing => '未找到对方课表，请让对方先上传';
+  String get qhkbCouplePartnerTimetableMissing => '未找到对方课表，请让对方先上传';
 
   @override
-  String get withuCoupleRequestFailed => 'withU 请求失败，请稍后重试';
+  String get qhkbCoupleRequestFailed => 'withU 请求失败，请稍后重试';
 
   @override
-  String get withuCoupleSessionCookieMissing => 'withU 未返回登录会话';
+  String get qhkbCoupleSessionCookieMissing => 'withU 未返回登录会话';
 
   @override
   String get aboutSupportSectionTitle => '关于与支持';
@@ -609,7 +609,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get spreadsheetScenarioIntro =>
-      '轻屿模板按表头识别列：必填列为课程名、星期、开始节、结束节及周次；其余列为可选，可下载完整模板，也可只保留必要列，也兼容 WakeUp 7 列格式';
+      '清涵模板按表头识别列：必填列为课程名、星期、开始节、结束节及周次；其余列为可选，可下载完整模板，也可只保留必要列，也兼容 WakeUp 7 列格式';
 
   @override
   String get spreadsheetStep1Subtitle => '下载完整模板填写，或只保留必填列与上课周（或开始周+结束周）做最小导入';
@@ -627,7 +627,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chooseSpreadsheetFileAction => '选择表格文件';
 
   @override
-  String get downloadSpreadsheetTemplateAction => '下载轻屿课表模板';
+  String get downloadSpreadsheetTemplateAction => '下载清涵课表模板';
 
   @override
   String get spreadsheetImportWarningsTitle => '导入提醒';
@@ -640,7 +640,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get spreadsheetFormatUnrecognized =>
-      '未识别表格格式，请使用轻屿课表模板；也兼容 WakeUp 等同列格式';
+      '未识别表格格式，请使用清涵课表模板；也兼容 WakeUp 等同列格式';
 
   @override
   String get icsImportTitle => '.ics 日历导入';
@@ -679,7 +679,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get chooseIcsFileAction => '选择 .ics 文件';
 
   @override
-  String get timetableAppName => '轻屿课表';
+  String get timetableAppName => '清涵课表';
 
   @override
   String get switchProfileHint => '点击切换课表';
@@ -1014,14 +1014,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .mikcb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用';
+      '回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .qhkb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果没有“保存到文件”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .mikcb 文件导入';
+      '可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .qhkb 文件导入';
 
   @override
   String get openingOldApp => '正在打开旧版...';
@@ -1352,7 +1352,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你会抓包、网页调试或 JavaScript，也欢迎去 qingyu_warehouse 参与教务适配补充';
+      '如果你会抓包、网页调试或 JavaScript，也欢迎去 qinghan_warehouse 参与教务适配补充';
 
   @override
   String get aboutContributorsTitle => '代码贡献者';
@@ -1374,7 +1374,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutOpenSourceLicensesAppLicenseLabel =>
-      '轻屿课表源码以 GPL-3.0-or-later 发布。';
+      '清涵课表源码以 GPL-3.0-or-later 发布。';
 
   @override
   String get aboutOpenSourceLicensesIntro => '下方列表为本应用使用的开源组件及其许可证，点进可查看全文。';
@@ -1409,10 +1409,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get appLogsShareText =>
-      '这是轻屿课表导出的应用日志，包含整个软件的本地运行记录，可用于排查更新、导入、通知、页面和崩溃问题';
+      '这是清涵课表导出的应用日志，包含整个软件的本地运行记录，可用于排查更新、导入、通知、页面和崩溃问题';
 
   @override
-  String get appLogsShareSubject => '轻屿课表 - 应用日志';
+  String get appLogsShareSubject => '清涵课表 - 应用日志';
 
   @override
   String get appLogsRecordingEnabled => '正在记录应用日志';
@@ -1929,14 +1929,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hideFromRecentsSubtitle => '开启后应用会尽量不显示在最近任务列表中';
 
   @override
-  String get keepAliveServiceTitle => '轻屿课表后台保活服务';
+  String get keepAliveServiceTitle => '清涵课表后台保活服务';
 
   @override
   String get keepAliveServiceEnabledSubtitle => '当前已开启，系统会保持后台保活辅助服务处于可用状态';
 
   @override
   String get keepAliveServiceDisabledSubtitle =>
-      '当前未开启，可进入系统无障碍设置手动打开轻屿课表后台保活服务';
+      '当前未开启，可进入系统无障碍设置手动打开清涵课表后台保活服务';
 
   @override
   String get goEnableAction => '去开启';
@@ -2464,7 +2464,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homePageHeaderBlurTitle => '顶栏高斯模糊';
 
   @override
-  String get homePageHeaderBlurSubtitle => '模糊标题栏（轻屿课表）区域；勾选「状态栏」时一并模糊状态栏';
+  String get homePageHeaderBlurSubtitle => '模糊标题栏（清涵课表）区域；勾选「状态栏」时一并模糊状态栏';
 
   @override
   String get homePageWeekdayBarBlurTitle => '信息栏高斯模糊';
@@ -2591,17 +2591,17 @@ class AppLocalizationsZh extends AppLocalizations {
   String get liveDiagnosticsViewerTitle => '超级岛日志';
 
   @override
-  String get liveDiagnosticsShareText => '这是轻屿课表导出的超级岛相关日志，可用于排查“超级岛没有弹出”等问题';
+  String get liveDiagnosticsShareText => '这是清涵课表导出的超级岛相关日志，可用于排查“超级岛没有弹出”等问题';
 
   @override
-  String get liveDiagnosticsShareSubject => '轻屿课表 - 超级岛日志';
+  String get liveDiagnosticsShareSubject => '清涵课表 - 超级岛日志';
 
   @override
   String get liveDiagnosticsSnapshotShareText =>
-      '这是轻屿课表当前测试诊断页导出的超级岛状态快照，可用于排查“超级岛没有弹出”等问题';
+      '这是清涵课表当前测试诊断页导出的超级岛状态快照，可用于排查“超级岛没有弹出”等问题';
 
   @override
-  String get liveDiagnosticsSnapshotShareSubject => '轻屿课表 - 超级岛状态快照';
+  String get liveDiagnosticsSnapshotShareSubject => '清涵课表 - 超级岛状态快照';
 
   @override
   String get liveDiagnosticsNothingToExport => '当前没有可导出的日志文件，也没有可导出的状态快照';
@@ -2834,7 +2834,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get homeWidgetPinUnsupported =>
-      '当前桌面不支持应用内直接添加时，仍可长按桌面 → 小组件 → 轻屿课表 手动添加';
+      '当前桌面不支持应用内直接添加时，仍可长按桌面 → 小组件 → 清涵课表 手动添加';
 
   @override
   String get homeWidgetBackgroundStyleLabel => '背景样式';
@@ -2919,7 +2919,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String homeWidgetPinUnsupportedManual(String label) {
-    return '当前系统桌面不支持应用内直接添加小组件，请长按桌面 → 小组件 → 轻屿课表，再手动添加“$label”';
+    return '当前系统桌面不支持应用内直接添加小组件，请长按桌面 → 小组件 → 清涵课表，再手动添加“$label”';
   }
 
   @override
@@ -2927,7 +2927,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String homeWidgetPinFailedManual(String label) {
-    return '发起添加失败，请长按桌面 → 小组件 → 轻屿课表，再手动添加“$label”';
+    return '发起添加失败，请长按桌面 → 小组件 → 清涵课表，再手动添加“$label”';
   }
 
   @override
@@ -3428,7 +3428,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutInstallReady => '安装包已准备好，已尝试打开安装界面；如果系统没有弹出，请稍后从通知或文件管理器手动安装';
 
   @override
-  String get aboutUpdatePackageTitle => '轻屿课表更新包';
+  String get aboutUpdatePackageTitle => '清涵课表更新包';
 
   @override
   String get aboutUpdatePackageDescription => '已交给系统下载管理器下载，完成后可直接从系统通知安装';
@@ -3471,14 +3471,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get aboutDevelopersTitle => '开发人员';
 
   @override
-  String get aboutDeveloperMaintainerSubtitle => '轻屿课表开发与维护';
+  String get aboutDeveloperMaintainerSubtitle => '清涵课表开发与维护';
 
   @override
   String get aboutWarehouseMaintainersTitle => '教务导入适配者';
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名单来自 qingyu_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新';
+      '以下名单来自 qinghan_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -3711,10 +3711,10 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get warehouseImportExecutionLogShareText =>
-      '这是轻屿课表导出的教务导入执行日志，包含脚本注入、桥接消息、超时与导入结果等过程记录，可直接反馈给开发人员排查问题';
+      '这是清涵课表导出的教务导入执行日志，包含脚本注入、桥接消息、超时与导入结果等过程记录，可直接反馈给开发人员排查问题';
 
   @override
-  String get warehouseImportExecutionLogShareSubject => '轻屿课表 - 课表导入执行日志';
+  String get warehouseImportExecutionLogShareSubject => '清涵课表 - 课表导入执行日志';
 
   @override
   String get warehouseImportExecutionLogEmpty =>
@@ -6061,13 +6061,13 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serviceMsgImportNoProfilesInBackup => '备份文件中没有可恢复的课表';
 
   @override
-  String get serviceMsgUnrecognizedMikcbDataFile => '不是可识别的 mikcb 数据文件';
+  String get serviceMsgUnrecognizedQhkbDataFile => '不是可识别的 qhkb 数据文件';
 
   @override
   String get serviceMsgMissingSettingsData => '缺少设置数据';
 
   @override
-  String get serviceMsgUnrecognizedMikcbFullBackup => '不是可识别的 mikcb 全量备份文件';
+  String get serviceMsgUnrecognizedQhkbFullBackup => '不是可识别的 qhkb 全量备份文件';
 
   @override
   String get serviceMsgMissingFullBackupData => '缺少完整备份数据';
@@ -6439,22 +6439,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serviceMsgAlreadyLatest => '当前已经是最新版本';
 
   @override
-  String get serviceMsgShareBackupText => '这是轻屿课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
+  String get serviceMsgShareBackupText => '这是清涵课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
 
   @override
-  String get serviceMsgShareBackupSubject => '轻屿课表备份';
+  String get serviceMsgShareBackupSubject => '清涵课表备份';
 
   @override
   String serviceMsgShareBackupSubjectNamed(String profileName) {
-    return '$profileName - 轻屿课表备份';
+    return '$profileName - 清涵课表备份';
   }
 
   @override
   String get serviceMsgShareFullBackupText =>
-      '这是轻屿课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
+      '这是清涵课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
 
   @override
-  String get serviceMsgShareFullBackupSubject => '轻屿课表 - 全部数据备份';
+  String get serviceMsgShareFullBackupSubject => '清涵课表 - 全部数据备份';
 
   @override
   String get serviceMsgInvalidRepositoryUrl => '仓库地址格式不正确';
@@ -6488,7 +6488,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      '适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qingyu_warehouse 反馈该适配器';
+      '适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qinghan_warehouse 反馈该适配器';
 
   @override
   String get serviceMsgManualInputCaptcha => '请手动输入验证码；完成后点击继续';
@@ -6612,22 +6612,22 @@ class AppLocalizationsZh extends AppLocalizations {
   String get serviceMsgUsageTypeProfile => '课表主时间表';
 
   @override
-  String get dataTransferProfileShareText => '这是轻屿课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
+  String get dataTransferProfileShareText => '这是清涵课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
 
   @override
-  String get dataTransferProfileShareSubject => '轻屿课表备份';
+  String get dataTransferProfileShareSubject => '清涵课表备份';
 
   @override
   String dataTransferProfileShareSubjectNamed(String profileName) {
-    return '$profileName - 轻屿课表备份';
+    return '$profileName - 清涵课表备份';
   }
 
   @override
   String get dataTransferFullBackupShareText =>
-      '这是轻屿课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
+      '这是清涵课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
 
   @override
-  String get dataTransferFullBackupShareSubject => '轻屿课表 - 全部数据备份';
+  String get dataTransferFullBackupShareSubject => '清涵课表 - 全部数据备份';
 
   @override
   String courseWeekCustomDescription(String weeks) {
@@ -6869,7 +6869,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get hyperosShowcaseSectionSummary => '概要卡片';
 
   @override
-  String get hyperosShowcaseKitSubtitle => 'mikcb 澎湃风格组件一览';
+  String get hyperosShowcaseKitSubtitle => 'qhkb 澎湃风格组件一览';
 
   @override
   String get hyperosShowcaseSectionTags => '标签 / 手风琴 / 提示';
@@ -7793,7 +7793,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get logCatDebugSnapshot => '调试快照';
 
   @override
-  String get logExportTitle => '轻屿课表 - 应用日志';
+  String get logExportTitle => '清涵课表 - 应用日志';
 
   @override
   String get appUpdateMirrorPresetGhfast => '默认镜像';
@@ -7817,7 +7817,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get appUpdateMirrorPresetCustomDescription => '填写自定义镜像地址前缀';
 
   @override
-  String get statisticsShareText => '来自轻屿课表的学期统计';
+  String get statisticsShareText => '来自清涵课表的学期统计';
 
   @override
   String get aboutUpdateAvailableHeadline => '有版本更新';
@@ -8597,10 +8597,10 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get icsExportShareText => '这是来自轻屿课表的日历文件';
+  String get icsExportShareText => '这是来自清涵课表的日历文件';
 
   @override
-  String get icsExportShareSubject => '轻屿课表日历';
+  String get icsExportShareSubject => '清涵课表日历';
 
   @override
   String get homeNavigationTitle => '首页与导航';
@@ -8977,13 +8977,13 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   AppLocalizationsZhHk() : super('zh_HK');
 
   @override
-  String get appTitle => '輕嶼課表';
+  String get appTitle => '清涵課表';
 
   @override
-  String get appTitleDebug => '輕嶼課表偵錯版';
+  String get appTitleDebug => '清涵課表偵錯版';
 
   @override
-  String get appTitleProfile => '輕嶼課表效能版';
+  String get appTitleProfile => '清涵課表效能版';
 
   @override
   String get appearanceTitle => '外觀與配色';
@@ -9236,10 +9236,10 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get coupleTimetableNotBoundMessage => '請先匯入對方課表後再查看疊加檢視';
 
   @override
-  String get coupleTimetableShareText => '這是我的課表，匯入到輕嶼課表的情侶課表即可一起查看';
+  String get coupleTimetableShareText => '這是我的課表，匯入到清涵課表的情侶課表即可一起查看';
 
   @override
-  String get coupleTimetableShareSubject => '輕嶼課表・情侶課表分享';
+  String get coupleTimetableShareSubject => '清涵課表・情侶課表分享';
 
   @override
   String get coupleTimetableWeekOffsetTitle => '週次偏移';
@@ -9265,52 +9265,52 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get partnerImportRequiresSingleProfile => '請匯入單一課表備份檔案，不支援全量備份';
 
   @override
-  String get withuCoupleTitle => 'withU 同步';
+  String get qhkbCoupleTitle => 'withU 同步';
 
   @override
-  String get withuCoupleNotConnected => '尚未連接 withU';
+  String get qhkbCoupleNotConnected => '尚未連接 withU';
 
   @override
-  String withuCoupleConnectedAs(String username) {
+  String qhkbCoupleConnectedAs(String username) {
     return '已連接：$username';
   }
 
   @override
-  String withuCoupleServerHint(String url) {
+  String qhkbCoupleServerHint(String url) {
     return '伺服器：$url';
   }
 
   @override
-  String withuCoupleLastPulledAt(String time) {
+  String qhkbCoupleLastPulledAt(String time) {
     return '上次拉取：$time';
   }
 
   @override
-  String get withuCoupleConnect => '連接 withU';
+  String get qhkbCoupleConnect => '連接 withU';
 
   @override
-  String get withuCoupleDisconnect => '登出';
+  String get qhkbCoupleDisconnect => '登出';
 
   @override
-  String get withuCoupleLogoutUnconfirmed => '已在此裝置登出，但未能通知伺服器；伺服器上的工作階段可能仍然有效';
+  String get qhkbCoupleLogoutUnconfirmed => '已在此裝置登出，但未能通知伺服器；伺服器上的工作階段可能仍然有效';
 
   @override
-  String get withuCouplePullNow => '立即拉取對方課表';
+  String get qhkbCouplePullNow => '立即拉取對方課表';
 
   @override
-  String get withuCoupleUploadForPartner => '上傳我的課表';
+  String get qhkbCoupleUploadForPartner => '上傳我的課表';
 
   @override
-  String get withuCoupleLoginSheetTitle => '連接 withU（情侶課表）';
+  String get qhkbCoupleLoginSheetTitle => '連接 withU（情侶課表）';
 
   @override
-  String get withuCoupleLoginSheetSubtitle => '使用 withU 情侶帳號登入，從對方帳號拉取課表';
+  String get qhkbCoupleLoginSheetSubtitle => '使用 withU 情侶帳號登入，從對方帳號拉取課表';
 
   @override
-  String get withuCoupleConfirmConnect => '連接並拉取';
+  String get qhkbCoupleConfirmConnect => '連接並拉取';
 
   @override
-  String get withuCoupleServerLabel => 'withU 伺服器';
+  String get qhkbCoupleServerLabel => 'withU 伺服器';
 
   @override
   String get coupleTimetableSwitchSubtitle => '開啟後會在課表中疊加雙方課程，並在右上角菜單優先顯示登入';
@@ -9338,22 +9338,22 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get coupleTimetableDesktopCardPlaceholder => '桌面卡片功能開發中，目前僅作預留';
 
   @override
-  String get withuCoupleLoginPageTitle => '登入 withU';
+  String get qhkbCoupleLoginPageTitle => '登入 withU';
 
   @override
-  String get withuCoupleLoginPageSubtitle => '使用 withU 情侶帳號登入，登入後自動拉取對方課表';
+  String get qhkbCoupleLoginPageSubtitle => '使用 withU 情侶帳號登入，登入後自動拉取對方課表';
 
   @override
-  String get withuCoupleLoginAction => '登入並拉取';
+  String get qhkbCoupleLoginAction => '登入並拉取';
 
   @override
-  String get withuCoupleLoginMenuTitle => '帳號登入';
+  String get qhkbCoupleLoginMenuTitle => '帳號登入';
 
   @override
-  String get withuCoupleNotLoggedInPrompt => '未登入 · 點擊登入';
+  String get qhkbCoupleNotLoggedInPrompt => '未登入 · 點擊登入';
 
   @override
-  String get withuLoginConfirm => '登入';
+  String get qhkbLoginConfirm => '登入';
 
   @override
   String get coupleHistorySheetTitle => '歷史課表';
@@ -9379,52 +9379,52 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   }
 
   @override
-  String get withuCouplePullImported => '已從 withU 匯入對方課表';
+  String get qhkbCouplePullImported => '已從 withU 匯入對方課表';
 
   @override
-  String get withuCouplePullUpdated => '已從 withU 更新對方課表';
+  String get qhkbCouplePullUpdated => '已從 withU 更新對方課表';
 
   @override
-  String get withuCouplePullUnchanged => '對方課表無變化';
+  String get qhkbCouplePullUnchanged => '對方課表無變化';
 
   @override
-  String get withuCoupleUploadSuccess => '已上傳課表，對方可拉取';
+  String get qhkbCoupleUploadSuccess => '已上傳課表，對方可拉取';
 
   @override
-  String get withuCoupleMissingCredentials => '請填寫 withU 伺服器、用戶名和密碼';
+  String get qhkbCoupleMissingCredentials => '請填寫 withU 伺服器、用戶名和密碼';
 
   @override
-  String get withuCoupleUsernameLabel => 'withU 用戶名稱';
+  String get qhkbCoupleUsernameLabel => 'withU 用戶名稱';
 
   @override
-  String get withuCoupleUsernameHint => '請輸入 withU 用戶名稱';
+  String get qhkbCoupleUsernameHint => '請輸入 withU 用戶名稱';
 
   @override
-  String get withuCouplePasswordLabel => 'withU 密碼';
+  String get qhkbCouplePasswordLabel => 'withU 密碼';
 
   @override
-  String get withuCouplePasswordHint => '請輸入 withU 密碼';
+  String get qhkbCouplePasswordHint => '請輸入 withU 密碼';
 
   @override
-  String get withuCoupleNotConnectedError => '請先連接 withU';
+  String get qhkbCoupleNotConnectedError => '請先連接 withU';
 
   @override
-  String get withuCoupleAuthFailed => 'withU 用戶名或密碼不正確';
+  String get qhkbCoupleAuthFailed => 'withU 用戶名或密碼不正確';
 
   @override
-  String get withuCoupleSessionExpired => 'withU 會話已過期，請重新登入';
+  String get qhkbCoupleSessionExpired => 'withU 會話已過期，請重新登入';
 
   @override
-  String get withuCoupleAccountRequired => '需要 withU 情侶帳號';
+  String get qhkbCoupleAccountRequired => '需要 withU 情侶帳號';
 
   @override
-  String get withuCouplePartnerTimetableMissing => '未找到對方課表，請讓對方先上傳';
+  String get qhkbCouplePartnerTimetableMissing => '未找到對方課表，請讓對方先上傳';
 
   @override
-  String get withuCoupleRequestFailed => 'withU 請求失敗，請稍後重試';
+  String get qhkbCoupleRequestFailed => 'withU 請求失敗，請稍後重試';
 
   @override
-  String get withuCoupleSessionCookieMissing => 'withU 未返回登入會話';
+  String get qhkbCoupleSessionCookieMissing => 'withU 未返回登入會話';
 
   @override
   String get aboutSupportSectionTitle => '關於與支持';
@@ -9562,7 +9562,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get spreadsheetScenarioIntro =>
-      '輕嶼模板依表頭辨識欄位：必填為課程名、星期、開始節、結束節及週次；其餘為可選，可下載完整模板，或只保留必要欄，亦相容 WakeUp 7 欄格式';
+      '清涵模板依表頭辨識欄位：必填為課程名、星期、開始節、結束節及週次；其餘為可選，可下載完整模板，或只保留必要欄，亦相容 WakeUp 7 欄格式';
 
   @override
   String get spreadsheetStep1Subtitle => '下載完整模板填寫，或只保留必填欄與上課週（或開始週+結束週）做最小匯入';
@@ -9580,7 +9580,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get chooseSpreadsheetFileAction => '選擇表格檔案';
 
   @override
-  String get downloadSpreadsheetTemplateAction => '下載輕嶼課表模板';
+  String get downloadSpreadsheetTemplateAction => '下載清涵課表模板';
 
   @override
   String get spreadsheetImportWarningsTitle => '匯入提醒';
@@ -9593,7 +9593,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get spreadsheetFormatUnrecognized =>
-      '未識別表格格式，請使用輕嶼課表模板；也相容 WakeUp 等同列格式';
+      '未識別表格格式，請使用清涵課表模板；也相容 WakeUp 等同列格式';
 
   @override
   String get icsImportTitle => '.ics 日歷匯入';
@@ -9632,7 +9632,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get chooseIcsFileAction => '選擇 .ics 檔案';
 
   @override
-  String get timetableAppName => '輕嶼課表';
+  String get timetableAppName => '清涵課表';
 
   @override
   String get switchProfileHint => '點擊切換課表';
@@ -9967,14 +9967,14 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .mikcb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
+      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .qhkb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果沒有有“保存到檔案”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .mikcb 檔案匯入';
+      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .qhkb 檔案匯入';
 
   @override
   String get openingOldApp => '正在打開舊版...';
@@ -10305,7 +10305,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qingyu_warehouse 參與教務適配補充';
+      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qinghan_warehouse 參與教務適配補充';
 
   @override
   String get aboutContributorsTitle => '代碼貢獻者';
@@ -10327,7 +10327,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get aboutOpenSourceLicensesAppLicenseLabel =>
-      '輕嶼課表源碼以 GPL-3.0-or-later 發佈。';
+      '清涵課表源碼以 GPL-3.0-or-later 發佈。';
 
   @override
   String get aboutOpenSourceLicensesIntro => '下方列表為本應用使用的開源組件及其許可證，點進可查看全文。';
@@ -10362,10 +10362,10 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get appLogsShareText =>
-      '這是輕嶼課表匯出的應用日誌，包含整個軟件的本地運行記錄，可用於排查更新、匯入、通知、頁面與崩潰問題';
+      '這是清涵課表匯出的應用日誌，包含整個軟件的本地運行記錄，可用於排查更新、匯入、通知、頁面與崩潰問題';
 
   @override
-  String get appLogsShareSubject => '輕嶼課表 - 應用日誌';
+  String get appLogsShareSubject => '清涵課表 - 應用日誌';
 
   @override
   String get appLogsRecordingEnabled => '正在記錄應用日誌';
@@ -10883,14 +10883,14 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get hideFromRecentsSubtitle => '開啟後應用會盡量不顯示在最近任務列表中';
 
   @override
-  String get keepAliveServiceTitle => '輕嶼課表後台保活服務';
+  String get keepAliveServiceTitle => '清涵課表後台保活服務';
 
   @override
   String get keepAliveServiceEnabledSubtitle => '目前已開啟，系統會保持後台保活輔助服務處於可用狀態';
 
   @override
   String get keepAliveServiceDisabledSubtitle =>
-      '目前未開啟，可進入系統無漲礙設定手動打開輕嶼課表後台保活服務';
+      '目前未開啟，可進入系統無漲礙設定手動打開清涵課表後台保活服務';
 
   @override
   String get goEnableAction => '去開啟';
@@ -11417,7 +11417,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get homePageHeaderBlurTitle => '頂欄高斯模糊';
 
   @override
-  String get homePageHeaderBlurSubtitle => '模糊標題欄（輕嶼課表）區域；勾選「狀態列」時一併模糊狀態列';
+  String get homePageHeaderBlurSubtitle => '模糊標題欄（清涵課表）區域；勾選「狀態列」時一併模糊狀態列';
 
   @override
   String get homePageWeekdayBarBlurTitle => '資訊欄高斯模糊';
@@ -11544,17 +11544,17 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get liveDiagnosticsViewerTitle => '超級島診斷日誌';
 
   @override
-  String get liveDiagnosticsShareText => '這是輕嶼課表導出的超級島診斷日誌，可用于排查“超級島没有彈出”等問題';
+  String get liveDiagnosticsShareText => '這是清涵課表導出的超級島診斷日誌，可用于排查“超級島没有彈出”等問題';
 
   @override
-  String get liveDiagnosticsShareSubject => '輕嶼課表 - 超級島診斷日誌';
+  String get liveDiagnosticsShareSubject => '清涵課表 - 超級島診斷日誌';
 
   @override
   String get liveDiagnosticsSnapshotShareText =>
-      '這是輕嶼課表目前測試診斷頁導出的超級島狀態快照，可用于排查“超級島没有彈出”等問題';
+      '這是清涵課表目前測試診斷頁導出的超級島狀態快照，可用于排查“超級島没有彈出”等問題';
 
   @override
-  String get liveDiagnosticsSnapshotShareSubject => '輕嶼課表 - 超級島狀態快照';
+  String get liveDiagnosticsSnapshotShareSubject => '清涵課表 - 超級島狀態快照';
 
   @override
   String get liveDiagnosticsNothingToExport => '目前没有可導出的日誌文件，也没有可導出的狀態快照';
@@ -11787,7 +11787,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get homeWidgetPinUnsupported =>
-      '目前桌面不支持應用內直接添加時，仍可長按桌面 → 小組件 → 輕嶼課表 手動添加';
+      '目前桌面不支持應用內直接添加時，仍可長按桌面 → 小組件 → 清涵課表 手動添加';
 
   @override
   String get homeWidgetBackgroundStyleLabel => '背景養式';
@@ -11872,7 +11872,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String homeWidgetPinUnsupportedManual(String label) {
-    return '目前系統桌面不支持應用內直接添加小組件，請長按桌面 → 小組件 → 輕嶼課表，再手動添加“$label”';
+    return '目前系統桌面不支持應用內直接添加小組件，請長按桌面 → 小組件 → 清涵課表，再手動添加“$label”';
   }
 
   @override
@@ -11880,7 +11880,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String homeWidgetPinFailedManual(String label) {
-    return '發起添加失敗，請長按桌面 → 小組件 → 輕嶼課表，再手動添加“$label”';
+    return '發起添加失敗，請長按桌面 → 小組件 → 清涵課表，再手動添加“$label”';
   }
 
   @override
@@ -12380,7 +12380,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get aboutInstallReady => '安裝包已準備好，已嘗試打開安裝界面；如果系統没有彈出，請稍後從通知或文件管理器手動安裝';
 
   @override
-  String get aboutUpdatePackageTitle => '輕嶼課表更新包';
+  String get aboutUpdatePackageTitle => '清涵課表更新包';
 
   @override
   String get aboutUpdatePackageDescription => '已交給系統下載管理器下載，完成後可直接從系統通知安裝';
@@ -12423,14 +12423,14 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get aboutDevelopersTitle => '開發人員';
 
   @override
-  String get aboutDeveloperMaintainerSubtitle => '輕嶼課表開發與維護';
+  String get aboutDeveloperMaintainerSubtitle => '清涵課表開發與維護';
 
   @override
   String get aboutWarehouseMaintainersTitle => '教務匯入適配者';
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名單來自 qingyu_warehouse 適配倉的 maintainer 字段匯總，若本地已有緩存，會先顯示緩存，再後台刷新';
+      '以下名單來自 qinghan_warehouse 適配倉的 maintainer 字段匯總，若本地已有緩存，會先顯示緩存，再後台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -12663,10 +12663,10 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get warehouseImportExecutionLogShareText =>
-      '這是輕嶼課表匯出的教務匯入執行日誌，包含腳本注入、橋接訊息、逾時與匯入結果等過程記錄，可直接回饋給開發人員排查問題';
+      '這是清涵課表匯出的教務匯入執行日誌，包含腳本注入、橋接訊息、逾時與匯入結果等過程記錄，可直接回饋給開發人員排查問題';
 
   @override
-  String get warehouseImportExecutionLogShareSubject => '輕嶼課表 - 課表匯入執行日誌';
+  String get warehouseImportExecutionLogShareSubject => '清涵課表 - 課表匯入執行日誌';
 
   @override
   String get warehouseImportExecutionLogEmpty =>
@@ -15015,15 +15015,15 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
       'No recoverable timetables were found in the backup file.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbDataFile =>
-      'Not a recognizable mikcb data file.';
+  String get serviceMsgUnrecognizedQhkbDataFile =>
+      'Not a recognizable qhkb data file.';
 
   @override
   String get serviceMsgMissingSettingsData => 'Settings data is missing.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbFullBackup =>
-      'Not a recognizable mikcb full backup file.';
+  String get serviceMsgUnrecognizedQhkbFullBackup =>
+      'Not a recognizable qhkb full backup file.';
 
   @override
   String get serviceMsgMissingFullBackupData =>
@@ -15425,11 +15425,11 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
       'This is a full backup of the current timetable. Import it to restore courses and settings.';
 
   @override
-  String get serviceMsgShareBackupSubject => 'Qingyu Timetable backup';
+  String get serviceMsgShareBackupSubject => 'Qinghan Timetable backup';
 
   @override
   String serviceMsgShareBackupSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
@@ -15438,7 +15438,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get serviceMsgShareFullBackupSubject =>
-      'Qingyu Timetable - full data backup';
+      'Qinghan Timetable - full data backup';
 
   @override
   String get serviceMsgInvalidRepositoryUrl =>
@@ -15476,7 +15476,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qingyu_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
@@ -15860,7 +15860,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get hyperosShowcaseSectionSummary => '概要卡片';
 
   @override
-  String get hyperosShowcaseKitSubtitle => 'mikcb 澎湃風格組件一覽';
+  String get hyperosShowcaseKitSubtitle => 'qhkb 澎湃風格組件一覽';
 
   @override
   String get hyperosShowcaseSectionTags => '標簽 / 手風琴 / 提示';
@@ -17968,13 +17968,13 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   AppLocalizationsZhTw() : super('zh_TW');
 
   @override
-  String get appTitle => '輕嶼課表';
+  String get appTitle => '清涵課表';
 
   @override
-  String get appTitleDebug => '輕嶼課表偵錯版';
+  String get appTitleDebug => '清涵課表偵錯版';
 
   @override
-  String get appTitleProfile => '輕嶼課表效能版';
+  String get appTitleProfile => '清涵課表效能版';
 
   @override
   String get appearanceTitle => '外觀與配色';
@@ -18227,10 +18227,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get coupleTimetableNotBoundMessage => '請先匯入對方課表後再查看疊加檢視';
 
   @override
-  String get coupleTimetableShareText => '這是我的課表，匯入到輕嶼課表的情侶課表即可一起查看';
+  String get coupleTimetableShareText => '這是我的課表，匯入到清涵課表的情侶課表即可一起查看';
 
   @override
-  String get coupleTimetableShareSubject => '輕嶼課表・情侶課表分享';
+  String get coupleTimetableShareSubject => '清涵課表・情侶課表分享';
 
   @override
   String get coupleTimetableWeekOffsetTitle => '週次偏移';
@@ -18256,52 +18256,52 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get partnerImportRequiresSingleProfile => '請匯入單一課表備份檔案，不支援全量備份';
 
   @override
-  String get withuCoupleTitle => 'withU 同步';
+  String get qhkbCoupleTitle => 'withU 同步';
 
   @override
-  String get withuCoupleNotConnected => '尚未連接 withU';
+  String get qhkbCoupleNotConnected => '尚未連接 withU';
 
   @override
-  String withuCoupleConnectedAs(String username) {
+  String qhkbCoupleConnectedAs(String username) {
     return '已連接：$username';
   }
 
   @override
-  String withuCoupleServerHint(String url) {
+  String qhkbCoupleServerHint(String url) {
     return '伺服器：$url';
   }
 
   @override
-  String withuCoupleLastPulledAt(String time) {
+  String qhkbCoupleLastPulledAt(String time) {
     return '上次拉取：$time';
   }
 
   @override
-  String get withuCoupleConnect => '連接 withU';
+  String get qhkbCoupleConnect => '連接 withU';
 
   @override
-  String get withuCoupleDisconnect => '登出';
+  String get qhkbCoupleDisconnect => '登出';
 
   @override
-  String get withuCoupleLogoutUnconfirmed => '已在此裝置登出，但未能通知伺服器；伺服器上的工作階段可能仍然有效';
+  String get qhkbCoupleLogoutUnconfirmed => '已在此裝置登出，但未能通知伺服器；伺服器上的工作階段可能仍然有效';
 
   @override
-  String get withuCouplePullNow => '立即拉取對方課表';
+  String get qhkbCouplePullNow => '立即拉取對方課表';
 
   @override
-  String get withuCoupleUploadForPartner => '上傳我的課表';
+  String get qhkbCoupleUploadForPartner => '上傳我的課表';
 
   @override
-  String get withuCoupleLoginSheetTitle => '連接 withU（情侶課表）';
+  String get qhkbCoupleLoginSheetTitle => '連接 withU（情侶課表）';
 
   @override
-  String get withuCoupleLoginSheetSubtitle => '使用 withU 情侶帳號登入，從對方帳號拉取課表';
+  String get qhkbCoupleLoginSheetSubtitle => '使用 withU 情侶帳號登入，從對方帳號拉取課表';
 
   @override
-  String get withuCoupleConfirmConnect => '連接並拉取';
+  String get qhkbCoupleConfirmConnect => '連接並拉取';
 
   @override
-  String get withuCoupleServerLabel => 'withU 伺服器';
+  String get qhkbCoupleServerLabel => 'withU 伺服器';
 
   @override
   String get coupleTimetableSwitchSubtitle => '開啟後會在課表中疊加雙方課程，並在右上角選單優先顯示登入';
@@ -18329,22 +18329,22 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get coupleTimetableDesktopCardPlaceholder => '桌面卡片功能開發中，目前僅供預留';
 
   @override
-  String get withuCoupleLoginPageTitle => '登入 withU';
+  String get qhkbCoupleLoginPageTitle => '登入 withU';
 
   @override
-  String get withuCoupleLoginPageSubtitle => '使用 withU 情侶帳號登入，登入後自動拉取對方課表';
+  String get qhkbCoupleLoginPageSubtitle => '使用 withU 情侶帳號登入，登入後自動拉取對方課表';
 
   @override
-  String get withuCoupleLoginAction => '登入並拉取';
+  String get qhkbCoupleLoginAction => '登入並拉取';
 
   @override
-  String get withuCoupleLoginMenuTitle => '帳號登入';
+  String get qhkbCoupleLoginMenuTitle => '帳號登入';
 
   @override
-  String get withuCoupleNotLoggedInPrompt => '未登入 · 點擊登入';
+  String get qhkbCoupleNotLoggedInPrompt => '未登入 · 點擊登入';
 
   @override
-  String get withuLoginConfirm => '登入';
+  String get qhkbLoginConfirm => '登入';
 
   @override
   String get coupleHistorySheetTitle => '歷史課表';
@@ -18370,52 +18370,52 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   }
 
   @override
-  String get withuCouplePullImported => '已從 withU 匯入對方課表';
+  String get qhkbCouplePullImported => '已從 withU 匯入對方課表';
 
   @override
-  String get withuCouplePullUpdated => '已從 withU 更新對方課表';
+  String get qhkbCouplePullUpdated => '已從 withU 更新對方課表';
 
   @override
-  String get withuCouplePullUnchanged => '對方課表無變化';
+  String get qhkbCouplePullUnchanged => '對方課表無變化';
 
   @override
-  String get withuCoupleUploadSuccess => '已上傳課表，對方可拉取';
+  String get qhkbCoupleUploadSuccess => '已上傳課表，對方可拉取';
 
   @override
-  String get withuCoupleMissingCredentials => '請填寫 withU 伺服器、用戶名和密碼';
+  String get qhkbCoupleMissingCredentials => '請填寫 withU 伺服器、用戶名和密碼';
 
   @override
-  String get withuCoupleUsernameLabel => 'withU 使用者名稱';
+  String get qhkbCoupleUsernameLabel => 'withU 使用者名稱';
 
   @override
-  String get withuCoupleUsernameHint => '請輸入 withU 使用者名稱';
+  String get qhkbCoupleUsernameHint => '請輸入 withU 使用者名稱';
 
   @override
-  String get withuCouplePasswordLabel => 'withU 密碼';
+  String get qhkbCouplePasswordLabel => 'withU 密碼';
 
   @override
-  String get withuCouplePasswordHint => '請輸入 withU 密碼';
+  String get qhkbCouplePasswordHint => '請輸入 withU 密碼';
 
   @override
-  String get withuCoupleNotConnectedError => '請先連接 withU';
+  String get qhkbCoupleNotConnectedError => '請先連接 withU';
 
   @override
-  String get withuCoupleAuthFailed => 'withU 用戶名或密碼不正確';
+  String get qhkbCoupleAuthFailed => 'withU 用戶名或密碼不正確';
 
   @override
-  String get withuCoupleSessionExpired => 'withU 會話已過期，請重新登入';
+  String get qhkbCoupleSessionExpired => 'withU 會話已過期，請重新登入';
 
   @override
-  String get withuCoupleAccountRequired => '需要 withU 情侶帳號';
+  String get qhkbCoupleAccountRequired => '需要 withU 情侶帳號';
 
   @override
-  String get withuCouplePartnerTimetableMissing => '未找到對方課表，請讓對方先上傳';
+  String get qhkbCouplePartnerTimetableMissing => '未找到對方課表，請讓對方先上傳';
 
   @override
-  String get withuCoupleRequestFailed => 'withU 請求失敗，請稍後重試';
+  String get qhkbCoupleRequestFailed => 'withU 請求失敗，請稍後重試';
 
   @override
-  String get withuCoupleSessionCookieMissing => 'withU 未返回登入會話';
+  String get qhkbCoupleSessionCookieMissing => 'withU 未返回登入會話';
 
   @override
   String get aboutSupportSectionTitle => '關於與支持';
@@ -18553,7 +18553,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get spreadsheetScenarioIntro =>
-      '輕嶼模板依表頭辨識欄位：必填為課程名、星期、開始節、結束節及週次；其餘為可選，可下載完整模板，或只保留必要欄，亦相容 WakeUp 7 欄格式';
+      '清涵模板依表頭辨識欄位：必填為課程名、星期、開始節、結束節及週次；其餘為可選，可下載完整模板，或只保留必要欄，亦相容 WakeUp 7 欄格式';
 
   @override
   String get spreadsheetStep1Subtitle => '下載完整模板填寫，或只保留必填欄與上課週（或開始週+結束週）做最小匯入';
@@ -18571,7 +18571,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get chooseSpreadsheetFileAction => '選擇表格檔案';
 
   @override
-  String get downloadSpreadsheetTemplateAction => '下載輕嶼課表模板';
+  String get downloadSpreadsheetTemplateAction => '下載清涵課表模板';
 
   @override
   String get spreadsheetImportWarningsTitle => '匯入提醒';
@@ -18584,7 +18584,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get spreadsheetFormatUnrecognized =>
-      '未識別表格格式，請使用輕嶼課表模板；也相容 WakeUp 等同列格式';
+      '未識別表格格式，請使用清涵課表模板；也相容 WakeUp 等同列格式';
 
   @override
   String get icsImportTitle => '.ics 日歷匯入';
@@ -18623,7 +18623,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get chooseIcsFileAction => '選擇 .ics 檔案';
 
   @override
-  String get timetableAppName => '輕嶼課表';
+  String get timetableAppName => '清涵課表';
 
   @override
   String get switchProfileHint => '點擊切換課表';
@@ -18958,14 +18958,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .mikcb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
+      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .qhkb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果沒有有“保存到檔案”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .mikcb 檔案匯入';
+      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .qhkb 檔案匯入';
 
   @override
   String get openingOldApp => '正在打開舊版...';
@@ -19296,7 +19296,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qingyu_warehouse 參與教務適配補充';
+      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qinghan_warehouse 參與教務適配補充';
 
   @override
   String get aboutContributorsTitle => '代碼貢獻者';
@@ -19318,7 +19318,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get aboutOpenSourceLicensesAppLicenseLabel =>
-      '輕嶼課表原始碼以 GPL-3.0-or-later 釋出。';
+      '清涵課表原始碼以 GPL-3.0-or-later 釋出。';
 
   @override
   String get aboutOpenSourceLicensesIntro => '下方列表為本應用使用的開源元件及其授權，點進可查看全文。';
@@ -19353,10 +19353,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get appLogsShareText =>
-      '這是輕嶼課表匯出的應用日誌，包含整個軟體的本地執行記錄，可用於排查更新、匯入、通知、頁面與崩潰問題';
+      '這是清涵課表匯出的應用日誌，包含整個軟體的本地執行記錄，可用於排查更新、匯入、通知、頁面與崩潰問題';
 
   @override
-  String get appLogsShareSubject => '輕嶼課表 - 應用日誌';
+  String get appLogsShareSubject => '清涵課表 - 應用日誌';
 
   @override
   String get appLogsRecordingEnabled => '正在記錄應用日誌';
@@ -19874,14 +19874,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get hideFromRecentsSubtitle => '開啟後應用會尽量不顯示在最近任務列表中';
 
   @override
-  String get keepAliveServiceTitle => '輕嶼課表後台保活服務';
+  String get keepAliveServiceTitle => '清涵課表後台保活服務';
 
   @override
   String get keepAliveServiceEnabledSubtitle => '目前已開啟，系統會保持後台保活輔助服務處於可用狀態';
 
   @override
   String get keepAliveServiceDisabledSubtitle =>
-      '目前未開啟，可進入系統無障礙設定手動打開輕嶼課表後台保活服務';
+      '目前未開啟，可進入系統無障礙設定手動打開清涵課表後台保活服務';
 
   @override
   String get goEnableAction => '去開啟';
@@ -20408,7 +20408,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get homePageHeaderBlurTitle => '頂欄高斯模糊';
 
   @override
-  String get homePageHeaderBlurSubtitle => '模糊標題欄（輕嶼課表）區域；勾選「狀態列」時一併模糊狀態列';
+  String get homePageHeaderBlurSubtitle => '模糊標題欄（清涵課表）區域；勾選「狀態列」時一併模糊狀態列';
 
   @override
   String get homePageWeekdayBarBlurTitle => '資訊欄高斯模糊';
@@ -20535,17 +20535,17 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get liveDiagnosticsViewerTitle => '超級島診斷日誌';
 
   @override
-  String get liveDiagnosticsShareText => '這是輕嶼課表導出的超級島診斷日誌，可用于排查“超級島没有弹出”等問題';
+  String get liveDiagnosticsShareText => '這是清涵課表導出的超級島診斷日誌，可用于排查“超級島没有弹出”等問題';
 
   @override
-  String get liveDiagnosticsShareSubject => '輕嶼課表 - 超級島診斷日誌';
+  String get liveDiagnosticsShareSubject => '清涵課表 - 超級島診斷日誌';
 
   @override
   String get liveDiagnosticsSnapshotShareText =>
-      '這是輕嶼課表目前測試診斷頁導出的超級島狀態快照，可用于排查“超級島没有弹出”等問題';
+      '這是清涵課表目前測試診斷頁導出的超級島狀態快照，可用于排查“超級島没有弹出”等問題';
 
   @override
-  String get liveDiagnosticsSnapshotShareSubject => '輕嶼課表 - 超級島狀態快照';
+  String get liveDiagnosticsSnapshotShareSubject => '清涵課表 - 超級島狀態快照';
 
   @override
   String get liveDiagnosticsNothingToExport => '目前没有可導出的日誌文件，也没有可導出的狀態快照';
@@ -20778,7 +20778,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get homeWidgetPinUnsupported =>
-      '目前桌面不支持應用內直接添加時，仍可长按桌面 → 小工具 → 輕嶼課表 手動添加';
+      '目前桌面不支持應用內直接添加時，仍可长按桌面 → 小工具 → 清涵課表 手動添加';
 
   @override
   String get homeWidgetBackgroundStyleLabel => '背景样式';
@@ -20863,7 +20863,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String homeWidgetPinUnsupportedManual(String label) {
-    return '目前系統桌面不支持應用內直接添加小工具，请长按桌面 → 小工具 → 輕嶼課表，再手動添加“$label”';
+    return '目前系統桌面不支持應用內直接添加小工具，请长按桌面 → 小工具 → 清涵課表，再手動添加“$label”';
   }
 
   @override
@@ -20871,7 +20871,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String homeWidgetPinFailedManual(String label) {
-    return '發起添加失败，请长按桌面 → 小工具 → 輕嶼課表，再手動添加“$label”';
+    return '發起添加失败，请长按桌面 → 小工具 → 清涵課表，再手動添加“$label”';
   }
 
   @override
@@ -21371,7 +21371,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get aboutInstallReady => '安装包已准備好，已尝試打開安装界面；如果系統没有弹出，请稍後从通知或文件管理器手動安装';
 
   @override
-  String get aboutUpdatePackageTitle => '輕嶼課表更新包';
+  String get aboutUpdatePackageTitle => '清涵課表更新包';
 
   @override
   String get aboutUpdatePackageDescription => '已交给系統下載管理器下載，完成後可直接从系統通知安装';
@@ -21414,14 +21414,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get aboutDevelopersTitle => '開發人员';
 
   @override
-  String get aboutDeveloperMaintainerSubtitle => '輕嶼課表開發與維護';
+  String get aboutDeveloperMaintainerSubtitle => '清涵課表開發與維護';
 
   @override
   String get aboutWarehouseMaintainersTitle => '教務匯入適配者';
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名單来自 qingyu_warehouse 適配倉的 maintainer 字段汇总，若本地已有缓存，会先顯示缓存，再後台刷新';
+      '以下名單来自 qinghan_warehouse 適配倉的 maintainer 字段汇总，若本地已有缓存，会先顯示缓存，再後台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -21654,10 +21654,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get warehouseImportExecutionLogShareText =>
-      '這是輕嶼課表匯出的教務匯入執行日誌，包含腳本注入、橋接訊息、逾時與匯入結果等過程記錄，可直接回饋給開發人員排查問題';
+      '這是清涵課表匯出的教務匯入執行日誌，包含腳本注入、橋接訊息、逾時與匯入結果等過程記錄，可直接回饋給開發人員排查問題';
 
   @override
-  String get warehouseImportExecutionLogShareSubject => '輕嶼課表 - 課表匯入執行日誌';
+  String get warehouseImportExecutionLogShareSubject => '清涵課表 - 課表匯入執行日誌';
 
   @override
   String get warehouseImportExecutionLogEmpty =>
@@ -24006,15 +24006,15 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
       'No recoverable timetables were found in the backup file.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbDataFile =>
-      'Not a recognizable mikcb data file.';
+  String get serviceMsgUnrecognizedQhkbDataFile =>
+      'Not a recognizable qhkb data file.';
 
   @override
   String get serviceMsgMissingSettingsData => 'Settings data is missing.';
 
   @override
-  String get serviceMsgUnrecognizedMikcbFullBackup =>
-      'Not a recognizable mikcb full backup file.';
+  String get serviceMsgUnrecognizedQhkbFullBackup =>
+      'Not a recognizable qhkb full backup file.';
 
   @override
   String get serviceMsgMissingFullBackupData =>
@@ -24416,11 +24416,11 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
       'This is a full backup of the current timetable. Import it to restore courses and settings.';
 
   @override
-  String get serviceMsgShareBackupSubject => 'Qingyu Timetable backup';
+  String get serviceMsgShareBackupSubject => 'Qinghan Timetable backup';
 
   @override
   String serviceMsgShareBackupSubjectNamed(String profileName) {
-    return '$profileName - Qingyu Timetable backup';
+    return '$profileName - Qinghan Timetable backup';
   }
 
   @override
@@ -24429,7 +24429,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get serviceMsgShareFullBackupSubject =>
-      'Qingyu Timetable - full data backup';
+      'Qinghan Timetable - full data backup';
 
   @override
   String get serviceMsgInvalidRepositoryUrl =>
@@ -24467,7 +24467,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qingyu_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
@@ -24594,22 +24594,22 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get serviceMsgUsageTypeProfile => 'profile main time scheme';
 
   @override
-  String get dataTransferProfileShareText => '这是轻屿课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
+  String get dataTransferProfileShareText => '这是清涵课表当前课表的完整备份文件，导入后可直接恢复课程和设置';
 
   @override
-  String get dataTransferProfileShareSubject => '轻屿课表备份';
+  String get dataTransferProfileShareSubject => '清涵课表备份';
 
   @override
   String dataTransferProfileShareSubjectNamed(String profileName) {
-    return '$profileName - 轻屿课表备份';
+    return '$profileName - 清涵课表备份';
   }
 
   @override
   String get dataTransferFullBackupShareText =>
-      '这是轻屿课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
+      '这是清涵课表的全部数据备份文件，包含所有课表、当前选中课表和时间模板';
 
   @override
-  String get dataTransferFullBackupShareSubject => '轻屿课表 - 全部数据备份';
+  String get dataTransferFullBackupShareSubject => '清涵课表 - 全部数据备份';
 
   @override
   String courseWeekCustomDescription(String weeks) {
@@ -24851,7 +24851,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get hyperosShowcaseSectionSummary => '概要卡片';
 
   @override
-  String get hyperosShowcaseKitSubtitle => 'mikcb 澎湃风格组件一览';
+  String get hyperosShowcaseKitSubtitle => 'qhkb 澎湃风格组件一览';
 
   @override
   String get hyperosShowcaseSectionTags => '标签 / 手风琴 / 提示';
@@ -25775,7 +25775,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get logCatDebugSnapshot => '调试快照';
 
   @override
-  String get logExportTitle => '轻屿课表 - 应用日志';
+  String get logExportTitle => '清涵课表 - 应用日志';
 
   @override
   String get appUpdateMirrorPresetGhfast => '默认镜像';
@@ -25799,7 +25799,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get appUpdateMirrorPresetCustomDescription => '填写自定义镜像地址前缀';
 
   @override
-  String get statisticsShareText => '来自轻屿课表的学期统计';
+  String get statisticsShareText => '来自清涵课表的学期统计';
 
   @override
   String get aboutUpdateAvailableHeadline => '有版本更新';

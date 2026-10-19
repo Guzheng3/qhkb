@@ -1,4 +1,4 @@
-/* qingyu-compat-shim v2:auto-generated, do not edit */
+/* qinghan-compat-shim v2:auto-generated, do not edit */
 (function () {
   if (typeof window === 'undefined') return;
   if (!window.shiguangBridge && window.AndroidBridge) window.shiguangBridge = window.AndroidBridge;

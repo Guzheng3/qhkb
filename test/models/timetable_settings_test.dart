@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
+import 'package:qhkb/models/timetable_settings.dart';
 
 void main() {
   test('defaults include semester week count and preserve it in json', () {

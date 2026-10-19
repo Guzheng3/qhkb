@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/couple_timetable_widget_service.dart';
+import 'package:qhkb/services/couple_timetable_widget_service.dart';
 
 void main() {
   // 这些字符串是 Dart 与原生之间的约定：原生 CoupleWidgetStatus.from 按它们解析。

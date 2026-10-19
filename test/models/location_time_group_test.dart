@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/location_time_group.dart';
+import 'package:qhkb/models/location_time_group.dart';
 
 void main() {
   group('LocationKeywordMatchMode', () {

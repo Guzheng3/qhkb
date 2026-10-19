@@ -14,7 +14,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 /// 与 _buildCurrentDayAgendaCard / _buildDefaultDayAgendaCard 内部 Column
 /// 一致的内容结构。[context] 用于读取 Theme（与真机一致）。

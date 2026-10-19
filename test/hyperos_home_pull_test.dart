@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_home_pull.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_miuix_spec.dart';
+import 'package:qhkb/ui/hyperos/hyperos_home_pull.dart';
+import 'package:qhkb/ui/hyperos/hyperos_miuix_spec.dart';
 
 void main() {
   group('HyperosHomePullPhysics.dampedFraction', () {

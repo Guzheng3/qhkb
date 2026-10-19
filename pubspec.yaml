@@ -1,10 +1,10 @@
-name: university_timetable
-description: 轻屿课表应用 - 支持小米超级岛
+name: qhkb
+description: 清涵课表应用 - 支持小米超级岛
 publish_to: 'none'
 version: 5.2.0-0+139
-repository: https://github.com/Guzheng3/mikcb
-homepage: https://github.com/Guzheng3/mikcb
-issue_tracker: https://github.com/Guzheng3/mikcb/issues
+repository: https://github.com/Guzheng3/qhkb
+homepage: https://github.com/Guzheng3/qhkb
+issue_tracker: https://github.com/Guzheng3/qhkb/issues
 license: GPL-3.0-or-later
 
 environment:

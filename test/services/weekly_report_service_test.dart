@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations_zh.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/services/weekly_report_service.dart';
+import 'package:qhkb/l10n/app_localizations_zh.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/services/weekly_report_service.dart';
 
 void main() {
   group('WeeklyReportService', () {

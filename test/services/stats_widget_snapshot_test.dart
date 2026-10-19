@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/services/statistics_service.dart';
-import 'package:university_timetable/services/stats_widget_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/services/statistics_service.dart';
+import 'package:qhkb/services/stats_widget_service.dart';
 
 Course _course({
   required String id,

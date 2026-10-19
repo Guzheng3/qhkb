@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
-import 'package:university_timetable/utils/home_page_backdrop_image_store.dart';
-import 'package:university_timetable/utils/home_startup_visual_primer.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/utils/home_page_background.dart';
+import 'package:qhkb/utils/home_page_backdrop_image_store.dart';
+import 'package:qhkb/utils/home_startup_visual_primer.dart';
 
 void main() {
   group('HomeStartupVisualPrimer.prime', () {

@@ -6,38 +6,38 @@ import '../models/timetable_profile.dart';
 import '../models/couple_timetable_history.dart';
 import '../providers/timetable_provider.dart';
 import 'data_transfer_service.dart';
-import 'withu_couple_auth_service.dart';
-import 'withu_couple_config.dart';
+import 'qhkb_couple_auth_service.dart';
+import 'qhkb_couple_config.dart';
 
-enum WithuCouplePullStatus { imported, updated, unchanged, failed }
+enum QhkbCouplePullStatus { imported, updated, unchanged, failed }
 
-class WithuCouplePullResult {
-  final WithuCouplePullStatus status;
+class QhkbCouplePullResult {
+  final QhkbCouplePullStatus status;
   final String? errorCode;
   final String? importKind;
 
-  const WithuCouplePullResult({
+  const QhkbCouplePullResult({
     required this.status,
     this.errorCode,
     this.importKind,
   });
 }
 
-class WithuCoupleTimetableService {
-  WithuCoupleTimetableService({
+class QhkbCoupleTimetableService {
+  QhkbCoupleTimetableService({
     required this._authService,
-    WithuCoupleConfigStore? configStore,
+    QhkbCoupleConfigStore? configStore,
     DataTransferService? dataTransferService,
-  }) : _configStore = configStore ?? const WithuCoupleConfigStore(),
+  }) : _configStore = configStore ?? const QhkbCoupleConfigStore(),
        _dataTransferService = dataTransferService ?? DataTransferService();
 
-  final WithuCoupleAuthService _authService;
-  final WithuCoupleConfigStore _configStore;
+  final QhkbCoupleAuthService _authService;
+  final QhkbCoupleConfigStore _configStore;
   final DataTransferService _dataTransferService;
 
-  WithuCoupleAuthService get authService => _authService;
+  QhkbCoupleAuthService get authService => _authService;
 
-  Future<WithuCoupleConfig> loadConfig() => _configStore.load();
+  Future<QhkbCoupleConfig> loadConfig() => _configStore.load();
 
   /// 忘掉「对方课表」的拉取标记，重新连接后需要无条件重拉一次。
   ///
@@ -56,38 +56,38 @@ class WithuCoupleTimetableService {
     );
   }
 
-  Future<WithuCouplePullResult> pullPartnerTimetable({
+  Future<QhkbCouplePullResult> pullPartnerTimetable({
     required TimetableProvider provider,
     bool force = false,
   }) async {
     final config = await loadConfig();
     if (await _authService.loadSession() == null) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_couple_not_connected',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_couple_not_connected',
       );
     }
 
     try {
       final payload = await _authService.getJson('partner');
       if (payload['partner'] == null) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.unchanged,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.unchanged,
         );
       }
       final rawPartnerTimetable = payload['partner_timetable'];
       if (rawPartnerTimetable is! Map ||
           rawPartnerTimetable['content'] is! Map) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.failed,
-          errorCode: 'withu_partner_timetable_missing',
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.failed,
+          errorCode: 'qhkb_partner_timetable_missing',
         );
       }
 
       final content = jsonEncode(rawPartnerTimetable['content']);
       if (_dataTransferService.isFullBackupJson(content)) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.failed,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.failed,
           errorCode: 'partner_import_requires_single_profile',
         );
       }
@@ -99,14 +99,14 @@ class WithuCoupleTimetableService {
           config.lastRemoteContentHash == contentHash &&
           provider.hasPartnerBinding) {
         await provider.syncCoupleTimetableWidgetSnapshot();
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.unchanged,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.unchanged,
         );
       }
 
       final rawPartner = payload['partner'];
       final partnerName = rawPartner is Map
-          ? WithuCoupleUser.fromJson(
+          ? QhkbCoupleUser.fromJson(
               Map<String, dynamic>.from(rawPartner),
             ).displayName
           : null;
@@ -121,37 +121,37 @@ class WithuCoupleTimetableService {
         ),
       );
       await provider.syncCoupleTimetableWidgetSnapshot();
-      return WithuCouplePullResult(
+      return QhkbCouplePullResult(
         status: importResult.kind.name == 'created'
-            ? WithuCouplePullStatus.imported
-            : WithuCouplePullStatus.updated,
+            ? QhkbCouplePullStatus.imported
+            : QhkbCouplePullStatus.updated,
         importKind: importResult.kind.name,
       );
     } on FormatException catch (error) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: _errorCode(error),
       );
-    } on WithuCoupleApiException catch (error) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+    } on QhkbCoupleApiException catch (error) {
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: error.code,
       );
     } catch (_) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_request_failed',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_request_failed',
       );
     }
   }
 
-  Future<WithuCouplePullResult> pullMyTimetable({
+  Future<QhkbCouplePullResult> pullMyTimetable({
     required TimetableProvider provider,
   }) async {
     if (await _authService.loadSession() == null) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_couple_not_connected',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_couple_not_connected',
       );
     }
 
@@ -159,17 +159,17 @@ class WithuCoupleTimetableService {
       final payload = await _authService.getJson('bootstrap');
       final rawMyTimetable = payload['timetable'];
       if (rawMyTimetable is! Map || rawMyTimetable['content'] is! Map) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.unchanged,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.unchanged,
         );
       }
 
       final cloudContent = rawMyTimetable['content'];
       final cloudContentJson = jsonEncode(cloudContent);
       if (_dataTransferService.isFullBackupJson(cloudContentJson)) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.failed,
-          errorCode: 'withu_my_timetable_requires_single_profile',
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.failed,
+          errorCode: 'qhkb_my_timetable_requires_single_profile',
         );
       }
 
@@ -186,13 +186,13 @@ class WithuCoupleTimetableService {
           !_cloudIsNewerThanLocal(syncedAt: syncPoint.syncedAt, payload: payload);
       if (localContent != null &&
           _jsonEquals(jsonDecode(localContent), cloudContent)) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.unchanged,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.unchanged,
         );
       }
       if (localIsNewer) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.unchanged,
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.unchanged,
         );
       }
 
@@ -200,25 +200,25 @@ class WithuCoupleTimetableService {
       if (restored) {
         await _rememberSyncedMyTimetable(provider: provider);
       }
-      return WithuCouplePullResult(
+      return QhkbCouplePullResult(
         status: restored
-            ? WithuCouplePullStatus.updated
-            : WithuCouplePullStatus.unchanged,
+            ? QhkbCouplePullStatus.updated
+            : QhkbCouplePullStatus.unchanged,
       );
     } on FormatException catch (error) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: _errorCode(error),
       );
-    } on WithuCoupleApiException catch (error) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+    } on QhkbCoupleApiException catch (error) {
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: error.code,
       );
     } catch (_) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_request_failed',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_request_failed',
       );
     }
   }
@@ -247,45 +247,45 @@ class WithuCoupleTimetableService {
     }
   }
 
-  Future<WithuCouplePullResult> rollbackMyTimetable({
+  Future<QhkbCouplePullResult> rollbackMyTimetable({
     required TimetableProvider provider,
     required String historyId,
   }) async {
     if (await _authService.loadSession() == null) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_couple_not_connected',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_couple_not_connected',
       );
     }
 
     try {
       final id = int.tryParse(historyId);
       if (id == null || id <= 0) {
-        return const WithuCouplePullResult(
-          status: WithuCouplePullStatus.failed,
-          errorCode: 'withu_invalid_history_entry',
+        return const QhkbCouplePullResult(
+          status: QhkbCouplePullStatus.failed,
+          errorCode: 'qhkb_invalid_history_entry',
         );
       }
       await _authService.postJson('rollback', {'historyId': id});
       return pullMyTimetable(provider: provider);
-    } on WithuCoupleApiException catch (error) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+    } on QhkbCoupleApiException catch (error) {
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: error.code,
       );
     } catch (_) {
-      return const WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
-        errorCode: 'withu_request_failed',
+      return const QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
+        errorCode: 'qhkb_request_failed',
       );
     }
   }
 
-  Future<WithuCouplePullResult> syncAfterLogin({
+  Future<QhkbCouplePullResult> syncAfterLogin({
     required TimetableProvider provider,
   }) async {
     final pullMyResult = await pullMyTimetable(provider: provider);
-    if (pullMyResult.status == WithuCouplePullStatus.failed) {
+    if (pullMyResult.status == QhkbCouplePullStatus.failed) {
       return pullMyResult;
     }
 
@@ -295,8 +295,8 @@ class WithuCoupleTimetableService {
       force: true,
     );
     if (uploadError != null) {
-      return WithuCouplePullResult(
-        status: WithuCouplePullStatus.failed,
+      return QhkbCouplePullResult(
+        status: QhkbCouplePullStatus.failed,
         errorCode: uploadError,
       );
     }
@@ -308,7 +308,7 @@ class WithuCoupleTimetableService {
     String? packageId,
   }) async {
     if (await _authService.loadSession() == null) {
-      return 'withu_couple_not_connected';
+      return 'qhkb_couple_not_connected';
     }
 
     try {
@@ -316,7 +316,7 @@ class WithuCoupleTimetableService {
       // 上传的是「我的课表」：当前课表停在 TA 时不能把 TA 的课表传给对方。
       final myProfile = provider.myTimetableProfile;
       if (myProfile == null) {
-        return 'withu_couple_not_connected';
+        return 'qhkb_couple_not_connected';
       }
       final content = _dataTransferService.buildBackupJson(
         profileName: myProfile.name,
@@ -333,17 +333,17 @@ class WithuCoupleTimetableService {
       );
       final decodedContent = jsonDecode(content);
       if (decodedContent is! Map) {
-        return 'withu_invalid_response';
+        return 'qhkb_invalid_response';
       }
       await _authService.postJson('save', {'content': decodedContent});
       await _rememberSyncedMyTimetable(content: content);
       return null;
-    } on WithuCoupleApiException catch (error) {
+    } on QhkbCoupleApiException catch (error) {
       return error.code;
     } on FormatException catch (error) {
       return _errorCode(error);
     } catch (_) {
-      return 'withu_request_failed';
+      return 'qhkb_request_failed';
     }
   }
 
@@ -359,7 +359,7 @@ class WithuCoupleTimetableService {
 
   /// 本机「我的课表」的同步点：上次上传成功的内容哈希与时间。
   ///
-  /// 只有当前登录账号与 [WithuCoupleConfig.lastMyTimetableAccount] 一致时才
+  /// 只有当前登录账号与 [QhkbCoupleConfig.lastMyTimetableAccount] 一致时才
   /// 返回它。配置里没记账号（老版本写入的配置）同样视为无效，退回
   /// [_cloudIsNewerThanLocal] 的时间戳判断，避免把别的账号的进度当成自己的。
   Future<({String? hash, DateTime? syncedAt})> myTimetableSyncPoint() async {
@@ -378,7 +378,7 @@ class WithuCoupleTimetableService {
     required TimetableProvider provider,
   }) async {
     if (await _authService.loadSession() == null) {
-      return 'withu_couple_not_connected';
+      return 'qhkb_couple_not_connected';
     }
 
     try {
@@ -387,18 +387,18 @@ class WithuCoupleTimetableService {
         'content': provider.settings.toJson(),
       });
       return null;
-    } on WithuCoupleApiException catch (error) {
+    } on QhkbCoupleApiException catch (error) {
       return error.code;
     } on FormatException catch (error) {
       return _errorCode(error);
     } catch (_) {
-      return 'withu_request_failed';
+      return 'qhkb_request_failed';
     }
   }
 
   String _errorCode(FormatException error) {
     final message = error.message.trim();
-    return message.isEmpty ? 'withu_invalid_response' : message;
+    return message.isEmpty ? 'qhkb_invalid_response' : message;
   }
 
   Future<({String content, TimetableProfile profile})?>

@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_blurred_header.dart';
-import 'package:university_timetable/widgets/frosted_sheet_settings_preview.dart';
-import 'package:university_timetable/widgets/home_page_region_blur.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/ui/hyperos/hyperos_blurred_header.dart';
+import 'package:qhkb/widgets/frosted_sheet_settings_preview.dart';
+import 'package:qhkb/widgets/home_page_region_blur.dart';
 
 import '../helpers_test_app.dart';
 
@@ -101,7 +101,7 @@ void main() {
       'preview band renders inside a BackdropGroup over the wallpaper '
       'capture',
       (tester) async {
-        final dir = Directory.systemTemp.createTempSync('mikcb_preview_');
+        final dir = Directory.systemTemp.createTempSync('qhkb_preview_');
         final wallpaper = File('${dir.path}/wallpaper.png')
           ..writeAsBytesSync(_tinyPng);
         addTearDown(() {

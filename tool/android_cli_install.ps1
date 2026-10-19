@@ -1,5 +1,5 @@
 # tool/android_cli_install.ps1
-# 用途：使用 Android CLI 的 delta install（增量安装）快速构建并部署轻屿课表到真机
+# 用途：使用 Android CLI 的 delta install（增量安装）快速构建并部署清涵课表到真机
 # 说明：编译仍由 Flutter/Gradle 完成；Android CLI 只负责"更快地装 APK"（只传输变化部分）
 # 用法：pwsh -NoProfile -ExecutionPolicy Bypass -File tool/android_cli_install.ps1 [-Mode debug|profile] [-Device <serial>] [-SkipBuild]
 param(

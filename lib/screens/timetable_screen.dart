@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter_miuix/miuix.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 import 'dart:ui' as ui;
 import 'dart:math' as math;
 
@@ -15,8 +15,8 @@ import 'package:flutter/gestures.dart'
         kMinFlingVelocity,
         kTouchSlop;
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/scheduler.dart' show SchedulerPhase, Ticker;
 import 'package:flutter/services.dart';
@@ -30,11 +30,11 @@ import '../models/exam.dart';
 import '../models/schedule_item.dart';
 import '../models/timetable_settings.dart';
 import '../providers/timetable_provider.dart';
-import '../providers/withu_couple_session_provider.dart';
-import '../services/withu_couple_timetable_service.dart';
+import '../providers/qhkb_couple_session_provider.dart';
+import '../services/qhkb_couple_timetable_service.dart';
 import '../services/partner_timetable_service.dart';
 import '../widgets/class_reminder_sheet.dart';
-import 'withu_couple_login_screen.dart';
+import 'qhkb_couple_login_screen.dart';
 import '../utils/app_toast.dart';
 import '../utils/hex_color.dart';
 import '../utils/course_color_palette.dart';
@@ -2375,7 +2375,7 @@ class _TimetableScreenState extends State<TimetableScreen>
     required Color foreground,
     required Color mutedForeground,
   }) {
-    final session = context.watch<WithuCoupleSessionProvider?>();
+    final session = context.watch<QhkbCoupleSessionProvider?>();
     if (provider.settings.coupleTimetableOverlayEnabled) {
       // 只看登录态：退出登录后标题必须立刻回到「未登录 · 点击登录」。
       // 本机仍保留已导入的对方课表（provider.hasPartnerBinding），但它不再
@@ -2407,7 +2407,7 @@ class _TimetableScreenState extends State<TimetableScreen>
   /// 居中显示「未登录 · 点击登录」，不显示应用名。
   Widget _buildLoggedOutCoupleLoginTitle(
     TimetableProvider provider, {
-    required WithuCoupleSessionProvider? session,
+    required QhkbCoupleSessionProvider? session,
     required Color foreground,
     required Color mutedForeground,
   }) {
@@ -2416,13 +2416,13 @@ class _TimetableScreenState extends State<TimetableScreen>
       child: FittedBox(
         fit: BoxFit.scaleDown,
         child: GestureDetector(
-          key: const ValueKey('withu_couple_login_chip'),
-          onTap: _openWithuCoupleLogin,
+          key: const ValueKey('qhkb_couple_login_chip'),
+          onTap: _openQhkbCoupleLogin,
           behavior: HitTestBehavior.opaque,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             child: Text(
-              l10n.withuCoupleNotLoggedInPrompt,
+              l10n.qhkbCoupleNotLoggedInPrompt,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: HyperosIconColors.red,
                 fontWeight: FontWeight.w600,
@@ -2443,7 +2443,7 @@ class _TimetableScreenState extends State<TimetableScreen>
     required Color mutedForeground,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    final session = context.watch<WithuCoupleSessionProvider?>();
+    final session = context.watch<QhkbCoupleSessionProvider?>();
     final myProfile = provider.myTimetableProfile;
     final partnerProfile = provider.partnerProfile;
     final myName = session?.userNickname.trim().isNotEmpty == true
@@ -2664,18 +2664,18 @@ class _TimetableScreenState extends State<TimetableScreen>
   /// 爱心位：已登录显示爱心；未登录显示「登录」小入口，点击进入
   /// WithU 登录弹窗（原「未登录 · 点击登录」提示的登录入口保留于此，
   /// 不再整块霸占标题区，情侣标题的切换功能始终可用）。
-  Widget _buildCoupleHeartSlot(WithuCoupleSessionProvider? session) {
+  Widget _buildCoupleHeartSlot(QhkbCoupleSessionProvider? session) {
     if ((session?.isLoggedIn ?? false) ||
         (session?.hasStoredSession ?? false)) {
       return _buildCoupleHeartbeatIcon();
     }
     return GestureDetector(
-      key: const ValueKey('withu_couple_login_chip'),
-      onTap: _openWithuCoupleLogin,
+      key: const ValueKey('qhkb_couple_login_chip'),
+      onTap: _openQhkbCoupleLogin,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text(
-          AppLocalizations.of(context)!.withuLoginConfirm,
+          AppLocalizations.of(context)!.qhkbLoginConfirm,
           style: Theme.of(context).textTheme.labelSmall?.copyWith(
             color: HyperosIconColors.red,
             fontWeight: FontWeight.w600,
@@ -2686,10 +2686,10 @@ class _TimetableScreenState extends State<TimetableScreen>
   }
 
   /// 进入 WithU 情侣账号登录弹窗；登录成功刷新标题区登录态。
-  Future<void> _openWithuCoupleLogin() async {
+  Future<void> _openQhkbCoupleLogin() async {
     final provider = context.read<TimetableProvider>();
-    final sessionProvider = context.read<WithuCoupleSessionProvider>();
-    final connected = await showWithuCoupleLoginSheet(
+    final sessionProvider = context.read<QhkbCoupleSessionProvider>();
+    final connected = await showQhkbCoupleLoginSheet(
       context: context,
       authService: sessionProvider.authService,
       onPullPartner: (service) => service.syncAfterLogin(provider: provider),
@@ -9321,19 +9321,19 @@ class _TimetableScreenState extends State<TimetableScreen>
 
   Future<void> _showCoupleTimetableHistory(BuildContext sheetContext) async {
     final provider = context.read<TimetableProvider>();
-    final session = context.read<WithuCoupleSessionProvider>();
-    final withuService = WithuCoupleTimetableService(
+    final session = context.read<QhkbCoupleSessionProvider>();
+    final qhkbService = QhkbCoupleTimetableService(
       authService: session.authService,
     );
     final entry = await showCoupleTimetableHistorySheet(
       context: sheetContext,
-      onLoadEntries: withuService.fetchMyHistory,
+      onLoadEntries: qhkbService.fetchMyHistory,
     );
     if (!mounted || entry == null) {
       return;
     }
 
-    final result = await withuService.rollbackMyTimetable(
+    final result = await qhkbService.rollbackMyTimetable(
       provider: provider,
       historyId: entry.id,
     );
@@ -9345,20 +9345,20 @@ class _TimetableScreenState extends State<TimetableScreen>
     // unchanged 意味着本地已是目标内容（或本地改动待上传），不该报「已恢复」。
     final l10n = AppLocalizations.of(context)!;
     switch (result.status) {
-      case WithuCouplePullStatus.imported:
-      case WithuCouplePullStatus.updated:
+      case QhkbCouplePullStatus.imported:
+      case QhkbCouplePullStatus.updated:
         showAppToast(
           context,
           message: l10n.coupleHistoryRestored,
           kind: AppToastKind.success,
         );
-      case WithuCouplePullStatus.failed:
+      case QhkbCouplePullStatus.failed:
         showAppToast(
           context,
           message: l10n.coupleHistoryRestoreFailed,
           kind: AppToastKind.error,
         );
-      case WithuCouplePullStatus.unchanged:
+      case QhkbCouplePullStatus.unchanged:
         break;
     }
   }

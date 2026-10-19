@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_collapsible_top_app_bar.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_overscroll.dart';
+import 'package:qhkb/ui/hyperos/hyperos_collapsible_top_app_bar.dart';
+import 'package:qhkb/ui/hyperos/hyperos_overscroll.dart';
 
 /// Reproduces the release-mid-collapse snap requirement:
 /// - release with the large title cut less than half → scroll back to top

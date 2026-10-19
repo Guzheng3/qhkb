@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/domain/schedule_item_expander.dart';
-import 'package:university_timetable/models/schedule_item.dart';
+import 'package:qhkb/domain/schedule_item_expander.dart';
+import 'package:qhkb/models/schedule_item.dart';
 
 ScheduleItem _item({
   required String id,

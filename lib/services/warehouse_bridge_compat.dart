@@ -5,14 +5,14 @@
 /// `window.shiguangBridge` / `window.shiguangBridgePromise`，
 /// 方法集合与数据结构完全不变。
 ///
-/// 宿主先完成 v1 桥实现（QingyuBridge -> AndroidBridge*），再追加本垫片，
+/// 宿主先完成 v1 桥实现（QinghanBridge -> AndroidBridge*），再追加本垫片，
 /// 使同一份注入环境同时兼容 v1 与 v2 两种协议的适配脚本：
 /// - 正向别名：让上游 v2 新脚本能找到桥；
 /// - 反向幂等别名：防御性保证 v1 老脚本在任何时序下仍能找到桥。
 ///
-/// 详见 docs/plans/2026-08-23-upstream-v2-bridge-compat-plan.md（A 层）。
+/// 本垫片即该兼容方案的 A 层实现。
 const String kWarehouseBridgeCompatShim = r'''
-// qingyu bridge compat: v1 <-> v2 aliases (upstream protocol v2, 2026-08)
+// qinghan bridge compat: v1 <-> v2 aliases (upstream protocol v2, 2026-08)
 window.shiguangBridge = window.AndroidBridge;
 window.shiguangBridgePromise = window.AndroidBridgePromise;
 if (!window.AndroidBridge && window.shiguangBridge) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/app_startup_splash.dart';
+import 'package:qhkb/widgets/app_startup_splash.dart';
 
 void main() {
   test('最短展示时长：快启动按差值滞留，慢启动立即换入', () {
@@ -20,7 +20,7 @@ void main() {
       ),
     );
 
-    expect(find.text('轻屿课表'), findsOneWidget);
+    expect(find.text('清涵课表'), findsOneWidget);
     expect(
       find.byWidgetPredicate(
         (w) => w is Image && w.image is AssetImage,
@@ -28,7 +28,7 @@ void main() {
       findsOneWidget,
     );
 
-    final text = tester.widget<Text>(find.text('轻屿课表'));
+    final text = tester.widget<Text>(find.text('清涵课表'));
     // 品牌字口径：常规字重勿加粗、黑墨（用户明确要求）。
     expect(text.style!.fontWeight, FontWeight.w400);
     expect(text.style!.color, Colors.black);
@@ -42,7 +42,7 @@ void main() {
       ),
     );
 
-    final text = tester.widget<Text>(find.text('轻屿课表'));
+    final text = tester.widget<Text>(find.text('清涵课表'));
     expect(text.style!.color, Colors.white);
   });
 }

@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../services/withu_couple_auth_service.dart';
-import '../services/withu_couple_avatar_cache.dart';
-import '../services/withu_couple_config.dart';
-import '../services/withu_couple_session_store.dart';
+import '../services/qhkb_couple_auth_service.dart';
+import '../services/qhkb_couple_avatar_cache.dart';
+import '../services/qhkb_couple_config.dart';
+import '../services/qhkb_couple_session_store.dart';
 
 /// withU 情侣登录态。
 ///
 /// 有本地凭证 ≠ 已登录：凭证可能已经过期，服务端也可能暂时问不到。这两件事
 /// 对界面含义完全不同（一个该显示登录提示，一个该显示缓存的昵称），所以这里
 /// 用显式状态而不是若干个布尔量表示。
-enum WithuCoupleLoginStatus {
+enum QhkbCoupleLoginStatus {
   /// 本机没有可用的 withU 凭证。
   signedOut,
 
@@ -31,23 +31,23 @@ enum WithuCoupleLoginStatus {
 /// 也是登录、退出这两个状态变更的唯一入口。
 ///
 /// 只负责「会话是否存在 + 双方昵称展示」。凭证读写复用
-/// [WithuCoupleAuthService]，不复制认证逻辑。
-class WithuCoupleSessionProvider extends ChangeNotifier {
-  WithuCoupleSessionProvider({
-    WithuCoupleAuthService? authService,
-    WithuCoupleAvatarCache? avatarCache,
-  }) : _authService = authService ?? WithuCoupleAuthService(),
-       _avatarCache = avatarCache ?? WithuCoupleAvatarCache() {
+/// [QhkbCoupleAuthService]，不复制认证逻辑。
+class QhkbCoupleSessionProvider extends ChangeNotifier {
+  QhkbCoupleSessionProvider({
+    QhkbCoupleAuthService? authService,
+    QhkbCoupleAvatarCache? avatarCache,
+  }) : _authService = authService ?? QhkbCoupleAuthService(),
+       _avatarCache = avatarCache ?? QhkbCoupleAvatarCache() {
     _ownsAvatarCache = avatarCache == null;
   }
 
-  final WithuCoupleAuthService _authService;
-  final WithuCoupleAvatarCache _avatarCache;
+  final QhkbCoupleAuthService _authService;
+  final QhkbCoupleAvatarCache _avatarCache;
 
   /// 全应用共享的认证服务。UI（登录弹窗、设置页、情侣中心）借用这一份，
   /// 不要自己 new：登录与退出都要立刻反映到首页登录态上。
-  /// 借用方**不得**调用 [WithuCoupleAuthService.dispose]。
-  WithuCoupleAuthService get authService => _authService;
+  /// 借用方**不得**调用 [QhkbCoupleAuthService.dispose]。
+  QhkbCoupleAuthService get authService => _authService;
 
   bool _isRestoring = false;
   bool _restorePending = false;
@@ -57,37 +57,37 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
 
   /// 最近一次已知的情侣资料（服务端下发或本地缓存）。退出登录会清掉：
   /// 不能让上一个账号的昵称留在内存里被后续的离线兜底当成自己的资料。
-  WithuCoupleDisplayProfile? _lastCachedProfile;
+  QhkbCoupleDisplayProfile? _lastCachedProfile;
 
   /// [signOutLocally] 捕获、待 [completeServerLogout] 注销的服务端会话。
-  WithuCoupleSession? _pendingServerLogout;
+  QhkbCoupleSession? _pendingServerLogout;
 
   /// 登录态代次：退出登录（或开启新一轮恢复）会 +1，让在途的恢复结果作废，
   /// 避免它们拿着旧凭证把刚退出的状态又写回「已登录」。
   int _stateEpoch = 0;
 
-  WithuCoupleLoginStatus _status = WithuCoupleLoginStatus.signedOut;
+  QhkbCoupleLoginStatus _status = QhkbCoupleLoginStatus.signedOut;
 
   /// 当前登录态。
-  WithuCoupleLoginStatus get status => _status;
+  QhkbCoupleLoginStatus get status => _status;
 
   /// 原始凭证会话；null 表示本机没有 withU 凭证。
-  WithuCoupleSession? session;
+  QhkbCoupleSession? session;
 
-  /// 服务端是否已确认登录（[WithuCoupleLoginStatus.connected]）。
-  bool get isLoggedIn => _status == WithuCoupleLoginStatus.connected;
+  /// 服务端是否已确认登录（[QhkbCoupleLoginStatus.connected]）。
+  bool get isLoggedIn => _status == QhkbCoupleLoginStatus.connected;
 
   /// 本地是否有可展示的情侣资料（凭证或缓存昵称）：首页据此决定显示情侣标题
   /// 还是「未登录 · 点击登录」。它**不**代表服务端已确认，判断登录请用
   /// [isLoggedIn]。
-  bool get hasStoredSession => _status != WithuCoupleLoginStatus.signedOut;
+  bool get hasStoredSession => _status != QhkbCoupleLoginStatus.signedOut;
 
   /// 是否正在恢复会话。
   bool get isRestoring => _isRestoring;
 
   /// 仅测试使用：直接落定登录态，免得为了构造某个状态搭一整套存储与网络。
   @visibleForTesting
-  void debugSetStatus(WithuCoupleLoginStatus value) {
+  void debugSetStatus(QhkbCoupleLoginStatus value) {
     _status = value;
   }
 
@@ -98,7 +98,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   String partnerNickname = '';
 
   /// withU 服务地址；相对路径头像需要用它补全。
-  String serverBaseUrl = WithuCoupleConfig.defaultBaseUrl;
+  String serverBaseUrl = QhkbCoupleConfig.defaultBaseUrl;
 
   /// 登录用户头像地址；空值时由 UI 使用服务器默认头像。
   String? userAvatar;
@@ -114,7 +114,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   /// 恢复会话：读本地凭证 → 用缓存资料先铺界面 → bootstrap 校验 → 落定状态。
   ///
   /// 任何失败都不向调用方抛出：会话过期回到未登录，网络失败退到
-  /// [WithuCoupleLoginStatus.staleOffline]。
+  /// [QhkbCoupleLoginStatus.staleOffline]。
   ///
   /// 并发调用不会丢：恢复进行中再来的调用会排队，等本轮结束后按最新的本地
   /// 凭证再跑一次，而不是静默丢弃。
@@ -161,20 +161,20 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
       if (_stale(epoch)) {
         return;
       }
-      _status = WithuCoupleLoginStatus.connected;
+      _status = QhkbCoupleLoginStatus.connected;
       unawaited(_refreshAvatars());
-    } on WithuCoupleApiException catch (error) {
+    } on QhkbCoupleApiException catch (error) {
       if (_stale(epoch)) {
         return;
       }
-      if (error.code == 'withu_session_expired') {
+      if (error.code == 'qhkb_session_expired') {
         _applySignedOut();
       } else {
-        _status = WithuCoupleLoginStatus.staleOffline;
+        _status = QhkbCoupleLoginStatus.staleOffline;
       }
     } catch (_) {
       if (!_stale(epoch)) {
-        _status = WithuCoupleLoginStatus.staleOffline;
+        _status = QhkbCoupleLoginStatus.staleOffline;
       }
     }
   }
@@ -182,12 +182,12 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   /// 读取本地凭证并把缓存资料铺到界面，返回可用会话（null 表示已回到未登录）。
   ///
   /// 先铺缓存资料是为了冷启动不闪「未登录」；此时状态是
-  /// [WithuCoupleLoginStatus.restoring] 而不是已登录：一个已失效的会话不该让
+  /// [QhkbCoupleLoginStatus.restoring] 而不是已登录：一个已失效的会话不该让
   /// 首页先亮起情侣标题再掉回登录提示。
   ///
   /// 每个 await 之后都要复核 [epoch]：期间用户可能已经退出登录或换号，读取
   /// 前后跨越了那次变更的旧值不能落到界面上。
-  Future<WithuCoupleSession?> _loadLocalState(int epoch) async {
+  Future<QhkbCoupleSession?> _loadLocalState(int epoch) async {
     final storedSession = await _authService.loadSession();
     if (_stale(epoch)) {
       return null;
@@ -205,7 +205,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     session = storedSession;
     _lastCachedProfile = cachedProfile;
     _applyCachedProfile(cachedProfile);
-    _status = WithuCoupleLoginStatus.restoring;
+    _status = QhkbCoupleLoginStatus.restoring;
     notifyListeners();
 
     await _applyCachedAvatarPaths(epoch);
@@ -219,7 +219,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   ///
   /// 服务端注销（吊销 withu_device 可信设备）由 [completeServerLogout] 接着做，
   /// 调用方可以先关掉界面再等它——退出登录因此不会卡在网络上。
-  /// 若还要清课表同步点，见 `WithuCoupleTimetableService.forgetPartnerPullMarkers`。
+  /// 若还要清课表同步点，见 `QhkbCoupleTimetableService.forgetPartnerPullMarkers`。
   Future<void> signOutLocally() async {
     if (_disposed) {
       return;
@@ -261,7 +261,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
       return;
     }
     if (storedSession != null) {
-      _status = WithuCoupleLoginStatus.connected;
+      _status = QhkbCoupleLoginStatus.connected;
       unawaited(_refreshAvatars());
     }
     notifyListeners();
@@ -271,7 +271,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     if (raw is! Map) {
       return fallback;
     }
-    final user = WithuCoupleUser.fromJson(Map<String, dynamic>.from(raw));
+    final user = QhkbCoupleUser.fromJson(Map<String, dynamic>.from(raw));
     final nickname = user.nickname.trim();
     return nickname.isEmpty ? fallback : nickname;
   }
@@ -280,7 +280,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     if (raw is! Map) {
       return null;
     }
-    final user = WithuCoupleUser.fromJson(Map<String, dynamic>.from(raw));
+    final user = QhkbCoupleUser.fromJson(Map<String, dynamic>.from(raw));
     final avatar = user.avatar?.trim();
     return (avatar == null || avatar.isEmpty) ? null : avatar;
   }
@@ -290,8 +290,8 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     if (raw is! Map) {
       return fallback;
     }
-    final user = WithuCoupleUser.fromJson(Map<String, dynamic>.from(raw));
-    final gender = WithuCoupleDisplayProfile.genderFromRole(user.role);
+    final user = QhkbCoupleUser.fromJson(Map<String, dynamic>.from(raw));
+    final gender = QhkbCoupleDisplayProfile.genderFromRole(user.role);
     return gender.isEmpty ? fallback : gender;
   }
 
@@ -307,7 +307,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     );
     userAvatar = _displayAvatarOf(payload['user']);
     partnerAvatar = _displayAvatarOf(payload['partner']);
-    final profile = WithuCoupleDisplayProfile(
+    final profile = QhkbCoupleDisplayProfile(
       userNickname: userNickname,
       partnerNickname: partnerNickname,
       userAvatar: userAvatar,
@@ -330,13 +330,13 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   void _applySignedOut() {
     _lastCachedProfile = null;
     session = null;
-    _status = WithuCoupleLoginStatus.signedOut;
+    _status = QhkbCoupleLoginStatus.signedOut;
     _applyCachedProfile(null);
     _avatarRefreshGeneration++;
   }
 
   /// 把缓存资料铺到界面字段；没有缓存时回到空串，由 UI 决定兜底文案。
-  void _applyCachedProfile(WithuCoupleDisplayProfile? profile) {
+  void _applyCachedProfile(QhkbCoupleDisplayProfile? profile) {
     userNickname = profile?.userNickname ?? '';
     partnerNickname = profile?.partnerNickname ?? '';
     userAvatar = profile?.userAvatar;
@@ -350,7 +350,7 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
   Future<void> _loadAvatarConfiguration() async {
     final config = await _authService.loadConfig();
     serverBaseUrl = config.baseUrl.trim().isEmpty
-        ? WithuCoupleConfig.defaultBaseUrl
+        ? QhkbCoupleConfig.defaultBaseUrl
         : config.baseUrl.trim();
   }
 
@@ -358,10 +358,10 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
     try {
       final paths = await Future.wait<String?>([
         _avatarCache.cachedPath(
-          WithuCoupleAvatarCache.resolveUri(serverBaseUrl, userAvatar),
+          QhkbCoupleAvatarCache.resolveUri(serverBaseUrl, userAvatar),
         ),
         _avatarCache.cachedPath(
-          WithuCoupleAvatarCache.resolveUri(serverBaseUrl, partnerAvatar),
+          QhkbCoupleAvatarCache.resolveUri(serverBaseUrl, partnerAvatar),
         ),
       ]);
       if (_stale(epoch)) {
@@ -380,12 +380,12 @@ class WithuCoupleSessionProvider extends ChangeNotifier {
 
   Future<void> _refreshAvatars() async {
     final generation = ++_avatarRefreshGeneration;
-    final results = await Future.wait<WithuCoupleAvatarCacheResult?>([
+    final results = await Future.wait<QhkbCoupleAvatarCacheResult?>([
       _avatarCache.refresh(
-        WithuCoupleAvatarCache.resolveUri(serverBaseUrl, userAvatar),
+        QhkbCoupleAvatarCache.resolveUri(serverBaseUrl, userAvatar),
       ),
       _avatarCache.refresh(
-        WithuCoupleAvatarCache.resolveUri(serverBaseUrl, partnerAvatar),
+        QhkbCoupleAvatarCache.resolveUri(serverBaseUrl, partnerAvatar),
       ),
     ]);
     if (_disposed || generation != _avatarRefreshGeneration) {

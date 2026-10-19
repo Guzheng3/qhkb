@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/holiday_entry.dart';
-import 'package:university_timetable/models/time_scheme.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
-import 'package:university_timetable/services/holiday_service.dart';
+import 'package:qhkb/models/holiday_entry.dart';
+import 'package:qhkb/models/time_scheme.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
+import 'package:qhkb/services/holiday_service.dart';
 import 'package:http/http.dart' as http;
 
 // Focused robustness tests for B2/B3/D2/D3/D5/D7/D8.

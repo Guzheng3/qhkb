@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_miuix/miuix.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/services/app_update_service.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/services/app_update_service.dart';
 
 /// Mutable state shared by the home update prompt and the download task.
 ///

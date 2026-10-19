@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HyperOS page + design-system compliance audit for mikcb.
+"""HyperOS page + design-system compliance audit for qhkb.
 
 Registry: docs/reference/hyperos-page-compliance.json
 Rules:    docs/reference/hyperos-audit-checklist.yaml

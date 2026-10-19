@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:university_timetable/services/app_migration_service.dart';
-import 'package:university_timetable/utils/managed_image_storage.dart';
+import 'package:qhkb/services/app_migration_service.dart';
+import 'package:qhkb/utils/managed_image_storage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 // ignore: depend_on_referenced_packages
 import 'package:webview_flutter_platform_interface/webview_flutter_platform_interface.dart';
@@ -82,7 +82,7 @@ void main() {
         'plugins.flutter.io/path_provider',
       );
       final documentsDirectory = await Directory.systemTemp.createTemp(
-        'mikcb-plugin-smoke-',
+        'qhkb-plugin-smoke-',
       );
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(

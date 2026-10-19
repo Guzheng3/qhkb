@@ -9,8 +9,8 @@ import android.widget.RemoteViews
  * 考试倒计时卡 2×2：巨型数字排版 [徽章 | 天数大字+单位 | 考试名 | 日期·地点]。
  * 与现有列表/统计形态完全区分的新样式；数据复用今日快照的考试字段。
  */
-class ExamCountdownWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         ExamCountdownWidgetProvider::class.java
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

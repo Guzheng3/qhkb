@@ -133,7 +133,7 @@ Gradle build daemon disappeared unexpectedly
 
 ## 如何查看调试记录
 
-mikcb 是 Flutter Android 应用，日志分散在 IDE 调试控制台、Debug Console+ 持久化文件和 `adb logcat` 中。按症状选择来源，避免在错误的地方找堆栈。
+qhkb 是 Flutter Android 应用，日志分散在 IDE 调试控制台、Debug Console+ 持久化文件和 `adb logcat` 中。按症状选择来源，避免在错误的地方找堆栈。
 
 ### VS Code / Cursor F5 调试控制台
 
@@ -154,11 +154,11 @@ F5 启动 `.vscode/launch.json` 中的 Flutter 调试后，**调试控制台**�
 | MCP 工具 | `debug_console_plus_query_debug_logs`（按关键词、级别、时间过滤） |
 | 直接读文件 | 扩展将日志写入 `logs.json`，路径见 `.mcp.json` 里 `debug-console-plus` 的 `--logs-dir` 参数 |
 
-当前工作区示例路径（`mikcb-868ab89f` 为工作区哈希，换机器或重开工作区可能变化；通用模式见下）：
+当前工作区示例路径（`qhkb-868ab89f` 为工作区哈希，换机器或重开工作区可能变化；通用模式见下）：
 
 ```text
 %APPDATA%\Code\User\globalStorage\pomisoft.debug-console-plus\workspaces\<workspace-hash>\logs.json
-c:\Users\34045\AppData\Roaming\Code\User\globalStorage\pomisoft.debug-console-plus\workspaces\mikcb-868ab89f\logs.json
+c:\Users\34045\AppData\Roaming\Code\User\globalStorage\pomisoft.debug-console-plus\workspaces\qhkb-868ab89f\logs.json
 ```
 
 **前置条件**：
@@ -225,7 +225,7 @@ E AndroidRuntime: java.lang.SecurityException: Starting FGS with type connectedD
 
 ### Android CLI（`android` 命令）— 何时优先使用
 
-mikcb 是 Flutter 应用，但 `android/` 下有大量 Kotlin 原生层（Widget、前台服务、通知、平台通道）。**Android CLI 不能替代 `flutter run`**，但在以下场景应**优先于**只靠 F5 控制台或手写 adb：
+qhkb 是 Flutter 应用，但 `android/` 下有大量 Kotlin 原生层（Widget、前台服务、通知、平台通道）。**Android CLI 不能替代 `flutter run`**，但在以下场景应**优先于**只靠 F5 控制台或手写 adb：
 
 | 场景 | 优先用 Android CLI | 原因 |
 |------|-------------------|------|
@@ -255,8 +255,8 @@ android info
 
 # 设备 UI（默认连第一台已连接设备）
 android layout --pretty
-android screen capture -o "$env:TEMP\mikcb_screen.png"
-android screen capture -a -o "$env:TEMP\mikcb_annotated.png"   # 带控件边框标注
+android screen capture -o "$env:TEMP\qhkb_screen.png"
+android screen capture -a -o "$env:TEMP\qhkb_annotated.png"   # 带控件边框标注
 
 # 模拟器
 android emulator list

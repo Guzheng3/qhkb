@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/widgets/course_card.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/widgets/course_card.dart';
 
 import '../helpers_test_app.dart';
 

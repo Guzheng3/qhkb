@@ -1,4 +1,4 @@
-# mikcb lightweight device QA helper (debug / profile packages only)
+# qhkb lightweight device QA helper (debug / profile packages only)
 # Requires: adb + a connected device with the debug or profile build installed.
 #
 # Examples:
@@ -92,7 +92,7 @@ function Invoke-DeepLink {
         [string]$PackageName,
         [string]$Uri
     )
-    # Use path-absolute form (mikcb-debug:///...) so host is empty and the full
+    # Use path-absolute form (qhkb-debug:///...) so host is empty and the full
     # path is preserved for both Kotlin and Flutter route parsing.
     Write-Host ">> am start -a VIEW -d $Uri ($PackageName)" -ForegroundColor Cyan
     & $adb shell am start `
@@ -103,7 +103,7 @@ function Invoke-DeepLink {
 }
 
 function Show-Help {
-    Write-Host "mikcb QA (lightweight)"
+    Write-Host "qhkb QA (lightweight)"
     Write-Host ""
     Write-Host "Usage:"
     Write-Host "  .\tool\qa.ps1 open PATH"
@@ -149,7 +149,7 @@ switch ($Command) {
         & $adb shell monkey -p $packageName -c android.intent.category.LAUNCHER 1 | Out-Host
     }
     "home" {
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///home"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///home"
     }
     "open" {
         if (-not $Target) {
@@ -157,14 +157,14 @@ switch ($Command) {
             exit 1
         }
         $path = $Target.TrimStart('/')
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///$path"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///$path"
     }
     "seed-soon" {
         $lead = if ($Target) { [int]$Target } else { $Minutes }
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///action/seed-soon?minutes=$lead"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///action/seed-soon?minutes=$lead"
     }
     "resume" {
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///action/resume"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///action/resume"
     }
     "resume-cycle" {
         Write-Host ">> KEYCODE_HOME" -ForegroundColor Cyan
@@ -174,10 +174,10 @@ switch ($Command) {
         Write-Host ">> bring app to front" -ForegroundColor Cyan
         & $adb shell monkey -p $packageName -c android.intent.category.LAUNCHER 1 | Out-Host
         Start-Sleep -Seconds 1
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///action/resume"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///action/resume"
     }
     "dump-live" {
-        Invoke-DeepLink -PackageName $packageName -Uri "mikcb-debug:///action/dump-live-status"
+        Invoke-DeepLink -PackageName $packageName -Uri "qhkb-debug:///action/dump-live-status"
         Write-Host "Requested dump. Check: adb logcat -d | findstr DEBUG_LIVE_STATUS" -ForegroundColor Yellow
     }
     "screenshot" {
@@ -185,7 +185,7 @@ switch ($Command) {
             New-Item -ItemType Directory -Path $OutDir | Out-Null
         }
         $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
-        $remote = "/sdcard/mikcb-qa-$stamp.png"
+        $remote = "/sdcard/qhkb-qa-$stamp.png"
         $local = Join-Path $OutDir "screen-$stamp.png"
         & $adb shell screencap -p $remote
         & $adb pull $remote $local | Out-Host

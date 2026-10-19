@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/timetable_provider.dart';
@@ -235,7 +235,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
     required String shareSubject,
   }) async {
     final now = DateTime.now();
-    final prefix = package.isFullBackup ? 'mikcb-full-backup' : 'mikcb-backup';
+    final prefix = package.isFullBackup ? 'qhkb-full-backup' : 'qhkb-backup';
     final filename =
         '$prefix-${now.year}${now.month.toString().padLeft(2, '0')}'
         '${now.day.toString().padLeft(2, '0')}-'
@@ -296,7 +296,7 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
         withData: true,
-        allowedExtensions: const ['json', 'mikcb'],
+        allowedExtensions: const ['json', 'qhkb'],
       );
       final file = result?.files.single;
       if (file == null) {

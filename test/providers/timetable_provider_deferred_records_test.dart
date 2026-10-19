@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 class _BlockingDeferredRecordsStorage extends StorageService {
   _BlockingDeferredRecordsStorage() : super.forTesting();

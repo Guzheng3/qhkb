@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/third_party_disclaimer_card.dart';
+import 'package:qhkb/widgets/third_party_disclaimer_card.dart';
 
 void main() {
   group('thirdPartyDisclaimerBody', () {

@@ -5,8 +5,8 @@ import android.content.Context
 import android.view.View
 import android.widget.RemoteViews
 
-class TodayLargeWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class TodayLargeWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayLargeWidgetProvider::class.java
 
     companion object {

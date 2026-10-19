@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/miui_live_activities_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/miui_live_activities_service.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 class _FailOnceStorageService extends StorageService {
   _FailOnceStorageService() : super.forTesting();

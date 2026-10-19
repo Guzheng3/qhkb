@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/class_reminder.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/services/class_reminder_service.dart';
-import 'package:university_timetable/services/exam_reminder_service.dart';
+import 'package:qhkb/models/class_reminder.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/services/class_reminder_service.dart';
+import 'package:qhkb/services/exam_reminder_service.dart';
 
 Course _course({String id = 'c1'}) => Course(
       id: id,

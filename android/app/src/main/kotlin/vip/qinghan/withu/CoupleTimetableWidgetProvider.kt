@@ -11,8 +11,8 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 
-class CoupleTimetableWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class CoupleTimetableWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         CoupleTimetableWidgetProvider::class.java
 
     override fun onUpdate(
@@ -203,7 +203,7 @@ class CoupleTimetableWidgetProvider : BaseQingyuWidgetProvider() {
             putExtra(EXTRA_APP_WIDGET_ID, appWidgetId)
             putExtra(EXTRA_IS_LEFT, isLeft)
             putExtra(EXTRA_ACCENT_COLOR, accentColor)
-            data = Uri.parse("qingyu://couple-widget/$appWidgetId/$sidePrefix")
+            data = Uri.parse("qinghan://couple-widget/$appWidgetId/$sidePrefix")
         }
         views.setRemoteAdapter(listId, serviceIntent)
         appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, listId)
@@ -237,7 +237,7 @@ class CoupleTimetableWidgetProvider : BaseQingyuWidgetProvider() {
             putExtra(TodayWidgetSupport.EXTRA_WIDGET_LAUNCH, true)
             putExtra(TodayWidgetSupport.EXTRA_WIDGET_LAUNCH_APP_WIDGET_ID, appWidgetId)
             putExtra(TodayWidgetSupport.EXTRA_WIDGET_LAUNCH_SIDE, side)
-            data = Uri.parse("qingyu://widget-launch/$appWidgetId/$side")
+            data = Uri.parse("qinghan://widget-launch/$appWidgetId/$side")
         }
         val mutabilityFlag =
             if (mutable) PendingIntent.FLAG_MUTABLE else PendingIntent.FLAG_IMMUTABLE

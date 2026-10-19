@@ -15,9 +15,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart' show RenderRepaintBoundary;
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/statistics_models.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/widgets/statistics/achievement_badge.dart';
+import 'package:qhkb/models/statistics_models.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/widgets/statistics/achievement_badge.dart';
 
 import '../helpers_test_app.dart';
 

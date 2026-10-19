@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/models/statistics_models.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/widgets/statistics/overview_section.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/models/statistics_models.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/widgets/statistics/overview_section.dart';
 
 import '../helpers_test_app.dart';
 

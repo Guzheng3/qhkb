@@ -5,9 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app_http_client.dart';
 import 'app_update_service.dart';
-import 'withu_couple_config.dart';
+import 'qhkb_couple_config.dart';
 
-class WithuAppUpdateService {
+class QhkbAppUpdateService {
   static const String ignoredVersionPrefsKey =
       'withu_update_ignored_version_v1';
   static const String _selectedBaseUrlPrefsKey =
@@ -15,18 +15,18 @@ class WithuAppUpdateService {
   static const Duration _defaultRequestTimeout = Duration(seconds: 4);
   static const Duration _probeTimeout = Duration(seconds: 2);
 
-  WithuAppUpdateService({
+  QhkbAppUpdateService({
     http.Client? client,
-    WithuCoupleConfigStore? configStore,
+    QhkbCoupleConfigStore? configStore,
     Duration? requestTimeout,
   }) : _client = client ?? createAppHttpClient(),
-       _configStore = configStore ?? const WithuCoupleConfigStore(),
+       _configStore = configStore ?? const QhkbCoupleConfigStore(),
        _requestTimeout = requestTimeout ?? _defaultRequestTimeout {
     _ownsClient = client == null && !isSharedAppHttpClient(_client);
   }
 
   final http.Client _client;
-  final WithuCoupleConfigStore _configStore;
+  final QhkbCoupleConfigStore _configStore;
   final Duration _requestTimeout;
   late final bool _ownsClient;
 
@@ -78,7 +78,7 @@ class WithuAppUpdateService {
         hasUpdate: true,
         currentVersion: currentVersion,
         latestRelease: release,
-        message: 'withu_update_available',
+        message: 'qhkb_update_available',
       );
     } catch (_) {
       await _clearSelectedBaseUrl();
@@ -86,13 +86,13 @@ class WithuAppUpdateService {
     }
   }
 
-  Future<WithuCoupleConfig> _resolveUpdateConfig() async {
+  Future<QhkbCoupleConfig> _resolveUpdateConfig() async {
     final config = await _configStore.load();
-    if (!WithuCoupleConfig.isBuiltInBaseUrl(config.baseUrl)) {
+    if (!QhkbCoupleConfig.isBuiltInBaseUrl(config.baseUrl)) {
       return config;
     }
     final cached = await _loadSelectedBaseUrl();
-    if (cached != null && WithuCoupleConfig.isBuiltInBaseUrl(cached)) {
+    if (cached != null && QhkbCoupleConfig.isBuiltInBaseUrl(cached)) {
       return config.copyWith(baseUrl: cached);
     }
     final winner = await _probeFastestBaseUrl();
@@ -105,14 +105,14 @@ class WithuAppUpdateService {
 
   Future<String?> _probeFastestBaseUrl() async {
     final latencies = await Future.wait(
-      WithuCoupleConfig.builtInBaseUrls.map(_probeLatency),
+      QhkbCoupleConfig.builtInBaseUrls.map(_probeLatency),
     );
     String? best;
     Duration? bestLatency;
-    for (var i = 0; i < WithuCoupleConfig.builtInBaseUrls.length; i++) {
+    for (var i = 0; i < QhkbCoupleConfig.builtInBaseUrls.length; i++) {
       final latency = latencies[i];
       if (latency != null && (bestLatency == null || latency < bestLatency)) {
-        best = WithuCoupleConfig.builtInBaseUrls[i];
+        best = QhkbCoupleConfig.builtInBaseUrls[i];
         bestLatency = latency;
       }
     }
@@ -185,13 +185,13 @@ class WithuAppUpdateService {
       hasRelease: false,
       hasUpdate: false,
       currentVersion: currentVersion,
-      message: 'withu_already_latest',
+      message: 'qhkb_already_latest',
     );
   }
 
   AppReleaseInfo? _releaseFromJson(
     Map<String, dynamic> json,
-    WithuCoupleConfig config,
+    QhkbCoupleConfig config,
   ) {
     final version = (json['version'] as String?)?.trim() ?? '';
     final title = (json['title'] as String?)?.trim() ?? '';
@@ -204,7 +204,7 @@ class WithuAppUpdateService {
     final apiUri = config.appUpdateApiUri;
     final usesLocalHost = _isLocalUpdateHost(apiUri.host);
     final allowHttp =
-        usesLocalHost || WithuCoupleConfig.isBuiltInHost(apiUri.host);
+        usesLocalHost || QhkbCoupleConfig.isBuiltInHost(apiUri.host);
     if (version.isEmpty ||
         uri == null ||
         (uri.scheme != 'https' && !(allowHttp && uri.scheme == 'http')) ||

@@ -1,13 +1,13 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/class_reminder.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/miui_live_activities_service.dart';
-import 'package:university_timetable/services/partner_timetable_service.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/class_reminder.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/miui_live_activities_service.dart';
+import 'package:qhkb/services/partner_timetable_service.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 /// 反馈回路：桌面情侣卡片右半点进 TA 课表、返回桌面后，自己的超级岛与
 /// 上课提醒都变成了对方的。

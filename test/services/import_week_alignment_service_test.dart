@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/services/import_week_alignment_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/services/import_week_alignment_service.dart';
 
 void main() {
   const service = ImportWeekAlignmentService();

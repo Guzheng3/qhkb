@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_miuix_spec.dart';
+import 'package:qhkb/ui/hyperos/hyperos_miuix_spec.dart';
 
 /// Reads Android developer-option animation scales for Flutter transitions.
 abstract final class AndroidAnimationScaleService {

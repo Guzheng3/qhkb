@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/warehouse_bridge_compat.dart';
+import 'package:qhkb/services/warehouse_bridge_compat.dart';
 
 void main() {
   group('kWarehouseBridgeCompatShim', () {

@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:open_filex/open_filex.dart';
-import 'package:university_timetable/l10n/service_message_localizer.dart';
-import 'package:university_timetable/services/app_update_service.dart';
+import 'package:qhkb/l10n/service_message_localizer.dart';
+import 'package:qhkb/services/app_update_service.dart';
 
 const _validSha256 =
     '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
@@ -28,12 +28,12 @@ void main() {
     final service = AppUpdateService();
 
     final missingDigest = await service.downloadAndInstallUpdate(
-      'https://withu.example.com/app.apk',
+      'https://qhkb.example.com/app.apk',
       (_, _) {},
       null,
     );
     final blankDigest = await service.downloadAndInstallUpdate(
-      'https://withu.example.com/app.apk',
+      'https://qhkb.example.com/app.apk',
       (_, _) {},
       null,
       expectedApkSha256: '   ',
@@ -44,7 +44,7 @@ void main() {
   });
 
   test('HTTP failure returns a status code without leaving an APK', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     unawaited(() async {
       await for (final request in server) {
@@ -68,7 +68,7 @@ void main() {
       result,
       encodeServiceMessage('update_download_http_failed', {'statusCode': 404}),
     );
-    expect(File('${tempDir.path}/mikcb_update.apk').existsSync(), isFalse);
+    expect(File('${tempDir.path}/qhkb_update.apk').existsSync(), isFalse);
 
     await server.close(force: true);
     await tempDir.delete(recursive: true);
@@ -78,7 +78,7 @@ void main() {
     'successful download opens the installer after digest verification',
     () async {
       final tempDir = await Directory.systemTemp.createTemp(
-        'mikcb_update_test_',
+        'qhkb_update_test_',
       );
       final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
       unawaited(() async {
@@ -112,7 +112,7 @@ void main() {
       );
 
       expect(result, isNull);
-      expect(openedPath, '${tempDir.path}/mikcb_update.apk');
+      expect(openedPath, '${tempDir.path}/qhkb_update.apk');
       expect(progress.last, 6);
       expect(File(openedPath!).existsSync(), isTrue);
 
@@ -122,7 +122,7 @@ void main() {
   );
 
   test('SHA-256 mismatch deletes the downloaded APK', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     unawaited(() async {
       await for (final request in server) {
@@ -148,14 +148,14 @@ void main() {
     );
 
     expect(result, 'update_download_hash_mismatch');
-    expect(File('${tempDir.path}/mikcb_update.apk').existsSync(), isFalse);
+    expect(File('${tempDir.path}/qhkb_update.apk').existsSync(), isFalse);
 
     await server.close(force: true);
     await tempDir.delete(recursive: true);
   });
 
   test('cancelled download cleans up its partial APK', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     unawaited(() async {
       await for (final request in server) {
@@ -193,14 +193,14 @@ void main() {
     );
 
     expect(result, AppUpdateService.downloadCancelledMessage);
-    expect(File('${tempDir.path}/mikcb_update.apk').existsSync(), isFalse);
+    expect(File('${tempDir.path}/qhkb_update.apk').existsSync(), isFalse);
 
     await server.close(force: true);
     await tempDir.delete(recursive: true);
   });
 
   test('controller reset allows a clean resumed download', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     var requestIndex = 0;
     unawaited(() async {
@@ -259,14 +259,14 @@ void main() {
     );
 
     expect(secondAttempt, isNull);
-    expect(openedPath, '${tempDir.path}/mikcb_update.apk');
+    expect(openedPath, '${tempDir.path}/qhkb_update.apk');
 
     await server.close(force: true);
     await tempDir.delete(recursive: true);
   });
 
   test('cancellation closes a stalled HTTP response immediately', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     final responseStarted = Completer<void>();
     unawaited(() async {
@@ -305,7 +305,7 @@ void main() {
       final result = await downloadFuture.timeout(const Duration(seconds: 2));
 
       expect(result, AppUpdateService.downloadCancelledMessage);
-      expect(File('${tempDir.path}/mikcb_update.apk').existsSync(), isFalse);
+      expect(File('${tempDir.path}/qhkb_update.apk').existsSync(), isFalse);
     } finally {
       await server.close(force: true);
       await tempDir.delete(recursive: true);
@@ -313,10 +313,10 @@ void main() {
   });
 
   test('stale managed APK files are cleared before a new download', () async {
-    final tempDir = await Directory.systemTemp.createTemp('mikcb_update_test_');
-    final staleOldApk = File('${tempDir.path}/mikcb_update_old.apk');
+    final tempDir = await Directory.systemTemp.createTemp('qhkb_update_test_');
+    final staleOldApk = File('${tempDir.path}/qhkb_update_old.apk');
     await staleOldApk.writeAsString('stale');
-    final staleCurrentApk = File('${tempDir.path}/mikcb_update.apk');
+    final staleCurrentApk = File('${tempDir.path}/qhkb_update.apk');
     await staleCurrentApk.writeAsString('old-current');
 
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
@@ -346,7 +346,7 @@ void main() {
     );
 
     expect(result, isNull);
-    expect(openedPath, '${tempDir.path}/mikcb_update.apk');
+    expect(openedPath, '${tempDir.path}/qhkb_update.apk');
     expect(staleOldApk.existsSync(), isFalse);
     expect(staleCurrentApk.existsSync(), isTrue);
     expect(await staleCurrentApk.length(), 6);

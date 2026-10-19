@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_miuix/miuix.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/widgets/miuix_fling_number_picker.dart';
-import 'package:university_timetable/widgets/miuix_time_picker_sheet.dart';
+import 'package:qhkb/widgets/miuix_fling_number_picker.dart';
+import 'package:qhkb/widgets/miuix_time_picker_sheet.dart';
 
 import '../helpers_test_app.dart';
 

@@ -4,8 +4,8 @@ import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.widget.RemoteViews
 
-class TodayCompactWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class TodayCompactWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayCompactWidgetProvider::class.java
 
     companion object {

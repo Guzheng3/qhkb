@@ -1,8 +1,8 @@
 import '../l10n/service_message_localizer.dart';
 import '../logging/app_debug_log.dart';
 import 'dart:async';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
-import 'package:university_timetable/widgets/miuix_date_picker_sheet.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
+import 'package:qhkb/widgets/miuix_date_picker_sheet.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -10,7 +10,7 @@ import 'package:azlistview/azlistview.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
@@ -602,10 +602,10 @@ class _SpreadsheetCourseImportScreenState
     });
     try {
       final data = await rootBundle.load(
-        'assets/templates/mikcb_course_import_template.csv',
+        'assets/templates/qhkb_course_import_template.csv',
       );
       final tempDir = await getTemporaryDirectory();
-      final file = File('${tempDir.path}/mikcb_course_import_template.csv');
+      final file = File('${tempDir.path}/qhkb_course_import_template.csv');
       await file.writeAsBytes(data.buffer.asUint8List());
       await SharePlus.instance.share(
         ShareParams(
@@ -3536,7 +3536,7 @@ class _WarehouseAdapterWebLoginScreenState
       ..enableZoom(true)
       ..setUserAgent(_useDesktopMode ? _desktopUserAgent : _mobileUserAgent)
       ..addJavaScriptChannel(
-        'QingyuBridge',
+        'QinghanBridge',
         onMessageReceived: (message) {
           _handleBridgeMessage(message.message);
         },
@@ -4100,7 +4100,7 @@ class _WarehouseAdapterWebLoginScreenState
     try {
       await _controller.runJavaScript('''
 (() => {
-  const KEY = '__qingyuOriginalViewport';
+  const KEY = '__qinghanOriginalViewport';
   let meta = document.querySelector('meta[name="viewport"]');
   if (!meta) {
     meta = document.createElement('meta');
@@ -4134,8 +4134,8 @@ class _WarehouseAdapterWebLoginScreenState
     try {
       await _controller.runJavaScript('''
 (() => {
-  if (window.__qingyuImeScrollInstalled) return;
-  window.__qingyuImeScrollInstalled = true;
+  if (window.__qinghanImeScrollInstalled) return;
+  window.__qinghanImeScrollInstalled = true;
   document.addEventListener('focusin', () => {
     setTimeout(() => {
       const el = document.activeElement;
@@ -4170,16 +4170,16 @@ class _WarehouseAdapterWebLoginScreenState
       return ['text','email','tel','number'].includes(type) && !input.disabled;
     });
     const passwordInput = Array.from(document.querySelectorAll('input[type="password"]')).find((input) => !input.disabled);
-    QingyuBridge.postMessage(JSON.stringify({
+    QinghanBridge.postMessage(JSON.stringify({
       type: 'loginState',
       username: textInputs[0] ? String(textInputs[0].value || '') : '',
       password: passwordInput ? String(passwordInput.value || '') : '',
       hasPasswordField: !!passwordInput
     }));
   };
-  window.__qingyuCollectLoginState = collect;
-  if (!window.__qingyuLoginWatcherInstalled) {
-    window.__qingyuLoginWatcherInstalled = true;
+  window.__qinghanCollectLoginState = collect;
+  if (!window.__qinghanLoginWatcherInstalled) {
+    window.__qinghanLoginWatcherInstalled = true;
     document.addEventListener('input', (event) => {
       if (event.target && event.target.tagName === 'INPUT') collect();
     }, true);
@@ -4192,12 +4192,12 @@ class _WarehouseAdapterWebLoginScreenState
       const text = (target.innerText || target.textContent || target.value || '').trim().toLowerCase();
       if (/登录|login|sign in|signin|进入教务|提交/.test(text)) {
         collect();
-        QingyuBridge.postMessage(JSON.stringify({ type: 'loginAttempt' }));
+        QinghanBridge.postMessage(JSON.stringify({ type: 'loginAttempt' }));
       }
     }, true);
     document.addEventListener('submit', () => {
       collect();
-      QingyuBridge.postMessage(JSON.stringify({ type: 'loginAttempt' }));
+      QinghanBridge.postMessage(JSON.stringify({ type: 'loginAttempt' }));
     }, true);
     let loginProbeTimer = null;
     const scheduleCollect = () => {
@@ -4229,7 +4229,7 @@ class _WarehouseAdapterWebLoginScreenState
   Future<void> _requestLoginStateProbe() async {
     await _installLoginWatcher();
     try {
-      await _controller.runJavaScript('window.__qingyuCollectLoginState?.();');
+      await _controller.runJavaScript('window.__qinghanCollectLoginState?.();');
     } catch (e) {
       // 同上：探测脚本执行失败不影响导入主流程，留痕即可。
       _debugImportLog('login state probe failed: $e', level: 'warn');
@@ -4420,17 +4420,17 @@ class _WarehouseAdapterWebLoginScreenState
       final wrappedScript =
           '''
 (() => {
-  window.__qingyuResolvers = window.__qingyuResolvers || {};
+  window.__qinghanResolvers = window.__qinghanResolvers || {};
   window.AndroidBridge = {
-    showToast: (msg) => QingyuBridge.postMessage(JSON.stringify({type: 'toast', message: String(msg ?? '')})),
-    notifyTaskCompletion: () => QingyuBridge.postMessage(JSON.stringify({type: 'complete'}))
+    showToast: (msg) => QinghanBridge.postMessage(JSON.stringify({type: 'toast', message: String(msg ?? '')})),
+    notifyTaskCompletion: () => QinghanBridge.postMessage(JSON.stringify({type: 'complete'}))
   };
   window.AndroidBridgePromise = {
     showAlert: async (title, message, confirmText) => {
       const requestId = 'confirm_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       return await new Promise((resolve) => {
-        window.__qingyuResolvers[requestId] = resolve;
-        QingyuBridge.postMessage(JSON.stringify({
+        window.__qinghanResolvers[requestId] = resolve;
+        QinghanBridge.postMessage(JSON.stringify({
           type: 'confirm',
           requestId,
           title: String(title ?? ''),
@@ -4442,8 +4442,8 @@ class _WarehouseAdapterWebLoginScreenState
     showPrompt: async (title, message, defaultValue, validatorName) => {
       const requestId = 'prompt_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       return await new Promise((resolve) => {
-        window.__qingyuResolvers[requestId] = resolve;
-        QingyuBridge.postMessage(JSON.stringify({
+        window.__qinghanResolvers[requestId] = resolve;
+        QinghanBridge.postMessage(JSON.stringify({
           type: 'prompt',
           requestId,
           title: String(title ?? ''),
@@ -4456,8 +4456,8 @@ class _WarehouseAdapterWebLoginScreenState
     showSingleSelection: async (title, optionsJson, selectedIndex, dialogId) => {
       const requestId = 'single_selection_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       return await new Promise((resolve) => {
-        window.__qingyuResolvers[requestId] = resolve;
-        QingyuBridge.postMessage(JSON.stringify({
+        window.__qinghanResolvers[requestId] = resolve;
+        QinghanBridge.postMessage(JSON.stringify({
           type: 'singleSelection',
           requestId,
           title: String(title ?? ''),
@@ -4470,8 +4470,8 @@ class _WarehouseAdapterWebLoginScreenState
     saveCourseConfig: async (json) => {
       const requestId = 'course_config_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       return await new Promise((resolve) => {
-        window.__qingyuResolvers[requestId] = resolve;
-        QingyuBridge.postMessage(JSON.stringify({
+        window.__qinghanResolvers[requestId] = resolve;
+        QinghanBridge.postMessage(JSON.stringify({
           type: 'saveCourseConfig',
           requestId,
           payload: String(json ?? '{}')
@@ -4481,8 +4481,8 @@ class _WarehouseAdapterWebLoginScreenState
     savePresetTimeSlots: async (json) => {
       const requestId = 'preset_time_slots_' + Date.now() + '_' + Math.random().toString(36).slice(2);
       return await new Promise((resolve) => {
-        window.__qingyuResolvers[requestId] = resolve;
-        QingyuBridge.postMessage(JSON.stringify({
+        window.__qinghanResolvers[requestId] = resolve;
+        QinghanBridge.postMessage(JSON.stringify({
           type: 'savePresetTimeSlots',
           requestId,
           payload: String(json ?? '[]')
@@ -4490,14 +4490,14 @@ class _WarehouseAdapterWebLoginScreenState
       });
     },
     saveImportedCourses: async (json) => {
-      QingyuBridge.postMessage(JSON.stringify({type: 'courses', payload: String(json ?? '[]')}));
+      QinghanBridge.postMessage(JSON.stringify({type: 'courses', payload: String(json ?? '[]')}));
       return true;
     }
   };
 $kWarehouseBridgeCompatShim  try {
     $script
   } catch (error) {
-    QingyuBridge.postMessage(JSON.stringify({type: 'error', message: String(error)}));
+    QinghanBridge.postMessage(JSON.stringify({type: 'error', message: String(error)}));
   }
 })();
 ''';
@@ -4874,9 +4874,9 @@ $kWarehouseBridgeCompatShim  try {
     final encodedValue = jsonEncode(value);
     final encodedRequestId = jsonEncode(requestId);
     await _controller.runJavaScript(
-      'window.__qingyuResolvers = window.__qingyuResolvers || {}; '
-      'window.__qingyuResolvers[$encodedRequestId]?.($encodedValue); '
-      'delete window.__qingyuResolvers[$encodedRequestId];',
+      'window.__qinghanResolvers = window.__qinghanResolvers || {}; '
+      'window.__qinghanResolvers[$encodedRequestId]?.($encodedValue); '
+      'delete window.__qinghanResolvers[$encodedRequestId];',
     );
   }
 

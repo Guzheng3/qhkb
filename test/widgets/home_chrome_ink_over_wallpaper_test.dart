@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/timetable_profile.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/screens/timetable_screen.dart';
-import 'package:university_timetable/services/storage_service.dart';
-import 'package:university_timetable/utils/home_page_background.dart';
+import 'package:qhkb/models/timetable_profile.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/screens/timetable_screen.dart';
+import 'package:qhkb/services/storage_service.dart';
+import 'package:qhkb/utils/home_page_background.dart';
 
 import '../helpers_test_app.dart';
 
@@ -158,7 +158,7 @@ void main() {
   testWidgets('dark wallpaper + all regions + no blur: chrome ink flips white '
       'everywhere (unchanged behaviour)', (tester) async {
     _seedInitializedPrefs();
-    final dir = Directory.systemTemp.createTempSync('mikcb_ink_');
+    final dir = Directory.systemTemp.createTempSync('qhkb_ink_');
     addTearDown(() {
       PaintingBinding.instance.imageCache.clear();
       try {
@@ -173,7 +173,7 @@ void main() {
     final provider = await createInitializedTestProvider(tester);
     await _pumpHome(tester, provider, wallpaper!.path, _scopeAll);
 
-    expect(_textColor(tester, '轻屿课表'), homePageChromeForegroundOnDark);
+    expect(_textColor(tester, '清涵课表'), homePageChromeForegroundOnDark);
     expect(_textColor(tester, '周一'), homePageChromeForegroundOnDark);
     expect(_keyTextColor(tester, const ValueKey('timetable-week-number-1')), homePageChromeForegroundOnDark);
     expect(
@@ -187,7 +187,7 @@ void main() {
     'band while the logo stays dark on the strip',
     (tester) async {
       _seedInitializedPrefs();
-      final dir = Directory.systemTemp.createTempSync('mikcb_ink_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_ink_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {
@@ -205,7 +205,7 @@ void main() {
       final provider = await createInitializedTestProvider(tester);
       await _pumpHome(tester, provider, wallpaper!.path, _scopeAll);
 
-      expect(_textColor(tester, '轻屿课表'), homePageChromeForegroundOnLight);
+      expect(_textColor(tester, '清涵课表'), homePageChromeForegroundOnLight);
       expect(_textColor(tester, '周一'), homePageChromeForegroundOnDark);
       expect(_keyTextColor(tester, const ValueKey('timetable-week-number-1')), homePageChromeForegroundOnDark);
       expect(
@@ -219,7 +219,7 @@ void main() {
     tester,
   ) async {
     _seedInitializedPrefs();
-    final dir = Directory.systemTemp.createTempSync('mikcb_ink_');
+    final dir = Directory.systemTemp.createTempSync('qhkb_ink_');
     addTearDown(() {
       PaintingBinding.instance.imageCache.clear();
       try {
@@ -258,7 +258,7 @@ void main() {
   testWidgets('header/weekday scope off: chrome ink follows the opaque page '
       'background, not the wallpaper', (tester) async {
     _seedInitializedPrefs();
-    final dir = Directory.systemTemp.createTempSync('mikcb_ink_');
+    final dir = Directory.systemTemp.createTempSync('qhkb_ink_');
     addTearDown(() {
       PaintingBinding.instance.imageCache.clear();
       try {
@@ -276,7 +276,7 @@ void main() {
     final provider = await createInitializedTestProvider(tester);
     await _pumpHome(tester, provider, wallpaper!.path, _scopeNoChromeBars);
 
-    final logo = _textColor(tester, '轻屿课表');
+    final logo = _textColor(tester, '清涵课表');
     expect(logo, isNotNull);
     expect(logo!.computeLuminance(), lessThan(0.3));
     // Default weekday ink on the opaque background: the configured default
@@ -290,7 +290,7 @@ void main() {
     'explains itself once',
     (tester) async {
       _seedInitializedPrefs();
-      final dir = Directory.systemTemp.createTempSync('mikcb_ink_');
+      final dir = Directory.systemTemp.createTempSync('qhkb_ink_');
       addTearDown(() {
         PaintingBinding.instance.imageCache.clear();
         try {

@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
-import 'package:university_timetable/providers/withu_couple_session_provider.dart';
-import 'package:university_timetable/ui/hyperos/hyperos.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
+import 'package:qhkb/providers/qhkb_couple_session_provider.dart';
+import 'package:qhkb/ui/hyperos/hyperos.dart';
 
 /// 首页菜单条目的分类（列表弹窗的分组依据）。
 enum HomeMenuEntryCategory { features, data, preferences, about }
@@ -80,7 +80,7 @@ Future<String?> showHomeTopMenuSheet(
 }) {
   final l10n = AppLocalizations.of(context)!;
   final position = hyperosPopupPositionBelow(context, anchorKey);
-  final coupleLoginLeading = _withuCoupleLoginLeading(context);
+  final coupleLoginLeading = _qhkbCoupleLoginLeading(context);
 
   return showHyperosListPopup<String>(
     context: context,
@@ -93,11 +93,11 @@ Future<String?> showHomeTopMenuSheet(
       for (var index = 0; index < entries.length; index++)
         () {
           final isAvatarRow =
-              entries[index].id == 'withuCoupleLogin' &&
+              entries[index].id == 'qhkbCoupleLogin' &&
               coupleLoginLeading != null;
           return HyperosPopupMenuItem<String>(
             label: isAvatarRow ? '' : entries[index].title(l10n),
-            leading: entries[index].id == 'withuCoupleLogin'
+            leading: entries[index].id == 'qhkbCoupleLogin'
                 ? coupleLoginLeading
                 : null,
             value: entries[index].id,
@@ -108,23 +108,23 @@ Future<String?> showHomeTopMenuSheet(
   );
 }
 
-const Key _withuCoupleMenuAvatarKey = ValueKey(
-  'withu_couple_login_menu_avatar',
+const Key _qhkbCoupleMenuAvatarKey = ValueKey(
+  'qhkb_couple_login_menu_avatar',
 );
 
-Widget? _withuCoupleLoginLeading(BuildContext context) {
-  final session = context.read<WithuCoupleSessionProvider?>();
+Widget? _qhkbCoupleLoginLeading(BuildContext context) {
+  final session = context.read<QhkbCoupleSessionProvider?>();
   if (session == null || (!session.isLoggedIn && !session.hasStoredSession)) {
     return null;
   }
-  return WithuCoupleAvatarGroup(
+  return QhkbCoupleAvatarGroup(
     userAvatarPath: session.userAvatarPath,
     partnerAvatarPath: session.partnerAvatarPath,
   );
 }
 
-class WithuCoupleAvatarGroup extends StatelessWidget {
-  const WithuCoupleAvatarGroup({
+class QhkbCoupleAvatarGroup extends StatelessWidget {
+  const QhkbCoupleAvatarGroup({
     super.key,
     required this.userAvatarPath,
     required this.partnerAvatarPath,
@@ -136,7 +136,7 @@ class WithuCoupleAvatarGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      key: _withuCoupleMenuAvatarKey,
+      key: _qhkbCoupleMenuAvatarKey,
       height: 44,
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -151,11 +151,11 @@ class WithuCoupleAvatarGroup extends StatelessWidget {
           children: [
             Positioned(
               right: 0,
-              child: _WithuCoupleAvatarImage(path: partnerAvatarPath),
+              child: _QhkbCoupleAvatarImage(path: partnerAvatarPath),
             ),
             Positioned(
               left: 0,
-              child: _WithuCoupleAvatarImage(path: userAvatarPath),
+              child: _QhkbCoupleAvatarImage(path: userAvatarPath),
             ),
             Positioned(
               left: 25,
@@ -194,8 +194,8 @@ class WithuCoupleAvatarGroup extends StatelessWidget {
   }
 }
 
-class _WithuCoupleAvatarImage extends StatelessWidget {
-  const _WithuCoupleAvatarImage({required this.path});
+class _QhkbCoupleAvatarImage extends StatelessWidget {
+  const _QhkbCoupleAvatarImage({required this.path});
 
   final String? path;
 
@@ -221,7 +221,7 @@ class _WithuCoupleAvatarImage extends StatelessWidget {
   }
 
   Widget get _image {
-    const fallback = _WithuCoupleAvatarFallback();
+    const fallback = _QhkbCoupleAvatarFallback();
     final localPath = path;
     if (localPath == null || localPath.isEmpty) {
       return fallback;
@@ -236,8 +236,8 @@ class _WithuCoupleAvatarImage extends StatelessWidget {
   }
 }
 
-class _WithuCoupleAvatarFallback extends StatelessWidget {
-  const _WithuCoupleAvatarFallback();
+class _QhkbCoupleAvatarFallback extends StatelessWidget {
+  const _QhkbCoupleAvatarFallback();
 
   @override
   Widget build(BuildContext context) {

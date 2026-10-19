@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.RemoteViews
 import kotlin.math.roundToInt
 
-class StatsCompactWidgetProvider : BaseQingyuWidgetProvider() {
-    override fun providerClass(): Class<out BaseQingyuWidgetProvider> =
+class StatsCompactWidgetProvider : BaseQinghanWidgetProvider() {
+    override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         StatsCompactWidgetProvider::class.java
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {

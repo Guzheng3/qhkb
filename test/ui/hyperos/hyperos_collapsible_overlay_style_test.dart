@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/ui/hyperos/hyperos_collapsible_top_app_bar.dart';
+import 'package:qhkb/ui/hyperos/hyperos_collapsible_top_app_bar.dart';
 
 /// Locks the status-bar overlay contract of [HyperosCollapsibleTopAppBar]:
 ///

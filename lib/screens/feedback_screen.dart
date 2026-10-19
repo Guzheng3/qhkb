@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 
 import '../services/bundled_assets.dart';
 import '../ui/hyperos/hyperos.dart';
@@ -32,7 +32,7 @@ Future<bool> _nativeLaunchUrl(String url) async {
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});
 
-  static const String _issuesUrl = 'https://github.com/Guzheng3/mikcb/issues';
+  static const String _issuesUrl = 'https://github.com/Guzheng3/qhkb/issues';
   static const String _xiaohongshuId = '4976443029';
   static const String _xiaohongshuShareUrl =
       'https://xhslink.com/m/ALcscDMw39N';
@@ -45,7 +45,7 @@ class FeedbackScreen extends StatelessWidget {
   static const String _qqGroupJoinKey = 'TMCg23sigjbqS5nYrBx0kxc7JcuwHN8Q';
 
   /// WeChat official account display name (search / copy target).
-  static const String _wechatOaName = '轻屿课表';
+  static const String _wechatOaName = '清涵课表';
 
   /// Opens WeChat only; official accounts cannot be deep-linked reliably.
   static const String _wechatOpenUrl = 'weixin://';

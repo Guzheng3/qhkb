@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/providers/timetable_provider.dart';
-import 'package:university_timetable/services/transfer_diff_service.dart';
-import 'package:university_timetable/services/transfer_package.dart';
-import 'package:university_timetable/services/transfer_undo_service.dart';
-import 'package:university_timetable/services/unified_transfer_service.dart';
+import 'package:qhkb/providers/timetable_provider.dart';
+import 'package:qhkb/services/transfer_diff_service.dart';
+import 'package:qhkb/services/transfer_package.dart';
+import 'package:qhkb/services/transfer_undo_service.dart';
+import 'package:qhkb/services/unified_transfer_service.dart';
 
 TransferPackage _incomingPackage(String packageId) {
   return TransferPackage(

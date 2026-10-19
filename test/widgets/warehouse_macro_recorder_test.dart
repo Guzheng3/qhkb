@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/warehouse_macro_models.dart';
-import 'package:university_timetable/widgets/warehouse_macro_recorder.dart';
+import 'package:qhkb/models/warehouse_macro_models.dart';
+import 'package:qhkb/widgets/warehouse_macro_recorder.dart';
 
 void main() {
   group('MacroRecordingConverter', () {

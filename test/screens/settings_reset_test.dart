@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/screens/timetable_settings_screen.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/screens/timetable_settings_screen.dart';
 
 /// 「恢复默认」必须只动本页字段。这些用例守的是两件事：
 /// 1. 目标字段确实回到默认；

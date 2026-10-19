@@ -4,7 +4,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
-import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:qhkb/l10n/app_localizations.dart';
 import '../l10n/service_message_localizer.dart';
 import '../models/class_reminder.dart';
 import '../models/course.dart';
@@ -43,7 +43,7 @@ import '../services/partner_timetable_service.dart';
 import '../services/stats_widget_service.dart';
 import '../services/storage_service.dart';
 import '../services/sync_operation_gate.dart';
-import '../services/withu_couple_session_store.dart';
+import '../services/qhkb_couple_session_store.dart';
 import '../services/ics_import_service.dart';
 import '../services/miui_live_activities_service.dart';
 import '../utils/home_page_background.dart';
@@ -222,7 +222,7 @@ class TimetableProvider with ChangeNotifier {
   final ExamReminderService _examReminderService;
   final HolidayService _holidayService;
   final AppAnalytics _analytics;
-  final WithuCoupleSessionStore _withuSessionStore;
+  final QhkbCoupleSessionStore _qhkbSessionStore;
   final bool _enableLiveActivitySync;
 
   List<Course> _courses = [];
@@ -524,7 +524,7 @@ class TimetableProvider with ChangeNotifier {
     ExamReminderService? examReminderService,
     HolidayService? holidayService,
     AppAnalytics? analytics,
-    WithuCoupleSessionStore? withuSessionStore,
+    QhkbCoupleSessionStore? qhkbSessionStore,
     bool autoInitialize = true,
     bool? enableLiveActivitySync,
   }) : _storageService = storageService ?? StorageService(),
@@ -543,8 +543,8 @@ class TimetableProvider with ChangeNotifier {
        _examReminderService = examReminderService ?? ExamReminderService(),
        _holidayService = holidayService ?? HolidayService(),
        _analytics = analytics ?? AppAnalytics.instance,
-       _withuSessionStore =
-           withuSessionStore ?? const WithuCoupleSessionStore() {
+       _qhkbSessionStore =
+           qhkbSessionStore ?? const QhkbCoupleSessionStore() {
     _holidayService.onRemoteHolidayDataUpdated = (_) {
       unawaited(_loadHolidayData());
     };

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/models/timetable_settings.dart';
-import 'package:university_timetable/services/storage_service.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/models/timetable_settings.dart';
+import 'package:qhkb/services/storage_service.dart';
 
 /// isAppDataEffectivelyEmpty 此前零测试覆盖——「空 copyWith() 让
 /// activeTimeSchemeId 混入默认性比较、迁移引导永不弹出」的潜在回归

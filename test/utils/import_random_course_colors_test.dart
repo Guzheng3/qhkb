@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/models/course.dart';
-import 'package:university_timetable/utils/course_color_palette.dart';
-import 'package:university_timetable/utils/import_random_course_colors.dart';
+import 'package:qhkb/models/course.dart';
+import 'package:qhkb/utils/course_color_palette.dart';
+import 'package:qhkb/utils/import_random_course_colors.dart';
 
 Course _sampleCourse({
   required String id,

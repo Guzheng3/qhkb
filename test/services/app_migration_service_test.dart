@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:university_timetable/services/app_migration_service.dart';
+import 'package:qhkb/services/app_migration_service.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
