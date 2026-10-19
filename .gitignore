@@ -189,3 +189,6 @@ AGENTS.md
 
 # 改动前的一次性备份快照（如 l10n 重构前的 before-*.dart，不入库）
 /_backup_*.dart
+
+# 自适应图标生成脚本的预览产物（tool/generate_adaptive_icon.py，不入库）
+/.tmp_adaptive_preview/
