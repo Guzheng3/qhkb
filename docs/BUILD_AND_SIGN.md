@@ -22,6 +22,12 @@ flutter build apk --release --flavor prod --target-platform android-arm64
 [android/app/build.gradle](../android/app/build.gradle) 按下面的优先级取签名材料：
 先读仓库内 `android/key.properties` 的字段，字段缺失时回退到同名环境变量。
 
+注意区分两种主体的行为：
+
+- **Gradle 本身**是**逐字段**回退：`android/key.properties` 里某个字段缺失时，该字段单独回退到同名环境变量。
+- **脚本**在校验阶段要求整组齐全：方式 A（仓库内 key.properties）与方式 C（`-KeyPropertiesPath`）
+  都要求四个字段都在，缺任一个即报错退出，不进入构建。
+
 | 方式 | 位置 | 适用场景 |
 |------|------|----------|
 | A. 仓库内 key.properties | `android/key.properties` | 本机长期固定签名，最省事 |
@@ -75,6 +81,7 @@ pwsh -NoProfile -File tool/build_release.ps1 -DryRun
 pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "E:/schedule/mikcb/android/key.properties"
 
 # 编译通过后创建本地附注标签（不推送）
+# 需先配好签名材料，否则会在构建前报错退出
 pwsh -NoProfile -File tool/build_release.ps1 -Tag v5.2.0
 ```
 
