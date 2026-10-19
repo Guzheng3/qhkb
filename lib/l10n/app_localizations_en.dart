@@ -9688,7 +9688,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weatherAmapNotConfigured =>
-      'Amap API key not configured. City search and location are unavailable; forecast data still works.';
+      'Amap API key not configured. You cannot search for a city or use your location, so no weather will be shown.';
 
   @override
   String weatherCurrentHumidity(int humidity) {

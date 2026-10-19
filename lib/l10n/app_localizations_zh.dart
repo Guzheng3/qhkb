@@ -9166,7 +9166,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherSectionCurrent => '当前天气';
 
   @override
-  String get weatherAmapNotConfigured => '未配置高德 API Key：城市搜索与定位不可用；预报数据仍可正常使用。';
+  String get weatherAmapNotConfigured =>
+      '未配置高德 API Key：既搜不了城市，也用不了定位，因此不会显示天气。';
 
   @override
   String weatherCurrentHumidity(int humidity) {
@@ -18359,7 +18360,8 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get weatherSectionCurrent => '當前天氣';
 
   @override
-  String get weatherAmapNotConfigured => '未配置高德 API Key：城市搜尋與定位不可用；預報資料仍可正常使用。';
+  String get weatherAmapNotConfigured =>
+      '未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。';
 
   @override
   String weatherCurrentHumidity(int humidity) {
@@ -27552,7 +27554,8 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get weatherSectionCurrent => '目前天氣';
 
   @override
-  String get weatherAmapNotConfigured => '未配置高德 API Key：城市搜尋與定位不可用；預報資料仍可正常使用。';
+  String get weatherAmapNotConfigured =>
+      '未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。';
 
   @override
   String weatherCurrentHumidity(int humidity) {

@@ -5605,6 +5605,6 @@
   "weatherLocationAddressUnavailable": "位置は取得できましたが地名を解決できません。都市を検索してください",
   "weatherLocationEstimated": "ネットワーク位置から推定しました。正確でない場合があります",
   "weatherSectionCurrent": "現在の天気",
-  "weatherAmapNotConfigured": "高徳（Amap）API キーが未設定です。都市検索と位置情報は利用できません。予報データは引き続き利用できます。",
+  "weatherAmapNotConfigured": "高徳（Amap）API キーが未設定です。都市の検索も位置情報の利用もできないため、天気は表示されません。",
   "weatherCurrentHumidity": "湿度 {humidity}%"
 }

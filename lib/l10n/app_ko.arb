@@ -5605,6 +5605,6 @@
   "weatherLocationAddressUnavailable": "위치는 확인했지만 지명을 찾지 못했습니다. 도시를 검색해 주세요",
   "weatherLocationEstimated": "네트워크 위치로 추정했습니다. 정확하지 않을 수 있습니다",
   "weatherSectionCurrent": "현재 날씨",
-  "weatherAmapNotConfigured": "아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색과 위치는 사용할 수 없으며 예보 데이터는 계속 사용할 수 있습니다.",
+  "weatherAmapNotConfigured": "아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색도 위치 사용도 불가능해 날씨가 표시되지 않습니다.",
   "weatherCurrentHumidity": "습도 {humidity}%"
 }

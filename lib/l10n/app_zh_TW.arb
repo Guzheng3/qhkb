@@ -5605,6 +5605,6 @@
   "weatherLocationAddressUnavailable": "已定位，但解析不出地名，請改用手動搜尋城市",
   "weatherLocationEstimated": "已按網路位置估算，可能不精確",
   "weatherSectionCurrent": "目前天氣",
-  "weatherAmapNotConfigured": "未配置高德 API Key：城市搜尋與定位不可用；預報資料仍可正常使用。",
+  "weatherAmapNotConfigured": "未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。",
   "weatherCurrentHumidity": "濕度 {humidity}%"
 }

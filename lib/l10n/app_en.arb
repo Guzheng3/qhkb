@@ -5626,6 +5626,6 @@
   "weatherLocationAddressUnavailable": "Located, but couldn't resolve a place name. Search for a city instead",
   "weatherLocationEstimated": "Estimated from your network location, so it may be off",
   "weatherSectionCurrent": "Current conditions",
-  "weatherAmapNotConfigured": "Amap API key not configured. City search and location are unavailable; forecast data still works.",
+  "weatherAmapNotConfigured": "Amap API key not configured. You cannot search for a city or use your location, so no weather will be shown.",
   "weatherCurrentHumidity": "Humidity {humidity}%"
 }

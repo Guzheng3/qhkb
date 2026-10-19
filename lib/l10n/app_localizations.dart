@@ -16628,7 +16628,7 @@ abstract class AppLocalizations {
   /// No description provided for @weatherAmapNotConfigured.
   ///
   /// In zh, this message translates to:
-  /// **'未配置高德 API Key：城市搜索与定位不可用；预报数据仍可正常使用。'**
+  /// **'未配置高德 API Key：既搜不了城市，也用不了定位，因此不会显示天气。'**
   String get weatherAmapNotConfigured;
 
   /// No description provided for @weatherCurrentHumidity.

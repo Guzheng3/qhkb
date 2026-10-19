@@ -9425,7 +9425,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get weatherAmapNotConfigured =>
-      '高徳（Amap）API キーが未設定です。都市検索と位置情報は利用できません。予報データは引き続き利用できます。';
+      '高徳（Amap）API キーが未設定です。都市の検索も位置情報の利用もできないため、天気は表示されません。';
 
   @override
   String weatherCurrentHumidity(int humidity) {

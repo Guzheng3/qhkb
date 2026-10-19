@@ -9465,7 +9465,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get weatherAmapNotConfigured =>
-      '아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색과 위치는 사용할 수 없으며 예보 데이터는 계속 사용할 수 있습니다.';
+      '아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색도 위치 사용도 불가능해 날씨가 표시되지 않습니다.';
 
   @override
   String weatherCurrentHumidity(int humidity) {
