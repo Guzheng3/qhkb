@@ -1077,14 +1077,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      'Return to the new version, choose the .qhkb backup file from Download, and restore it. Only uninstall the old app after confirming everything works here';
+      'Return to the new version, choose the .mikcb backup file exported by the old version from Download, and restore it; the new version\'s own .qhkb backups import the same way. Only uninstall the old app after confirming everything works here';
 
   @override
   String get migrationNoSaveToFilesTitle => 'If “Save to Files” is unavailable';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      'You can first share the backup to any WeChat chat, then open the file in WeChat and save it. It usually ends up in Download or the WeiXin folder. Then return here and import that .qhkb file';
+      'You can first share the backup to any WeChat chat, then open the file in WeChat and save it. It usually ends up in Download or the WeiXin folder. Then return here and import that .mikcb file (the new version accepts .qhkb backups too)';
 
   @override
   String get openingOldApp => 'Opening old app...';

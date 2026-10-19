@@ -1035,14 +1035,14 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      '新版に戻り、システムファイルセレクターでダウンロードフォルダの.qhkbバックアップファイルを選択して復元，新版のデータが正常であることを確認してから、旧バージョンをアンインストールしてください';
+      '新版に戻り、システムファイルセレクターでダウンロードフォルダの旧版が書き出した.mikcbバックアップファイルを選択して復元（新版自身の.qhkbバックアップも同様に取り込めます），新版のデータが正常であることを確認してから、旧バージョンをアンインストールしてください';
 
   @override
   String get migrationNoSaveToFilesTitle => '「ファイルに保存」がない場合';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      'WeChatの任意のチャットに共有し、WeChatでバックアップファイルを開いて保存，保存後、通常Download/WeiXinフォルダに表示されます，新版でこの.qhkbファイルを選択してインポート';
+      'WeChatの任意のチャットに共有し、WeChatでバックアップファイルを開いて保存，保存後、通常Download/WeiXinフォルダに表示されます，新版でこの.mikcbファイルを選択してインポート（新版の.qhkbバックアップにも対応）';
 
   @override
   String get openingOldApp => '旧バージョンを開いています...';

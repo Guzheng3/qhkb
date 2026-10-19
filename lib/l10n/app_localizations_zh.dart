@@ -1014,14 +1014,14 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .qhkb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用';
+      '回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中旧版导出的 .mikcb 备份文件即可恢复，新版自己的 .qhkb 备份同样能导入；确认新版数据正常后，再卸载旧版应用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果没有“保存到文件”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .qhkb 文件导入';
+      '可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .mikcb 文件导入（新版 .qhkb 备份同样支持）';
 
   @override
   String get openingOldApp => '正在打开旧版...';
@@ -9967,14 +9967,14 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .qhkb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
+      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中舊版匯出的 .mikcb 備份檔案即可還原，新版自己的 .qhkb 備份同樣可以匯入；確認新版資料正常後，再卸載舊版應用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果沒有有“保存到檔案”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .qhkb 檔案匯入';
+      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .mikcb 檔案匯入（新版 .qhkb 備份同樣支援）';
 
   @override
   String get openingOldApp => '正在打開舊版...';
@@ -18958,14 +18958,14 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get migrationStep3Subtitle =>
-      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中 .qhkb 備份檔案即可還原，確認新版資料正常後，再卸載舊版應用';
+      '回到新版後，通過系統檔案選擇器到 下載 / Download 檔案夾選中舊版匯出的 .mikcb 備份檔案即可還原，新版自己的 .qhkb 備份同樣可以匯入；確認新版資料正常後，再卸載舊版應用';
 
   @override
   String get migrationNoSaveToFilesTitle => '如果沒有有“保存到檔案”';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .qhkb 檔案匯入';
+      '可以先分享到微信任意一個聊天，然後在微信裡點開這個備份檔案並保存，保存後通常會出現在 Download / WeiXin 檔案夾裡，再回到新版選擇這個 .mikcb 檔案匯入（新版 .qhkb 備份同樣支援）';
 
   @override
   String get openingOldApp => '正在打開舊版...';

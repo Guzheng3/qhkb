@@ -1961,7 +1961,7 @@ abstract class AppLocalizations {
   /// No description provided for @migrationStep3Subtitle.
   ///
   /// In zh, this message translates to:
-  /// **'回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中 .qhkb 备份文件即可恢复，确认新版数据正常后，再卸载旧版应用'**
+  /// **'回到新版后，通过系统文件选择器到 下载 / Download 文件夹选中旧版导出的 .mikcb 备份文件即可恢复，新版自己的 .qhkb 备份同样能导入；确认新版数据正常后，再卸载旧版应用'**
   String get migrationStep3Subtitle;
 
   /// No description provided for @migrationNoSaveToFilesTitle.
@@ -1973,7 +1973,7 @@ abstract class AppLocalizations {
   /// No description provided for @migrationNoSaveToFilesSubtitle.
   ///
   /// In zh, this message translates to:
-  /// **'可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .qhkb 文件导入'**
+  /// **'可以先分享到微信任意一个聊天，然后在微信里点开这个备份文件并保存，保存后通常会出现在 Download / WeiXin 文件夹里，再回到新版选择这个 .mikcb 文件导入（新版 .qhkb 备份同样支持）'**
   String get migrationNoSaveToFilesSubtitle;
 
   /// No description provided for @openingOldApp.

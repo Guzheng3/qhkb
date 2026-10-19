@@ -1040,14 +1040,14 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get migrationStep3Subtitle =>
-      '새 버전으로 돌아와 시스템 파일 선택기로 다운로드 폴더의 .qhkb 백업 파일을 선택하여 복원합니다. 새 버전의 데이터가 정상인지 확인한 뒤 이전 버전을 삭제하세요';
+      '새 버전으로 돌아와 시스템 파일 선택기로 다운로드 폴더에서 이전 버전이 내보낸 .mikcb 백업 파일을 선택하여 복원합니다(새 버전의 .qhkb 백업도 그대로 가져올 수 있습니다). 새 버전의 데이터가 정상인지 확인한 뒤 이전 버전을 삭제하세요';
 
   @override
   String get migrationNoSaveToFilesTitle => '\'파일에 저장\'이 없는 경우';
 
   @override
   String get migrationNoSaveToFilesSubtitle =>
-      'WeChat의 아무 채팅에 공유한 뒤 WeChat에서 백업 파일을 열어 저장하세요. 저장 후 보통 Download/WeiXin 폴더에 나타납니다. 새 버전에서 이 .qhkb 파일을 선택하여 가져오세요';
+      'WeChat의 아무 채팅에 공유한 뒤 WeChat에서 백업 파일을 열어 저장하세요. 저장 후 보통 Download/WeiXin 폴더에 나타납니다. 새 버전에서 이 .mikcb 파일을 선택하여 가져오세요(새 버전의 .qhkb 백업도 지원).';
 
   @override
   String get openingOldApp => '이전 버전 여는 중...';
