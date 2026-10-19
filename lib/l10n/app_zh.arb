@@ -5600,5 +5600,96 @@
   "miuiIslandLabelStyleIconAndText": "图标+文字",
   "miuiIslandLabelStyleTextOnly": "仅文字",
   "replaceImageAction": "更换图片",
-  "selectImageAction": "选择图片"
+  "selectImageAction": "选择图片",
+  "weatherTemperatureValue": "{temperature}°",
+  "@weatherTemperatureValue": {
+    "description": "天气行里的温度一项",
+    "placeholders": {
+      "temperature": {
+        "type": "int"
+      }
+    }
+  },
+  "weatherProbabilityValue": "{probability}%",
+  "@weatherProbabilityValue": {
+    "description": "天气行里的降水概率一项",
+    "placeholders": {
+      "probability": {
+        "type": "int"
+      }
+    }
+  },
+  "weatherSummarySeparator": " · ",
+  "@weatherSummarySeparator": {
+    "description": "天气行各显示项之间的分隔符"
+  },
+  "weatherClear": "晴",
+  "weatherMainlyClear": "晴间多云",
+  "weatherPartlyCloudy": "多云",
+  "weatherOvercast": "阴",
+  "weatherFog": "雾",
+  "weatherDrizzle": "毛毛雨",
+  "weatherFreezingDrizzle": "冻毛毛雨",
+  "weatherLightRain": "小雨",
+  "weatherRain": "中雨",
+  "weatherHeavyRain": "大雨",
+  "weatherFreezingRain": "冻雨",
+  "weatherLightSnow": "小雪",
+  "weatherSnow": "中雪",
+  "weatherHeavySnow": "大雪",
+  "weatherSnowGrains": "米雪",
+  "weatherRainShowers": "阵雨",
+  "weatherHeavyRainShowers": "强阵雨",
+  "weatherSnowShowers": "阵雪",
+  "weatherThunderstorm": "雷阵雨",
+  "weatherThunderstormHail": "雷阵雨伴冰雹",
+  "weatherSettingsEntryTitle": "课程卡天气",
+  "weatherSettingsTitle": "天气",
+  "weatherEnableTitle": "显示天气",
+  "weatherEnableSubtitle": "关闭后不再获取天气数据",
+  "weatherCityLabel": "城市",
+  "weatherCityNotSet": "未设置",
+  "weatherCityPickerTitle": "选择城市",
+  "weatherCitySearchHint": "输入城市名称",
+  "weatherCitySearchEmpty": "没有找到匹配的城市",
+  "weatherCitySearchFailed": "搜索失败，请稍后重试",
+  "weatherStatusLoading": "正在更新天气",
+  "weatherStatusFailed": "上次更新失败",
+  "weatherRetryAction": "重试",
+  "weatherCoverageNote": "预报只覆盖未来 16 天，更远的日期不显示天气。",
+  "weatherAttribution": "实况天气来自高德；预报数据来自 Open-Meteo.com",
+  "weatherSectionDisplayTitle": "显示",
+  "weatherShowOnDayCardTitle": "日视图课卡",
+  "weatherShowOnWeekCardTitle": "周视图课卡",
+  "weatherShowOnWeekCardSubtitle": "格子窄，只写一项，优先温度",
+  "weatherShowOnSheetTitle": "课程详情弹窗",
+  "weatherSectionContentTitle": "显示内容",
+  "weatherShowPhenomenonTitle": "天气现象",
+  "weatherShowPhenomenonSubtitle": "例如 小雨、多云",
+  "weatherShowTemperatureTitle": "温度",
+  "weatherShowProbabilityTitle": "降水概率",
+  "weatherShowProbabilitySubtitle": "低于 30% 时不显示",
+  "weatherCourseTileSubtitle": "该课程时段内的天气",
+  "weatherSectionSourceTitle": "数据来源",
+  "weatherUseCurrentLocation": "使用当前位置",
+  "weatherLocating": "正在定位……",
+  "weatherSectionCurrentLocation": "当前位置",
+  "weatherSectionSearchCity": "搜索城市",
+  "weatherLocationServiceDisabled": "请先开启系统定位服务",
+  "weatherLocationPermissionDenied": "没有位置权限，无法获取当前位置",
+  "weatherLocationPermissionDeniedForever": "位置权限已被拒绝，请到系统设置里允许本应用使用位置",
+  "weatherLocationTimeout": "定位超时，请到窗边或室外再试，或直接搜索城市",
+  "weatherLocationFailed": "定位失败，请改用手动搜索城市",
+  "weatherLocationAddressUnavailable": "已定位，但解析不出地名，请改用手动搜索城市",
+  "weatherLocationEstimated": "已按网络位置估算，可能不精确",
+  "weatherSectionCurrent": "当前天气",
+  "weatherAmapNotConfigured": "未配置高德 API Key：城市搜索与定位不可用；预报数据仍可正常使用。",
+  "weatherCurrentHumidity": "湿度 {humidity}%",
+  "@weatherCurrentHumidity": {
+    "placeholders": {
+      "humidity": {
+        "type": "int"
+      }
+    }
+  }
 }

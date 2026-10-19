@@ -16246,6 +16246,396 @@ abstract class AppLocalizations {
   /// In zh, this message translates to:
   /// **'选择图片'**
   String get selectImageAction;
+
+  /// 天气行里的温度一项
+  ///
+  /// In zh, this message translates to:
+  /// **'{temperature}°'**
+  String weatherTemperatureValue(int temperature);
+
+  /// 天气行里的降水概率一项
+  ///
+  /// In zh, this message translates to:
+  /// **'{probability}%'**
+  String weatherProbabilityValue(int probability);
+
+  /// 天气行各显示项之间的分隔符
+  ///
+  /// In zh, this message translates to:
+  /// **' · '**
+  String get weatherSummarySeparator;
+
+  /// No description provided for @weatherClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'晴'**
+  String get weatherClear;
+
+  /// No description provided for @weatherMainlyClear.
+  ///
+  /// In zh, this message translates to:
+  /// **'晴间多云'**
+  String get weatherMainlyClear;
+
+  /// No description provided for @weatherPartlyCloudy.
+  ///
+  /// In zh, this message translates to:
+  /// **'多云'**
+  String get weatherPartlyCloudy;
+
+  /// No description provided for @weatherOvercast.
+  ///
+  /// In zh, this message translates to:
+  /// **'阴'**
+  String get weatherOvercast;
+
+  /// No description provided for @weatherFog.
+  ///
+  /// In zh, this message translates to:
+  /// **'雾'**
+  String get weatherFog;
+
+  /// No description provided for @weatherDrizzle.
+  ///
+  /// In zh, this message translates to:
+  /// **'毛毛雨'**
+  String get weatherDrizzle;
+
+  /// No description provided for @weatherFreezingDrizzle.
+  ///
+  /// In zh, this message translates to:
+  /// **'冻毛毛雨'**
+  String get weatherFreezingDrizzle;
+
+  /// No description provided for @weatherLightRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'小雨'**
+  String get weatherLightRain;
+
+  /// No description provided for @weatherRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'中雨'**
+  String get weatherRain;
+
+  /// No description provided for @weatherHeavyRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'大雨'**
+  String get weatherHeavyRain;
+
+  /// No description provided for @weatherFreezingRain.
+  ///
+  /// In zh, this message translates to:
+  /// **'冻雨'**
+  String get weatherFreezingRain;
+
+  /// No description provided for @weatherLightSnow.
+  ///
+  /// In zh, this message translates to:
+  /// **'小雪'**
+  String get weatherLightSnow;
+
+  /// No description provided for @weatherSnow.
+  ///
+  /// In zh, this message translates to:
+  /// **'中雪'**
+  String get weatherSnow;
+
+  /// No description provided for @weatherHeavySnow.
+  ///
+  /// In zh, this message translates to:
+  /// **'大雪'**
+  String get weatherHeavySnow;
+
+  /// No description provided for @weatherSnowGrains.
+  ///
+  /// In zh, this message translates to:
+  /// **'米雪'**
+  String get weatherSnowGrains;
+
+  /// No description provided for @weatherRainShowers.
+  ///
+  /// In zh, this message translates to:
+  /// **'阵雨'**
+  String get weatherRainShowers;
+
+  /// No description provided for @weatherHeavyRainShowers.
+  ///
+  /// In zh, this message translates to:
+  /// **'强阵雨'**
+  String get weatherHeavyRainShowers;
+
+  /// No description provided for @weatherSnowShowers.
+  ///
+  /// In zh, this message translates to:
+  /// **'阵雪'**
+  String get weatherSnowShowers;
+
+  /// No description provided for @weatherThunderstorm.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷阵雨'**
+  String get weatherThunderstorm;
+
+  /// No description provided for @weatherThunderstormHail.
+  ///
+  /// In zh, this message translates to:
+  /// **'雷阵雨伴冰雹'**
+  String get weatherThunderstormHail;
+
+  /// No description provided for @weatherSettingsEntryTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'课程卡天气'**
+  String get weatherSettingsEntryTitle;
+
+  /// No description provided for @weatherSettingsTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气'**
+  String get weatherSettingsTitle;
+
+  /// No description provided for @weatherEnableTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示天气'**
+  String get weatherEnableTitle;
+
+  /// No description provided for @weatherEnableSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'关闭后不再获取天气数据'**
+  String get weatherEnableSubtitle;
+
+  /// No description provided for @weatherCityLabel.
+  ///
+  /// In zh, this message translates to:
+  /// **'城市'**
+  String get weatherCityLabel;
+
+  /// No description provided for @weatherCityNotSet.
+  ///
+  /// In zh, this message translates to:
+  /// **'未设置'**
+  String get weatherCityNotSet;
+
+  /// No description provided for @weatherCityPickerTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'选择城市'**
+  String get weatherCityPickerTitle;
+
+  /// No description provided for @weatherCitySearchHint.
+  ///
+  /// In zh, this message translates to:
+  /// **'输入城市名称'**
+  String get weatherCitySearchHint;
+
+  /// No description provided for @weatherCitySearchEmpty.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有找到匹配的城市'**
+  String get weatherCitySearchEmpty;
+
+  /// No description provided for @weatherCitySearchFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索失败，请稍后重试'**
+  String get weatherCitySearchFailed;
+
+  /// No description provided for @weatherStatusLoading.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在更新天气'**
+  String get weatherStatusLoading;
+
+  /// No description provided for @weatherStatusFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'上次更新失败'**
+  String get weatherStatusFailed;
+
+  /// No description provided for @weatherRetryAction.
+  ///
+  /// In zh, this message translates to:
+  /// **'重试'**
+  String get weatherRetryAction;
+
+  /// No description provided for @weatherCoverageNote.
+  ///
+  /// In zh, this message translates to:
+  /// **'预报只覆盖未来 16 天，更远的日期不显示天气。'**
+  String get weatherCoverageNote;
+
+  /// No description provided for @weatherAttribution.
+  ///
+  /// In zh, this message translates to:
+  /// **'实况天气来自高德；预报数据来自 Open-Meteo.com'**
+  String get weatherAttribution;
+
+  /// No description provided for @weatherSectionDisplayTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示'**
+  String get weatherSectionDisplayTitle;
+
+  /// No description provided for @weatherShowOnDayCardTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'日视图课卡'**
+  String get weatherShowOnDayCardTitle;
+
+  /// No description provided for @weatherShowOnWeekCardTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'周视图课卡'**
+  String get weatherShowOnWeekCardTitle;
+
+  /// No description provided for @weatherShowOnWeekCardSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'格子窄，只写一项，优先温度'**
+  String get weatherShowOnWeekCardSubtitle;
+
+  /// No description provided for @weatherShowOnSheetTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'课程详情弹窗'**
+  String get weatherShowOnSheetTitle;
+
+  /// No description provided for @weatherSectionContentTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'显示内容'**
+  String get weatherSectionContentTitle;
+
+  /// No description provided for @weatherShowPhenomenonTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'天气现象'**
+  String get weatherShowPhenomenonTitle;
+
+  /// No description provided for @weatherShowPhenomenonSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'例如 小雨、多云'**
+  String get weatherShowPhenomenonSubtitle;
+
+  /// No description provided for @weatherShowTemperatureTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'温度'**
+  String get weatherShowTemperatureTitle;
+
+  /// No description provided for @weatherShowProbabilityTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'降水概率'**
+  String get weatherShowProbabilityTitle;
+
+  /// No description provided for @weatherShowProbabilitySubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'低于 30% 时不显示'**
+  String get weatherShowProbabilitySubtitle;
+
+  /// No description provided for @weatherCourseTileSubtitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'该课程时段内的天气'**
+  String get weatherCourseTileSubtitle;
+
+  /// No description provided for @weatherSectionSourceTitle.
+  ///
+  /// In zh, this message translates to:
+  /// **'数据来源'**
+  String get weatherSectionSourceTitle;
+
+  /// No description provided for @weatherUseCurrentLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'使用当前位置'**
+  String get weatherUseCurrentLocation;
+
+  /// No description provided for @weatherLocating.
+  ///
+  /// In zh, this message translates to:
+  /// **'正在定位……'**
+  String get weatherLocating;
+
+  /// No description provided for @weatherSectionCurrentLocation.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前位置'**
+  String get weatherSectionCurrentLocation;
+
+  /// No description provided for @weatherSectionSearchCity.
+  ///
+  /// In zh, this message translates to:
+  /// **'搜索城市'**
+  String get weatherSectionSearchCity;
+
+  /// No description provided for @weatherLocationServiceDisabled.
+  ///
+  /// In zh, this message translates to:
+  /// **'请先开启系统定位服务'**
+  String get weatherLocationServiceDisabled;
+
+  /// No description provided for @weatherLocationPermissionDenied.
+  ///
+  /// In zh, this message translates to:
+  /// **'没有位置权限，无法获取当前位置'**
+  String get weatherLocationPermissionDenied;
+
+  /// No description provided for @weatherLocationPermissionDeniedForever.
+  ///
+  /// In zh, this message translates to:
+  /// **'位置权限已被拒绝，请到系统设置里允许本应用使用位置'**
+  String get weatherLocationPermissionDeniedForever;
+
+  /// No description provided for @weatherLocationTimeout.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位超时，请到窗边或室外再试，或直接搜索城市'**
+  String get weatherLocationTimeout;
+
+  /// No description provided for @weatherLocationFailed.
+  ///
+  /// In zh, this message translates to:
+  /// **'定位失败，请改用手动搜索城市'**
+  String get weatherLocationFailed;
+
+  /// No description provided for @weatherLocationAddressUnavailable.
+  ///
+  /// In zh, this message translates to:
+  /// **'已定位，但解析不出地名，请改用手动搜索城市'**
+  String get weatherLocationAddressUnavailable;
+
+  /// No description provided for @weatherLocationEstimated.
+  ///
+  /// In zh, this message translates to:
+  /// **'已按网络位置估算，可能不精确'**
+  String get weatherLocationEstimated;
+
+  /// No description provided for @weatherSectionCurrent.
+  ///
+  /// In zh, this message translates to:
+  /// **'当前天气'**
+  String get weatherSectionCurrent;
+
+  /// No description provided for @weatherAmapNotConfigured.
+  ///
+  /// In zh, this message translates to:
+  /// **'未配置高德 API Key：城市搜索与定位不可用；预报数据仍可正常使用。'**
+  String get weatherAmapNotConfigured;
+
+  /// No description provided for @weatherCurrentHumidity.
+  ///
+  /// In zh, this message translates to:
+  /// **'湿度 {humidity}%'**
+  String weatherCurrentHumidity(int humidity);
 }
 
 class _AppLocalizationsDelegate

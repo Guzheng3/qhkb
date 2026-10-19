@@ -9265,4 +9265,210 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get selectImageAction => '이미지 선택';
+
+  @override
+  String weatherTemperatureValue(int temperature) {
+    return '$temperature°';
+  }
+
+  @override
+  String weatherProbabilityValue(int probability) {
+    return '$probability%';
+  }
+
+  @override
+  String get weatherSummarySeparator => ' · ';
+
+  @override
+  String get weatherClear => '맑음';
+
+  @override
+  String get weatherMainlyClear => '대체로 맑음';
+
+  @override
+  String get weatherPartlyCloudy => '구름 조금';
+
+  @override
+  String get weatherOvercast => '흐림';
+
+  @override
+  String get weatherFog => '안개';
+
+  @override
+  String get weatherDrizzle => '이슬비';
+
+  @override
+  String get weatherFreezingDrizzle => '어는 이슬비';
+
+  @override
+  String get weatherLightRain => '약한 비';
+
+  @override
+  String get weatherRain => '비';
+
+  @override
+  String get weatherHeavyRain => '많은 비';
+
+  @override
+  String get weatherFreezingRain => '어는 비';
+
+  @override
+  String get weatherLightSnow => '약한 눈';
+
+  @override
+  String get weatherSnow => '눈';
+
+  @override
+  String get weatherHeavySnow => '많은 눈';
+
+  @override
+  String get weatherSnowGrains => '싸락눈';
+
+  @override
+  String get weatherRainShowers => '소나기';
+
+  @override
+  String get weatherHeavyRainShowers => '강한 소나기';
+
+  @override
+  String get weatherSnowShowers => '눈 소나기';
+
+  @override
+  String get weatherThunderstorm => '뇌우';
+
+  @override
+  String get weatherThunderstormHail => '우박을 동반한 뇌우';
+
+  @override
+  String get weatherSettingsEntryTitle => '수업 카드 날씨';
+
+  @override
+  String get weatherSettingsTitle => '날씨';
+
+  @override
+  String get weatherEnableTitle => '날씨 표시';
+
+  @override
+  String get weatherEnableSubtitle => '끄면 날씨 데이터를 더 이상 가져오지 않습니다';
+
+  @override
+  String get weatherCityLabel => '도시';
+
+  @override
+  String get weatherCityNotSet => '설정 안 됨';
+
+  @override
+  String get weatherCityPickerTitle => '도시 선택';
+
+  @override
+  String get weatherCitySearchHint => '도시 이름 입력';
+
+  @override
+  String get weatherCitySearchEmpty => '일치하는 도시를 찾을 수 없습니다';
+
+  @override
+  String get weatherCitySearchFailed => '검색에 실패했습니다. 잠시 후 다시 시도해 주세요';
+
+  @override
+  String get weatherStatusLoading => '날씨 업데이트 중';
+
+  @override
+  String get weatherStatusFailed => '지난 업데이트 실패';
+
+  @override
+  String get weatherRetryAction => '다시 시도';
+
+  @override
+  String get weatherCoverageNote =>
+      '예보는 앞으로 16일까지만 제공되며, 그 이후 날짜에는 날씨를 표시하지 않습니다.';
+
+  @override
+  String get weatherAttribution => '현재 날씨는 아마프(Amap), 예보는 Open-Meteo.com 제공';
+
+  @override
+  String get weatherSectionDisplayTitle => '표시';
+
+  @override
+  String get weatherShowOnDayCardTitle => '일간 보기 카드';
+
+  @override
+  String get weatherShowOnWeekCardTitle => '주간 보기 카드';
+
+  @override
+  String get weatherShowOnWeekCardSubtitle => '칸이 좁아 한 항목만(기온 우선)';
+
+  @override
+  String get weatherShowOnSheetTitle => '수업 상세 시트';
+
+  @override
+  String get weatherSectionContentTitle => '표시할 항목';
+
+  @override
+  String get weatherShowPhenomenonTitle => '날씨 현상';
+
+  @override
+  String get weatherShowPhenomenonSubtitle => '약한 비 등';
+
+  @override
+  String get weatherShowTemperatureTitle => '기온';
+
+  @override
+  String get weatherShowProbabilityTitle => '강수 확률';
+
+  @override
+  String get weatherShowProbabilitySubtitle => '30% 미만이면 표시하지 않습니다';
+
+  @override
+  String get weatherCourseTileSubtitle => '이 수업 시간대의 날씨';
+
+  @override
+  String get weatherSectionSourceTitle => '데이터 출처';
+
+  @override
+  String get weatherUseCurrentLocation => '현재 위치 사용';
+
+  @override
+  String get weatherLocating => '위치 확인 중…';
+
+  @override
+  String get weatherSectionCurrentLocation => '현재 위치';
+
+  @override
+  String get weatherSectionSearchCity => '도시 검색';
+
+  @override
+  String get weatherLocationServiceDisabled => '먼저 기기의 위치 서비스를 켜 주세요';
+
+  @override
+  String get weatherLocationPermissionDenied => '위치 권한이 없어 현재 위치를 가져올 수 없습니다';
+
+  @override
+  String get weatherLocationPermissionDeniedForever =>
+      '위치 권한이 거부되었습니다. 시스템 설정에서 이 앱의 위치 사용을 허용해 주세요';
+
+  @override
+  String get weatherLocationTimeout =>
+      '위치 확인 시간이 초과되었습니다. 창가나 실외에서 다시 시도하거나 도시를 검색해 주세요';
+
+  @override
+  String get weatherLocationFailed => '위치 확인에 실패했습니다. 도시를 검색해 주세요';
+
+  @override
+  String get weatherLocationAddressUnavailable =>
+      '위치는 확인했지만 지명을 찾지 못했습니다. 도시를 검색해 주세요';
+
+  @override
+  String get weatherLocationEstimated => '네트워크 위치로 추정했습니다. 정확하지 않을 수 있습니다';
+
+  @override
+  String get weatherSectionCurrent => '현재 날씨';
+
+  @override
+  String get weatherAmapNotConfigured =>
+      '아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색과 위치는 사용할 수 없으며 예보 데이터는 계속 사용할 수 있습니다.';
+
+  @override
+  String weatherCurrentHumidity(int humidity) {
+    return '습도 $humidity%';
+  }
 }

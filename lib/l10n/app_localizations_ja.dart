@@ -9226,4 +9226,209 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get selectImageAction => '画像を選択';
+
+  @override
+  String weatherTemperatureValue(int temperature) {
+    return '$temperature°';
+  }
+
+  @override
+  String weatherProbabilityValue(int probability) {
+    return '$probability%';
+  }
+
+  @override
+  String get weatherSummarySeparator => ' · ';
+
+  @override
+  String get weatherClear => '晴れ';
+
+  @override
+  String get weatherMainlyClear => '晴れ時々くもり';
+
+  @override
+  String get weatherPartlyCloudy => 'くもり';
+
+  @override
+  String get weatherOvercast => '本曇り';
+
+  @override
+  String get weatherFog => '霧';
+
+  @override
+  String get weatherDrizzle => '霧雨';
+
+  @override
+  String get weatherFreezingDrizzle => '着氷性の霧雨';
+
+  @override
+  String get weatherLightRain => '小雨';
+
+  @override
+  String get weatherRain => '雨';
+
+  @override
+  String get weatherHeavyRain => '大雨';
+
+  @override
+  String get weatherFreezingRain => '着氷性の雨';
+
+  @override
+  String get weatherLightSnow => '小雪';
+
+  @override
+  String get weatherSnow => '雪';
+
+  @override
+  String get weatherHeavySnow => '大雪';
+
+  @override
+  String get weatherSnowGrains => '霧雪';
+
+  @override
+  String get weatherRainShowers => 'にわか雨';
+
+  @override
+  String get weatherHeavyRainShowers => '強いにわか雨';
+
+  @override
+  String get weatherSnowShowers => 'にわか雪';
+
+  @override
+  String get weatherThunderstorm => '雷雨';
+
+  @override
+  String get weatherThunderstormHail => 'ひょうを伴う雷雨';
+
+  @override
+  String get weatherSettingsEntryTitle => '授業カードの天気';
+
+  @override
+  String get weatherSettingsTitle => '天気';
+
+  @override
+  String get weatherEnableTitle => '天気を表示';
+
+  @override
+  String get weatherEnableSubtitle => 'オフにすると天気データを取得しなくなります';
+
+  @override
+  String get weatherCityLabel => '都市';
+
+  @override
+  String get weatherCityNotSet => '未設定';
+
+  @override
+  String get weatherCityPickerTitle => '都市を選択';
+
+  @override
+  String get weatherCitySearchHint => '都市名を入力';
+
+  @override
+  String get weatherCitySearchEmpty => '一致する都市が見つかりません';
+
+  @override
+  String get weatherCitySearchFailed => '検索に失敗しました。しばらくしてからお試しください';
+
+  @override
+  String get weatherStatusLoading => '天気を更新中';
+
+  @override
+  String get weatherStatusFailed => '前回の更新に失敗しました';
+
+  @override
+  String get weatherRetryAction => '再試行';
+
+  @override
+  String get weatherCoverageNote => '予報は今後 16 日分のみです。それより先の日付では天気を表示しません。';
+
+  @override
+  String get weatherAttribution => '実況は高徳（Amap）、予報は Open-Meteo.com より提供';
+
+  @override
+  String get weatherSectionDisplayTitle => '表示';
+
+  @override
+  String get weatherShowOnDayCardTitle => '日表示のカード';
+
+  @override
+  String get weatherShowOnWeekCardTitle => '週表示のカード';
+
+  @override
+  String get weatherShowOnWeekCardSubtitle => 'マスが狭いので 1 項目だけ（気温優先）';
+
+  @override
+  String get weatherShowOnSheetTitle => '授業詳細シート';
+
+  @override
+  String get weatherSectionContentTitle => '表示する項目';
+
+  @override
+  String get weatherShowPhenomenonTitle => '天気';
+
+  @override
+  String get weatherShowPhenomenonSubtitle => '「小雨」など';
+
+  @override
+  String get weatherShowTemperatureTitle => '気温';
+
+  @override
+  String get weatherShowProbabilityTitle => '降水確率';
+
+  @override
+  String get weatherShowProbabilitySubtitle => '30% 未満のときは表示しません';
+
+  @override
+  String get weatherCourseTileSubtitle => 'この授業の時間帯の天気';
+
+  @override
+  String get weatherSectionSourceTitle => 'データ提供元';
+
+  @override
+  String get weatherUseCurrentLocation => '現在地を使う';
+
+  @override
+  String get weatherLocating => '位置を取得中…';
+
+  @override
+  String get weatherSectionCurrentLocation => '現在地';
+
+  @override
+  String get weatherSectionSearchCity => '都市を検索';
+
+  @override
+  String get weatherLocationServiceDisabled => '先に端末の位置情報サービスを有効にしてください';
+
+  @override
+  String get weatherLocationPermissionDenied => '位置情報の権限がないため現在地を取得できません';
+
+  @override
+  String get weatherLocationPermissionDeniedForever =>
+      '位置情報の権限が拒否されています。システム設定で本アプリの位置情報を許可してください';
+
+  @override
+  String get weatherLocationTimeout =>
+      '位置取得がタイムアウトしました。窓際か屋外でお試しください（都市を検索することもできます）';
+
+  @override
+  String get weatherLocationFailed => '位置を取得できませんでした。都市を検索してください';
+
+  @override
+  String get weatherLocationAddressUnavailable =>
+      '位置は取得できましたが地名を解決できません。都市を検索してください';
+
+  @override
+  String get weatherLocationEstimated => 'ネットワーク位置から推定しました。正確でない場合があります';
+
+  @override
+  String get weatherSectionCurrent => '現在の天気';
+
+  @override
+  String get weatherAmapNotConfigured =>
+      '高徳（Amap）API キーが未設定です。都市検索と位置情報は利用できません。予報データは引き続き利用できます。';
+
+  @override
+  String weatherCurrentHumidity(int humidity) {
+    return '湿度 $humidity%';
+  }
 }

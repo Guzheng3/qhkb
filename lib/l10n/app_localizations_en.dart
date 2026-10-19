@@ -9481,4 +9481,217 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get selectImageAction => 'Choose Image';
+
+  @override
+  String weatherTemperatureValue(int temperature) {
+    return '$temperature°';
+  }
+
+  @override
+  String weatherProbabilityValue(int probability) {
+    return '$probability%';
+  }
+
+  @override
+  String get weatherSummarySeparator => ' · ';
+
+  @override
+  String get weatherClear => 'Clear';
+
+  @override
+  String get weatherMainlyClear => 'Mostly clear';
+
+  @override
+  String get weatherPartlyCloudy => 'Partly cloudy';
+
+  @override
+  String get weatherOvercast => 'Overcast';
+
+  @override
+  String get weatherFog => 'Fog';
+
+  @override
+  String get weatherDrizzle => 'Drizzle';
+
+  @override
+  String get weatherFreezingDrizzle => 'Freezing drizzle';
+
+  @override
+  String get weatherLightRain => 'Light rain';
+
+  @override
+  String get weatherRain => 'Rain';
+
+  @override
+  String get weatherHeavyRain => 'Heavy rain';
+
+  @override
+  String get weatherFreezingRain => 'Freezing rain';
+
+  @override
+  String get weatherLightSnow => 'Light snow';
+
+  @override
+  String get weatherSnow => 'Snow';
+
+  @override
+  String get weatherHeavySnow => 'Heavy snow';
+
+  @override
+  String get weatherSnowGrains => 'Snow grains';
+
+  @override
+  String get weatherRainShowers => 'Rain showers';
+
+  @override
+  String get weatherHeavyRainShowers => 'Heavy rain showers';
+
+  @override
+  String get weatherSnowShowers => 'Snow showers';
+
+  @override
+  String get weatherThunderstorm => 'Thunderstorm';
+
+  @override
+  String get weatherThunderstormHail => 'Thunderstorm with hail';
+
+  @override
+  String get weatherSettingsEntryTitle => 'Weather on course cards';
+
+  @override
+  String get weatherSettingsTitle => 'Weather';
+
+  @override
+  String get weatherEnableTitle => 'Show weather';
+
+  @override
+  String get weatherEnableSubtitle =>
+      'Turning this off stops fetching weather data';
+
+  @override
+  String get weatherCityLabel => 'City';
+
+  @override
+  String get weatherCityNotSet => 'Not set';
+
+  @override
+  String get weatherCityPickerTitle => 'Choose a city';
+
+  @override
+  String get weatherCitySearchHint => 'Enter a city name';
+
+  @override
+  String get weatherCitySearchEmpty => 'No matching city found';
+
+  @override
+  String get weatherCitySearchFailed => 'Search failed, please try again later';
+
+  @override
+  String get weatherStatusLoading => 'Updating weather';
+
+  @override
+  String get weatherStatusFailed => 'Last update failed';
+
+  @override
+  String get weatherRetryAction => 'Retry';
+
+  @override
+  String get weatherCoverageNote =>
+      'Forecasts only cover the next 16 days; weather is hidden beyond that.';
+
+  @override
+  String get weatherAttribution =>
+      'Current weather from Amap; forecast from Open-Meteo.com';
+
+  @override
+  String get weatherSectionDisplayTitle => 'Display';
+
+  @override
+  String get weatherShowOnDayCardTitle => 'Day view cards';
+
+  @override
+  String get weatherShowOnWeekCardTitle => 'Week view cards';
+
+  @override
+  String get weatherShowOnWeekCardSubtitle =>
+      'Narrow cells — one item only, temperature first';
+
+  @override
+  String get weatherShowOnSheetTitle => 'Course detail sheet';
+
+  @override
+  String get weatherSectionContentTitle => 'What to show';
+
+  @override
+  String get weatherShowPhenomenonTitle => 'Condition';
+
+  @override
+  String get weatherShowPhenomenonSubtitle => 'Such as light rain';
+
+  @override
+  String get weatherShowTemperatureTitle => 'Temperature';
+
+  @override
+  String get weatherShowProbabilityTitle => 'Rain chance';
+
+  @override
+  String get weatherShowProbabilitySubtitle => 'Hidden below 30%';
+
+  @override
+  String get weatherCourseTileSubtitle => 'Weather during this class period';
+
+  @override
+  String get weatherSectionSourceTitle => 'Data source';
+
+  @override
+  String get weatherUseCurrentLocation => 'Use current location';
+
+  @override
+  String get weatherLocating => 'Locating…';
+
+  @override
+  String get weatherSectionCurrentLocation => 'Current location';
+
+  @override
+  String get weatherSectionSearchCity => 'Search city';
+
+  @override
+  String get weatherLocationServiceDisabled =>
+      'Turn on system location services first';
+
+  @override
+  String get weatherLocationPermissionDenied =>
+      'No location permission, so your position can\'t be read';
+
+  @override
+  String get weatherLocationPermissionDeniedForever =>
+      'Location permission was denied. Allow location access for this app in system settings';
+
+  @override
+  String get weatherLocationTimeout =>
+      'Locating timed out. Try again near a window or outdoors, or just search for a city';
+
+  @override
+  String get weatherLocationFailed =>
+      'Locating failed. Search for a city instead';
+
+  @override
+  String get weatherLocationAddressUnavailable =>
+      'Located, but couldn\'t resolve a place name. Search for a city instead';
+
+  @override
+  String get weatherLocationEstimated =>
+      'Estimated from your network location, so it may be off';
+
+  @override
+  String get weatherSectionCurrent => 'Current conditions';
+
+  @override
+  String get weatherAmapNotConfigured =>
+      'Amap API key not configured. City search and location are unavailable; forecast data still works.';
+
+  @override
+  String weatherCurrentHumidity(int humidity) {
+    return 'Humidity $humidity%';
+  }
 }
