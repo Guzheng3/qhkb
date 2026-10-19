@@ -73,6 +73,9 @@ class SpreadsheetImportService {
   static const String formatUnknown = 'unknown';
 
   static const String _qhkbMetadataMarker = '# qhkb-course-import-v1';
+
+  /// 更名前旧模板首行的元数据标记，仅用于读取兼容。
+  static const String _legacyMetadataMarker = '# mikcb-course-import-v1';
   static const String _defaultColor = '#2196F3';
 
   static const List<String> _nameAliases = ['课程名称'];
@@ -279,7 +282,9 @@ class SpreadsheetImportService {
     if (row.isEmpty) {
       return false;
     }
-    return row.first.trim() == _qhkbMetadataMarker;
+    final first = row.first.trim();
+    // 读取兼容：旧版 mikcb 模板的元数据行同样跳过。
+    return first == _qhkbMetadataMarker || first == _legacyMetadataMarker;
   }
 
   bool _isHeaderRow(List<String> row, List<String> expectedHeaders) {

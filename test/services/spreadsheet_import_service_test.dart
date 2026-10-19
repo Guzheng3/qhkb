@@ -317,4 +317,36 @@ Course A,Teacher,1,1-2,Room,1-16
     expect(result.courses, hasLength(1));
     expect(result.courses.first.name, '高等数学');
   });
+
+  test('read compat: legacy mikcb template metadata row is skipped', () {
+    const legacySample = '''
+# mikcb-course-import-v1
+课程名,星期,开始节,结束节,教师,教室,上课周
+高等数学,1,1,2,张老师,A101,1-16
+大学英语,3,3,4,无,教学楼201,1-8、10-16
+程序设计,5,5,6,李老师,实验室,1-5、7-11单
+''';
+
+    final result = service.parseBytes(
+      utf8.encode(legacySample),
+      fileName: 'courses.csv',
+      settings: settings,
+    );
+
+    expect(result.format, SpreadsheetImportService.formatQhkb);
+    expect(result.warnings, isEmpty);
+    expect(result.courses, hasLength(3));
+    expect(result.courses.first.name, '高等数学');
+    expect(result.courses.first.customWeeks, hasLength(16));
+  });
+
+  test('current template metadata marker is still recognized', () {
+    final result = service.parseBytes(
+      utf8.encode(qhkbFullSample),
+      fileName: 'courses.csv',
+      settings: settings,
+    );
+
+    expect(result.courses, hasLength(3));
+  });
 }

@@ -296,7 +296,8 @@ class _DataTransferScreenState extends State<DataTransferScreen> {
       final result = await FilePicker.pickFiles(
         type: FileType.custom,
         withData: true,
-        allowedExtensions: const ['json', 'qhkb'],
+        // 兼容旧版 mikcb 备份：选择器同时放行旧扩展名。
+        allowedExtensions: const ['json', 'qhkb', 'mikcb'],
       );
       final file = result?.files.single;
       if (file == null) {

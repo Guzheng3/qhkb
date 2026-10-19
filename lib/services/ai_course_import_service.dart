@@ -25,6 +25,9 @@ class AiCourseImportParseResult {
 
 class AiCourseImportService {
   static const String schema = 'qhkb_ai_import_v1';
+
+  /// 更名前旧版 AI 导入使用的 schema 标记，仅用于读取兼容。
+  static const Set<String> legacySchemas = {'mikcb_ai_import_v1'};
   static const Set<String> _rootKeys = {'schema', 'courses', 'warnings'};
   static const Set<String> _courseKeys = {
     'name',
@@ -121,7 +124,8 @@ class AiCourseImportService {
     );
 
     final currentSchema = _readRequiredString(json, 'schema');
-    if (currentSchema != schema) {
+    // 读取兼容：旧版 mikcb 标记的导入文件同样接受，写出仍用新标记。
+    if (currentSchema != schema && !legacySchemas.contains(currentSchema)) {
       throw FormatException(
         encodeServiceMessage('ai_schema_must_be', {'schema': schema}),
       );

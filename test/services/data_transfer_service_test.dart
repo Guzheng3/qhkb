@@ -160,4 +160,137 @@ void main() {
     expect(backup.profiles.single.tasks.single.title, '准备展示');
     expect(backup.timeSchemes.single.name, '本校作息');
   });
+
+  test('backup json writer always emits the current app marker', () {
+    final service = DataTransferService();
+    final json = service.buildBackupJson(
+      profileName: '大二下',
+      courses: const [],
+      settings: TimetableSettings.defaults(),
+      currentWeek: 3,
+    );
+
+    expect((jsonDecode(json) as Map)['app'], DataTransferService.appMarker);
+    expect(DataTransferService.appMarker, 'qhkb');
+    expect(DataTransferService.fileExtension, 'qhkb');
+  });
+
+  test('read compat: legacy mikcb partial backup is parsed', () {
+    final service = DataTransferService();
+    final json = service.buildBackupJson(
+      profileName: '旧版备份',
+      courses: const [],
+      tasks: [
+        CourseTask(
+          id: 'task-legacy',
+          title: '旧版任务',
+          createdAt: DateTime(2026, 3, 22, 8),
+          updatedAt: DateTime(2026, 3, 22, 9),
+        ),
+      ],
+      settings: TimetableSettings.defaults(),
+      currentWeek: 4,
+    );
+
+    final backup = service.parseBackupJson(_withLegacyAppMarker(json));
+
+    expect(backup.profileName, '旧版备份');
+    expect(backup.currentWeek, 4);
+    expect(backup.tasks.single.title, '旧版任务');
+    expect(backup.courses, isEmpty);
+  });
+
+  test('read compat: legacy mikcb full backup is parsed', () {
+    final service = DataTransferService();
+    final json = service.buildFullBackupJson(
+      profiles: [
+        TimetableProfile(
+          id: 'profile-legacy',
+          name: '旧版完整备份',
+          courses: const [],
+          settings: TimetableSettings.defaults(),
+          currentWeek: 5,
+          createdAt: DateTime(2026, 3, 22, 8),
+          lastUsedAt: DateTime(2026, 3, 22, 9),
+        ),
+      ],
+      activeProfileId: 'profile-legacy',
+      timeSchemes: [
+        TimeScheme(
+          id: 'scheme-legacy',
+          name: '旧版作息',
+          sections: const [SectionTime(startTime: '08:00', endTime: '08:45')],
+          createdAt: DateTime(2026, 3, 22, 8),
+          updatedAt: DateTime(2026, 3, 22, 9),
+        ),
+      ],
+    );
+
+    final backup = service.parseFullBackupJson(_withLegacyAppMarker(json));
+
+    expect(backup.activeProfileId, 'profile-legacy');
+    expect(backup.profiles.single.name, '旧版完整备份');
+    expect(backup.timeSchemes.single.name, '旧版作息');
+  });
+
+  test('read compat: legacy mikcb full backup is recognized by the sniffer', () {
+    final service = DataTransferService();
+    final json = service.buildFullBackupJson(
+      profiles: [
+        TimetableProfile(
+          id: 'profile-legacy',
+          name: '旧版完整备份',
+          courses: const [],
+          settings: TimetableSettings.defaults(),
+          currentWeek: 5,
+          createdAt: DateTime(2026, 3, 22, 8),
+          lastUsedAt: DateTime(2026, 3, 22, 9),
+        ),
+      ],
+      activeProfileId: 'profile-legacy',
+      timeSchemes: const [],
+    );
+
+    expect(service.isFullBackupJson(_withLegacyAppMarker(json)), isTrue);
+  });
+
+  test('read compat: legacy mikcb backup is parsed as a partner timetable', () {
+    final service = DataTransferService();
+    final json = service.buildBackupJson(
+      profileName: '旧版对方课表',
+      courses: const [],
+      settings: TimetableSettings.defaults(),
+      currentWeek: 4,
+    );
+
+    final backup = service.parsePartnerTimetableJson(
+      _withLegacyAppMarker(json),
+    );
+
+    expect(backup.profileName, '旧版对方课表');
+  });
+
+  test('unknown app marker is still rejected', () {
+    final service = DataTransferService();
+    final json = service.buildBackupJson(
+      profileName: '大二下',
+      courses: const [],
+      settings: TimetableSettings.defaults(),
+      currentWeek: 3,
+    );
+    final payload = Map<String, dynamic>.from(jsonDecode(json) as Map)
+      ..['app'] = 'some-other-app';
+
+    expect(
+      () => service.parseBackupJson(jsonEncode(payload)),
+      throwsA(isA<FormatException>()),
+    );
+  });
+}
+
+/// 把新格式备份的 app 标记改写成更名前的旧标记，模拟旧版 mikcb 导出文件。
+String _withLegacyAppMarker(String json) {
+  final payload = Map<String, dynamic>.from(jsonDecode(json) as Map)
+    ..['app'] = DataTransferService.legacyAppMarker;
+  return jsonEncode(payload);
 }

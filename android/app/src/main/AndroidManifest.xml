@@ -92,9 +92,12 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="qhkb-debug" />
+                <!-- 读取兼容：更名前旧版深链 scheme，既有的 adb / CLI 脚本继续可用 -->
+                <data android:scheme="mikcb-debug" />
             </intent-filter>
 
-            <!-- Supported import types: .ics, .qhkb, .json, .csv, .xlsx -->
+            <!-- Supported import types: .ics, .qhkb, .json, .csv, .xlsx
+                 （.mikcb 为更名前旧版备份扩展名，读取端一并接受） -->
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -171,6 +174,9 @@
                 <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.ics" android:pathSuffix=".ics" />
                 <data android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.qhkb" android:pathSuffix=".qhkb" />
                 <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.qhkb" android:pathSuffix=".qhkb" />
+                <!-- 读取兼容：更名前旧版备份扩展名（读取端接受，写出仍为 .qhkb） -->
+                <data android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.mikcb" android:pathSuffix=".mikcb" />
+                <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.mikcb" android:pathSuffix=".mikcb" />
                 <data android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.json" android:pathSuffix=".json" />
                 <data android:scheme="file" android:mimeType="*/*" android:pathPattern=".*\\.json" android:pathSuffix=".json" />
                 <data android:scheme="content" android:mimeType="*/*" android:pathPattern=".*\\.csv" android:pathSuffix=".csv" />

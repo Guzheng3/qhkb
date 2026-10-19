@@ -136,4 +136,52 @@ void main() {
     expect(course.startSection, 1);
     expect(course.endSection, 4);
   });
+
+  test('read compat: legacy mikcb ai import marker is parsed', () {
+    const content = '''
+{
+  "schema": "mikcb_ai_import_v1",
+  "courses": [
+    {
+      "name": "线性代数",
+      "teacher": "王老师",
+      "location": "B203",
+      "dayOfWeek": 2,
+      "startSection": 3,
+      "endSection": 4,
+      "customWeeks": [1, 2, 3, 4],
+      "courseNature": "required",
+      "note": ""
+    }
+  ],
+  "warnings": []
+}
+''';
+
+    final result = service.parse(content, settings: settings);
+
+    expect(result.courses, hasLength(1));
+    expect(result.courses.first.name, '线性代数');
+    expect(result.courses.first.teacher, '王老师');
+    expect(AiCourseImportService.schema, 'qhkb_ai_import_v1');
+    expect(
+      AiCourseImportService.legacySchemas,
+      contains('mikcb_ai_import_v1'),
+    );
+  });
+
+  test('current ai import marker is still required to be known', () {
+    const content = '''
+{
+  "schema": "unknown_ai_import_v9",
+  "courses": [],
+  "warnings": []
+}
+''';
+
+    expect(
+      () => service.parse(content, settings: settings),
+      throwsA(isA<FormatException>()),
+    );
+  });
 }

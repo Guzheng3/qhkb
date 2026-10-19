@@ -93,6 +93,14 @@ class DataTransferService {
   static const int schemaVersion = TransferPackage.schemaVersion;
   static const String fileExtension = 'qhkb';
 
+  /// 备份 JSON 里写入的应用标记（新格式）。
+  static const String appMarker = 'qhkb';
+
+  /// 更名前的旧版应用标记与文件扩展名，仅用于读取兼容：旧版导出的
+  /// `.mikcb` 备份（`"app": "mikcb"`）仍然可以导入，写出永远用新格式。
+  static const String legacyAppMarker = 'mikcb';
+  static const String legacyFileExtension = 'mikcb';
+
   String buildBackupJson({
     String? profileName,
     required List<Course> courses,
@@ -188,7 +196,9 @@ class DataTransferService {
     final app = json['app'] as String?;
     final version = (json['schemaVersion'] as num?)?.toInt() ?? 0;
 
-    if (app != 'qhkb' || version != schemaVersion) {
+    // 读取兼容：同时接受旧版 mikcb 备份标记，写出仍用新标记。
+    if ((app != appMarker && app != legacyAppMarker) ||
+        version != schemaVersion) {
       throw const FormatException('unrecognized_qhkb_data_file');
     }
 
@@ -243,7 +253,8 @@ class DataTransferService {
   /// compact payload emitted by older withU deployments.
   AppDataBackup parsePartnerTimetableJson(String content) {
     final json = jsonDecode(content) as Map<String, dynamic>;
-    if (json['app'] == 'qhkb') {
+    // 读取兼容：更名前导出的旧版 mikcb 备份同样按备份包解析，写出仍用新标记。
+    if (json['app'] == appMarker || json['app'] == legacyAppMarker) {
       return parseBackupJson(content);
     }
 
@@ -408,7 +419,10 @@ class DataTransferService {
     final version = (json['schemaVersion'] as num?)?.toInt() ?? 0;
     final backupType = json['backupType'] as String?;
 
-    if (app != 'qhkb' || version != schemaVersion || backupType != 'full') {
+    // 读取兼容：同时接受旧版 mikcb 完整备份标记，写出仍用新标记。
+    if ((app != appMarker && app != legacyAppMarker) ||
+        version != schemaVersion ||
+        backupType != 'full') {
       throw const FormatException('unrecognized_qhkb_full_backup');
     }
 

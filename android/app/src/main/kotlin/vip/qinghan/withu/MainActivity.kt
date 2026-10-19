@@ -59,6 +59,11 @@ class MainActivity : FlutterActivity() {
         private const val HAPTIC_CHANNEL = "vip.qinghan.withu/haptic"
         private const val SYSTEM_ALARM_CHANNEL = "vip.qinghan.withu/system_alarm"
 
+        private const val DEBUG_DEEP_LINK_SCHEME = "qhkb-debug"
+
+        /** 更名前旧版调试深链 scheme，仅用于读取兼容（读取端两个都接受）。 */
+        private const val LEGACY_DEBUG_DEEP_LINK_SCHEME = "mikcb-debug"
+
         /** Schemes allowed for the `launch_url` channel (feedback deep links). */
         private val ALLOWED_LAUNCH_SCHEMES = setOf(
             "https", "http", "coolmarket", "xhsdiscover", "mqqopensdkapi", "mqqapi", "weixin"
@@ -920,7 +925,13 @@ class MainActivity : FlutterActivity() {
      * Debug-only deep links for adb / Android CLI automation.
      * Scheme: qhkb-debug://path?query=value
      * Only honored on non-release package ids (*.debug / *.profile).
+     *
+     * 读取兼容：更名前旧版使用 mikcb-debug://，既有的 adb / Android CLI
+     * 脚本与历史深链继续可用；新脚本统一使用 qhkb-debug://。
      */
+    private fun isDebugDeepLinkScheme(scheme: String?): Boolean =
+        scheme == DEBUG_DEEP_LINK_SCHEME || scheme == LEGACY_DEBUG_DEEP_LINK_SCHEME
+
     private fun handleDebugDeepLinkIntent(intent: Intent) {
         if (!isDebugAutomationPackage()) {
             return
@@ -930,7 +941,7 @@ class MainActivity : FlutterActivity() {
             return
         }
         val data = intent.data ?: return
-        if (data.scheme != "qhkb-debug") {
+        if (!isDebugDeepLinkScheme(data.scheme)) {
             return
         }
         // Prefer path-absolute form: qhkb-debug:///settings/live
@@ -983,12 +994,12 @@ class MainActivity : FlutterActivity() {
         // Never open them as content URIs — that floods logcat with
         // FileNotFoundException: No content provider: qhkb-debug://...
         val dataScheme = intent.data?.scheme
-        if (dataScheme == "qhkb-debug") {
+        if (isDebugDeepLinkScheme(dataScheme)) {
             return
         }
 
         val uri = resolveImportUri(intent) ?: return
-        if (uri.scheme == "qhkb-debug") {
+        if (isDebugDeepLinkScheme(uri.scheme)) {
             return
         }
         // 跨进程 ContentResolver I/O（getType/query/全量读文件）不能在主线程做：
@@ -1035,7 +1046,10 @@ class MainActivity : FlutterActivity() {
                 if (kind == "ics" && !text.contains("VCALENDAR", ignoreCase = true)) {
                     return null
                 }
-                if (kind == "backup" && !text.contains("\"qhkb\"")) {
+                if (kind == "backup" &&
+                    !text.contains("\"qhkb\"") &&
+                    !text.contains("\"mikcb\"")
+                ) {
                     return null
                 }
                 PendingExternalImport(kind = kind, fileName = fileName, textContent = text)
@@ -1098,7 +1112,7 @@ class MainActivity : FlutterActivity() {
     }
 
     private fun readImportBytes(uri: Uri): ByteArray? {
-        if (uri.scheme == "qhkb-debug") {
+        if (isDebugDeepLinkScheme(uri.scheme)) {
             return null
         }
         return try {
@@ -1126,7 +1140,8 @@ class MainActivity : FlutterActivity() {
             extension == "ics" || normalizedMime?.startsWith("text/calendar") == true -> {
                 return "ics"
             }
-            extension == "qhkb" -> return "backup"
+            // 读取兼容：旧版 .mikcb 备份扩展名同样按备份处理。
+            extension == "qhkb" || extension == "mikcb" -> return "backup"
             extension == "json" || normalizedMime == "application/json" -> return "backup"
             extension == "csv" ||
                 normalizedMime == "text/csv" ||
@@ -1143,7 +1158,7 @@ class MainActivity : FlutterActivity() {
         if (normalizedMime == "application/octet-stream" || normalizedMime == "*/*") {
             when (extension) {
                 "ics" -> return "ics"
-                "qhkb", "json" -> return "backup"
+                "qhkb", "mikcb", "json" -> return "backup"
                 "csv", "xlsx" -> return "spreadsheet"
             }
         }
@@ -1151,7 +1166,10 @@ class MainActivity : FlutterActivity() {
         if (textPreview.contains("VCALENDAR", ignoreCase = true)) {
             return "ics"
         }
-        if (textPreview.trimStart().startsWith("{") && textPreview.contains("\"qhkb\"")) {
+        // 读取兼容：旧版 mikcb 备份的 app 标记同样识别为备份文件。
+        if (textPreview.trimStart().startsWith("{") &&
+            (textPreview.contains("\"qhkb\"") || textPreview.contains("\"mikcb\""))
+        ) {
             return "backup"
         }
         if (bytes.size >= 4 &&
