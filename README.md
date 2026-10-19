@@ -1,25 +1,25 @@
-# 轻屿课表
+# 清涵课表
 
 ![Flutter](https://img.shields.io/badge/Flutter-3.44.8-02569B?logo=flutter&logoColor=white)
 ![Android](https://img.shields.io/badge/Android-Only-34A853?logo=android&logoColor=white)
 ![HyperOS](https://img.shields.io/badge/Focus-HyperOS%20%E8%B6%85%E7%BA%A7%E5%B2%9B-FF6A00)
-![Release](https://img.shields.io/github/v/release/Guzheng3/mikcb?display_name=tag)
-![CI](https://img.shields.io/github/actions/workflow/status/Guzheng3/mikcb/ci.yml?branch=main&label=CI)
+![Release](https://img.shields.io/github/v/release/Guzheng3/qhkb?display_name=tag)
+![CI](https://img.shields.io/github/actions/workflow/status/Guzheng3/qhkb/ci.yml?branch=main&label=CI)
 
 一个面向校园场景的 Android 课表应用。
 
-🌐 官网：<https://gzr.xjy.xn--6qq986b3xl> · [下载最新版本](https://github.com/Guzheng3/mikcb/releases)
+🌐 官网：<https://qhkb.qinghan.vip> · [下载最新版本](https://github.com/Guzheng3/qhkb/releases)
 
-轻屿课表的重点不是单纯展示课程，而是把课表、提醒、通知、小组件和 HyperOS 超级岛串成一条完整链路。它关注的是“接下来要上什么课、现在这节课进行到哪、能不能不打开应用就知道状态”。
+清涵课表的重点不是单纯展示课程，而是把课表、提醒、通知、小组件和 HyperOS 超级岛串成一条完整链路。它关注的是“接下来要上什么课、现在这节课进行到哪、能不能不打开应用就知道状态”。
 
 ## 命名说明
 
 | 名称 | 说明 |
 |------|------|
-| 仓库 `mikcb` | GitHub 仓库名 |
-| Dart 包 `university_timetable` | 历史包名（pubspec），与仓库名不同 |
+| 仓库 `qhkb` | GitHub 仓库名 |
+| Dart 包 `qhkb` | pubspec 包名 |
 | Android 包名 `vip.qinghan.withu` | 应用 ID |
-| 产品名「轻屿课表」 | 用户可见名称 |
+| 产品名「清涵课表」 | 用户可见名称 |
 
 ## 项目定位
 
@@ -50,7 +50,6 @@
 
 - 当前应用已经支持一部分学校的教务系统网页登录导入，适配脚本随应用内置（`assets/warehouse/`）
 - 如果你的学校暂时还没有适配，仍然可以先走 `.ics` 导入或完整备份迁移
-- 适配资源仓库：<https://github.com/Guzheng3/mikcb>
 - 如果你会网页调试、抓包、JavaScript 或愿意维护自己学校的教务系统，欢迎直接参与适配补充
 
 ## 为什么做这个
@@ -62,11 +61,11 @@
 - 下一节在哪
 - 不打开应用能不能就看到
 
-轻屿课表主要在解决这类问题，尤其把提醒链路做得更细，把系统通知体验和课表本身连起来。
+清涵课表主要在解决这类问题，尤其把提醒链路做得更细，把系统通知体验和课表本身连起来。
 
 ## 下载与更新
 
-- 发布页：<https://github.com/Guzheng3/mikcb/releases>
+- 发布页：<https://github.com/Guzheng3/qhkb/releases>
 - 正式包当前以 `arm64-v8a` 为主
 - 应用内可读取 GitHub Releases，显示版本号、更新时间和下载入口
 - 发行流程见 [docs/RELEASE.md](./docs/RELEASE.md)
@@ -118,10 +117,9 @@ flutter build apk --release --flavor prod --target-platform android-arm64
 - 安全报告：[SECURITY.md](./SECURITY.md)
 - 隐私说明：[docs/PRIVACY.md](./docs/PRIVACY.md)
 - 第三方许可：[docs/THIRD_PARTY_LICENSES.md](./docs/THIRD_PARTY_LICENSES.md)
-- 产品说明（存档）：[docs/PRODUCT.md](./docs/PRODUCT.md)
 - 发布流程：[docs/RELEASE.md](./docs/RELEASE.md)
-- 网站与国际化协作约定：[docs/WEB_AND_L10N_WORKFLOW.md](./docs/WEB_AND_L10N_WORKFLOW.md)
-- 变更日志：[GitHub Releases](https://github.com/Guzheng3/mikcb/releases) / [docs/releases/](./docs/releases/)
+- 构建疑难排查：[docs/BUILD_TROUBLESHOOTING.md](./docs/BUILD_TROUBLESHOOTING.md)
+- 变更日志：[GitHub Releases](https://github.com/Guzheng3/qhkb/releases) / [docs/releases/](./docs/releases/)
 
 ## 技术栈
 
@@ -156,6 +154,12 @@ flutter build apk --release --flavor prod --target-platform android-arm64
 - 课程统计与桌面小组件能力扩展
 - HyperOS / 超级岛显示细节
 - 教务导入、传输、备份和更新体验完善
+
+## 上游来源
+
+本项目是基于 [mikcb](https://github.com/Mutx163/mikcb) 二次开发的修改版，产品名与仓库名已改为「清涵课表」/ `qhkb`。
+
+mikcb 采用 [GNU General Public License v3.0 or later](./LICENSE) 授权，本项目作为其衍生作品继续遵循 **GPL-3.0-or-later**。
 
 ## 许可证
 
