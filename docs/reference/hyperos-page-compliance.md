@@ -26,7 +26,7 @@ python tool/hyperos_audit.py --perfect    # 严格完美合规（error + warn）
 
 **CI：** `.github/workflows/ci.yml` 在 `flutter analyze` 前执行 `python tool/hyperos_audit.py --strict`。
 
-**Agent：** 用户问「XX 页面是否符合澎湃 UI」→ 读 `mikcb-hyperos-audit` SKILL，不要即兴 grep。
+**Agent：** 用户问「XX 页面是否符合澎湃 UI」→ 读 `qhkb-hyperos-audit` SKILL，不要即兴 grep。
 
 ---
 

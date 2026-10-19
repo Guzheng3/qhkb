@@ -1,14 +1,14 @@
-# mikcb HyperOS UI 库
+# 清涵课表 HyperOS UI 库
 
 对标小米 HyperOS / MIUI **系统设置**视觉与交互的 Flutter 组件库。  
 代码入口：`lib/ui/hyperos/hyperos.dart`
 
 > 与 Forui 的关系：Forui 只保留为历史/兼容残留；新业务页的默认壳层、列表和交互应使用本项目 HyperOS facade，旧 Forui 约定不再作为新页面规范。
-> 历史 Forui 设置约定见 [mikcb-settings-screen-layout.md](./forui/mikcb-settings-screen-layout.md)；新设置页以本文档为准。
+> 新设置页以本文档为准。
 
 ## 0. 双层组件体系与新页面硬规则（2026-08）
 
-轻屿课表当前不是“所有页面直接堆一套 `Miuix*` Widget”，而是**官方风格基础库 + 项目自研 HyperOS facade** 两层协作：
+清涵课表当前不是“所有页面直接堆一套 `Miuix*` Widget”，而是**官方风格基础库 + 项目自研 HyperOS facade** 两层协作：
 
 ### 0.1 外部基础库：项目固定的 `flutter_miuix`
 
@@ -403,7 +403,7 @@ return HyperosSubpage(
 
 ### 8.3 项目自研层与官方基础件的边界
 
-| 需求 | 直接使用 `flutter_miuix` | 优先使用 mikcb 自研 facade |
+| 需求 | 直接使用 `flutter_miuix` | 优先使用项目自研 facade |
 |------|---------------------------|-----------------------------|
 | 主题、语义颜色、文字样式 | `MiuixTheme` / `MiuixColors` / `MiuixTextStyles` | `HyperosColors` / `HyperosTypography`（页面语义包装） |
 | 基础按钮、开关、滑条、输入 | `MiuixButton` / `MiuixSwitch` / `MiuixSlider` / `MiuixTextField` | `HyperosButton` / `HyperosSwitchTile` / `HyperosSliderTile` / `HyperosTextField` |
@@ -413,7 +413,7 @@ return HyperosSubpage(
 | 弹层与反馈 | `MiuixOverlayDialog` / `MiuixOverlayBottomSheet` / `MiuixSnackbar` | `HyperosDialog` / `HyperosSheet` / `showAppToast` / `showHyperosSnackBar` |
 | 玻璃与降级 | `MiuixTextureBlur` 等基础能力 | `HyperosBlurredHeader` / `HyperosLiquidGlassSurface` 等项目策略封装 |
 
-**原则：** 官方库定义基础行为和 Miuix 语义；自研层定义轻屿课表的页面结构、视觉 token、兼容策略和业务组合。页面代码不应绕过已经存在的自研入口重新实现同一规则。
+**原则：** 官方库定义基础行为和 Miuix 语义；自研层定义清涵课表的页面结构、视觉 token、兼容策略和业务组合。页面代码不应绕过已经存在的自研入口重新实现同一规则。
 
 ### 8.4 官方库组合时的关键接线
 
@@ -428,5 +428,5 @@ return HyperosSubpage(
 ### 8.5 结论
 
 - 项目已经具备两套协同组件体系，但不是两套平行的“随便选一个”组件库。
-- `flutter_miuix` 是固定版本的 Flutter 基础 port；`lib/ui/hyperos/` 是轻屿课表的应用级设计系统与兼容 facade。
+- `flutter_miuix` 是固定版本的 Flutter 基础 port；`lib/ui/hyperos/` 是清涵课表的应用级设计系统与兼容 facade。
 - 新页面默认走自研 facade；自研 facade 不覆盖时才直接调用官方 `Miuix*` 基础件；禁止新增第三套通用组件体系。

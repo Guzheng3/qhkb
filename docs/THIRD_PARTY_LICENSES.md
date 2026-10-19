@@ -1,6 +1,6 @@
 # 第三方组件与许可
 
-本文件说明 mikcb（轻屿课表）**源码之外**随应用分发或运行时依赖的第三方组件。
+本文件说明 qhkb（清涵课表）**源码之外**随应用分发或运行时依赖的第三方组件。
 应用**源码**以 [GPL-3.0-or-later](../LICENSE) 发布；下列组件适用各自许可证。
 
 ## Android 原生 SDK（Maven）
@@ -34,7 +34,7 @@
 
 | 服务 | 用途 |
 |------|------|
-| GitHub Releases / raw | 应用更新、release notes、`latest.json` |
+| GitHub Releases / raw | 应用更新、release notes |
 | 用户配置的 WEBDAV | 可选云同步 |
 | 学校教务系统 | 用户主动导入 |
 

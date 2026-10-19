@@ -10,14 +10,6 @@ pluginManagement {
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
     repositories {
-        // CNB 流水线专用镜像前置：CNB 出口 IP 对 Maven Central 限流（HTTP 429，
-        // kotlin-stdlib POM 下载被拒）。GitHub Actions / 本地构建不设 CNB_* 环境
-        // 变量，仓库列表与原先完全一致，不受任何影响。
-        if (System.getenv("CNB_BUILD_ID") != null || System.getenv("CNB_BRANCH") != null) {
-            maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
-            maven { url 'https://maven.aliyun.com/repository/public' }
-            maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-        }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -33,40 +25,4 @@ plugins {
     id "org.jetbrains.kotlin.android" version "2.2.20" apply false
 }
 
-// CNB 专用依赖仓库镜像（仅在 CNB 环境生效，GitHub Actions / 本地不受影响）。
-// PREFER_SETTINGS 会接管 flutter 插件注入的项目级仓库（FlutterPlugin.kt 向
-// rootProject.allprojects 注入 download.flutter.io），因此这里必须完整兜底：
-// google / mavenCentral / flutter 引擎仓库缺一不可。注意 settings 脚本里
-// plugins {} 必须紧随 pluginManagement {}，故本块只能放在 plugins 之后，
-// RepositoriesMode 用全限定名（settings 脚本 import 会挤掉 plugins 块位置）。
-if (System.getenv("CNB_BUILD_ID") != null || System.getenv("CNB_BRANCH") != null) {
-    dependencyResolutionManagement {
-        repositoriesMode.set(org.gradle.api.initialization.resolve.RepositoriesMode.PREFER_SETTINGS)
-        repositories {
-            maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
-            maven { url 'https://maven.aliyun.com/repository/public' }
-            google()
-            mavenCentral()
-            maven { url 'https://storage.googleapis.com/download.flutter.io' }
-        }
-    }
-}
-
 include ":app"
-
-// CNB 专用：为所有子项目 buildscript.repositories 注入国内镜像。
-// Flutter 插件（device_info_plus 等）的 build.gradle 中 buildscript.repositories
-// 仅声明 google()+mavenCentral()，不受 dependencyResolutionManagement 管理，
-// 导致 kotlin-gradle-plugin 等 classpath 依赖直连 Maven Central 被限流（HTTP 429）。
-// beforeProject 钩子在子项目评估前执行，向 buildscript 仓库列表前端插入国内镜像。
-if (System.getenv("CNB_BUILD_ID") != null || System.getenv("CNB_BRANCH") != null) {
-    gradle.beforeProject { project ->
-        project.buildscript {
-            repositories {
-                maven { url 'https://mirrors.cloud.tencent.com/nexus/repository/maven-public/' }
-                maven { url 'https://maven.aliyun.com/repository/public' }
-                maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
-            }
-        }
-    }
-}

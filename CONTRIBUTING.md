@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢考虑为轻屿课表（mikcb）贡献代码、文档或教务适配。
+感谢考虑为清涵课表（qhkb）贡献代码、文档或教务适配。
 
 ## 开始之前
 
@@ -13,10 +13,10 @@
 
 | 名称 | 含义 |
 |------|------|
-| GitHub 仓库 `mikcb` | 对外仓库名 |
-| pubspec `university_timetable` | 历史 Dart 包名，暂未更名 |
+| GitHub 仓库 `qhkb` | 对外仓库名 |
+| Dart 包 `qhkb` | pubspec 包名 |
 | Android 包名 `vip.qinghan.withu` | 应用 ID |
-| 产品名「轻屿课表」 | 用户可见名称 |
+| 产品名「清涵课表」 | 用户可见名称 |
 
 ## 开发环境
 
@@ -80,11 +80,11 @@ Android 签名：`android/key.properties` 与 keystore **不要提交**；CI 使
 - UI / HyperOS 体验
 - 课表逻辑、提醒、导入、云同步
 - 多语言（`lib/l10n/*.arb`）
-- 文档与官网（`docs/`）
+- 文档（`docs/`）
 
 ### 教务系统适配（随应用内置）
 
-网页登录导入脚本随应用内置在 `assets/warehouse/`。请在 **[本仓库](https://github.com/Guzheng3/mikcb)** 开 Issue / PR。
+网页登录导入脚本随应用内置在 `assets/warehouse/`。请在 **[本仓库](https://github.com/Guzheng3/qhkb)** 开 Issue / PR。
 
 ### 不要提交的内容
 
@@ -98,7 +98,7 @@ Android 签名：`android/key.properties` 与 keystore **不要提交**；CI 使
 
 - **Bug 报告**：复现步骤 + 版本 + 机型
 - **功能建议**：用户场景优先
-- **教务适配**：学校名称；代码请走 warehouse 仓库
+- **教务适配**：学校名称；适配脚本随应用内置在 `assets/warehouse/`
 
 ## 发布
 
@@ -112,5 +112,5 @@ Maintainer 发版流程见 [docs/RELEASE.md](./docs/RELEASE.md)。外部贡献�
 
 ## 获取帮助
 
-- [GitHub Issues](https://github.com/Guzheng3/mikcb/issues)
-- [Releases / 更新日志](https://github.com/Guzheng3/mikcb/releases)
+- [GitHub Issues](https://github.com/Guzheng3/qhkb/issues)
+- [Releases / 更新日志](https://github.com/Guzheng3/qhkb/releases)

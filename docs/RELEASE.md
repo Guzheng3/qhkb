@@ -5,14 +5,14 @@
 先记住 9 句话：
 
 - `push` / `pull_request` 会触发 CI 质量门禁。
-- 只有推送 `v*` tag 才会自动构建正式 APK 并创建 / 更新 GitHub Release，并同步 GitCode 镜像（需一次性配置，见第一节）。
+- 只有推送 `v*` tag 才会自动构建正式 APK 并创建 / 更新 GitHub Release。
 - **GitHub 预发布 / 正式，唯一由 pubspec 的 `version:` 是否含 `-` 决定；commit message 里的 `prerelease` 无效。**
 - 三位数版本和四位数版本都可以是正式版，也都可以是预发布版；关键看 pubspec 有没有 `-`。
 - 四位数版本可以先作为预发布发出，后面再原地转成正式版。
 - **默认只升第 4 位（如 `2.0.4` → `2.0.4.1`）；不要因本地草稿就默认升第 3 位到 `2.0.5`…`2.0.9`。**
 - 应用里比较版本时，`1.1.10-6+36` 会按 `1.1.10.6` 去比较。
 - **推送 tag 后必须完成第六节 Post-tag 验证（CI 绿勾 + APK > 5 MB + Release 渠道状态正确）才能宣告发布完成。**
-- **已打 tag / 已出现在 `docs/releases/latest.json` 的 `docs/releases/v*.md` 视为只读历史：禁止再追加功能条目；新内容写下一版文件（默认第四位 +1）。**
+- **已打 tag 的 `docs/releases/v*.md` 视为只读历史：禁止再追加功能条目；新内容写下一版文件（默认第四位 +1）。**
 
 ## 写更新日志前：已发版判定（强制）
 
@@ -26,9 +26,8 @@
 | 来源 | 怎么看 |
 |------|--------|
 | Git tag | `git tag -l 'v*' --sort=-v:refname`（并对照远程是否已 push） |
-| 应用更新源 | `docs/releases/latest.json` 的 `stable.version` / `prerelease.version` |
 
-**最后已发布** = 已存在对应 `v*` tag，和/或已写入 `latest.json` 的版本号（预发布也算已发布）。
+**最后已发布** = 已存在对应 `v*` tag 的版本号（预发布也算已发布）。
 
 ### 2. 文件能不能改
 
@@ -44,7 +43,7 @@
 - **正确**：多份**未 tag** 的 notes → 合并进**下一次要 cut** 的那一个 `v{next}.md`。
 - **错误**：把未推送代码的新能力写回**已经发过**的 `v2.0.5.md`（即使 pubspec 仍停在 `2.0.5-0`）。
 
-`pubspec.yaml` 的 `version:` **不能**单独当作「这一版还没发」：发版后 pubspec 可能暂时仍停在旧号；以 **tag / latest.json** 为准。
+`pubspec.yaml` 的 `version:` **不能**单独当作「这一版还没发」：发版后 pubspec 可能暂时仍停在旧号；以 **tag** 与发布页为准。
 
 ### 4. 与正常发版的关系
 
@@ -121,12 +120,10 @@
 
 ## 一、当前发布机制
 
-当前仓库有四条 GitHub Actions 线：
+当前仓库有两条 GitHub Actions 线：
 
 - [.github/workflows/ci.yml](../.github/workflows/ci.yml)：`push` / `pull_request` 时执行依赖安装、静态分析和测试。
-- [.github/workflows/android-build.yml](../.github/workflows/android-build.yml)：推送 `v*` tag 时先执行检查，再签名构建 `arm64-v8a` APK 并创建 / 更新 GitHub Release，最后同步源码 / tag / APK 到 GitCode 镜像。
-- [.github/workflows/update-docs-releases.yml](../.github/workflows/update-docs-releases.yml)：GitHub Release 发布、编辑、撤销等事件后自动更新 `docs/releases/latest.json`，供应用内更新检查读取。
-- [.github/workflows/update-docs-schools.yml](../.github/workflows/update-docs-schools.yml)：内置学校索引 `assets/warehouse/root_index.yaml` 变更时（及手动触发）生成 `docs/schools.json`，供官网已适配学校列表读取。
+- [.github/workflows/android-build.yml](../.github/workflows/android-build.yml)：推送 `v*` tag 时先执行检查，再签名构建 `arm64-v8a` APK 并创建 / 更新 GitHub Release。
 
 适配脚本随应用内置在 `assets/warehouse/` 下，应用运行时不访问任何外部适配仓库。
 
@@ -135,7 +132,7 @@
 1. 平时 `git push origin main` 或提交 PR，会自动跑 CI 质量门禁。
 2. 发布前先本地提交并推送 `main`。
 3. 再推送一个 `v*` tag。
-4. tag workflow 会先跑 `flutter analyze` 和 `flutter test`，通过后才继续构建 APK、上传蒲公英并创建 / 更新 GitHub Release。
+4. tag workflow 会先跑 `flutter analyze` 和 `flutter test`，通过后才继续构建 APK 并创建 / 更新 GitHub Release。
 
 release workflow 还会做这些事：
 
@@ -144,32 +141,6 @@ release workflow 还会做这些事：
 - 用 tag 名覆盖 Android 最终产物的 `versionName`
 - 使用 `flutter build apk --release --flavor prod --target-platform android-arm64` 构建正式包
 - 创建或更新 GitHub Release
-- 同步源码、tag 与 APK 到 GitCode 镜像仓库（国内下载加速，需一次性配置，见下）
-
-### GitCode 镜像同步（国内下载加速）
-
-发版时 android-build.yml 会调用 [nvdacn/sync_to_gitcode](https://github.com/nvdacn/sync_to_gitcode) 的两个可复用工作流（已按 master HEAD `18b70112` SHA pin）：
-
-- `gitcode-push`：把 `main` 分支与全部 tag 同步到 GitCode 仓库；
-- `gitcode-release`：把本次构建产物 `mikcb-*.apk` 上传为 GitCode Release 附件，正文使用 `docs/releases/v版本号.md` 全文，预发布 / 正式状态沿用 pubspec `-` 判定（`pre` / `latest`）。
-
-触发条件与发版一致：仅当推送 `v*` tag 且构建发布（publish job）成功后执行；两个 Job 都带 `vars.GITCODE_USERNAME` 存在性门禁，变量不存在时自动跳过，Fork 仓库不会因此失败。
-
-启用前需要一次性配置（任一项缺失时同步静默跳过，不影响 GitHub 发版）：
-
-| 平台 | 配置 | 说明 |
-|------|------|------|
-| GitCode | 创建仓库 | 路径默认需与 GitHub 相同（`Guzheng3/mikcb`）；不同则设 GitHub Variable `GITCODE_REPOSITORY` |
-| GitCode | [个人访问令牌](https://gitcode.com/setting/token-classic) | 需具备仓库写权限（推代码 + 创建/编辑 Release） |
-| GitHub | Secret `GITCODE_TOKEN` | 存 GitCode 令牌 |
-| GitHub | Variable `GITCODE_USERNAME` | GitCode 用户名；同时充当同步开关 |
-| GitHub | Variable `GITCODE_REPOSITORY`（可选） | 仅当 GitCode 仓库路径与 GitHub 不同时需要 |
-
-注意：
-
-- GitCode 仓库不会在 push 时自动创建，必须先在 GitCode 网页端建好空仓库。
-- 同步从配置后的第一个新 tag 开始；历史 Release 不会自动回填（重推旧 tag 会重跑完整发版流程，一般不建议）。
-- 首次同步会把 main 的全部历史与所有历史 tag 一起推到 GitCode。
 
 ## 二、先分清两套版本
 
@@ -272,7 +243,7 @@ version: 1.1.10-6+36
 4. 中间空号笔记改写成四段归档或删除，不要当成已发布历史。
 5. 用户向更新日志不要写「相对完整累计 / 中间迭代未单独发」类说明。
 
-（Agent 流程细节见用户机 `mikcb-release` / `mikcb-ship-local` skill。）
+（Agent 流程细节见用户机 `qhkb-release` / `qhkb-ship-local` skill。）
 
 ## 四、什么时候算预发布，什么时候算正式
 
@@ -292,10 +263,10 @@ fi
 
 因此：
 
-| 用户意图 | pubspec 必须写成 | GitHub Release | 官网 `latest.json` |
-|----------|------------------|----------------|---------------------|
-| **预发布** | 含 `-` 段，如 `1.3.2-0+109` 或 `1.1.10-7+37` | `prerelease: true` | 进 `prerelease` 栏 |
-| **正式版** | 不含 `-`，如 `1.3.2+109` 或 `1.1.11+37` | `prerelease: false` | 进 `stable` 栏 |
+| 用户意图 | pubspec 必须写成 | GitHub Release |
+|----------|------------------|----------------|
+| **预发布** | 含 `-` 段，如 `1.3.2-0+109` 或 `1.1.10-7+37` | `prerelease: true` |
+| **正式版** | 不含 `-`，如 `1.3.2+109` 或 `1.1.11+37` | `prerelease: false` |
 
 **以下全部不能决定渠道：**
 
@@ -312,10 +283,9 @@ bash tool/verify_release_pubspec.sh pubspec.yaml prerelease
 bash tool/verify_release_pubspec.sh pubspec.yaml release
 ```
 
-### 2. GitHub / 官网 / 应用各自看什么
+### 2. GitHub 与应用各自看什么
 
 - **GitHub Release 是不是预发布**：看 `prerelease` 字段（由上一节 CI 写入）。
-- **官网下载区显示正式还是预发布**：读 `docs/releases/latest.json`，同样看 Release 的 `prerelease`。
 - **应用里版本高低怎么比**：看版本号数值，与渠道无关。
 
 例如当前代码会把：
@@ -338,7 +308,7 @@ bash tool/verify_release_pubspec.sh pubspec.yaml release
 - **三位数对外版本**（如 `v1.3.2`）：若要做**预发布**，pubspec 仍必须含 `-`，通常写 `1.3.2-0+build`（`-0` 仅用于触发 CI 预发布，对外 versionName 仍来自 tag `1.3.2`）。
 - **三位数正式基线**（如 `v1.1.11`）：pubspec 写 `1.1.11+build`，**不要**写 `-0`。
 
-> **反面教材（v1.3.1 / v1.3.2 事故）**：commit 写了 `chore: cut v1.3.2 prerelease`，但 pubspec 是 `1.3.2+109`（无 `-`），CI 必然建成正式版，官网也会显示正式版。
+> **反面教材（v1.3.1 / v1.3.2 事故）**：commit 写了 `chore: cut v1.3.2 prerelease`，但 pubspec 是 `1.3.2+109`（无 `-`），CI 必然建成正式版，发布页也会显示正式版。
 
 ## 五、最短发布流程
 
@@ -499,7 +469,6 @@ bash tool/verify_release_pubspec.sh pubspec.yaml release
 
 - **禁止**在本地或临时脚本里用 `find` / 通配符“猜”哪个 `.apk` 是正式包并当作 release 依据。
 - 仓库已在 [.github/workflows/android-build.yml](../.github/workflows/android-build.yml) 固化：显式路径 → 最大 eligible 回退 → **5 MB** 体积门禁 → `file(1)` 归档类型检查 → 上传 Release 前再次校验体积。
-- 应用内 `latest.json` 更新（[update-docs-releases.yml](../.github/workflows/update-docs-releases.yml)）也会跳过 **< 5 MB** 的 APK 资产。
 
 ### Tag 恢复（远端已有坏 release）
 
@@ -594,14 +563,14 @@ git push origin v你的版本号
 
 写入 `pubspec.yaml` 时必须 **UTF-8 无 BOM**。带 BOM 会导致 `description` 等字段乱码；CI 与 `tool/verify_release_pubspec.sh` 会在 PR 与发布前拦截。
 
-### 7. 为什么 commit 写了 prerelease，官网却是正式版
+### 7. 为什么 commit 写了 prerelease，Release 却成了正式版
 
 根因几乎总是 **pubspec 没写 `-` 段**。
 
-- `version: 1.3.2+109` → CI 建**正式** Release → 官网 `latest.json` 的 `stable` 指向它
-- `version: 1.3.2-0+109` → CI 建**预发布** Release → 官网 `latest.json` 的 `prerelease` 指向它
+- `version: 1.3.2+109` → CI 建**正式** Release
+- `version: 1.3.2-0+109` → CI 建**预发布** Release
 
-修复已发布的错误渠道：在 GitHub Releases 编辑对应版本勾选/取消 Pre-release，然后触发 `Update Docs Releases JSON` workflow。下次 cut 务必先跑 `verify_release_pubspec.sh … prerelease`。
+修复已发布的错误渠道：在 GitHub Releases 编辑对应版本勾选/取消 Pre-release。下次 cut 务必先跑 `verify_release_pubspec.sh … prerelease`。
 
 ## 九、最常用模板
 
