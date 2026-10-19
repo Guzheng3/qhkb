@@ -76,7 +76,6 @@ function Find-BuildTool([string]$Name) {
     if ($env:ANDROID_HOME) { $roots += $env:ANDROID_HOME }
     if ($env:ANDROID_SDK_ROOT) { $roots += $env:ANDROID_SDK_ROOT }
     if ($env:LOCALAPPDATA) { $roots += (Join-Path $env:LOCALAPPDATA "Android\Sdk") }
-    $roots += "E:\Android\Sdk"
     foreach ($root in $roots) {
         if (-not $root) { continue }
         $buildTools = Join-Path $root "build-tools"
