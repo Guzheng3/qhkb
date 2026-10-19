@@ -3,7 +3,7 @@ lib/domain/location_building_cluster_logic.dart:67
 lib/domain/time_scheme_logic.dart:3
 lib/l10n/holiday_name_localizer.dart:1
 lib/logging/app_log_messages.dart:2
-lib/main.dart:5
+lib/main.dart:4
 lib/models/course.dart:15
 lib/models/exam.dart:16
 lib/models/partner_timetable_binding.dart:1
@@ -11,7 +11,7 @@ lib/models/statistics_export_options.dart:1
 lib/models/statistics_models.dart:61
 lib/models/time_scheme.dart:1
 lib/models/timetable_profile.dart:2
-lib/models/timetable_settings.dart:5
+lib/models/timetable_settings.dart:1
 lib/models/warehouse_macro_models.dart:3
 lib/providers/timetable/import_export_service.dart:5
 lib/providers/timetable/time_scheme_repository.dart:1
@@ -33,11 +33,11 @@ lib/screens/miuix_showcase/navigation.dart:24
 lib/screens/miuix_showcase/overlays.dart:30
 lib/screens/miuix_showcase/pickers.dart:21
 lib/screens/miuix_showcase/preferences.dart:44
-lib/screens/miuix_showcase/theming.dart:25
+lib/screens/miuix_showcase/theming.dart:24
 lib/screens/miuix_showcase/utility.dart:20
 lib/screens/miuix_showcase_screen.dart:56
 lib/screens/settings/settings_holiday.dart:1
-lib/screens/timetable_screen.dart:2
+lib/screens/timetable_screen.dart:1
 lib/services/ai_course_import_service.dart:38
 lib/services/app_sync_snapshot_service.dart:2
 lib/services/app_update_service.dart:35
