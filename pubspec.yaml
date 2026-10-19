@@ -57,7 +57,7 @@ dependencies:
       url: https://github.com/Mutx163/flutter_miuix.git
       ref: 241bbea65291e2a2f7b36d77946f7f1d16654b0a
   flutter_blackbox: ^0.7.0
-  image_picker: ^1.2.3
+  image_picker: ^1.2.4
 
 dev_dependencies:
   flutter_test:
