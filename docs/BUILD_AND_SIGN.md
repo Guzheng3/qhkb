@@ -25,8 +25,9 @@ flutter build apk --release --flavor prod --target-platform android-arm64
 注意区分两种主体的行为：
 
 - **Gradle 本身**是**逐字段**回退：`android/key.properties` 里某个字段缺失时，该字段单独回退到同名环境变量。
-- **脚本**在校验阶段要求整组齐全：方式 A（仓库内 key.properties）与方式 C（`-KeyPropertiesPath`）
-  都要求四个字段都在，缺任一个即报错退出，不进入构建。
+- **脚本**在校验阶段要求整组齐全：无论走方式 A、方式 B 还是方式 C，签名四要素都必须全部提供，
+  缺任一个即在构建前报错退出。方式 B 对应 `ANDROID_KEYSTORE_PATH` / `ANDROID_KEYSTORE_PASSWORD` /
+  `ANDROID_KEY_ALIAS` / `ANDROID_KEY_PASSWORD` 四个都要设。
 
 | 方式 | 位置 | 适用场景 |
 |------|------|----------|
@@ -48,8 +49,8 @@ keyPassword=<你的 keyPassword>
 - `storeFile` 是 `.jks` 密钥库路径。
 - 方式 A 下，相对路径相对仓库的 `android/` 目录解析（与 Gradle `rootProject.file()` 一致）。
 - 方式 C 下，相对路径相对**该 key.properties 文件所在目录**解析。
-  例如 `E:/schedule/mikcb/android/key.properties` 里写 `storeFile=vip.qinghan.withu-release.jks`，
-  对应的密钥库就是同目录下的 `E:/schedule/mikcb/android/vip.qinghan.withu-release.jks`。
+  例如 `D:/keys/android/key.properties` 里写 `storeFile=vip.qinghan.withu-release.jks`，
+  对应的密钥库就是同目录下的 `D:/keys/android/vip.qinghan.withu-release.jks`。
 
 ### 3. 环境变量写法（PowerShell）
 
@@ -78,7 +79,7 @@ $env:ANDROID_KEY_PASSWORD = "<你的 keyPassword>"
 pwsh -NoProfile -File tool/build_release.ps1 -DryRun
 
 # 用外部 key.properties 签名编译（相对 storeFile 相对该文件目录解析）
-pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "E:/schedule/mikcb/android/key.properties"
+pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties"
 
 # 编译通过后创建本地附注标签（不推送）
 # 需先配好签名材料，否则会在构建前报错退出
