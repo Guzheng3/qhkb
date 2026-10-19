@@ -109,15 +109,12 @@ coverage/
 analyze_*.txt
 
 # 一次性工作记录与审查脚本
-docs/reference/changelog-2026-07-29-worktree.md
 tool/audit_output.json
 tool/fix_audit_all.py
 tool/fix_colors.py
 
 # 本地架构分析草稿与规范笔记（暂不入库）
 docs/architecture/
-docs/reference/app-toast-spec.md
-docs/reference/hyperos-blurred-header.md
 
 # 工具本地配置
 .qoder/

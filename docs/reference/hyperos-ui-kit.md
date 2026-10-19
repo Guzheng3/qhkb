@@ -193,7 +193,7 @@ await HyperosNavigation.push(
 | `HyperosShowcaseScreen` | 非 Release 视觉验收页 | ✅ |
 
 统一对话框入口：`lib/widgets/app_dialogs.dart`（`showAppConfirmDialog` / `showAppTextInputDialog` / `showAppTripleActionDialog` 等）。  
-Toast 入口：`lib/utils/app_toast.dart` → [app-toast.md](./app-toast.md)。
+Toast 入口：`lib/utils/app_toast.dart`。
 
 ## 3. 界面迁移状态
 
