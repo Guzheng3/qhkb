@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../models/weather_forecast.dart';
+import '../utils/coordinate_transform.dart';
 import 'app_http_client.dart';
 import 'app_log_service.dart';
 
@@ -147,9 +148,11 @@ class WeatherService {
   /// 参数用位置式（与 [searchLocations] 一致），这样本方法可以直接当
   /// `ReverseGeocode` 的引用传给 `DeviceLocationService`。
   ///
-  /// 注意：高德经纬度为 GCJ-02 坐标系，设备定位给的是 WGS-84，两者在国内有数百米
-  /// 偏移。城市/区县级的反查不受影响；预报（Open-Meteo）同样按请求坐标取格点，
-  /// 数百米偏移对逐小时天气无实际影响。
+  /// 注意：入参是设备定位给的 **WGS-84**，而高德按 **GCJ-02** 解释坐标，国内两者
+  /// 相差数百米；**送高德之前先做正向纠偏**（[wgs84ToGcj02]），否则反查会落到
+  /// 邻近的街道。纠偏只作用于请求参数：返回的 [WeatherLocation] 仍带**原始
+  /// WGS-84 坐标**，因为那份坐标要交给 Open-Meteo（它期望的就是 WGS-84），
+  /// 一旦写成 GCJ-02，预报反而会偏。
   Future<WeatherLocation?> reverseGeocode(
     double latitude,
     double longitude,
@@ -157,10 +160,11 @@ class WeatherService {
     if (!isConfigured) {
       return null;
     }
+    final (amapLatitude, amapLongitude) = wgs84ToGcj02(latitude, longitude);
     final uri = Uri.parse('$_amapBaseUrl/v3/geocode/regeo').replace(
       queryParameters: {
         'key': _amapKey,
-        'location': '$longitude,$latitude',
+        'location': '$amapLongitude,$amapLatitude',
       },
     );
 
@@ -189,7 +193,8 @@ class WeatherService {
       // 区名与市名相同时不重复记（直辖市反查会给出同名的 city 与 district）。
       district: district == name ? null : district,
       adcode: _text(comp['adcode']),
-      // 坐标用**请求时那一份**而不是响应里回显的。
+      // 坐标用**入参那一份原始 WGS-84**（不是纠偏后送高德的那份，也不是响应里
+      // 回显的）：这份要交给 Open-Meteo。
       latitude: latitude,
       longitude: longitude,
     );
@@ -221,6 +226,12 @@ class WeatherService {
     final adcode = _text(json['adcode']);
 
     // 优先用城市矩形区域范围的中心，省一次网络往返。
+    //
+    // 这里**有意不做 GCJ-02 → WGS-84 反算**（与实时定位那条路相反）。理由：
+    // 矩形是高德按 GCJ-02 给的，中心自然也是 GCJ-02，而它的用途只有「市级天气」
+    // ——几百米偏移在城市尺度上无实际影响；反算又没有闭式解、只能迭代逼近，
+    // 为一个下游要丢弃的精度引入近似不划算。若将来要把这个坐标当真实定位用
+    // （距离、导航、精确反查），必须重新评估这里。
     final center = _rectangleCenter(_text(json['rectangle']));
     if (center != null) {
       return WeatherLocation(

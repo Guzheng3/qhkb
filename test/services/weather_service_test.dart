@@ -6,6 +6,7 @@ import 'package:http/testing.dart';
 import 'package:qhkb/models/weather_forecast.dart';
 import 'package:qhkb/services/weather_preferences.dart';
 import 'package:qhkb/services/weather_service.dart';
+import 'package:qhkb/utils/coordinate_transform.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 const _jsonHeaders = {'content-type': 'application/json; charset=utf-8'};
@@ -446,12 +447,12 @@ void main() {
       expect(location.displayName, '杭州市 · 拱墅区');
       // 时区留空，让预报接口用 timezone=auto 按坐标自行解析。
       expect(location.timezone, isNull);
-      // 坐标用请求时那一份，而不是响应回显。
+      // 坐标用入参那一份原始 WGS-84，而不是响应回显、也不是纠偏后送高德的那份。
       expect(location.latitude, closeTo(30.29365, 1e-9));
       expect(location.longitude, closeTo(120.16142, 1e-9));
     });
 
-    test('请求带上 key 与 location=lng,lat', () async {
+    test('送高德的坐标已纠偏为 GCJ-02，返回的仍是原始 WGS-84', () async {
       Uri? captured;
       final service = keyed(
         MockClient((request) async {
@@ -464,12 +465,31 @@ void main() {
         }),
       );
 
-      await service.reverseGeocode(30.29, 120.16);
+      // 北京天安门附近的 WGS-84 坐标（设备定位给的就是这个坐标系）。
+      const wgsLatitude = 39.9087;
+      const wgsLongitude = 116.3975;
+      final (gcjLatitude, gcjLongitude) = wgs84ToGcj02(
+        wgsLatitude,
+        wgsLongitude,
+      );
+
+      final location = await service.reverseGeocode(wgsLatitude, wgsLongitude);
 
       expect(captured!.host, 'restapi.amap.com');
       expect(captured!.path, '/v3/geocode/regeo');
       expect(captured!.queryParameters['key'], _fakeAmapKey);
-      expect(captured!.queryParameters['location'], '120.16,30.29');
+      // 请求里的坐标是纠偏后的 GCJ-02（经度在前），不是原始 WGS-84。
+      expect(
+        captured!.queryParameters['location'],
+        '$gcjLongitude,$gcjLatitude',
+      );
+      expect(
+        captured!.queryParameters['location'],
+        isNot('$wgsLongitude,$wgsLatitude'),
+      );
+      // 返回给调用方的坐标保持原始 WGS-84：它要交给 Open-Meteo。
+      expect(location!.latitude, closeTo(wgsLatitude, 1e-9));
+      expect(location.longitude, closeTo(wgsLongitude, 1e-9));
     });
 
     test('city 缺失时退到 province', () async {
@@ -496,6 +516,39 @@ void main() {
       expect(location!.name, '重庆市');
       expect(location.district, '铜梁区');
       expect(location.displayName, '重庆市 · 铜梁区');
+    });
+
+    test('city 是空数组时同样退到 province（直辖区真实返回形状）', () async {
+      // 实测线上：北京东城区的 regeo 里 "city": []——是**空数组**而不是空字符串，
+      // 只按空串判断会漏掉，于是直辖市反查不出市名。
+      final service = keyed(
+        MockClient(
+          (_) async => http.Response(
+            jsonEncode({
+              'status': '1',
+              'regeocode': {
+                'addressComponent': {
+                  'province': '北京市',
+                  'city': <dynamic>[],
+                  'district': '东城区',
+                  'adcode': '110101',
+                  'township': '东华门街道',
+                },
+                'formatted_address': '北京市东城区东华门街道',
+              },
+            }),
+            200,
+            headers: _jsonHeaders,
+          ),
+        ),
+      );
+
+      final location = await service.reverseGeocode(39.91007, 116.40387);
+      expect(location, isNotNull);
+      expect(location!.name, '北京市');
+      expect(location.admin1, '北京市');
+      expect(location.district, '东城区');
+      expect(location.adcode, '110101');
     });
 
     test('区名与市名相同时不重复记 district', () async {
@@ -647,6 +700,41 @@ void main() {
       expect(await service.geocodeAddress('不存在的地名'), isNull);
     });
 
+    test('district 是空数组时按无区处理（市级地名真实返回形状）', () async {
+      // 实测线上：按「杭州市」正向地理编码，geocodes[0].district 是空数组 []。
+      final service = WeatherService(
+        amapKey: _fakeAmapKey,
+        client: MockClient(
+          (_) async => http.Response(
+            jsonEncode({
+              'status': '1',
+              'geocodes': [
+                {
+                  'province': '浙江省',
+                  'city': '杭州市',
+                  'district': <dynamic>[],
+                  'adcode': '330100',
+                  'location': '120.209903,30.246566',
+                  'level': '市',
+                },
+              ],
+            }),
+            200,
+            headers: _jsonHeaders,
+          ),
+        ),
+      );
+
+      final location = await service.geocodeAddress('杭州市');
+      expect(location, isNotNull);
+      expect(location!.name, '杭州市');
+      expect(location.district, isNull);
+      expect(location.adcode, '330100');
+      // location 是 "经度,纬度"，解析后不能把两个顺序弄反。
+      expect(location.latitude, closeTo(30.246566, 1e-9));
+      expect(location.longitude, closeTo(120.209903, 1e-9));
+    });
+
     test('未配置 Key 时不发请求、返回 null', () async {
       var calls = 0;
       final service = WeatherService(
@@ -740,6 +828,32 @@ void main() {
       );
       expect(await service.networkGeocode(), isNull);
       expect(calls, 0);
+    });
+
+    test('status 为 1 但字段全是空数组时返回 null（实测返回形状）', () async {
+      // 实测线上：出口 IP 在境外/机房时，/v3/ip 的 status 仍是 "1"（调用成功），
+      // 但 province/city/adcode/rectangle 全是空数组。**不能按 status 判有结果**，
+      // 否则拿空数组去解析会得到空地名，甚至把空矩形当坐标。
+      final service = WeatherService(
+        amapKey: _fakeAmapKey,
+        client: MockClient(
+          (_) async => http.Response(
+            jsonEncode({
+              'status': '1',
+              'info': 'OK',
+              'infocode': '10000',
+              'province': <dynamic>[],
+              'city': <dynamic>[],
+              'adcode': <dynamic>[],
+              'rectangle': <dynamic>[],
+            }),
+            200,
+            headers: _jsonHeaders,
+          ),
+        ),
+      );
+
+      expect(await service.networkGeocode(), isNull);
     });
   });
 
