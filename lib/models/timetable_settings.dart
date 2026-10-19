@@ -777,6 +777,19 @@ class TimetableSettings {
   final bool courseCardShowTimeLabels;
   final bool courseCardShowWeeks;
   final bool courseCardShowDescription;
+
+  /// 天气显示位置（日视图课卡 / 周视图课卡 / 课程详情弹窗）。总开关由
+  /// `WeatherPreferences.enabled` 决定，与这三个「显示在哪」分开：
+  /// 总开关管「拉不拉数据」，这三个管「拉到之后画在哪」。
+  final bool weatherShowOnDayCard;
+  final bool weatherShowOnWeekCard;
+  final bool weatherShowOnSheet;
+
+  /// 天气行显示内容（现象 / 温度 / 降水概率）。
+  final bool weatherShowPhenomenon;
+  final bool weatherShowTemperature;
+  final bool weatherShowProbability;
+
   final CourseCardVerticalAlign courseCardVerticalAlign;
   final CourseCardHorizontalAlign courseCardHorizontalAlign;
   final double courseCardFontSize;
@@ -979,6 +992,12 @@ class TimetableSettings {
     this.courseCardShowTimeLabels = true,
     this.courseCardShowWeeks = true,
     this.courseCardShowDescription = false,
+    this.weatherShowOnDayCard = true,
+    this.weatherShowOnWeekCard = true,
+    this.weatherShowOnSheet = true,
+    this.weatherShowPhenomenon = true,
+    this.weatherShowTemperature = true,
+    this.weatherShowProbability = false,
     this.courseCardVerticalAlign = CourseCardVerticalAlign.center,
     this.courseCardHorizontalAlign = CourseCardHorizontalAlign.center,
     this.courseCardFontSize = 11.5,
@@ -1135,6 +1154,12 @@ class TimetableSettings {
       'courseCardShowTimeLabels': courseCardShowTimeLabels,
       'courseCardShowWeeks': courseCardShowWeeks,
       'courseCardShowDescription': courseCardShowDescription,
+      'weatherShowOnDayCard': weatherShowOnDayCard,
+      'weatherShowOnWeekCard': weatherShowOnWeekCard,
+      'weatherShowOnSheet': weatherShowOnSheet,
+      'weatherShowPhenomenon': weatherShowPhenomenon,
+      'weatherShowTemperature': weatherShowTemperature,
+      'weatherShowProbability': weatherShowProbability,
       'courseCardVerticalAlign': courseCardVerticalAlign.value,
       'courseCardHorizontalAlign': courseCardHorizontalAlign.value,
       'courseCardFontSize': courseCardFontSize,
@@ -1335,6 +1360,12 @@ class TimetableSettings {
       courseCardShowWeeks: json['courseCardShowWeeks'] as bool? ?? true,
       courseCardShowDescription:
           json['courseCardShowDescription'] as bool? ?? false,
+      weatherShowOnDayCard: json['weatherShowOnDayCard'] as bool? ?? true,
+      weatherShowOnWeekCard: json['weatherShowOnWeekCard'] as bool? ?? true,
+      weatherShowOnSheet: json['weatherShowOnSheet'] as bool? ?? true,
+      weatherShowPhenomenon: json['weatherShowPhenomenon'] as bool? ?? true,
+      weatherShowTemperature: json['weatherShowTemperature'] as bool? ?? true,
+      weatherShowProbability: json['weatherShowProbability'] as bool? ?? false,
       courseCardVerticalAlign: CourseCardVerticalAlignX.fromValue(
         json['courseCardVerticalAlign'] as String?,
       ),
@@ -1626,6 +1657,12 @@ class TimetableSettings {
     bool? courseCardShowTimeLabels,
     bool? courseCardShowWeeks,
     bool? courseCardShowDescription,
+    bool? weatherShowOnDayCard,
+    bool? weatherShowOnWeekCard,
+    bool? weatherShowOnSheet,
+    bool? weatherShowPhenomenon,
+    bool? weatherShowTemperature,
+    bool? weatherShowProbability,
     CourseCardVerticalAlign? courseCardVerticalAlign,
     CourseCardHorizontalAlign? courseCardHorizontalAlign,
     double? courseCardFontSize,
@@ -1786,6 +1823,17 @@ class TimetableSettings {
       courseCardShowTimeLabels:
           courseCardShowTimeLabels ?? this.courseCardShowTimeLabels,
       courseCardShowWeeks: courseCardShowWeeks ?? this.courseCardShowWeeks,
+      weatherShowOnDayCard:
+          weatherShowOnDayCard ?? this.weatherShowOnDayCard,
+      weatherShowOnWeekCard:
+          weatherShowOnWeekCard ?? this.weatherShowOnWeekCard,
+      weatherShowOnSheet: weatherShowOnSheet ?? this.weatherShowOnSheet,
+      weatherShowPhenomenon:
+          weatherShowPhenomenon ?? this.weatherShowPhenomenon,
+      weatherShowTemperature:
+          weatherShowTemperature ?? this.weatherShowTemperature,
+      weatherShowProbability:
+          weatherShowProbability ?? this.weatherShowProbability,
       courseCardShowDescription:
           courseCardShowDescription ?? this.courseCardShowDescription,
       courseCardVerticalAlign:
