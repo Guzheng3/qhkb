@@ -1,0 +1,320 @@
+import 'dart:convert';
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:university_timetable/data/timetable_repository.dart';
+import 'package:university_timetable/models/timetable_profile.dart';
+import 'package:university_timetable/models/timetable_settings.dart';
+import 'package:university_timetable/providers/timetable_provider.dart';
+import 'package:university_timetable/services/storage_service.dart';
+
+void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() {
+    StorageService().resetForTesting();
+    SharedPreferences.setMockInitialValues({});
+  });
+
+  Future<TimetableProvider> createProvider() async {
+    final provider = TimetableProvider(
+      autoInitialize: false,
+      enableLiveActivitySync: false,
+    );
+    await provider.initialize();
+    return provider;
+  }
+
+  test('without global settings the effective settings equal own settings',
+      () async {
+    final provider = await createProvider();
+    expect(provider.globalSettings, isNull);
+    expect(provider.settings.courseCardFontSize, 11.5);
+  });
+
+  test('global settings apply to timetable fields left at defaults', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(
+        courseCardFontSize: 18,
+        sectionHeight: 80,
+        appThemeMode: AppThemeMode.dark,
+      ),
+    );
+
+    expect(provider.globalSettings, isNotNull);
+    expect(provider.settings.courseCardFontSize, 18);
+    expect(provider.settings.sectionHeight, 80);
+    expect(provider.settings.appThemeMode, AppThemeMode.dark);
+    // 未在全局里配置过的字段保持自身默认。
+    expect(provider.settings.courseCardShowName, isTrue);
+  });
+
+  test('timetable own settings override global settings per field', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(courseCardFontSize: 18),
+    );
+
+    // 当前课表把字号改成 20 —— 自身配置优先。
+    await provider.updateTimetableSettings(
+      provider.settings.copyWith(courseCardFontSize: 20),
+    );
+    expect(provider.settings.courseCardFontSize, 20);
+    expect(provider.globalSettings!.courseCardFontSize, 18);
+
+    // 新建的课表没改过字号 —— 跟随全局。
+    final other = await provider.createProfile(name: '第二课表');
+    await provider.switchProfile(other.id);
+    expect(provider.settings.courseCardFontSize, 18);
+  });
+
+  test('profile-owned fields (semester/sections) never inherit global',
+      () async {
+    final provider = await createProvider();
+    final customSections = [
+      const SectionTime(startTime: '09:00', endTime: '09:45'),
+      const SectionTime(startTime: '10:00', endTime: '10:45'),
+    ];
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(
+        semesterWeekCount: 8,
+        semesterStartDate: DateTime(2026, 3, 2),
+        sections: customSections,
+      ),
+    );
+
+    expect(provider.settings.semesterWeekCount, 20);
+    expect(provider.settings.semesterStartDate, isNull);
+    expect(provider.settings.sections.length, 10);
+  });
+
+  test('editing one field does not pin inherited fields into the timetable',
+      () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(courseCardFontSize: 18),
+    );
+
+    // 只改自动适配行高这一个字段。
+    await provider.updateTimetableSettings(
+      provider.settings.copyWith(timetableAutoFitSectionHeight: true),
+    );
+    expect(provider.settings.timetableAutoFitSectionHeight, isTrue);
+
+    // 未改动的字号仍然继承全局：全局再变，课表跟着变。
+    await provider.updateGlobalTimetableSettings(
+      provider.globalSettings!.copyWith(courseCardFontSize: 22),
+    );
+    expect(provider.settings.courseCardFontSize, 22);
+    expect(provider.settings.timetableAutoFitSectionHeight, isTrue);
+
+    // 清除全局后：改过的字段保留在课表自身，其余回到课表默认。
+    await provider.clearGlobalTimetableSettings();
+    expect(provider.globalSettings, isNull);
+    expect(provider.settings.timetableAutoFitSectionHeight, isTrue);
+    expect(provider.settings.courseCardFontSize, 11.5);
+  });
+
+  test('updateSettings (batch path) also only pins changed fields', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(courseCardFontSize: 15),
+    );
+
+    // 批量路径改字号。
+    await provider.updateSettings(
+      provider.settings.copyWith(courseCardFontSize: 21),
+    );
+    expect(provider.settings.courseCardFontSize, 21);
+  });
+
+  test('global settings persist across provider instances', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(courseCardFontSize: 24),
+    );
+
+    final reloaded = await createProvider();
+    expect(reloaded.globalSettings, isNotNull);
+    expect(reloaded.globalSettings!.courseCardFontSize, 24);
+    expect(reloaded.settings.courseCardFontSize, 24);
+  });
+
+  test('clearing global settings persists and notifies', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(courseCardFontSize: 24),
+    );
+    var notifications = 0;
+    provider.addListener(() => notifications++);
+
+    await provider.clearGlobalTimetableSettings();
+    expect(notifications, greaterThanOrEqualTo(1));
+    expect(provider.settings.courseCardFontSize, 11.5);
+
+    final reloaded = await createProvider();
+    expect(reloaded.globalSettings, isNull);
+  });
+
+  test('global settings follow profile switches', () async {
+    final provider = await createProvider();
+    final firstProfileId = provider.activeProfile!.id;
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(timetableHideWeekends: true),
+    );
+
+    // 第一份课表自身把周末改回来（默认 false = 显示周末）。
+    await provider.updateTimetableSettings(
+      provider.settings.copyWith(timetableHideWeekends: false),
+    );
+    expect(provider.settings.timetableHideWeekends, isFalse);
+
+    // 第二份课表未配置：跟随全局隐藏周末。
+    final other = await provider.createProfile(name: '第二课表');
+    expect(provider.settings.timetableHideWeekends, isTrue);
+
+    // 切回第一份：自身配置仍然生效。
+    await provider.switchProfile(firstProfileId);
+    expect(provider.settings.timetableHideWeekends, isFalse);
+
+    // 再切回第二份：仍然跟随全局。
+    await provider.switchProfile(other.id);
+    expect(provider.settings.timetableHideWeekends, isTrue);
+  });
+
+  test('background settings stay global unless a timetable overrides them',
+      () async {
+    final provider = await createProvider();
+    final firstProfileId = provider.activeProfile!.id;
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(
+        timetablePageBackgroundColor: '#ABCDEF',
+        homePageWallpaperPath: '/tmp/global-wallpaper.jpg',
+        homePageBackdropBlurSigma: 5,
+        homePageBackdropFrostAlpha: 0.2,
+        homePageBackdropFollowsWeekPager: true,
+        homePageBackgroundScope: 15,
+        homePageHeaderBlurEnabled: false,
+        homePageWeekdayBarBlurEnabled: false,
+      ),
+    );
+
+    final other = await provider.createProfile(name: 'Other');
+    await provider.switchProfile(other.id);
+    expect(provider.settings.timetablePageBackgroundColor, '#ABCDEF');
+    expect(
+      provider.settings.homePageWallpaperPath,
+      '/tmp/global-wallpaper.jpg',
+    );
+    expect(provider.settings.homePageBackdropBlurSigma, 5);
+    expect(provider.settings.homePageBackdropFrostAlpha, 0.2);
+    expect(provider.settings.homePageBackdropFollowsWeekPager, isTrue);
+    expect(provider.settings.homePageBackgroundScope, 15);
+    expect(provider.settings.homePageHeaderBlurEnabled, isFalse);
+    expect(provider.settings.homePageWeekdayBarBlurEnabled, isFalse);
+
+    await provider.updateTimetableSettings(
+      provider.settings.copyWith(timetablePageBackgroundColor: '#123456'),
+    );
+    await provider.switchProfile(firstProfileId);
+    expect(provider.settings.timetablePageBackgroundColor, '#ABCDEF');
+    await provider.switchProfile(other.id);
+    expect(provider.settings.timetablePageBackgroundColor, '#123456');
+    expect(
+      provider.settings.homePageWallpaperPath,
+      '/tmp/global-wallpaper.jpg',
+    );
+  });
+
+  test('legacy profiles without override-key records keep customized fields',
+      () async {
+    // 模拟升级前的历史课表：settingsOverrideKeys 为空（旧数据根本没有这个
+    // 记账），但字号等字段已在设置页改过 —— 靠「与内置默认不同」的
+    // 惰性判定识别为课表自身配置，不因全局设置的出现而丢失。
+    final legacySettings = TimetableSettings.defaults().copyWith(
+      courseCardFontSize: 14,
+    );
+    final legacyProfile = TimetableProfile(
+      id: 'legacy-profile',
+      name: '历史课表',
+      courses: const [],
+      settings: legacySettings,
+      currentWeek: 1,
+      createdAt: DateTime(2026, 2, 23),
+      lastUsedAt: DateTime(2026, 2, 23),
+    );
+    final repository = TimetableRepository(StorageService());
+    await repository.saveProfiles([legacyProfile]);
+    await repository.setActiveProfileId(legacyProfile.id);
+
+    final provider = await createProvider();
+    expect(provider.activeProfile!.id, 'legacy-profile');
+    expect(provider.settings.courseCardFontSize, 14);
+
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(
+        courseCardFontSize: 20,
+        sectionHeight: 88,
+      ),
+    );
+    // 历史课表改过的字号保持自身值，从未动过的字段跟随全局。
+    expect(provider.settings.courseCardFontSize, 14);
+    expect(provider.settings.sectionHeight, 88);
+  });
+
+  test('imported partner timetable follows the global wallpaper', () async {
+    final provider = await createProvider();
+    await provider.updateGlobalTimetableSettings(
+      TimetableSettings.defaults().copyWith(
+        homePageWallpaperPath: '/tmp/global-wallpaper.jpg',
+      ),
+    );
+
+    final backup = provider.dataTransferService.buildBackupJson(
+      profileName: 'Partner',
+      courses: const [],
+      settings: TimetableSettings.defaults().copyWith(
+        homePageWallpaperPath: '/tmp/partner-private.jpg',
+      ),
+      currentWeek: 1,
+    );
+    final result = await provider.importPartnerTimetable(backup);
+    await provider.switchProfile(result.profile.id);
+
+    expect(provider.activeProfile!.isPartnerImported, isTrue);
+    expect(
+      provider.settings.homePageWallpaperPath,
+      '/tmp/global-wallpaper.jpg',
+    );
+  });
+
+  test('legacy backdrop blur/frost defaults are zeroed once', () async {
+    final legacySettings = TimetableSettings.defaults().copyWith(
+      homePageBackdropBlurSigma: 13,
+      homePageBackdropFrostAlpha: 0.05,
+    );
+    final legacyProfile = TimetableProfile(
+      id: 'legacy-backdrop',
+      name: '旧课表',
+      courses: const [],
+      settings: legacySettings,
+      currentWeek: 1,
+      createdAt: DateTime(2026, 1, 5),
+      lastUsedAt: DateTime(2026, 1, 5),
+    );
+    SharedPreferences.setMockInitialValues({
+      'timetable_profiles': jsonEncode([legacyProfile.toJson()]),
+      'active_timetable_profile_id': 'legacy-backdrop',
+      'global_timetable_settings': legacySettings.toJsonString(),
+    });
+
+    final provider = await createProvider();
+
+    // 全局显示设置与课表自身的旧默认值都要归零。
+    expect(provider.globalSettings!.homePageBackdropBlurSigma, 0);
+    expect(provider.globalSettings!.homePageBackdropFrostAlpha, 0);
+    expect(provider.settings.homePageBackdropBlurSigma, 0);
+    expect(provider.settings.homePageBackdropFrostAlpha, 0);
+  });
+}

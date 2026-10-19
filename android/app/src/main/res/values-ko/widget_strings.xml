@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_loading">수업을 불러오는 중...</string>
+    <string name="widget_couple_timetable_name">커플 시간표 4×3</string>
+    <string name="widget_couple_tomorrow_count">내일 %1$d교시</string>
+    <string name="widget_couple_today_remaining">오늘 남은 %1$d/%2$d교시</string>
+    <string name="widget_couple_no_course_tomorrow">내일 수업 없음</string>
+    <string name="widget_couple_today_ended">🌙 오늘 수업이 모두 끝났습니다</string>
+    <string name="widget_couple_weekend_no_course">🍵 주말 · 오늘은 수업이 없어요</string>
+    <string name="widget_couple_no_course_today">🍵 오늘은 수업이 없어요</string>
+    <string name="widget_couple_mode_off">커플 모드가 꺼져 있어 커플 카드를 사용할 수 없어요</string>
+    <string name="widget_couple_not_logged_in">로그인 후 이용해 주세요</string>
+    <string name="widget_couple_not_bound">상대방 시간표가 업로드되지 않았어요</string>
+    <string name="widget_today_compact_name">오늘 수업 메인 2×2</string>
+    <string name="widget_today_mini_list_name">오늘 수업 미니 목록 2×2</string>
+    <string name="widget_today_medium_name">오늘 수업 개요 2×4</string>
+    <string name="widget_today_large_name">오늘 수업 목록 4×4</string>
+    <string name="widget_stats_compact_name">수업 통계 2×2</string>
+    <string name="widget_stats_medium_name">수업 통계 2×4</string>
+  <string name="widget_today_strip_name">오늘 바 4×1</string>
+  <string name="widget_stats_strip_name">통계 바 4×1</string>
+  <string name="widget_exam_card_name">시험 카운트다운 2×2</string>
+  <string name="widget_today_wide_name">오늘 와이드 4×2</string>
+  <string name="widget_exam_card_chip">시험 카운트다운</string>
+  <string name="widget_exam_unit_day">일</string>
+  <string name="widget_exam_none">시험 예정 없음</string>
+  <string name="widget_exam_today_big">오늘</string>
+
+    <string name="widget_today_courses">오늘 수업</string>
+    <string name="widget_tomorrow_courses">내일 수업</string>
+    <string name="widget_no_course_today">오늘 수업 없음</string>
+    <string name="widget_sync_later">앱을 열어 동기화</string>
+    <string name="widget_app_name">경우 시간표</string>
+    <string name="widget_tap_to_open">탭하여 앱 열기</string>
+    <string name="widget_open_app_sync">앱을 열어 동기화</string>
+
+    <string name="widget_status_ongoing">수업 중</string>
+    <string name="widget_status_upcoming">다음 수업</string>
+    <string name="widget_upcoming_later">이어지는 수업</string>
+    <string name="widget_status_completed">오늘 종료</string>
+    <string name="widget_status_holiday">오늘 휴일</string>
+    <string name="widget_status_no_course">오늘 수업 없음</string>
+    <string name="widget_status_exam_ongoing">시험 중</string>
+
+    <string name="widget_on_holiday">휴일 중</string>
+    <string name="widget_today_ended">오늘 수업이 끝났습니다</string>
+    <string name="widget_no_courses_today">오늘 수업이 없습니다</string>
+    <string name="widget_rest_well">푹 쉬세요</string>
+    <string name="widget_no_more_courses">더 이상 수업이 없습니다</string>
+    <string name="widget_take_a_break">나만의 시간을 가져보세요</string>
+
+    <string name="widget_week_number">%1$d주차</string>
+    <string name="widget_week_with_count">%1$d주차 · %2$d교시</string>
+    <string name="widget_week_holiday">%1$d주차 · 휴일</string>
+    <string name="widget_week_tomorrow_count">%1$d주차 · 내일 %2$d교시</string>
+    <string name="widget_week_date">%1$d주차 · %2$s</string>
+    <string name="widget_week_date_count">%1$d주차 · %2$s · %3$d교시</string>
+
+    <string name="widget_countdown_until_end">종료까지 %1$s</string>
+    <string name="widget_countdown_until_start">시작까지 %1$s</string>
+
+    <string name="widget_exam_day">시험일 %1$s%2$s%3$s</string>
+    <string name="widget_exam_today">오늘 시험 %1$s%2$s%3$s</string>
+    <string name="widget_exam_ongoing">시험 중 %1$s · %2$s까지%3$s</string>
+    <string name="widget_exam_until">%1$s까지</string>
+    <string name="widget_exam_countdown">%1$s까지 %2$d일%3$s%4$s</string>
+    <string name="widget_exam_fallback_name">시험</string>
+
+    <string name="widget_day_sun">일</string>
+    <string name="widget_day_mon">월</string>
+    <string name="widget_day_tue">화</string>
+    <string name="widget_day_wed">수</string>
+    <string name="widget_day_thu">목</string>
+    <string name="widget_day_fri">금</string>
+    <string name="widget_day_sat">토</string>
+
+    <string name="widget_footer_holiday">%1$s · %2$s</string>
+    <string name="widget_footer_tomorrow">%1$s · 내일 %2$d 교시</string>
+    <string name="widget_footer_today">%1$s · 오늘 %2$d 교시</string>
+    <string name="widget_footer_week">%1$s · %2$d주차</string>
+
+    <string name="widget_more_courses">%1$d교시 더</string>
+    <string name="widget_today_list_title">오늘 수업 목록</string>
+    <string name="widget_tomorrow_list_title">내일 수업 목록</string>
+    <string name="widget_snapshot_hint">앱을 열면 오늘의 스냅샷이 생성됩니다</string>
+    <string name="widget_no_schedule_today">오늘 예정된 수업이 없습니다</string>
+    <string name="widget_today_ended_short">오늘 수업이 모두 끝났습니다</string>
+    <string name="widget_today_count">오늘 %1$d교시</string>
+    <string name="widget_stats_week">%1$d주차</string>
+    <string name="widget_stats_week_sections">이번 주 %1$d교시</string>
+    <string name="widget_stats_vs_last_up">지난주 대비 +%1$d교시</string>
+    <string name="widget_stats_vs_last_down">지난주 대비 -%1$d교시</string>
+    <string name="widget_stats_vs_last_flat">지난주와 동일</string>
+    <string name="widget_stats_progress">수강 %1$d / 총 %2$d교시</string>
+    <string name="widget_stats_progress_short">%1$d/%2$d교시</string>
+    <string name="widget_stats_percent">수강 %1$d%%</string>
+    <string name="widget_stats_daily">하루 평균 %1$s교시</string>
+    <string name="widget_stats_delta_short_up">+%1$d교시</string>
+    <string name="widget_stats_delta_short_down">-%1$d교시</string>
+    <string name="widget_stats_delta_short_flat">동일</string>
+    <string name="widget_stats_nature">필수 %1$d · 선택 %2$d</string>
+    <string name="widget_stats_streak">최장 연속 %1$d일</string>
+    <string name="widget_stats_no_data">수업 데이터 없음</string>
+</resources>

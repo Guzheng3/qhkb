@@ -1,0 +1,205 @@
+part of '../timetable_settings_screen.dart';
+
+/// 「恢复默认」的作用域。
+///
+/// 滑块类参数（节高、间距、字号、各种透明度与模糊度）最容易被调乱，而此前
+/// 没有任何撤销路径。这里按页给出恢复范围，且**逐字段显式列出**：不用反射、
+/// 不整体替换，保证不会顺手把课程数据、时间模板、账号绑定一起清掉。
+enum SettingsResetScope {
+  /// 课程卡片页。
+  courseCard,
+
+  /// 课表页面页（含壁纸与背景区域）。
+  timetablePage,
+
+  /// 外观与主题页（全应用外观）。
+  appearance,
+
+  /// 首页与导航页（导航形态与玻璃坞）。
+  homeNavigation,
+
+  /// 桌面小组件页。
+  homeWidget,
+}
+
+/// 默认值源。`TimetableSettings` 的构造函数带全套默认值；`sections` 是必填的
+/// 课程节次数据，与「外观偏好」无关，这里给空表只是为了拿到其余字段的默认值，
+/// 任何 scope 都不会去读它。
+const TimetableSettings _settingsDefaults = TimetableSettings(sections: []);
+
+/// 返回把 [scope] 涉及的字段重置为默认后的设置。
+///
+/// 作用域之间字段不重叠：同一个字段只会属于一页，避免「在 A 页恢复默认把
+/// B 页也改了」。
+TimetableSettings applySettingsReset(
+  TimetableSettings current,
+  SettingsResetScope scope,
+) {
+  const d = _settingsDefaults;
+  return switch (scope) {
+    SettingsResetScope.courseCard => current.copyWith(
+      courseCardShowName: d.courseCardShowName,
+      courseCardShowTeacher: d.courseCardShowTeacher,
+      courseCardShowLocation: d.courseCardShowLocation,
+      courseCardShowTime: d.courseCardShowTime,
+      courseCardShowTimeLabels: d.courseCardShowTimeLabels,
+      courseCardShowWeeks: d.courseCardShowWeeks,
+      courseCardShowDescription: d.courseCardShowDescription,
+      courseCardVerticalAlign: d.courseCardVerticalAlign,
+      courseCardHorizontalAlign: d.courseCardHorizontalAlign,
+      courseCardFontSize: d.courseCardFontSize,
+      compactFontSize: d.compactFontSize,
+      timetableUseUnifiedCardColor: d.timetableUseUnifiedCardColor,
+      timetableUnifiedCardColor: d.timetableUnifiedCardColor,
+      showConflictBadgeOnTimetable: d.showConflictBadgeOnTimetable,
+      timetableConflictCourseOpacity: d.timetableConflictCourseOpacity,
+      linkCourseCardColors: d.linkCourseCardColors,
+      courseCardTitleColorLight: d.courseCardTitleColorLight,
+      courseCardTitleColorDark: d.courseCardTitleColorDark,
+      courseCardDetailColorLight: d.courseCardDetailColorLight,
+      courseCardDetailColorDark: d.courseCardDetailColorDark,
+    ),
+    SettingsResetScope.timetablePage => current.copyWith(
+      timetableAutoFitSectionHeight: d.timetableAutoFitSectionHeight,
+      timetableHideWeekends: d.timetableHideWeekends,
+      timetableShowNonCurrentWeekCourses: d.timetableShowNonCurrentWeekCourses,
+      timetableSectionTimeDisplayMode: d.timetableSectionTimeDisplayMode,
+      timetableTimeColumnWidthMode: d.timetableTimeColumnWidthMode,
+      sectionHeight: d.sectionHeight,
+      timetableCourseCardGap: d.timetableCourseCardGap,
+      timetableBackToCurrentWeekButtonStyle:
+          d.timetableBackToCurrentWeekButtonStyle,
+      timetableFloatingBackToCurrentWeekButtonOpacity:
+          d.timetableFloatingBackToCurrentWeekButtonOpacity,
+      timetablePageBackgroundColor: d.timetablePageBackgroundColor,
+      homePageBackdropBlurSigma: d.homePageBackdropBlurSigma,
+      homePageBackdropFrostAlpha: d.homePageBackdropFrostAlpha,
+      homePageBackdropFollowsWeekPager: d.homePageBackdropFollowsWeekPager,
+      homePageBackgroundScope: d.homePageBackgroundScope,
+      homePageHeaderBlurEnabled: d.homePageHeaderBlurEnabled,
+      homePageWeekdayBarBlurEnabled: d.homePageWeekdayBarBlurEnabled,
+      weekdayBarFontColorLight: d.weekdayBarFontColorLight,
+      weekdayBarFontColorDark: d.weekdayBarFontColorDark,
+      weekdayBarAccentColorLight: d.weekdayBarAccentColorLight,
+      weekdayBarAccentColorDark: d.weekdayBarAccentColorDark,
+      timeAxisFontColorLight: d.timeAxisFontColorLight,
+      timeAxisFontColorDark: d.timeAxisFontColorDark,
+      // 壁纸回到内置默认图，并清掉旧版背景图字段。
+      homePageWallpaperPath: d.homePageWallpaperPath,
+      clearHomePageBackgroundImagePath: true,
+    ),
+    // 外观页瘦身后的范围：主题模式 / 字体 / 玻璃质感。
+    // 主题色已固定为 TimetableSettings.defaultThemeSeedColor，不参与重置。
+    SettingsResetScope.appearance => current.copyWith(
+      appThemeMode: d.appThemeMode,
+      appFontMode: d.appFontMode,
+      frostedBlurEnabled: d.frostedBlurEnabled,
+      frostedSheetBlurSigma: d.frostedSheetBlurSigma,
+      frostedSheetTintAlpha: d.frostedSheetTintAlpha,
+      frostedSheetBarrierAlpha: d.frostedSheetBarrierAlpha,
+    ),
+    // 已删除 UI 的字段（设置 Tab、右上角菜单形态、内容避让布局、
+    // 日/周布尔开关——已被 glassDockActions 取代）不纳入任何 scope。
+    // 加号圆钮显隐开关 glassDockShowAddButton 已随 a1fc0f0 后的修复回归，
+    // 必须纳入恢复路径，否则切玻璃坞后新用户永远看不到圆钮。
+    SettingsResetScope.homeNavigation => current.copyWith(
+      homeNavigationForm: d.homeNavigationForm,
+      glassDockActions: d.glassDockActions,
+      glassDockShowAddButton: d.glassDockShowAddButton,
+      glassDockButtonEntryId: d.glassDockButtonEntryId,
+      clearGlassDockButtonIconName: true,
+      homeTitleStyle: d.homeTitleStyle,
+    ),
+    SettingsResetScope.homeWidget => current.copyWith(
+      widgetBackgroundStyle: d.widgetBackgroundStyle,
+      widgetShowLocation: d.widgetShowLocation,
+      widgetShowCountdown: d.widgetShowCountdown,
+      widgetHideCompletedCourses: d.widgetHideCompletedCourses,
+      widgetShowTomorrowCourses: d.widgetShowTomorrowCourses,
+    ),
+  };
+}
+
+/// 页尾的「恢复默认」白卡。
+///
+/// 红色图标 + 二次确认：这是不可撤销的批量写入，不能一点就生效。
+class _SettingsResetTile extends StatelessWidget {
+  const _SettingsResetTile({
+    required this.scope,
+    required this.onReset,
+    this.resetSource,
+  });
+
+  final SettingsResetScope scope;
+  final ValueChanged<TimetableSettings> onReset;
+
+  /// 重置的基准设置。全局模式下应传全局草稿（而非生效设置，避免把课表
+  /// 自身的覆盖值写进全局）；默认取当前生效设置，与历史行为一致。
+  final TimetableSettings? resetSource;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const HyperosSectionGap(),
+        HyperosListGroup(
+          children: [
+            HyperosListTile(
+              title: l10n.settingsResetDefaultsTitle,
+              onTap: () => _confirm(context, l10n),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// 按作用域枚举将被重置的内容。共用一句「重置所有设置」会谎报范围，
+  /// 让用户在其他页做的调整看起来也会丢。
+  String _confirmBody(AppLocalizations l10n) {
+    return switch (scope) {
+      SettingsResetScope.courseCard => l10n.settingsResetConfirmBodyCourseCard,
+      SettingsResetScope.timetablePage =>
+        l10n.settingsResetConfirmBodyTimetablePage,
+      SettingsResetScope.appearance => l10n.settingsResetConfirmBodyAppearance,
+      SettingsResetScope.homeNavigation =>
+        l10n.settingsResetConfirmBodyHomeNavigation,
+      SettingsResetScope.homeWidget => l10n.settingsResetConfirmBodyHomeWidget,
+    };
+  }
+
+  Future<void> _confirm(BuildContext context, AppLocalizations l10n) async {
+    final provider = context.read<TimetableProvider>();
+    final confirmed = await showHyperosConfirmDialog(
+      context: context,
+      title: l10n.settingsResetDefaultsConfirmTitle,
+      message: _confirmBody(l10n),
+      cancelLabel: l10n.cancelAction,
+      confirmLabel: l10n.settingsResetDefaultsTitle,
+      destructive: true,
+    );
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+    // 课表页 scope 会清掉壁纸路径：先留底旧文件，落盘后删除，
+    // 避免文档目录积累孤儿图片。
+    final staleBackdropPath = scope == SettingsResetScope.timetablePage
+        ? resolveHomePageBackdropImagePath(provider.settings)
+        : null;
+    onReset(applySettingsReset(resetSource ?? provider.settings, scope));
+    unawaited(
+      deleteManagedImage(
+        staleBackdropPath,
+        directoryName: 'home_page_wallpaper',
+        filePrefix: 'wallpaper',
+      ).then((_) => invalidateHomePageBackdropFileExists(staleBackdropPath)),
+    );
+    if (!context.mounted) {
+      return;
+    }
+    showAppLightTip(context, message: l10n.settingsResetDoneMessage);
+  }
+}

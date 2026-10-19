@@ -1,0 +1,4684 @@
+library;
+
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
+import 'package:university_timetable/l10n/app_localizations.dart';
+import '../l10n/service_message_localizer.dart';
+import '../models/class_reminder.dart';
+import '../models/course.dart';
+import '../models/course_task.dart';
+import '../models/exam.dart';
+import '../models/holiday_entry.dart';
+import '../models/location_time_group.dart';
+import '../models/schedule_date_rule.dart';
+import '../models/schedule_item.dart';
+import '../models/time_scheme.dart';
+import '../models/partner_timetable_binding.dart';
+import '../models/timetable_profile.dart';
+import '../models/timetable_settings.dart';
+import '../data/timetable_repository.dart';
+import '../domain/week_calculator.dart';
+import '../domain/holiday_resolver.dart';
+import '../domain/course_domain.dart';
+import '../domain/schedule_item_expander.dart';
+import '../domain/couple_timetable_logic.dart';
+import '../ui/hyperos_motion_bridge.dart';
+import '../ui/hyperos/hyperos_overscroll.dart';
+import '../services/app_analytics.dart';
+import '../logging/app_debug_log.dart';
+import '../logging/app_log_messages.dart';
+import '../services/app_log_service.dart';
+import '../services/data_transfer_service.dart';
+import '../services/holiday_service.dart';
+export '../services/holiday_service.dart' show HolidayCustomSaveException;
+import '../services/home_widget_service.dart';
+import '../services/home_widget_binding_service.dart';
+import '../services/home_widget_snapshot_service.dart';
+import '../services/class_reminder_service.dart';
+import '../services/couple_timetable_widget_service.dart';
+import '../services/exam_reminder_service.dart';
+import '../services/partner_timetable_service.dart';
+import '../services/stats_widget_service.dart';
+import '../services/storage_service.dart';
+import '../services/sync_operation_gate.dart';
+import '../services/withu_couple_session_store.dart';
+import '../services/ics_import_service.dart';
+import '../services/miui_live_activities_service.dart';
+import '../utils/home_page_background.dart';
+import '../domain/location_time_match_logic.dart';
+import '../domain/schedule_date_rule_logic.dart';
+import '../domain/time_scheme_logic.dart';
+import '../domain/import_export_logic.dart';
+import '../domain/live_activity_logic.dart';
+
+export '../domain/location_time_match_logic.dart'
+    show LocationTimeMatchResult, LocationTimeMatchLogic;
+export '../domain/schedule_date_rule_logic.dart'
+    show
+        ScheduleDateRuleLogic,
+        ScheduleDateRuleApplyOutcome,
+        ScheduleDateRuleApplyResult;
+export '../domain/time_scheme_logic.dart' show TimeSchemeCourseUsageReference;
+export '../domain/live_activity_logic.dart'
+    show LiveActivityCourseSelection, LiveActivityStage;
+export '../domain/import_export_logic.dart'
+    show
+        ImportedCourseSyncResult,
+        buildImportedCourseDedupKey,
+        dedupeImportedCourses,
+        mergeImportedCourseWithExisting,
+        mergeImportedSharedFieldsIntoExistingSchedule,
+        preserveImportedCourseLocalSharedFields,
+        replaceImportedCoursesPreservingLocalFields,
+        syncImportedCourses;
+
+part 'timetable/time_scheme_repository.dart';
+part 'timetable/import_export_service.dart';
+part 'timetable/live_activity_controller.dart';
+
+bool _isLiveTestingFixture(Course course) => course.id.startsWith('live_test_');
+
+class CourseConflict {
+  final Course course;
+  final Course otherCourse;
+
+  const CourseConflict({required this.course, required this.otherCourse});
+}
+
+/// Stats returned after applying location-time rules to the active profile.
+class LocationTimeApplyStats {
+  final int unlockedCount;
+  final int matchedCount;
+  final int updatedCount;
+
+  /// Matched, but start/end clocks already equaled the target scheme.
+  final int alreadySameClockCount;
+
+  /// Location hit a group, but course section range cannot map into that
+  /// scheme — synchronization is rejected (no mode or clock rewrite).
+  final int sectionOverflowCount;
+
+  /// First few course names rejected for section overflow (for toast).
+  final List<String> sectionOverflowCourseNames;
+
+  const LocationTimeApplyStats({
+    required this.unlockedCount,
+    required this.matchedCount,
+    required this.updatedCount,
+    this.alreadySameClockCount = 0,
+    this.sectionOverflowCount = 0,
+    this.sectionOverflowCourseNames = const [],
+  });
+}
+
+/// Groups courses that share the same name (i.e. the same subject with
+/// multiple schedule entries).  This is a UI-layer aggregation – the
+/// underlying storage still uses individual [Course] objects.
+class CourseGroup {
+  final String name;
+  final List<Course> courses;
+
+  const CourseGroup({required this.name, required this.courses});
+
+  /// Shared fields taken from the first course in the group.
+  String get teacher => courses.first.teacher;
+  String get color => courses.first.color;
+  String? get shortName => courses.first.shortName;
+  CourseNature get courseNature => courses.first.courseNature;
+  String? get description => courses.first.description;
+  String? get note => courses.first.note;
+
+  /// Summarised schedule chips, e.g. ["周一1-2节", "周三3-4节"].
+  List<String> scheduleChipLabels(AppLocalizations l10n) {
+    return courses.map((c) {
+      final dayLabel = _weekdayShortLabel(l10n, c.dayOfWeek);
+      return l10n.weekdaySectionSummary(dayLabel, c.startSection, c.endSection);
+    }).toList();
+  }
+
+  /// Earliest day/slot for sorting.
+  int get earliestDayOfWeek =>
+      courses.map((c) => c.dayOfWeek).reduce((a, b) => a < b ? a : b);
+  int get earliestStartSection =>
+      courses.map((c) => c.startSection).reduce((a, b) => a < b ? a : b);
+}
+
+String _weekdayShortLabel(AppLocalizations l10n, int dayOfWeek) {
+  return switch (dayOfWeek) {
+    1 => l10n.weekdayShortMonday,
+    2 => l10n.weekdayShortTuesday,
+    3 => l10n.weekdayShortWednesday,
+    4 => l10n.weekdayShortThursday,
+    5 => l10n.weekdayShortFriday,
+    6 => l10n.weekdayShortSaturday,
+    7 => l10n.weekdayShortSunday,
+    _ => dayOfWeek.toString(),
+  };
+}
+
+class ScheduleDateRuleSaveResult {
+  final ScheduleDateRule rule;
+  final ScheduleDateRuleApplyResult applyResult;
+
+  const ScheduleDateRuleSaveResult({
+    required this.rule,
+    required this.applyResult,
+  });
+
+  bool get didApply => applyResult.didApply;
+  bool get failedWhileDue => applyResult.failedWhileDue;
+}
+
+/// ⚠️ 上帝类过渡期导航注释（解耦方案：`docs/architecture/OPTIMIZATION.md`，本地文档未入库）。
+///
+/// 本类当前承载 20 个互不相干的关注点，共 4400+ 行、53 处 `notifyListeners()`、
+/// 被 70+ 文件依赖。行号随开发漂移，**以下沉梯队以方法名为准**（2026-08-29 基线）：
+///
+/// | # | 关注点 | 锚点成员 |
+/// |---|---|---|
+/// | 1 | 主题与外观 | `updateSettings` |
+/// | 2 | 派生查询 | `courseGroups` / `uniqueTeachers` / `activeTimeScheme` |
+/// | 3 | 生命周期/初始化 | `initialize` / `handleAppResumed` / `_loadDeferredData` |
+/// | 4 | 时间方案解析 | `resolveCourseTimeScheme` / `matchLocationTime` |
+/// | 5 | 持久化 | `_persistActiveProfileState`（全量覆写，40 处调用） |
+/// | 6 | 地点时间分组 | `createLocationTimeGroup` / `replaceLocationTimeGroups` |
+/// | 7 | 日期规则 CRUD | `createScheduleDateRule` / `applyDueScheduleDateRules` |
+/// | 8 | 地点规则应用 | `applyLocationTimeRulesToActiveProfile` |
+/// | 9 | Profile 管理 | `createProfile` / `switchProfile` / `deleteProfile` |
+/// | 10 | 课程 CRUD | `addCourse` / `updateCourse` / `deleteCourse` |
+/// | 11 | 课程任务/作业 | `addTask` / `toggleTaskCompleted` |
+/// | 12 | 课程组/停课 | `updateCourseGroup` / `toggleCourseSuspension` |
+/// | 13 | 日程项 | `addScheduleItem` / `deleteScheduleItemOccurrence` |
+/// | 14 | 考试 | `addExam` / `_syncExamReminders` |
+/// | 15 | 上课提醒 | `setClassReminder` / `removeClassReminder` |
+/// | 16 | 节假日 | `refreshHolidayData` / `addCustomHoliday` |
+/// | 17 | 单次课程调整 | `deleteCourseOccurrence` / `rescheduleCourseOccurrence` |
+/// | 18 | 导入导出 | `importParsedCourses` / `importAppDataBackup` |
+/// | 19 | 超级岛/小部件 | `buildHomeWidgetSnapshot` / `getLiveActivityCourseSelection` |
+/// | 20 | 情侣课表 | `importPartnerTimetable` / `unlinkPartner` |
+///
+/// 维护纪律：
+/// - 修改必须落在对应关注点的区段内，禁止顺手改动其它区段；
+/// - 新增能力一律独立成文件/类，禁止继续向本类堆积；
+/// - 拆分按阶段 3 的顺序进行（Theme → Holiday → Partner → LiveSurface → …），
+///   完成一个从表中划掉一个；本类最终降级为纯 Facade。
+class TimetableProvider with ChangeNotifier {
+  final StorageService _storageService;
+
+  /// Profile 持久化收口（阶段 2）：所有 profile 读写统一走仓储，
+  /// 后续分片存储 / 脏标记批量提交只改仓储内部。
+  late final TimetableRepository _profileRepository = TimetableRepository(
+    _storageService,
+  );
+  final IcsImportService _icsImportService;
+  final MiuiLiveActivitiesService _liveActivitiesService;
+  final DataTransferService _dataTransferService;
+  final PartnerTimetableService _partnerTimetableService;
+  final HomeWidgetService _homeWidgetService;
+  final HomeWidgetSnapshotService _homeWidgetSnapshotService;
+  final HomeWidgetBindingService _homeWidgetBindingService;
+  final ExamReminderService _examReminderService;
+  final HolidayService _holidayService;
+  final AppAnalytics _analytics;
+  final WithuCoupleSessionStore _withuSessionStore;
+  final bool _enableLiveActivitySync;
+
+  List<Course> _courses = [];
+  List<CourseTask> _tasks = [];
+  List<ScheduleItem> _scheduleItems = [];
+  List<Exam> _exams = [];
+  TimetableSettings _settings = TimetableSettings.defaults();
+  int _currentWeek = 1;
+  int _currentDateWeek = 1;
+
+  /// 全局显示设置（可选）。所有课表默认跟随；课表自身某字段与内置默认值
+  /// 不同（即「课表自己配过」）时该字段课表优先。null = 未配置全局设置。
+  TimetableSettings? _globalSettings;
+
+  /// 当前课表「明确配置过」的设置字段（settings.toJson 顶层 key 集合）。
+  /// 用户在设置页改动字段时记录；与「和内置默认不同」的惰性判定取并集，
+  /// 保证把字段改回默认值也能继续覆盖全局（否则会被误判成「没配过」）。
+  Set<String> _settingsOverrideKeys = <String>{};
+
+  /// [settings] 解析结果的记忆缓存：[settings] 在每次构建里被高频读取，
+  /// 只在 [_settings] 或 [_globalSettings] 的实例标识变化时才重新合并。
+  TimetableSettings? _resolvedSettingsCache;
+  TimetableSettings? _resolvedSettingsCacheOwn;
+  TimetableSettings? _resolvedSettingsCacheGlobal;
+
+  // Calendar week used for today's courses; unlike currentDateWeek it is not
+  // clamped to the configured semester length.
+  int _currentCalendarWeek = 1;
+  List<TimeScheme> _timeSchemes = [];
+  List<LocationTimeGroup> _locationTimeGroups = [];
+  List<ScheduleDateRule> _scheduleDateRules = [];
+  List<TimetableProfile> _profiles = [];
+  String? _activeProfileId;
+  int _currentDayOfWeek = DateTime.now().weekday;
+  bool _isLoading = false;
+  Timer? _liveActivityTimer;
+  String? _currentLiveCourseId;
+  String? _lastLiveActivityStageKey;
+  String? _lastLiveSnapshotSignature;
+  int _liveSurfaceRequestVersion = 0;
+  String? _lastHomeWidgetSnapshotSignature;
+
+  /// 绑定卡片（appWidgetId → 专属快照内容签名）的推送去重，语义同上。
+  final Map<int, String> _lastWidgetSnapshotSignatures = <int, String>{};
+  DateTime? _liveActivitySuspendedUntil;
+
+  /// 自检预设课覆盖层：只注入超级岛选课与原生快照路径，绝不写入真实课表
+  /// （内存态，重启即清）。挂载/摘除会 notifyListeners，供自检页显示
+  /// 「测试进行中」状态并驱动开始/取消开关。
+  List<Course> _liveTestFixtureOverlayCourses = const [];
+  Future<void>? _initializationFuture;
+  Future<void>? _deferredDataFuture;
+
+  /// Serializes native live/home-widget surface updates (island + widget).
+  final SyncOperationGate _liveSurfaceGate = SyncOperationGate();
+
+  /// Serializes in-memory timetable mutations (courses/profiles/import/apply).
+  final SyncOperationGate _mutationGate = SyncOperationGate();
+  HolidayData? _holidayData;
+  List<String> _teacherRecords = [];
+  List<String> _locationRecords = [];
+  PartnerTimetableBinding? _partnerBinding;
+
+  List<Course> get courses => List.unmodifiable(_courses);
+  List<CourseTask> get tasks => List.unmodifiable(_tasks);
+  List<ScheduleItem> get scheduleItems => List.unmodifiable(_scheduleItems);
+  List<Exam> get exams => List.unmodifiable(_exams);
+
+  /// 当前课表的生效设置：全局显示设置打底，课表自身配置过的字段覆盖全局。
+  /// 未配置全局设置时与课表自身设置完全一致（历史行为不变）。
+  TimetableSettings get settings {
+    if (!identical(_resolvedSettingsCacheOwn, _settings) ||
+        !identical(_resolvedSettingsCacheGlobal, _globalSettings)) {
+      _resolvedSettingsCache = _resolveEffectiveSettings(_settings);
+      _resolvedSettingsCacheOwn = _settings;
+      _resolvedSettingsCacheGlobal = _globalSettings;
+    }
+    return _resolvedSettingsCache!;
+  }
+
+  /// 全局显示设置原始值（未经课表覆盖）。null = 尚未配置。
+  TimetableSettings? get globalSettings => _globalSettings;
+
+  /// 持久化写入纪元，用于检测 write-after-write 竞争
+  int _writeEpoch = 0;
+
+  /// 批量更新设置（用于主题导入 / 撤销 / 传输合并）。
+  ///
+  /// 经 [_applySettingsChangeToOwn] 落回课表自身设置：无全局设置时等价于
+  /// 原样替换；有全局设置时只有真正变化的字段成为课表自身的配置。
+  Future<void> updateSettings(TimetableSettings newSettings) {
+    return _runMutation(() async {
+      _settings = _normalizeSettingsWithTimeScheme(
+        _applySettingsChangeToOwn(_settings, newSettings),
+      );
+      hyperosSetEdgeHapticsEnabled(settings.enableHaptics);
+      _writeEpoch++;
+      final epoch = _writeEpoch;
+      await _persistActiveProfileState();
+      if (_writeEpoch == epoch) {
+        notifyListeners();
+      }
+    });
+  }
+
+  /// 更新全局显示设置并持久化。所有课表立即按新全局值重新解析生效
+  /// 设置（课表自身配置过的字段不受影响），随后同步原生偏好与直播面。
+  Future<void> updateGlobalTimetableSettings(TimetableSettings settings) {
+    return _runMutation(() async {
+      final previousBackdropPath = resolveHomePageBackdropImagePath(
+        this.settings,
+      );
+      _globalSettings = TimetableSettings.fromJson(settings.toJson());
+      hyperosSetEdgeHapticsEnabled(this.settings.enableHaptics);
+      await _profileRepository.saveGlobalTimetableSettings(_globalSettings!);
+      unawaited(_syncNativeRuntimePreferences());
+      _lastLiveSnapshotSignature = null;
+      _currentLiveCourseId = null;
+      notifyListeners();
+      if (resolveHomePageBackdropImagePath(this.settings) !=
+          previousBackdropPath) {
+        await precacheHomePageBackdropImage(this.settings);
+      }
+      unawaited(_syncLiveScheduleSnapshot());
+      unawaited(_updateLiveActivity(syncScheduleSnapshot: false));
+    });
+  }
+
+  /// 灵动岛/提醒/桌面小组件是否跟随当前课表。
+  ///
+  /// 默认 false：这些界面一律按「我的课表」计算，桌面情侣卡片右半只是切主界面
+  /// 显示，不会把自己的上课提醒与岛换成 TA 的。确需长期用另一份课表驱动提醒
+  /// 时（含 TA），用户显式开启。
+  bool get liveSurfaceFollowsActiveTimetable =>
+      settings.liveFollowActiveTimetable;
+
+  /// 开启/关闭「跟随当前课表」，并立即按新归属重算岛、提醒与桌面组件。
+  /// 实现见 [_liveSetFollowActiveTimetable]。
+  Future<void> setLiveSurfaceFollowsActiveTimetable(bool value) =>
+      _liveSetFollowActiveTimetable(this, value);
+
+  /// 清除全局显示设置：所有课表回到各自（或默认）的设置。
+  Future<void> clearGlobalTimetableSettings() {
+    return _runMutation(() async {
+      if (_globalSettings == null) {
+        return;
+      }
+      final previousBackdropPath = resolveHomePageBackdropImagePath(settings);
+      _globalSettings = null;
+      hyperosSetEdgeHapticsEnabled(settings.enableHaptics);
+      await _profileRepository.clearGlobalTimetableSettings();
+      unawaited(_syncNativeRuntimePreferences());
+      _lastLiveSnapshotSignature = null;
+      _currentLiveCourseId = null;
+      notifyListeners();
+      if (resolveHomePageBackdropImagePath(settings) != previousBackdropPath) {
+        await precacheHomePageBackdropImage(settings);
+      }
+      unawaited(_syncLiveScheduleSnapshot());
+      unawaited(_updateLiveActivity(syncScheduleSnapshot: false));
+    });
+  }
+
+  int get currentWeek => _currentWeek;
+  int get currentCalendarWeek => _currentCalendarWeek;
+  int get currentDateWeek => _currentDateWeek;
+  List<TimeScheme> get timeSchemes => List.unmodifiable(_timeSchemes);
+  List<LocationTimeGroup> get locationTimeGroups =>
+      List.unmodifiable(_locationTimeGroups);
+  List<ScheduleDateRule> get scheduleDateRules =>
+      List.unmodifiable(_scheduleDateRules);
+
+  /// Last successful bulk-apply signature for seasonal date rules.
+  String? _scheduleDateRuleLastAppliedSignature;
+  List<TimetableProfile> get profiles => List.unmodifiable(_profiles);
+  String? get activeProfileId => _activeProfileId;
+  Map<String, List<Course>> get courseConflictMap => _buildCourseConflictMap();
+  Map<String, List<Course>> courseConflictMapForWeek(int week) =>
+      _buildCourseConflictMap(week: week);
+
+  /// Courses grouped by name – each group represents one subject with
+  /// one or more schedule entries.
+  List<CourseGroup> get courseGroups {
+    final Map<String, List<Course>> grouped = {};
+    for (final course in _courses) {
+      grouped.putIfAbsent(course.name, () => []).add(course);
+    }
+    return grouped.entries
+        .map((e) => CourseGroup(name: e.key, courses: e.value))
+        .toList();
+  }
+
+  /// Find the [CourseGroup] that contains [course], or `null` if not found.
+  CourseGroup? courseGroupForCourse(Course course) {
+    final siblings = _courses.where((c) => c.name == course.name).toList();
+    if (siblings.isEmpty) return null;
+    return CourseGroup(name: course.name, courses: siblings);
+  }
+
+  /// All unique non-empty teacher names (persistent records + current courses), sorted.
+  List<String> get uniqueTeachers {
+    final all = <String>{..._teacherRecords};
+    for (final c in _courses) {
+      if (c.teacher.isNotEmpty) all.add(c.teacher);
+    }
+    return all.toList()..sort();
+  }
+
+  /// All unique non-empty location names (persistent records + current courses), sorted.
+  List<String> get uniqueLocations {
+    final all = <String>{..._locationRecords};
+    for (final c in _courses) {
+      if (c.location.isNotEmpty) all.add(c.location);
+    }
+    return all.toList()..sort();
+  }
+
+  /// Record a teacher name persistently (if not already recorded).
+  Future<void> recordTeacher(String teacher) {
+    return _runMutation(() => _recordTeacherImpl(teacher));
+  }
+
+  Future<void> _recordTeacherImpl(String teacher) async {
+    if (teacher.isEmpty) return;
+    if (_teacherRecords.contains(teacher)) return;
+    _teacherRecords.add(teacher);
+    _teacherRecords.sort();
+    await _profileRepository.saveTeacherRecords(_teacherRecords);
+  }
+
+  /// Record a location name persistently (if not already recorded).
+  Future<void> recordLocation(String location) {
+    return _runMutation(() => _recordLocationImpl(location));
+  }
+
+  Future<void> _recordLocationImpl(String location) async {
+    if (location.isEmpty) return;
+    if (_locationRecords.contains(location)) return;
+    _locationRecords.add(location);
+    _locationRecords.sort();
+    await _profileRepository.saveLocationRecords(_locationRecords);
+  }
+
+  int get currentDayOfWeek => _currentDayOfWeek;
+  bool get isLoading => _isLoading;
+  DateTime? get semesterStartDate => _settings.semesterStartDate;
+  DataTransferService get dataTransferService => _dataTransferService;
+  PartnerTimetableBinding? get partnerBinding => _partnerBinding;
+  bool get hasPartnerBinding => _partnerBinding != null;
+  int get partnerWeekOffset => _partnerBinding?.weekOffset ?? 0;
+  int partnerWeekFor(int myWeek) =>
+      CoupleTimetableLogic.partnerWeekForMyWeek(myWeek, partnerWeekOffset);
+
+  TimetableProfile? get partnerProfile =>
+      _getProfileById(PartnerTimetableService.partnerProfileId);
+  List<Course> get partnerCourses =>
+      partnerProfile?.courses ?? const <Course>[];
+
+  /// 当前课表：TA 课表可切换后，返回值可能就是 TA 的课表。
+  /// 课表缺失（被删/数据损坏）时回退到最近使用的非 TA 课表。
+  TimetableProfile? get activeProfile {
+    final profile = _getProfileById(_activeProfileId);
+    if (profile != null) {
+      return profile;
+    }
+    return myTimetableProfile;
+  }
+
+  /// 情侣语境下的「我的课表」：当前课表切到 TA 之后，快照、导出给对方、
+  /// 上传给对方等情侣功能仍需指向「我的」课表——取最近使用的非 TA 课表。
+  TimetableProfile? get myTimetableProfile {
+    final active = _getProfileById(_activeProfileId);
+    if (active != null && !active.isPartnerImported) {
+      return active;
+    }
+    final mine =
+        _profiles.where((profile) => !profile.isPartnerImported).toList()
+          ..sort((a, b) => b.lastUsedAt.compareTo(a.lastUsedAt));
+    return mine.firstOrNull;
+  }
+
+  TimeScheme? get activeTimeScheme =>
+      _getTimeSchemeById(_settings.activeTimeSchemeId);
+  int get maxUsedSection => _courses.isEmpty
+      ? 1
+      : _courses
+            .map((course) => course.endSection)
+            .reduce((a, b) => a > b ? a : b);
+
+  TimetableProvider({
+    StorageService? storageService,
+    IcsImportService? icsImportService,
+    MiuiLiveActivitiesService? liveActivitiesService,
+    DataTransferService? dataTransferService,
+    PartnerTimetableService? partnerTimetableService,
+    HomeWidgetService? homeWidgetService,
+    HomeWidgetSnapshotService? homeWidgetSnapshotService,
+    HomeWidgetBindingService? homeWidgetBindingService,
+    ExamReminderService? examReminderService,
+    HolidayService? holidayService,
+    AppAnalytics? analytics,
+    WithuCoupleSessionStore? withuSessionStore,
+    bool autoInitialize = true,
+    bool? enableLiveActivitySync,
+  }) : _storageService = storageService ?? StorageService(),
+       _enableLiveActivitySync = enableLiveActivitySync ?? true,
+       _icsImportService = icsImportService ?? IcsImportService(),
+       _liveActivitiesService =
+           liveActivitiesService ?? MiuiLiveActivitiesService(),
+       _dataTransferService = dataTransferService ?? DataTransferService(),
+       _partnerTimetableService =
+           partnerTimetableService ?? PartnerTimetableService(),
+       _homeWidgetService = homeWidgetService ?? HomeWidgetService(),
+       _homeWidgetSnapshotService =
+           homeWidgetSnapshotService ?? const HomeWidgetSnapshotService(),
+       _homeWidgetBindingService =
+           homeWidgetBindingService ?? const HomeWidgetBindingService(),
+       _examReminderService = examReminderService ?? ExamReminderService(),
+       _holidayService = holidayService ?? HolidayService(),
+       _analytics = analytics ?? AppAnalytics.instance,
+       _withuSessionStore =
+           withuSessionStore ?? const WithuCoupleSessionStore() {
+    _holidayService.onRemoteHolidayDataUpdated = (_) {
+      unawaited(_loadHolidayData());
+    };
+    if (autoInitialize) {
+      unawaited(initialize());
+    }
+  }
+
+  Future<void> initialize() {
+    final existingInitialization = _initializationFuture;
+    if (existingInitialization != null) {
+      return existingInitialization;
+    }
+
+    final initializationCompleter = Completer<void>();
+    final initializationFuture = initializationCompleter.future;
+    _initializationFuture = initializationFuture;
+
+    _init().then(
+      (_) => initializationCompleter.complete(),
+      onError: (Object error, StackTrace stackTrace) {
+        if (identical(_initializationFuture, initializationFuture)) {
+          _initializationFuture = null;
+        }
+        initializationCompleter.completeError(error, stackTrace);
+      },
+    );
+    return initializationFuture;
+  }
+
+  Future<void> handleAppResumed() async {
+    try {
+      await initialize();
+      if (!_enableLiveActivitySync) {
+        return;
+      }
+      await _liveHandleAppResumed(this);
+    } catch (error, stackTrace) {
+      await AppLogService.instance.error(
+        'live_activity_resume_recovery_failed',
+        '应用恢复时修复超级岛状态失败',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  /// Re-read profiles/binding/teachers after an external snapshot apply (C4).
+  ///
+  /// [initialize] is process-idempotent; cloud restore must force a full load.
+  Future<void> reloadFromStorageAfterExternalApply() {
+    return _runMutation(() async {
+      // Join any in-flight init before resetting the future, so two _init()
+      // bodies cannot interleave memory writes.
+      final existingInitialization = _initializationFuture;
+      if (existingInitialization != null) {
+        try {
+          await existingInitialization;
+        } catch (_) {
+          // Previous attempt failed; continue with a forced reload.
+        }
+      }
+      _initializationFuture = null;
+      await initialize();
+      // This method already holds the mutation gate. Load directly so it does
+      // not enqueue behind itself and deadlock.
+      await _loadDeferredDataImpl();
+      // importFullAppDataBackup may have pushed live surfaces before teachers /
+      // locations were reloaded; force one consistent resync after storage load.
+      final requestVersion = ++_liveSurfaceRequestVersion;
+      await _runLiveSurfaceExclusive(() async {
+        if (requestVersion != _liveSurfaceRequestVersion) {
+          return;
+        }
+        _lastLiveSnapshotSignature = null;
+        _lastHomeWidgetSnapshotSignature = null;
+        _currentLiveCourseId = null;
+        await _liveUpdateActivityBody(this);
+      });
+      await _syncExamReminders();
+      notifyListeners();
+    });
+  }
+
+  Future<T> _runLiveSurfaceExclusive<T>(Future<T> Function() action) {
+    return _liveSurfaceGate.runExclusive(action);
+  }
+
+  /// Public entry for external apply paths that must share the
+  /// timetable mutation gate with local / LAN writes.
+  Future<T> runMutationExclusive<T>(Future<T> Function() action) {
+    return _runMutation(action);
+  }
+
+  Future<T> _runMutation<T>(Future<T> Function() action) {
+    return _mutationGate.runExclusive(action);
+  }
+
+  /// Merges in-memory active courses/settings into [_profiles] without disk I/O.
+  void _mergeActiveProfileIntoProfilesList({bool touchLastUsedAt = false}) {
+    final activeProfile = this.activeProfile;
+    if (activeProfile == null) {
+      return;
+    }
+    final index = _profiles.indexWhere(
+      (profile) => profile.id == activeProfile.id,
+    );
+    if (index == -1) {
+      return;
+    }
+    _profiles[index] = activeProfile.copyWith(
+      courses: List<Course>.from(_courses),
+      tasks: List<CourseTask>.from(_tasks),
+      scheduleItems: List<ScheduleItem>.from(_scheduleItems),
+      exams: List<Exam>.from(_exams),
+      settings: _settings,
+      settingsOverrideKeys: List<String>.from(_settingsOverrideKeys),
+      currentWeek: _currentWeek,
+      lastUsedAt: touchLastUsedAt ? DateTime.now() : activeProfile.lastUsedAt,
+    );
+  }
+
+  /// Older partner sync cleared the default wallpaper instead of resetting it,
+  /// so imported settings looked like an explicit blank-background override.
+  Future<void> _repairLegacyPartnerWallpaper(
+    List<TimetableProfile> profiles,
+  ) async {
+    final index = profiles.indexWhere((profile) => profile.isPartnerImported);
+    if (index < 0) {
+      return;
+    }
+    final profile = profiles[index];
+    if (profile.settings.homePageWallpaperPath != null ||
+        profile.settingsOverrideKeys.contains('homePageWallpaperPath')) {
+      return;
+    }
+    profiles[index] = profile.copyWith(
+      settings: profile.settings.copyWith(
+        homePageWallpaperPath: defaultHomePageWallpaperPath,
+      ),
+    );
+    await _profileRepository.saveProfiles(profiles);
+  }
+
+  /// 旧版「背景模糊强度 / 磨砂亮度」默认值是 13 / 0.05，现改为 0。
+  ///
+  /// 存量数据里沿用旧默认（且未被显式覆盖）的字段需一次性归零：否则它们会
+  /// 因「与内置默认不同」被惰性判定成课表自己配过，反过来盖掉新的全局 0。
+  /// 全局显示设置与每份课表自身设置都要处理。返回归零后的全局设置。
+  Future<TimetableSettings?> _migrateLegacyBackdropTuningZero(
+    List<TimetableProfile> profiles,
+    TimetableSettings? globalSettings,
+  ) async {
+    if (await _storageService.hasMigratedBackdropTuningZero()) {
+      return globalSettings;
+    }
+    const legacyBlurSigma = 13.0;
+    const legacyFrostAlpha = 0.05;
+
+    var profilesChanged = false;
+    for (var i = 0; i < profiles.length; i++) {
+      final profile = profiles[i];
+      final settings = profile.settings;
+      final overrides = profile.settingsOverrideKeys;
+      final zeroBlur =
+          settings.homePageBackdropBlurSigma == legacyBlurSigma &&
+          !overrides.contains('homePageBackdropBlurSigma');
+      final zeroFrost =
+          settings.homePageBackdropFrostAlpha == legacyFrostAlpha &&
+          !overrides.contains('homePageBackdropFrostAlpha');
+      if (!zeroBlur && !zeroFrost) {
+        continue;
+      }
+      profiles[i] = profile.copyWith(
+        settings: settings.copyWith(
+          homePageBackdropBlurSigma: zeroBlur
+              ? 0
+              : settings.homePageBackdropBlurSigma,
+          homePageBackdropFrostAlpha: zeroFrost
+              ? 0
+              : settings.homePageBackdropFrostAlpha,
+        ),
+      );
+      profilesChanged = true;
+    }
+    if (profilesChanged) {
+      await _profileRepository.saveProfiles(profiles);
+    }
+
+    var migratedGlobal = globalSettings;
+    if (globalSettings != null) {
+      final zeroBlur =
+          globalSettings.homePageBackdropBlurSigma == legacyBlurSigma;
+      final zeroFrost =
+          globalSettings.homePageBackdropFrostAlpha == legacyFrostAlpha;
+      if (zeroBlur || zeroFrost) {
+        migratedGlobal = globalSettings.copyWith(
+          homePageBackdropBlurSigma: zeroBlur
+              ? 0
+              : globalSettings.homePageBackdropBlurSigma,
+          homePageBackdropFrostAlpha: zeroFrost
+              ? 0
+              : globalSettings.homePageBackdropFrostAlpha,
+        );
+        await _profileRepository.saveGlobalTimetableSettings(migratedGlobal);
+      }
+    }
+
+    await _storageService.setMigratedBackdropTuningZero(true);
+    return migratedGlobal;
+  }
+
+  Future<void> _init() async {
+    await _storageService.init();
+
+    // Profiles and time schemes both run ensure* migrations that may write
+    // under the same profiles write chain — load sequentially to avoid
+    // re-entrant wait deadlocks under Future.wait.
+    final profiles = await _profileRepository.loadProfiles();
+    await _repairLegacyPartnerWallpaper(profiles);
+    final timeSchemes = await _profileRepository.getTimeSchemes();
+    final locationTimeGroups = await _profileRepository.getLocationTimeGroups();
+    final scheduleDateRules = await _profileRepository.getScheduleDateRules();
+    final activeProfileId = await _profileRepository.getActiveProfileId();
+    final partnerBinding = await _profileRepository
+        .getPartnerTimetableBinding();
+    final lastAppliedSignature = await _profileRepository
+        .getScheduleDateRuleLastAppliedSignature();
+    final globalSettings = await _profileRepository
+        .getGlobalTimetableSettings();
+    // 旧版背景模糊/磨砂默认值（13 / 0.05）改为 0 的一次性归零：全局设置
+    // 与每份课表自身设置都要处理，否则存量值会盖掉新的 0。
+    final migratedGlobalSettings = await _migrateLegacyBackdropTuningZero(
+      profiles,
+      globalSettings,
+    );
+
+    _profiles = profiles;
+    _timeSchemes = timeSchemes;
+    _locationTimeGroups = locationTimeGroups;
+    _scheduleDateRules = scheduleDateRules;
+    _activeProfileId = activeProfileId;
+    _partnerBinding = partnerBinding;
+    _scheduleDateRuleLastAppliedSignature = lastAppliedSignature;
+    _globalSettings = migratedGlobalSettings;
+
+    if (_activeProfileId != null) {
+      final storedActive = _getProfileById(_activeProfileId);
+      // TA 课表可作为当前课表持久化（卡片右半切换），不再强制回退；
+      // 仅当 id 指向的课表已不存在时交给 activeProfile 的回退逻辑。
+      if (storedActive == null) {
+        _activeProfileId = null;
+      }
+    }
+
+    // --- 非关键数据：后台加载，不阻塞首帧 ---
+    unawaited(_loadDeferredData());
+
+    final activeProfile =
+        this.activeProfile ?? (_profiles.isEmpty ? null : _profiles.first);
+    if (activeProfile == null) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+    _applyProfileState(activeProfile);
+
+    // Existing per-session homework marks become actionable once, while the
+    // original course note remains the source of truth for the badge.
+    // 首帧只要求内存一致：同步在 await 内完成，落盘则交给后台任务，
+    // 经同一 mutation gate 串行执行（与课程编辑等写路径互斥），不再把
+    // 磁盘 I/O 挡在 notifyListeners() 首帧通知之前。
+    final homeworkSyncChanged = await _syncHomeworkTasksWithCourses();
+    if (homeworkSyncChanged) {
+      unawaited(_runMutation(_persistActiveProfileState));
+    }
+
+    // 壁纸预加载不阻塞首帧；无壁纸时此调用会立即返回。
+    unawaited(precacheHomePageBackdropImage(settings));
+
+    // --- 迁移逻辑：不阻塞首帧，后台完成 ---
+    unawaited(_runAppLogsMigrationIfNeeded(activeProfile));
+
+    if (_activeProfileId != activeProfile.id) {
+      _activeProfileId = activeProfile.id;
+      unawaited(_profileRepository.setActiveProfileId(activeProfile.id));
+    }
+    if (_settings.semesterStartDate != null) {
+      unawaited(syncCurrentWeekWithSemesterStart());
+    }
+
+    // --- 首帧已可渲染，立即通知 ---
+    notifyListeners();
+
+    // Seasonal bulk-apply may rewrite default scheme/clocks after first paint.
+    unawaited(applyDueScheduleDateRules());
+
+    // Holiday must finish before the first live/widget push so cold start on a
+    // holiday day does not briefly publish courses (empty holidayData ⇒ false).
+    unawaited(_bootstrapHolidayAwareSurfaces());
+  }
+
+  /// Load holidays first, then push widget/island once with correct semantics.
+  Future<void> _bootstrapHolidayAwareSurfaces() async {
+    unawaited(_syncNativeRuntimePreferences());
+    await _loadHolidayData();
+    // _loadHolidayData already re-pushes surfaces on success. If it failed
+    // silently, still push once so widgets are not stuck empty forever.
+    if (_lastHomeWidgetSnapshotSignature == null) {
+      await _syncHomeWidgetSnapshot();
+    }
+    unawaited(_syncExamReminders());
+    if (_enableLiveActivitySync) {
+      _liveStartActivityTick(this);
+    }
+  }
+
+  /// 后台加载非关键数据：教师/地点记录。
+  ///
+  /// This load is placed on the same mutation gate as recordTeacher/Location.
+  /// Otherwise a stale read started before the first frame could overwrite a
+  /// record written by the user while the read was in flight.
+  Future<void> _loadDeferredData() {
+    final existing = _deferredDataFuture;
+    if (existing != null) {
+      return existing;
+    }
+    final future = _runMutation(_loadDeferredDataImpl);
+    _deferredDataFuture = future;
+    return future.whenComplete(() {
+      if (identical(_deferredDataFuture, future)) {
+        _deferredDataFuture = null;
+      }
+    });
+  }
+
+  Future<void> _loadDeferredDataImpl() async {
+    final teacherFuture = _profileRepository.getTeacherRecords();
+    final locationFuture = _profileRepository.getLocationRecords();
+    final results = await Future.wait<List<String>>([
+      teacherFuture,
+      locationFuture,
+    ]);
+    final loadedTeachers = List<String>.from(results[0]);
+    final loadedLocations = List<String>.from(results[1]);
+    final nextTeachers = <String>{
+      ...loadedTeachers,
+      ..._teacherRecords,
+    }.toList()..sort();
+    final nextLocations = <String>{
+      ...loadedLocations,
+      ..._locationRecords,
+    }.toList()..sort();
+    final teachersChanged = !listEquals(_teacherRecords, nextTeachers);
+    final locationsChanged = !listEquals(_locationRecords, nextLocations);
+    _teacherRecords = nextTeachers;
+    _locationRecords = nextLocations;
+    if (teachersChanged || locationsChanged) {
+      notifyListeners();
+    }
+  }
+
+  /// 后台执行 app logs 迁移，不阻塞首帧。
+  ///
+  /// 迁移期间的异步 await 存在与 switchProfile 的竞态窗口：若用户在迁移
+  /// 持久化前切走课表，旧课表的设置会随全量覆写混入新课表。因此在拿到
+  /// 迁移结果回写内存/磁盘前校验活跃课表未变；已切换则放弃迁移写回
+  /// （didMigrated 标记仍会落盘，下次冷启动自然完成迁移）。
+  Future<void> _runAppLogsMigrationIfNeeded(
+    TimetableProfile activeProfile,
+  ) async {
+    final didMigrateAppLogsDefault = await _storageService
+        .hasMigratedAppLogsDefault();
+    if (didMigrateAppLogsDefault) {
+      return;
+    }
+    final settingsSnapshot = _settings;
+    if (!settingsSnapshot.liveEnableLocalDiagnostics) {
+      // 写回段过 mutation gate 并在 gate 内校验活跃课表 id：迁移是启动后
+      // 台协程，若无保护，用户在 await 期间切课表会把旧课表设置随全量
+      // 覆写混进新课表（issue#11 R1）。gate 内若已切换则放弃本轮写回且
+      // 不落 didMigrated 标记，下次冷启动重新尝试迁移。
+      var migrated = false;
+      await _runMutation(() async {
+        if (_activeProfileId != activeProfile.id) {
+          return;
+        }
+        // 不用快照：gate 排队期间设置可能已被改，基于 gate 内最新值写入，
+        // 只补 diagnostics 字段，不回滚其他设置。
+        if (!_settings.liveEnableLocalDiagnostics) {
+          _settings = _settings.copyWith(liveEnableLocalDiagnostics: true);
+        }
+        await _persistActiveProfileState();
+        migrated = true;
+      });
+      if (!migrated) {
+        return;
+      }
+      await _storageService.setMigratedAppLogsDefault(true);
+      await AppLogService.instance.updateLoggingEnabled(true);
+      unawaited(
+        AppLogService.instance.info(
+          'app_logs_default_migrated',
+          AppLogMessages.appLogsDefaultMigrated,
+          extras: {'profileId': activeProfile.id},
+        ),
+      );
+    } else {
+      await _storageService.setMigratedAppLogsDefault(true);
+    }
+  }
+
+  @visibleForTesting
+  void seedLiveActivityTrackingForTesting({
+    String? lastStageKey,
+    String? currentCourseId,
+  }) => _liveSeedTrackingForTesting(
+    this,
+    lastStageKey: lastStageKey,
+    currentCourseId: currentCourseId,
+  );
+
+  @visibleForTesting
+  void checkLiveActivityStageTransitionForTesting() =>
+      _liveCheckActivityStageTransition(this);
+
+  @visibleForTesting
+  Future<void> updateLiveActivityForTesting({
+    bool syncScheduleSnapshot = true,
+  }) => _liveUpdateActivityForTesting(
+    this,
+    syncScheduleSnapshot: syncScheduleSnapshot,
+  );
+
+  @override
+  void dispose() {
+    _holidayService.onRemoteHolidayDataUpdated = null;
+    _liveActivityTimer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> _updateLiveActivity({bool syncScheduleSnapshot = true}) =>
+      _liveUpdateActivity(this, syncScheduleSnapshot: syncScheduleSnapshot);
+
+  Future<void> _syncLiveScheduleSnapshot() => _liveSyncScheduleSnapshot(this);
+
+  Future<void> _syncHomeWidgetSnapshot() => _liveSyncHomeWidgetSnapshot(this);
+
+  TimetableProfile? _getProfileById(String? profileId) {
+    if (profileId == null) {
+      return null;
+    }
+    for (final profile in _profiles) {
+      if (profile.id == profileId) {
+        return profile;
+      }
+    }
+    return null;
+  }
+
+  TimeScheme? _getTimeSchemeById(String? schemeId) =>
+      TimeSchemeLogic.getSchemeById(_timeSchemes, schemeId);
+
+  void _applyProfileState(TimetableProfile profile) {
+    _settings = _normalizeSettingsWithTimeScheme(profile.settings);
+    _settingsOverrideKeys = profile.settingsOverrideKeys.toSet();
+    hyperosSetEdgeHapticsEnabled(settings.enableHaptics);
+    _courses = _syncCoursesWithEffectiveTimeSchemes(
+      List<Course>.from(profile.courses),
+      settings: _settings,
+    );
+    _scheduleItems = _sortScheduleItems(
+      List<ScheduleItem>.from(profile.scheduleItems),
+    );
+    _tasks = _sortTasks(List<CourseTask>.from(profile.tasks));
+    _exams = List<Exam>.from(profile.exams);
+    // 「当前周」口径（2026-08-31 用户拍板）：有开学时间的课表，激活/切换时
+    // 一律按它自己的开学时间对齐到日历周，而不是恢复上次浏览停留的周次——
+    // 否则两份课表开学时间不同时，切过去会带着上一份课表的周数。
+    // 无开学时间无从推导，保留持久化值（v2.0 行为，见 live 选课回退）。
+    final calendarWeek = _resolveCurrentCalendarWeek();
+    _currentWeek = _settings.semesterStartDate == null
+        ? clampCurrentWeekToSettings(profile.currentWeek, _settings)
+        : clampCurrentWeekToSettings(calendarWeek, _settings);
+    _currentCalendarWeek = calendarWeek;
+    _currentDateWeek = clampCurrentWeekToSettings(calendarWeek, _settings);
+    unawaited(_syncNativeRuntimePreferences());
+  }
+
+  Future<void> _syncNativeRuntimePreferences() async {
+    applyHyperosUserTransitionSpeed(settings.pageTransitionSpeed);
+    await AppLogService.instance.updateLoggingEnabled(
+      settings.liveEnableLocalDiagnostics,
+    );
+    await _liveActivitiesService.setLiveDiagnosticsEnabled(
+      settings.liveEnableLocalDiagnostics,
+    );
+    await _liveActivitiesService.setHideFromRecents(
+      settings.liveHideFromRecents,
+    );
+  }
+
+  TimetableSettings _normalizeSettingsWithTimeScheme(
+    TimetableSettings settings,
+  ) {
+    final scheme = _getTimeSchemeById(settings.activeTimeSchemeId);
+    if (scheme == null) {
+      return settings;
+    }
+    final hasSameSections =
+        _sectionSignature(settings.sections) ==
+        _sectionSignature(scheme.sections);
+    if (hasSameSections) {
+      return settings;
+    }
+    return settings.copyWith(
+      sections: List<SectionTime>.from(scheme.sections),
+      activeTimeSchemeId: scheme.id,
+    );
+  }
+
+  /// 不参与全局合并的课表专属字段：这些字段只属于「这一份课表」，全局
+  /// 设置不覆盖它们，课表保存时也原样写入（不参与「改了才写入」判定）。
+  ///
+  /// - sections / activeTimeSchemeId：由时间方案系统管理；
+  /// - semesterWeekCount / semesterStartDate：每份课表自己的学期；
+  /// - timetableHomeViewMode / timetableLastViewedDayOfWeek：浏览状态；
+  static const Set<String> _profileOwnedSettingKeys = {
+    'sections',
+    'activeTimeSchemeId',
+    'semesterWeekCount',
+    'semesterStartDate',
+    'timetableHomeViewMode',
+    'timetableLastViewedDayOfWeek',
+  };
+
+  static bool _jsonEquals(Object? left, Object? right) {
+    if (identical(left, right)) {
+      return true;
+    }
+    return jsonEncode(left) == jsonEncode(right);
+  }
+
+  /// 计算课表生效设置：全局设置打底，课表自身「配置过」的字段覆盖全局。
+  ///
+  /// 「配置过」= 明确记录在 settingsOverrideKeys 中，或与内置默认值不同
+  /// （惰性判定，兼容没有 override 记账的历史数据）。[_profileOwnedSettingKeys]
+  /// 中的课表专属字段永远取课表自身值。
+  TimetableSettings _resolveEffectiveSettings(TimetableSettings own) {
+    final global = _globalSettings;
+    if (global == null) {
+      return own;
+    }
+    final defaults = TimetableSettings.defaults();
+    final ownJson = own.toJson();
+    final globalJson = global.toJson();
+    final defaultsJson = defaults.toJson();
+    final merged = <String, dynamic>{};
+    globalJson.forEach((key, globalValue) {
+      final ownValue = ownJson[key];
+      final isOwn =
+          _profileOwnedSettingKeys.contains(key) ||
+          _settingsOverrideKeys.contains(key) ||
+          !_jsonEquals(ownValue, defaultsJson[key]);
+      merged[key] = isOwn ? ownValue : globalValue;
+    });
+    // 同一版本 toJson 的 key 集合必然一致；putIfAbsent 仅作防御性兜底。
+    ownJson.forEach((key, value) {
+      merged.putIfAbsent(key, () => value);
+    });
+    return TimetableSettings.fromJson(merged);
+  }
+
+  /// 把一次「设置变更」落回课表自身设置。
+  ///
+  /// 无全局设置时原样写入（历史行为）。有全局设置时只把「相对当前生效值
+  /// 真正变化了的字段」写进课表自身设置：从全局继承的字段保持继承状态，
+  /// 之后改全局仍会传导到这份课表；课表专属字段一律原样写入。变化的字段
+  /// 同时记入 [_settingsOverrideKeys]，保证改回默认值也能继续覆盖全局。
+  TimetableSettings _applySettingsChangeToOwn(
+    TimetableSettings own,
+    TimetableSettings next,
+  ) {
+    final global = _globalSettings;
+    if (global == null) {
+      return next;
+    }
+    final effectiveJson = _resolveEffectiveSettings(own).toJson();
+    final nextJson = next.toJson();
+    final ownJson = own.toJson();
+    nextJson.forEach((key, value) {
+      if (_profileOwnedSettingKeys.contains(key)) {
+        ownJson[key] = value;
+        return;
+      }
+      if (!_jsonEquals(value, effectiveJson[key])) {
+        ownJson[key] = value;
+        _settingsOverrideKeys.add(key);
+      }
+    });
+    return TimetableSettings.fromJson(ownJson);
+  }
+
+  List<Course> _syncCoursesWithEffectiveTimeSchemes(
+    List<Course> source, {
+    TimetableSettings? settings,
+  }) {
+    return TimeSchemeLogic.syncCoursesWithEffectiveTimeSchemes(
+      source,
+      schemes: _timeSchemes,
+      settings: _settings,
+      locationTimeGroups: _locationTimeGroups,
+      scheduleDateRules: _scheduleDateRules,
+      settingsOverride: settings,
+    );
+  }
+
+  Course _syncCourseWithEffectiveTimeScheme(
+    Course course, {
+    TimetableSettings? settings,
+    DateTime? onDate,
+    bool debugTrace = false,
+    String debugTag = 'LocationTimeApply',
+  }) {
+    return TimeSchemeLogic.syncCourseWithEffectiveTimeScheme(
+      course,
+      schemes: _timeSchemes,
+      settings: _settings,
+      locationTimeGroups: _locationTimeGroups,
+      scheduleDateRules: _scheduleDateRules,
+      settingsOverride: settings,
+      onDate: onDate,
+      debugTrace: debugTrace,
+      debugTag: debugTag,
+    );
+  }
+
+  /// Resolves the effective time scheme for a course.
+  ///
+  /// Priority: manual override → location group → date rule for [onDate] →
+  /// active profile scheme.
+  ///
+  /// **Persist / list resync must not pass [onDate].** Date rules are day-
+  /// scoped; baking "today" into [Course.startTime]/[Course.endTime] corrupts
+  /// the whole timetable. Pass [onDate] only for runtime preview (live island,
+  /// day view, validation that intentionally cares about a calendar day).
+  TimeScheme? resolveCourseTimeScheme(
+    Course course, {
+    TimetableSettings? settings,
+    DateTime? onDate,
+  }) => TimeSchemeLogic.resolveCourseTimeScheme(
+    _timeSchemes,
+    _settings,
+    course,
+    settingsOverride: settings,
+    locationTimeGroups: _locationTimeGroups,
+    scheduleDateRules: _scheduleDateRules,
+    onDate: onDate,
+  );
+
+  /// 上课闹钟等场景用：解析课程在其生效时间模板下的真实开始钟点。
+  ///
+  /// 与 LiveActivityLogic.resolveRealTime 同一套节次语义；当课程的开始节次
+  /// 超出模板节数（例如导入产生的幻影节次）时返回 null，调用方应跳过该课程，
+  /// 绝不能退回 Course.startTime 存量值（可能是不再同步的旧钟点或占位 00:00）。
+  String? resolvedCourseStartTime(Course course) {
+    final sections = _resolveSectionsForCourse(course);
+    final index = course.startSection - 1;
+    if (sections == null || index < 0 || index >= sections.length) {
+      return null;
+    }
+    return sections[index].startTime;
+  }
+
+  /// Preview location → place-group routing without writing course times.
+  LocationTimeMatchResult? matchLocationTime(String? location) =>
+      LocationTimeMatchLogic.match(location, _locationTimeGroups);
+
+  /// Preview which date rule applies on [date] (null = none).
+  ScheduleDateRule? matchScheduleDateRule(DateTime date) =>
+      ScheduleDateRuleLogic.match(date, _scheduleDateRules);
+
+  /// Signature of the last date-rule bulk apply, used to explain save results
+  /// without exposing the provider's mutable internal state.
+  String? get scheduleDateRuleLastAppliedSignature =>
+      _scheduleDateRuleLastAppliedSignature;
+
+  List<SectionTime>? _resolveSectionsForCourse(
+    Course course, {
+    TimetableSettings? settings,
+    DateTime? onDate,
+  }) {
+    final scheme = resolveCourseTimeScheme(
+      course,
+      settings: settings,
+      onDate: onDate,
+    );
+    if (scheme != null) {
+      return scheme.sections;
+    }
+    final activeSettings = settings ?? _settings;
+    return activeSettings.sections;
+  }
+
+  List<TimeSchemeCourseUsageReference> getTimeSchemeCourseUsages(
+    String schemeId, {
+    List<TimetableProfile>? profiles,
+  }) => TimeSchemeLogic.getCourseUsages(
+    _profiles,
+    schemeId,
+    profilesOverride: profiles,
+    schemes: _timeSchemes,
+    locationTimeGroups: _locationTimeGroups,
+  );
+
+  int maxUsedSectionForTimeScheme(
+    String schemeId, {
+    List<TimetableProfile>? profiles,
+  }) => TimeSchemeLogic.maxUsedSection(
+    _profiles,
+    schemeId,
+    profilesOverride: profiles,
+    schemes: _timeSchemes,
+    locationTimeGroups: _locationTimeGroups,
+  );
+
+  TimeSchemeCourseUsageReference? maxSectionUsageForTimeScheme(
+    String schemeId, {
+    List<TimetableProfile>? profiles,
+  }) => TimeSchemeLogic.maxSectionUsage(
+    _profiles,
+    schemeId,
+    profilesOverride: profiles,
+    schemes: _timeSchemes,
+    locationTimeGroups: _locationTimeGroups,
+  );
+
+  String? validateCourseTimeSchemeOverride({
+    String? timeSchemeId,
+    required int startSection,
+    required int endSection,
+    String? location,
+  }) => TimeSchemeLogic.validateCourseTimeSchemeOverride(
+    schemes: _timeSchemes,
+    settings: _settings,
+    timeSchemeId: timeSchemeId,
+    startSection: startSection,
+    endSection: endSection,
+    location: location,
+    locationTimeGroups: _locationTimeGroups,
+    scheduleDateRules: _scheduleDateRules,
+    // No onDate: save/sync validation matches persisted clocks (override /
+    // location / active), not today's date-rule scheme.
+  );
+
+  Future<void> _persistActiveProfileState({
+    bool touchLastUsedAt = false,
+  }) async {
+    _mergeActiveProfileIntoProfilesList(touchLastUsedAt: touchLastUsedAt);
+    if (activeProfile == null) {
+      return;
+    }
+    await _profileRepository.saveProfiles(_profiles);
+    if (_activeProfileId != null) {
+      await _profileRepository.setActiveProfileId(_activeProfileId!);
+    }
+  }
+
+  Future<void> _persistTimeSchemes() async {
+    await _profileRepository.saveTimeSchemes(_timeSchemes);
+  }
+
+  Future<void> _persistLocationTimeGroups() async {
+    await _profileRepository.saveLocationTimeGroups(_locationTimeGroups);
+  }
+
+  /// Re-sync course clock times for every profile after location rules change.
+  Future<void> _resyncAllProfilesWithLocationRules({bool notify = true}) async {
+    for (var index = 0; index < _profiles.length; index++) {
+      final profile = _profiles[index];
+      final syncedCourses = _syncCoursesWithEffectiveTimeSchemes(
+        List<Course>.from(profile.courses),
+        settings: profile.settings,
+      );
+      _profiles[index] = profile.copyWith(courses: syncedCourses);
+    }
+
+    final activeIndex = _profiles.indexWhere(
+      (profile) => profile.id == _activeProfileId,
+    );
+    if (activeIndex != -1) {
+      _courses = List<Course>.from(_profiles[activeIndex].courses);
+      _settings = _profiles[activeIndex].settings;
+    }
+
+    await _profileRepository.saveProfiles(_profiles);
+    _currentLiveCourseId = null;
+    if (notify) {
+      _notifyStateChanged();
+    }
+    await _updateLiveActivity();
+  }
+
+  Future<LocationTimeGroup> createLocationTimeGroup({
+    required String name,
+    required String timeSchemeId,
+    List<LocationKeyword> keywords = const [],
+    bool enabled = true,
+    int priority = 0,
+  }) async {
+    await initialize();
+    final trimmedName = name.trim();
+    if (trimmedName.isEmpty) {
+      throw ArgumentError('location_time_group_name_required');
+    }
+    if (_getTimeSchemeById(timeSchemeId) == null) {
+      throw ArgumentError('time_scheme_not_found');
+    }
+
+    final group = LocationTimeGroup(
+      id: const Uuid().v4(),
+      name: trimmedName,
+      timeSchemeId: timeSchemeId,
+      enabled: enabled,
+      priority: priority,
+      keywords: List<LocationKeyword>.from(keywords),
+    );
+    _locationTimeGroups = [..._locationTimeGroups, group];
+    await _persistLocationTimeGroups();
+    await _resyncAllProfilesWithLocationRules();
+    return group;
+  }
+
+  Future<LocationTimeGroup?> updateLocationTimeGroup(
+    LocationTimeGroup group,
+  ) async {
+    await initialize();
+    final index = _locationTimeGroups.indexWhere((item) => item.id == group.id);
+    if (index == -1) {
+      return null;
+    }
+    final trimmedName = group.name.trim();
+    if (trimmedName.isEmpty) {
+      throw ArgumentError('location_time_group_name_required');
+    }
+    if (_getTimeSchemeById(group.timeSchemeId) == null) {
+      throw ArgumentError('time_scheme_not_found');
+    }
+
+    final updated = group.copyWith(
+      name: trimmedName,
+      keywords: List<LocationKeyword>.from(group.keywords),
+    );
+    final next = List<LocationTimeGroup>.from(_locationTimeGroups);
+    next[index] = updated;
+    _locationTimeGroups = next;
+    await _persistLocationTimeGroups();
+    await _resyncAllProfilesWithLocationRules();
+    return updated;
+  }
+
+  Future<bool> deleteLocationTimeGroup(String groupId) async {
+    await initialize();
+    final beforeCount = _locationTimeGroups.length;
+    _locationTimeGroups = _locationTimeGroups
+        .where((group) => group.id != groupId)
+        .toList();
+    if (_locationTimeGroups.length == beforeCount) {
+      return false;
+    }
+    await _persistLocationTimeGroups();
+    await _resyncAllProfilesWithLocationRules();
+    return true;
+  }
+
+  Future<void> replaceLocationTimeGroups(
+    List<LocationTimeGroup> groups, {
+    bool resync = true,
+  }) async {
+    await initialize();
+    _locationTimeGroups = List<LocationTimeGroup>.from(groups);
+    await _persistLocationTimeGroups();
+    if (resync) {
+      await _resyncAllProfilesWithLocationRules();
+    } else {
+      _notifyStateChanged();
+    }
+  }
+
+  Future<void> _persistScheduleDateRules() async {
+    await _profileRepository.saveScheduleDateRules(_scheduleDateRules);
+  }
+
+  /// Create a date-range rule that switches the default time scheme.
+  ///
+  /// Product cap: [ScheduleDateRuleLogic.maxRulesPerDevice] rules total.
+  Future<ScheduleDateRuleSaveResult> createScheduleDateRule({
+    required String name,
+    required String timeSchemeId,
+    required String startDate,
+    required String endDate,
+    bool enabled = true,
+  }) {
+    return _runMutation(() async {
+      await initialize();
+      if (_scheduleDateRules.length >=
+          ScheduleDateRuleLogic.maxRulesPerDevice) {
+        throw ArgumentError('schedule_date_rule_max_exceeded');
+      }
+      if (_getTimeSchemeById(timeSchemeId) == null) {
+        throw ArgumentError('time_scheme_not_found');
+      }
+
+      final rule = ScheduleDateRule(
+        id: const Uuid().v4(),
+        name: name.trim(),
+        timeSchemeId: timeSchemeId,
+        startDate: startDate.trim(),
+        endDate: endDate.trim(),
+        enabled: enabled,
+      );
+      final next = [..._scheduleDateRules, rule];
+      final validationError = ScheduleDateRuleLogic.validateRules(next);
+      if (validationError != null) {
+        throw ArgumentError(validationError);
+      }
+
+      _scheduleDateRules = next;
+      await _persistScheduleDateRules();
+      // Nested under the same mutation gate (re-entrant).
+      final applyResult = await applyDueScheduleDateRulesDetailed();
+      if (!applyResult.didApply) {
+        _notifyStateChanged();
+      }
+      return ScheduleDateRuleSaveResult(rule: rule, applyResult: applyResult);
+    });
+  }
+
+  Future<ScheduleDateRuleSaveResult?> updateScheduleDateRule(
+    ScheduleDateRule rule,
+  ) {
+    return _runMutation(() async {
+      await initialize();
+      final index = _scheduleDateRules.indexWhere((item) => item.id == rule.id);
+      if (index == -1) {
+        return null;
+      }
+      if (_getTimeSchemeById(rule.timeSchemeId) == null) {
+        throw ArgumentError('time_scheme_not_found');
+      }
+
+      final updated = rule.copyWith(
+        name: rule.name.trim(),
+        startDate: rule.startDate.trim(),
+        endDate: rule.endDate.trim(),
+      );
+      final next = List<ScheduleDateRule>.from(_scheduleDateRules);
+      next[index] = updated;
+      final validationError = ScheduleDateRuleLogic.validateRules(next);
+      if (validationError != null) {
+        throw ArgumentError(validationError);
+      }
+
+      _scheduleDateRules = next;
+      await _persistScheduleDateRules();
+      final applyResult = await applyDueScheduleDateRulesDetailed();
+      if (!applyResult.didApply) {
+        _notifyStateChanged();
+      }
+      return ScheduleDateRuleSaveResult(
+        rule: updated,
+        applyResult: applyResult,
+      );
+    });
+  }
+
+  Future<bool> deleteScheduleDateRule(String ruleId) {
+    return _runMutation(() async {
+      await initialize();
+      final beforeCount = _scheduleDateRules.length;
+      _scheduleDateRules = _scheduleDateRules
+          .where((rule) => rule.id != ruleId)
+          .toList();
+      if (_scheduleDateRules.length == beforeCount) {
+        return false;
+      }
+      await _persistScheduleDateRules();
+      _notifyStateChanged();
+      return true;
+    });
+  }
+
+  Future<void> replaceScheduleDateRules(
+    List<ScheduleDateRule> rules, {
+    bool resync = true,
+  }) {
+    return _runMutation(() async {
+      await initialize();
+      final next = List<ScheduleDateRule>.from(rules);
+      if (next.length > ScheduleDateRuleLogic.maxRulesPerDevice) {
+        throw ArgumentError('schedule_date_rule_max_exceeded');
+      }
+      final validationError = ScheduleDateRuleLogic.validateRules(next);
+      if (validationError != null) {
+        throw ArgumentError(validationError);
+      }
+      _scheduleDateRules = next;
+      await _persistScheduleDateRules();
+      if (resync) {
+        final didApply = await applyDueScheduleDateRules();
+        if (!didApply) {
+          _notifyStateChanged();
+        }
+      } else {
+        _notifyStateChanged();
+      }
+    });
+  }
+
+  /// One-shot bulk apply of the seasonal date rule that matches [now].
+  ///
+  /// Product rules:
+  /// 1. Same as tapping「应用时间模板」on the matched scheme (all profiles get
+  ///    that default; unlocked clocks rewrite).
+  /// 2. Runs on the first open at/after the rule start while still in range.
+  /// 3. Does not re-run daily once applied, so manual course edits stick.
+  Future<bool> applyDueScheduleDateRules({DateTime? now}) {
+    return _runMutation(() => _applyDueScheduleDateRules(now: now));
+  }
+
+  /// Variant that returns structured outcome instead of plain bool, so callers
+  /// (e.g. date-rule editor) can show specific failure feedback (B3).
+  Future<ScheduleDateRuleApplyResult> applyDueScheduleDateRulesDetailed({
+    DateTime? now,
+  }) {
+    return _runMutation(() => _applyDueScheduleDateRulesDetailed(now: now));
+  }
+
+  /// Bool facade kept for existing callers; always delegates to the detailed
+  /// path so failure logging and apply side effects cannot drift.
+  Future<bool> _applyDueScheduleDateRules({DateTime? now}) async {
+    final applyResult = await _applyDueScheduleDateRulesDetailed(now: now);
+    return applyResult.didApply;
+  }
+
+  /// Single implementation of seasonal bulk-apply. Returns structured outcome
+  /// for UI toasts; [applyDueScheduleDateRules] maps [didApply] to bool.
+  Future<ScheduleDateRuleApplyResult> _applyDueScheduleDateRulesDetailed({
+    DateTime? now,
+  }) async {
+    await initialize();
+    final reference = now ?? DateTime.now();
+    final matched = ScheduleDateRuleLogic.match(reference, _scheduleDateRules);
+    if (!ScheduleDateRuleLogic.shouldBulkApply(
+      matchedRule: matched,
+      lastAppliedSignature: _scheduleDateRuleLastAppliedSignature,
+    )) {
+      return const ScheduleDateRuleApplyResult(
+        outcome: ScheduleDateRuleApplyOutcome.notDue,
+      );
+    }
+
+    final rule = matched!;
+    final scheme = _getTimeSchemeById(rule.timeSchemeId);
+    if (scheme == null) {
+      appDebugLog(
+        'ScheduleDateRule',
+        '跳过批量套用: 模板不存在 rule=${rule.name} schemeId=${rule.timeSchemeId}',
+      );
+      await AppLogService.instance.warn(
+        'schedule_date_rule',
+        '日期规则批量套用失败：时间模板不存在',
+        extras: {
+          'ruleId': rule.id,
+          'ruleName': rule.name,
+          'schemeId': rule.timeSchemeId,
+        },
+      );
+      return const ScheduleDateRuleApplyResult(
+        outcome: ScheduleDateRuleApplyOutcome.schemeMissing,
+      );
+    }
+
+    // Validate every profile before rewriting clocks; active-only checks can
+    // leave inactive profiles pointing at a scheme that cannot represent them.
+    var requiredMaxSection = 0;
+    for (final profile in _profiles) {
+      for (final course in profile.courses) {
+        if (course.endSection > requiredMaxSection) {
+          requiredMaxSection = course.endSection;
+        }
+      }
+    }
+    for (final course in _courses) {
+      if (course.endSection > requiredMaxSection) {
+        requiredMaxSection = course.endSection;
+      }
+    }
+    if (requiredMaxSection > scheme.sections.length) {
+      appDebugLog(
+        'ScheduleDateRule',
+        '跳过批量套用: 节次超出模板 rule=${rule.name} need=$requiredMaxSection '
+            'has=${scheme.sections.length}',
+      );
+      await AppLogService.instance.warn(
+        'schedule_date_rule',
+        '日期规则批量套用失败：节次超出模板',
+        extras: {
+          'ruleId': rule.id,
+          'ruleName': rule.name,
+          'schemeId': scheme.id,
+          'requiredMaxSection': requiredMaxSection,
+          'schemeSections': scheme.sections.length,
+        },
+      );
+      return ScheduleDateRuleApplyResult(
+        outcome: ScheduleDateRuleApplyOutcome.sectionOverflow,
+        requiredMaxSection: requiredMaxSection,
+        schemeSectionCount: scheme.sections.length,
+      );
+    }
+
+    final signature = ScheduleDateRuleLogic.appliedSignature(rule);
+    appDebugLog(
+      'ScheduleDateRule',
+      '批量套用作息: rule=${rule.name} scheme=${scheme.name} '
+          'range=${rule.startDate}~${rule.endDate} signature=$signature',
+    );
+
+    for (var index = 0; index < _profiles.length; index++) {
+      final profile = _profiles[index];
+      final nextSettings = profile.settings.copyWith(
+        activeTimeSchemeId: scheme.id,
+        sections: List<SectionTime>.from(scheme.sections),
+      );
+      final syncedCourses = _syncCoursesWithEffectiveTimeSchemes(
+        List<Course>.from(profile.courses),
+        settings: nextSettings,
+      );
+      _profiles[index] = profile.copyWith(
+        settings: nextSettings,
+        courses: syncedCourses,
+      );
+    }
+
+    final activeIndex = _profiles.indexWhere(
+      (profile) => profile.id == _activeProfileId,
+    );
+    if (activeIndex != -1) {
+      _courses = List<Course>.from(_profiles[activeIndex].courses);
+      _settings = _profiles[activeIndex].settings;
+    } else {
+      _settings = _settings.copyWith(
+        activeTimeSchemeId: scheme.id,
+        sections: List<SectionTime>.from(scheme.sections),
+      );
+      _courses = _syncCoursesWithEffectiveTimeSchemes(
+        List<Course>.from(_courses),
+        settings: _settings,
+      );
+    }
+
+    await _profileRepository.saveProfiles(_profiles);
+    _scheduleDateRuleLastAppliedSignature = signature;
+    await _profileRepository.saveScheduleDateRuleLastAppliedSignature(
+      signature,
+    );
+    _currentLiveCourseId = null;
+    _notifyStateChanged();
+    await _updateLiveActivity();
+
+    unawaited(
+      AppLogService.instance.info(
+        'schedule_date_rule',
+        '已按日期规则批量套用作息',
+        extras: {
+          'ruleId': rule.id,
+          'ruleName': rule.name,
+          'schemeId': scheme.id,
+          'schemeName': scheme.name,
+          'startDate': rule.startDate,
+          'endDate': rule.endDate,
+          'signature': signature,
+        },
+      ),
+    );
+    return const ScheduleDateRuleApplyResult(
+      outcome: ScheduleDateRuleApplyOutcome.applied,
+    );
+  }
+
+  /// Apply location routing to unlocked courses on the active profile.
+  ///
+  /// Returns match/update counts for toast feedback.
+  Future<LocationTimeApplyStats> applyLocationTimeRulesToActiveProfile() {
+    return _runMutation(_applyLocationTimeRulesToActiveProfileImpl);
+  }
+
+  Future<LocationTimeApplyStats>
+  _applyLocationTimeRulesToActiveProfileImpl() async {
+    await initialize();
+    const debugTag = 'LocationTimeApply';
+    var unlockedCount = 0;
+    var matchedCount = 0;
+    var updatedCount = 0;
+    var alreadySameClockCount = 0;
+    var sectionOverflowCount = 0;
+    final sectionOverflowCourseNames = <String>[];
+    var noMatchCount = 0;
+    var matchMissingSchemeCount = 0;
+    var autoReleasedCount = 0;
+    var clockRewriteCount = 0;
+    final changeSamples = <String>[];
+
+    void audit(String message, {Map<String, Object?> extras = const {}}) {
+      appDebugLog(debugTag, message);
+      unawaited(
+        AppLogService.instance.info(
+          'location_time_apply',
+          message,
+          extras: extras,
+        ),
+      );
+    }
+
+    final activeScheme = activeTimeScheme;
+    audit(
+      '===== 开始应用到当前课表 ===== '
+      'profile=${activeProfile?.name ?? "null"}(${_activeProfileId ?? "-"}) '
+      'courses=${_courses.length} '
+      'locationGroups=${_locationTimeGroups.length} '
+      'activeScheme=${activeScheme?.name ?? "null"}(${activeScheme?.id ?? "-"}) '
+      'activeSections=${activeScheme?.sections.length ?? _settings.sections.length} '
+      'manualOverridesBefore=${_courses.where((c) => c.timeSchemeIdOverride != null).length}',
+      extras: {
+        'profileId': _activeProfileId,
+        'courseCount': _courses.length,
+        'groupCount': _locationTimeGroups.length,
+        'activeSchemeId': activeScheme?.id,
+        'manualOverridesBefore': _courses
+            .where((course) => course.timeSchemeIdOverride != null)
+            .length,
+      },
+    );
+    for (final group in _locationTimeGroups) {
+      final scheme = _getTimeSchemeById(group.timeSchemeId);
+      final keywords = group.keywords
+          .map((keyword) => '${keyword.pattern}(${keyword.mode.name})')
+          .join('|');
+      audit(
+        '地点组: id=${group.id} name=${group.name} enabled=${group.enabled} '
+        'priority=${group.priority} scheme=${scheme?.name ?? "MISSING"}(${group.timeSchemeId}) '
+        'schemeSections=${scheme?.sections.length ?? 0} keywords=[$keywords]',
+        extras: {
+          'groupId': group.id,
+          'groupName': group.name,
+          'enabled': group.enabled,
+          'schemeId': group.timeSchemeId,
+          'schemeName': scheme?.name,
+          'schemeSections': scheme?.sections.length ?? 0,
+          'keywords': keywords,
+        },
+      );
+      if (scheme != null && scheme.sections.isNotEmpty) {
+        final first = scheme.sections.first;
+        final last = scheme.sections.last;
+        audit(
+          '  模板首末节: ${first.startTime}-${first.endTime} ... '
+          '${last.startTime}-${last.endTime}',
+        );
+      }
+    }
+    if (activeScheme != null && activeScheme.sections.isNotEmpty) {
+      final first = activeScheme.sections.first;
+      final last = activeScheme.sections.last;
+      audit(
+        '主课表模板首末节: ${first.startTime}-${first.endTime} ... '
+        '${last.startTime}-${last.endTime}',
+      );
+    }
+
+    final synced = <Course>[];
+    for (final course in _courses) {
+      unlockedCount += 1;
+      final beforeOverride = course.timeSchemeIdOverride;
+      final beforeClock = '${course.startTime}-${course.endTime}';
+      final match = matchLocationTime(course.location);
+      final matchedScheme = match == null
+          ? null
+          : _getTimeSchemeById(match.timeSchemeId);
+
+      Course courseToSync = course;
+
+      if (match == null) {
+        noMatchCount += 1;
+        if (changeSamples.length < 40) {
+          audit(
+            '未命中地点: course=${course.name} id=${course.id} loc=${course.location} '
+            'sections=${course.startSection}-${course.endSection} '
+            'override=${beforeOverride ?? "null"} clock=$beforeClock',
+            extras: {
+              'action': 'no_match',
+              'courseId': course.id,
+              'courseName': course.name,
+              'location': course.location,
+              'beforeOverride': beforeOverride,
+              'beforeClock': beforeClock,
+            },
+          );
+        }
+        synced.add(course);
+        continue;
+      }
+
+      if (matchedScheme == null) {
+        matchMissingSchemeCount += 1;
+        audit(
+          '命中但模板不存在: course=${course.name} id=${course.id} loc=${course.location} '
+          'group=${match.groupName} schemeId=${match.timeSchemeId} '
+          'keyword=${match.matchedKeyword.pattern}/${match.matchedKeyword.mode.name}',
+          extras: {
+            'action': 'match_missing_scheme',
+            'courseId': course.id,
+            'courseName': course.name,
+            'location': course.location,
+            'groupName': match.groupName,
+            'schemeId': match.timeSchemeId,
+            'beforeOverride': beforeOverride,
+          },
+        );
+        synced.add(course);
+        continue;
+      }
+
+      final startIndex = course.startSection - 1;
+      final endIndex = course.endSection - 1;
+      final sectionCount = matchedScheme.sections.length;
+      // HARD RULE: only fully seat-mapable courses may be synchronized.
+      // Applying a short scheme to a later section would produce nonsense
+      // clocks, so leave the course untouched and report it.
+      if (startIndex < 0 || endIndex < startIndex || endIndex >= sectionCount) {
+        sectionOverflowCount += 1;
+        if (sectionOverflowCourseNames.length < 5) {
+          sectionOverflowCourseNames.add(course.name);
+        }
+        audit(
+          '拒绝套用(节次无法对号入座): course=${course.name} id=${course.id} '
+          'loc=${course.location} need=${course.startSection}-${course.endSection} '
+          'scheme=${matchedScheme.name} has=$sectionCount '
+          'beforeOverride=${beforeOverride ?? "null"} clock=$beforeClock '
+          '→ 不写 override、不改钟点',
+          extras: {
+            'action': 'overflow_reject_no_sync',
+            'courseId': course.id,
+            'courseName': course.name,
+            'location': course.location,
+            'startSection': course.startSection,
+            'endSection': course.endSection,
+            'schemeId': matchedScheme.id,
+            'schemeName': matchedScheme.name,
+            'schemeSections': sectionCount,
+            'beforeOverride': beforeOverride,
+            'beforeClock': beforeClock,
+          },
+        );
+        // Leave course completely unchanged.
+        synced.add(course);
+        if (changeSamples.length < 30) {
+          changeSamples.add(
+            '${course.name}|${course.id}|REJECT overflow '
+            'need=${course.startSection}-${course.endSection} schemeHas=$sectionCount',
+          );
+        }
+        continue;
+      }
+
+      // Only fully seat-mapped courses count as matched/synchronized.
+      matchedCount += 1;
+      // Return the course to automatic mode, then resolve it through the
+      // current location rule. This keeps future rule edits automatic instead
+      // of turning a rematch into another permanent manual override.
+      courseToSync = course.copyWith(timeSchemeIdOverride: null);
+      if (beforeOverride != null) {
+        autoReleasedCount += 1;
+      }
+
+      final expectedStart = matchedScheme.sections[startIndex].startTime;
+      final expectedEnd = matchedScheme.sections[endIndex].endTime;
+      final sameClock =
+          course.startTime == expectedStart && course.endTime == expectedEnd;
+      if (sameClock) {
+        alreadySameClockCount += 1;
+      }
+
+      final next = _syncCourseWithEffectiveTimeScheme(
+        courseToSync,
+        settings: _settings,
+        debugTrace: true,
+      );
+      synced.add(next);
+
+      final clockChanged =
+          next.startTime != course.startTime || next.endTime != course.endTime;
+      final overrideChanged =
+          next.timeSchemeIdOverride != course.timeSchemeIdOverride;
+      if (clockChanged || overrideChanged) {
+        updatedCount += 1;
+        if (clockChanged) {
+          clockRewriteCount += 1;
+        }
+        if (changeSamples.length < 30) {
+          changeSamples.add(
+            '${course.name}|${course.id}|'
+            'override ${beforeOverride ?? "null"}->${next.timeSchemeIdOverride ?? "null"}|'
+            'clock $beforeClock->${next.startTime}-${next.endTime}',
+          );
+        }
+      }
+      audit(
+        '${sameClock ? "SAME" : "DIFF"} course=${course.name} id=${course.id} '
+        'loc=${course.location} group=${match.groupName} '
+        'scheme=${matchedScheme.name} '
+        'beforeOverride=${beforeOverride ?? "null"} '
+        'afterOverride=${next.timeSchemeIdOverride ?? "null"} '
+        'beforeClock=$beforeClock afterClock=${next.startTime}-${next.endTime} '
+        'clockChanged=$clockChanged overrideChanged=$overrideChanged',
+        extras: {
+          'action': sameClock
+              ? 'auto_match_same_clock'
+              : 'auto_match_and_rewrite_clock',
+          'courseId': course.id,
+          'courseName': course.name,
+          'location': course.location,
+          'groupName': match.groupName,
+          'schemeId': matchedScheme.id,
+          'schemeName': matchedScheme.name,
+          'beforeOverride': beforeOverride,
+          'afterOverride': next.timeSchemeIdOverride,
+          'beforeClock': beforeClock,
+          'afterClock': '${next.startTime}-${next.endTime}',
+          'expectedClock': '$expectedStart-$expectedEnd',
+          'sameClock': sameClock,
+          'clockChanged': clockChanged,
+          'overrideChanged': overrideChanged,
+        },
+      );
+    }
+
+    if (updatedCount > 0) {
+      _courses = synced;
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      _notifyStateChanged();
+      await _updateLiveActivity();
+    }
+
+    final overridesAfter = _courses
+        .where((course) => course.timeSchemeIdOverride != null)
+        .length;
+    final profileOverrides =
+        activeProfile?.courses
+            .where((course) => course.timeSchemeIdOverride != null)
+            .length ??
+        -1;
+    audit(
+      '===== 应用结束 ===== unlocked=$unlockedCount matched=$matchedCount '
+      'updated=$updatedCount sameClock=$alreadySameClockCount '
+      'overflow=$sectionOverflowCount noMatch=$noMatchCount '
+      'missingScheme=$matchMissingSchemeCount '
+      'autoReleased=$autoReleasedCount clockRewrite=$clockRewriteCount '
+      'overridesInMemoryAfter=$overridesAfter overridesInActiveProfile=$profileOverrides '
+      'didPersist=${updatedCount > 0} '
+      'overflowNames=${sectionOverflowCourseNames.join(",")} '
+      'samples=${changeSamples.take(12).join(" || ")}',
+      extras: {
+        'unlocked': unlockedCount,
+        'matched': matchedCount,
+        'updated': updatedCount,
+        'sameClock': alreadySameClockCount,
+        'overflow': sectionOverflowCount,
+        'noMatch': noMatchCount,
+        'missingScheme': matchMissingSchemeCount,
+        'autoReleased': autoReleasedCount,
+        'clockRewrite': clockRewriteCount,
+        'overridesInMemoryAfter': overridesAfter,
+        'overridesInActiveProfile': profileOverrides,
+        'didPersist': updatedCount > 0,
+        'changeSamples': changeSamples,
+        'overflowNames': sectionOverflowCourseNames,
+      },
+    );
+    if (matchedCount > 0 && updatedCount == 0) {
+      audit(
+        '结论: 地点规则已命中，但课程未改写（钟点已相同且未绑定 override，或全部节次越界）。'
+        'sameClock=$alreadySameClockCount overflow=$sectionOverflowCount。'
+        '请对比地点组绑定模板 vs 主课表模板各节起止时间是否完全一致。',
+      );
+    }
+    if (overridesAfter != profileOverrides && profileOverrides >= 0) {
+      audit(
+        '严重异常: 内存课表与 activeProfile 的模板覆盖数量不一致。持久化/合并失败。',
+        extras: {
+          'fatal': true,
+          'overridesInMemoryAfter': overridesAfter,
+          'overridesInActiveProfile': profileOverrides,
+        },
+      );
+    }
+
+    return LocationTimeApplyStats(
+      unlockedCount: unlockedCount,
+      matchedCount: matchedCount,
+      updatedCount: updatedCount,
+      alreadySameClockCount: alreadySameClockCount,
+      sectionOverflowCount: sectionOverflowCount,
+      sectionOverflowCourseNames: sectionOverflowCourseNames,
+    );
+  }
+
+  String _sectionSignature(List<SectionTime> sections) {
+    return jsonEncode(sections.map((section) => section.toJson()).toList());
+  }
+
+  TimetableSettings _buildDefaultSettingsForNewProfile() {
+    final baseDefaults = TimetableSettings.defaults();
+    final fallbackScheme =
+        activeTimeScheme ?? (_timeSchemes.isEmpty ? null : _timeSchemes.first);
+    if (fallbackScheme == null) {
+      return baseDefaults;
+    }
+    return baseDefaults.copyWith(
+      activeTimeSchemeId: fallbackScheme.id,
+      sections: List<SectionTime>.from(fallbackScheme.sections),
+    );
+  }
+
+  Future<TimetableSettings> _resolveSettingsAgainstTimeSchemes(
+    TimetableSettings settings, {
+    required String fallbackName,
+  }) async {
+    final currentScheme = _getTimeSchemeById(settings.activeTimeSchemeId);
+    if (currentScheme != null) {
+      return settings.copyWith(
+        activeTimeSchemeId: currentScheme.id,
+        sections: List<SectionTime>.from(currentScheme.sections),
+      );
+    }
+
+    final signature = _sectionSignature(settings.sections);
+    final existingScheme = _timeSchemes.firstWhere(
+      (scheme) => _sectionSignature(scheme.sections) == signature,
+      orElse: () => TimeScheme(
+        id: '',
+        name: '',
+        sections: const [],
+        createdAt: DateTime.fromMillisecondsSinceEpoch(0),
+        updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
+      ),
+    );
+    if (existingScheme.id.isNotEmpty) {
+      return settings.copyWith(
+        activeTimeSchemeId: existingScheme.id,
+        sections: List<SectionTime>.from(existingScheme.sections),
+      );
+    }
+
+    final now = DateTime.now();
+    final createdScheme = TimeScheme(
+      id: const Uuid().v4(),
+      name: fallbackName,
+      sections: List<SectionTime>.from(settings.sections),
+      createdAt: now,
+      updatedAt: now,
+    );
+    _timeSchemes.add(createdScheme);
+    await _persistTimeSchemes();
+    return settings.copyWith(
+      activeTimeSchemeId: createdScheme.id,
+      sections: List<SectionTime>.from(createdScheme.sections),
+    );
+  }
+
+  Future<void> setCurrentWeek(int week, {bool notify = true}) =>
+      _runMutation(() => _setCurrentWeekImpl(week, notify: notify));
+
+  /// 写当前周前先过 mutation gate：避免外部调用（首页跳转 / LAN / 传输）
+  /// 与 switchProfile 等串行化写操作交错时把周次写到错误的课表上。
+  /// gate 同 Zone 重入语义保证 syncCurrentWeekWithSemesterStart 等内部
+  /// 调用不会死锁；notify 先于持久化完成的时序保持不变（有测试锚定）。
+  Future<void> _setCurrentWeekImpl(int week, {bool notify = true}) async {
+    _currentWeek = clampCurrentWeekToSettings(week, _settings);
+    if (_settings.semesterStartDate == null) {
+      // 没有开学时间时无法从日历推导真实周。保留上次确定的“今天周”，
+      // 让桌面快照不跟随 UI 浏览周变化。
+      _currentDateWeek = clampCurrentWeekToSettings(
+        _currentCalendarWeek,
+        _settings,
+      );
+    }
+    _currentLiveCourseId = null; // 触发超级岛重刷
+    final persistFuture = _persistActiveProfileState();
+    if (notify) {
+      notifyListeners();
+    }
+    await persistFuture;
+    await _updateLiveActivity();
+  }
+
+  void _notifyStateChanged() => notifyListeners();
+
+  Future<TimeScheme> createTimeScheme({
+    required String name,
+    List<SectionTime>? sections,
+    bool applyToActiveProfile = false,
+  }) => _timetableCreateTimeScheme(
+    this,
+    name: name,
+    sections: sections,
+    applyToActiveProfile: applyToActiveProfile,
+  );
+
+  Future<String?> applyTimeScheme(String schemeId) =>
+      _timetableApplyTimeScheme(this, schemeId);
+
+  Future<TimeScheme?> renameTimeScheme(String schemeId, String name) =>
+      _timetableRenameTimeScheme(this, schemeId, name);
+
+  Future<TimeScheme?> duplicateTimeScheme(String schemeId, {String? name}) =>
+      _timetableDuplicateTimeScheme(this, schemeId, name: name);
+
+  Future<String?> updateTimeScheme({
+    required String schemeId,
+    required String name,
+    required List<SectionTime> sections,
+  }) => _timetableUpdateTimeScheme(
+    this,
+    schemeId: schemeId,
+    name: name,
+    sections: sections,
+  );
+
+  Future<bool> deleteTimeScheme(String schemeId) =>
+      _timetableDeleteTimeScheme(this, schemeId);
+
+  Future<TimetableProfile> createProfile({required String name}) {
+    return _runMutation(() async {
+      await initialize();
+      if (activeProfile != null) {
+        await _persistActiveProfileState();
+      }
+
+      final now = DateTime.now();
+      final profile = TimetableProfile(
+        id: const Uuid().v4(),
+        name: name,
+        courses: const [],
+        settings: _buildDefaultSettingsForNewProfile(),
+        currentWeek: 1,
+        createdAt: now,
+        lastUsedAt: now,
+      );
+
+      _profiles.add(profile);
+      _activeProfileId = profile.id;
+      _applyProfileState(profile);
+      await _persistActiveProfileState(touchLastUsedAt: true);
+      unawaited(_syncExamReminders());
+      _currentLiveCourseId = null;
+      notifyListeners();
+      await _updateLiveActivity();
+      return activeProfile!;
+    });
+  }
+
+  Future<TimetableProfile?> duplicateActiveProfile({String? name}) {
+    return _runMutation(() async {
+      await initialize();
+      final source = activeProfile;
+      if (source == null) {
+        return null;
+      }
+
+      await _persistActiveProfileState();
+      final now = DateTime.now();
+      final profile = source.copyWith(
+        id: const Uuid().v4(),
+        name: name ?? '${source.name} 副本',
+        createdAt: now,
+        lastUsedAt: now,
+      );
+      _profiles.add(profile);
+      _activeProfileId = profile.id;
+      _applyProfileState(profile);
+      await _persistActiveProfileState(touchLastUsedAt: true);
+      unawaited(_syncExamReminders());
+      _currentLiveCourseId = null;
+      notifyListeners();
+      await _updateLiveActivity();
+      return activeProfile;
+    });
+  }
+
+  Future<void> switchProfile(String profileId) {
+    return _runMutation(() async {
+      await initialize();
+      if (_activeProfileId == profileId) {
+        return;
+      }
+      final targetProfile = _getProfileById(profileId);
+      // TA 课表同样是可切换课表（桌面卡片右半/情侣设置入口直达）：
+      // 切过去后主界面按普通课表展示 TA 的课，超级岛/提醒等跟随当前课表。
+      if (targetProfile == null) {
+        return;
+      }
+
+      // Capture the outgoing profile in memory, then switch immediately. The
+      // single save below contains both the outgoing snapshot and the newly
+      // active profile, so there is no need to block the UI on two full writes.
+      _mergeActiveProfileIntoProfilesList();
+      final previousProfileId = _activeProfileId;
+      _activeProfileId = profileId;
+      _applyProfileState(targetProfile);
+      _currentLiveCourseId = null;
+      _lastLiveSnapshotSignature = null;
+      notifyListeners();
+
+      try {
+        await _persistActiveProfileState(touchLastUsedAt: true);
+      } catch (_) {
+        // Persist failed: roll memory back so UI does not diverge from disk.
+        if (previousProfileId != null) {
+          _activeProfileId = previousProfileId;
+          final previousProfile = _getProfileById(previousProfileId);
+          if (previousProfile != null) {
+            _applyProfileState(previousProfile);
+          }
+        }
+        _currentLiveCourseId = null;
+        _lastLiveSnapshotSignature = null;
+        notifyListeners();
+        rethrow;
+      }
+
+      await _liveActivitiesService.stopLiveUpdate();
+      _lastLiveActivityStageKey = null;
+      await _syncLiveScheduleSnapshot();
+      await _updateLiveActivity(syncScheduleSnapshot: false);
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  Future<void> renameProfile(String profileId, String name) {
+    return _runMutation(() async {
+      await initialize();
+      // Flush active memory into _profiles before any whole-list save so a
+      // rename cannot persist a stale courses snapshot over concurrent edits.
+      _mergeActiveProfileIntoProfilesList();
+      final index = _profiles.indexWhere((profile) => profile.id == profileId);
+      if (index == -1) {
+        return;
+      }
+
+      _profiles[index] = _profiles[index].copyWith(name: name.trim());
+      await _profileRepository.saveProfiles(_profiles);
+      notifyListeners();
+    });
+  }
+
+  Future<bool> deleteProfile(String profileId) {
+    return _runMutation(() async {
+      await initialize();
+      if (_profiles.length <= 1) {
+        return false;
+      }
+
+      final index = _profiles.indexWhere((profile) => profile.id == profileId);
+      if (index == -1 || _profiles[index].isPartnerImported) {
+        return false;
+      }
+
+      final isActive = _profiles[index].id == _activeProfileId;
+      if (isActive) {
+        final hasNormalFallback = _profiles
+            .where(
+              (profile) =>
+                  profile.id != profileId && !profile.isPartnerImported,
+            )
+            .isNotEmpty;
+        if (!hasNormalFallback) {
+          // Keep at least one non-partner profile as the working set.
+          return false;
+        }
+      } else {
+        _mergeActiveProfileIntoProfilesList();
+      }
+      _profiles.removeAt(index);
+      if (isActive) {
+        final fallbackProfile = _profiles
+            .where((profile) => !profile.isPartnerImported)
+            .first;
+        _activeProfileId = fallbackProfile.id;
+        _applyProfileState(fallbackProfile);
+        _currentLiveCourseId = null;
+      }
+      await _profileRepository.saveProfiles(_profiles);
+      if (_activeProfileId != null) {
+        await _profileRepository.setActiveProfileId(_activeProfileId!);
+      }
+      notifyListeners();
+      if (isActive) {
+        unawaited(_syncExamReminders());
+      }
+      await _updateLiveActivity();
+      return true;
+    });
+  }
+
+  Future<void> addCourse(Course course) {
+    return _runMutation(() async {
+      final validationMessage = validateCourseTimeSchemeOverride(
+        timeSchemeId: course.timeSchemeIdOverride,
+        startSection: course.startSection,
+        endSection: course.endSection,
+      );
+      if (validationMessage != null) {
+        throw ArgumentError(validationMessage);
+      }
+      final normalized = _normalizeCourse(course);
+      final normalizedCourse = _isLiveTestingFixture(normalized)
+          ? normalized
+          : _syncCourseWithEffectiveTimeScheme(normalized);
+      final existingSharedCourse = _courses.cast<Course?>().firstWhere(
+        (item) =>
+            item != null &&
+            CourseDomain.sharedKey(item) ==
+                CourseDomain.sharedKey(normalizedCourse),
+        orElse: () => null,
+      );
+      final preparedCourse = existingSharedCourse == null
+          ? normalizedCourse
+          : CourseDomain.applySharedFields(
+              normalizedCourse,
+              existingSharedCourse,
+            );
+
+      _courses.add(preparedCourse);
+      await _syncHomeworkTasksWithCourses();
+      await _persistActiveProfileState();
+      await _recordTeacherImpl(preparedCourse.teacher);
+      await _recordLocationImpl(preparedCourse.location);
+      _currentLiveCourseId = null;
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'course_created',
+        parameters: {
+          'day_of_week': preparedCourse.dayOfWeek,
+          'section_count': preparedCourse.sectionCount,
+          'has_short_name': preparedCourse.shortName?.isNotEmpty == true
+              ? 1
+              : 0,
+        },
+      );
+      _updateLiveActivity();
+    });
+  }
+
+  Future<void> updateCourse(Course course, {String? previousSharedName}) {
+    return _runMutation(() async {
+      final index = _courses.indexWhere((c) => c.id == course.id);
+      if (index != -1) {
+        final validationMessage = validateCourseTimeSchemeOverride(
+          timeSchemeId: course.timeSchemeIdOverride,
+          startSection: course.startSection,
+          endSection: course.endSection,
+        );
+        if (validationMessage != null) {
+          throw ArgumentError(validationMessage);
+        }
+        final normalized = _normalizeCourse(course);
+        final normalizedCourse = _isLiveTestingFixture(normalized)
+            ? normalized
+            : _syncCourseWithEffectiveTimeScheme(normalized);
+        final originalCourse = _courses[index];
+        final previousKey = buildSharedCourseNameKey(
+          previousSharedName ?? originalCourse.name,
+        );
+        final newKey = CourseDomain.sharedKey(normalizedCourse);
+
+        _courses[index] = normalizedCourse;
+        await _recordTeacherImpl(normalizedCourse.teacher);
+        await _recordLocationImpl(normalizedCourse.location);
+        for (var i = 0; i < _courses.length; i++) {
+          if (i == index) {
+            continue;
+          }
+          final current = _courses[i];
+          final currentKey = CourseDomain.sharedKey(current);
+          if (currentKey == previousKey || currentKey == newKey) {
+            _courses[i] = CourseDomain.applySharedFields(
+              current,
+              normalizedCourse,
+            );
+          }
+        }
+
+        await _syncHomeworkTasksWithCourses();
+        await _persistActiveProfileState();
+        _currentLiveCourseId = null;
+        notifyListeners();
+        unawaited(_syncExamReminders());
+        _analytics.logEventLater(
+          name: 'course_updated',
+          parameters: {
+            'day_of_week': normalizedCourse.dayOfWeek,
+            'section_count': normalizedCourse.sectionCount,
+            'has_short_name': normalizedCourse.shortName?.isNotEmpty == true
+                ? 1
+                : 0,
+          },
+        );
+        _updateLiveActivity();
+      }
+    });
+  }
+
+  Future<void> deleteCourse(String courseId) {
+    return _runMutation(() async {
+      if (_courses.any((c) => c.id == courseId)) {}
+      _courses.removeWhere((c) => c.id == courseId);
+      _exams.removeWhere((e) => e.courseId == courseId);
+      _tasks.removeWhere((task) => task.courseId == courseId);
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      _analytics.logEventLater(
+        name: 'course_deleted',
+        parameters: {'remaining_course_count': _courses.length},
+      );
+      _updateLiveActivity();
+    });
+  }
+
+  /// Delete all schedule entries (courses) for a given course name.
+  Future<void> deleteCourseGroup(String name) {
+    return _runMutation(() async {
+      final key = buildSharedCourseNameKey(name);
+      final deletedCourseIds = _courses
+          .where((c) => buildSharedCourseNameKey(c.name) == key)
+          .map((c) => c.id)
+          .toSet();
+      if (deletedCourseIds.isNotEmpty) {}
+      _courses.removeWhere((c) => deletedCourseIds.contains(c.id));
+      _exams.removeWhere((e) => deletedCourseIds.contains(e.courseId));
+      _tasks.removeWhere((task) => deletedCourseIds.contains(task.courseId));
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      _analytics.logEventLater(
+        name: 'course_group_deleted',
+        parameters: {'remaining_course_count': _courses.length},
+      );
+      _updateLiveActivity();
+    });
+  }
+
+  // ---- 课程任务 CRUD ----
+
+  CourseTask? getTaskById(String id) {
+    for (final task in _tasks) {
+      if (task.id == id) {
+        return task;
+      }
+    }
+    return null;
+  }
+
+  Course? getCourseForTask(CourseTask task) {
+    final courseId = task.courseId;
+    return courseId == null ? null : getCourseById(courseId);
+  }
+
+  List<CourseTask> getTasksForCourse(String courseId, {int? sourceWeek}) {
+    return _tasks
+        .where(
+          (task) =>
+              task.courseId == courseId &&
+              (sourceWeek == null || task.sourceWeek == sourceWeek),
+        )
+        .toList()
+      ..sort(CourseTask.compareByDueDate);
+  }
+
+  DateTime? dateForCourseOccurrence(Course course, int week) {
+    final semesterStart = _settings.semesterStartDate;
+    if (semesterStart == null || week < 1) {
+      return null;
+    }
+    final startOfSemesterWeek = WeekCalculator.startOfWeek(semesterStart);
+    return startOfSemesterWeek.add(
+      Duration(days: (week - 1) * 7 + course.dayOfWeek - 1),
+    );
+  }
+
+  Future<void> addTask(CourseTask task) {
+    return _runMutation(() async {
+      final normalized = _normalizeTask(task);
+      _validateTask(normalized);
+      _tasks = _sortTasks([..._tasks, normalized]);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'task_created',
+        parameters: {
+          'has_course': normalized.courseId == null ? 0 : 1,
+          'has_due_date': normalized.dueDate == null ? 0 : 1,
+        },
+      );
+    });
+  }
+
+  Future<void> updateTask(CourseTask task) {
+    return _runMutation(() async {
+      final index = _tasks.indexWhere((item) => item.id == task.id);
+      if (index == -1) {
+        return;
+      }
+      final normalized = _normalizeTask(
+        task,
+      ).copyWith(createdAt: _tasks[index].createdAt, updatedAt: DateTime.now());
+      _validateTask(normalized);
+      _tasks[index] = normalized;
+      _tasks = _sortTasks(_tasks);
+      await _persistActiveProfileState();
+      notifyListeners();
+    });
+  }
+
+  Future<void> toggleTaskCompleted(String taskId) {
+    return _runMutation(() async {
+      final index = _tasks.indexWhere((task) => task.id == taskId);
+      if (index == -1) {
+        return;
+      }
+      final current = _tasks[index];
+      _tasks[index] = current.copyWith(
+        isCompleted: !current.isCompleted,
+        updatedAt: DateTime.now(),
+      );
+      _tasks = _sortTasks(_tasks);
+      await _persistActiveProfileState();
+      notifyListeners();
+    });
+  }
+
+  Future<void> deleteTask(String taskId) {
+    return _runMutation(() async {
+      final index = _tasks.indexWhere((task) => task.id == taskId);
+      if (index == -1) {
+        return;
+      }
+      final task = _tasks[index];
+      if (task.source == CourseTaskSource.homeworkMark &&
+          task.courseId != null &&
+          task.sourceWeek != null) {
+        final courseIndex = _courses.indexWhere((c) => c.id == task.courseId);
+        if (courseIndex != -1) {
+          final course = _courses[courseIndex];
+          final note = course.sessionNoteForWeek(task.sourceWeek!);
+          if (note != null) {
+            _courses[courseIndex] = course.copyWith(
+              sessionNotes: course.withSessionNote(
+                task.sourceWeek!,
+                note.copyWith(hasHomework: false),
+              ),
+            );
+          }
+        }
+      }
+      _tasks.removeAt(index);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'task_deleted',
+        parameters: {'remaining_task_count': _tasks.length},
+      );
+    });
+  }
+
+  CourseTask _normalizeTask(CourseTask task) {
+    final title = task.title.trim();
+    final note = task.note?.trim();
+    final courseId = task.courseId?.trim();
+    final sourceWeek = task.sourceWeek != null && task.sourceWeek! > 0
+        ? task.sourceWeek
+        : null;
+    return task.copyWith(
+      title: title,
+      courseId: courseId == null || courseId.isEmpty ? null : courseId,
+      sourceWeek: sourceWeek,
+      dueDate: task.dueDate == null ? null : CourseTask.dateOnly(task.dueDate!),
+      note: note == null || note.isEmpty ? null : note,
+      updatedAt: DateTime.now(),
+    );
+  }
+
+  void _validateTask(CourseTask task) {
+    if (task.title.isEmpty) {
+      throw ArgumentError('task_title_required');
+    }
+    if (task.courseId != null && getCourseById(task.courseId!) == null) {
+      throw ArgumentError('task_course_not_found');
+    }
+  }
+
+  List<CourseTask> _sortTasks(List<CourseTask> source) {
+    source.sort(CourseTask.compareByDueDate);
+    return source;
+  }
+
+  Future<bool> _syncHomeworkTasksWithCourses({bool persist = false}) async {
+    final before = jsonEncode(_tasks.map((task) => task.toJson()).toList());
+    final existingHomework = _tasks
+        .where((task) => task.source == CourseTaskSource.homeworkMark)
+        .toList();
+    final next = _tasks
+        .where((task) => task.source != CourseTaskSource.homeworkMark)
+        .toList();
+    final now = DateTime.now();
+
+    for (final course in _courses) {
+      final notes = course.normalizedSessionNotesMap;
+      if (notes == null) {
+        continue;
+      }
+      for (final entry in notes.entries) {
+        final note = entry.value;
+        if (!note.hasHomework) {
+          continue;
+        }
+        CourseTask? existing;
+        for (final candidate in existingHomework) {
+          if (candidate.courseId == course.id &&
+              candidate.sourceWeek == entry.key) {
+            existing = candidate;
+            break;
+          }
+        }
+        final noteTitle = note.trimmedText;
+        if (noteTitle.isEmpty && existing == null) {
+          continue;
+        }
+        final title = noteTitle.isEmpty ? existing!.title : noteTitle;
+        next.add(
+          (existing ??
+                  CourseTask(
+                    id: const Uuid().v4(),
+                    title: title,
+                    courseId: course.id,
+                    sourceWeek: entry.key,
+                    source: CourseTaskSource.homeworkMark,
+                    createdAt: now,
+                    updatedAt: now,
+                  ))
+              .copyWith(
+                title: title,
+                courseId: course.id,
+                sourceWeek: entry.key,
+                dueDate: dateForCourseOccurrence(course, entry.key),
+                source: CourseTaskSource.homeworkMark,
+                updatedAt: now,
+              ),
+        );
+      }
+    }
+
+    _tasks = _sortTasks(next);
+    final after = jsonEncode(_tasks.map((task) => task.toJson()).toList());
+    final changed = before != after;
+    if (changed && persist) {
+      await _persistActiveProfileState();
+    }
+    return changed;
+  }
+
+  /// Replace all schedule entries for a course group.  [updatedCourses] is
+  /// the full list of schedules that should exist after the update.
+  /// Shared metadata fields (name, short name, color, course nature,
+  /// description) are propagated to all entries; per-entry fields such as
+  /// teacher and location keep each slot’s own value.
+  Future<void> updateCourseGroup(
+    String originalName,
+    List<Course> updatedCourses,
+  ) {
+    return _runMutation(() async {
+      final key = buildSharedCourseNameKey(originalName);
+      // Remove old entries for this group.
+      _courses.removeWhere((c) => buildSharedCourseNameKey(c.name) == key);
+      // Add the updated entries, applying shared fields.
+      final shared = updatedCourses.first;
+      for (final course in updatedCourses) {
+        final normalized = _normalizeCourse(
+          CourseDomain.applySharedFields(course, shared),
+        );
+        _courses.add(normalized);
+        await _recordTeacherImpl(normalized.teacher);
+        await _recordLocationImpl(normalized.location);
+      }
+      _tasks.removeWhere(
+        (task) =>
+            task.courseId != null &&
+            !_courses.any((course) => course.id == task.courseId),
+      );
+      await _syncHomeworkTasksWithCourses();
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      _analytics.logEventLater(
+        name: 'course_group_updated',
+        parameters: {
+          'schedule_count': updatedCourses.length,
+          'remaining_course_count': _courses.length,
+        },
+      );
+      _updateLiveActivity();
+    });
+  }
+
+  /// Add multiple schedule entries for a new course group in one persist.
+  Future<void> addCourseGroup(List<Course> courses) {
+    return _runMutation(() async {
+      if (courses.isEmpty) {
+        return;
+      }
+      final shared = courses.first;
+      // 先收集到临时列表，验证全部通过后再批量添加，避免中途失败导致状态不一致
+      final normalizedCourses = <Course>[];
+      final teachers = <String>{};
+      final locations = <String>{};
+      for (final course in courses) {
+        final validationMessage = validateCourseTimeSchemeOverride(
+          timeSchemeId: course.timeSchemeIdOverride,
+          startSection: course.startSection,
+          endSection: course.endSection,
+        );
+        if (validationMessage != null) {
+          throw ArgumentError(validationMessage);
+        }
+        final normalized = _syncCourseWithEffectiveTimeScheme(
+          _normalizeCourse(CourseDomain.applySharedFields(course, shared)),
+        );
+        normalizedCourses.add(normalized);
+        if (normalized.teacher.isNotEmpty) teachers.add(normalized.teacher);
+        if (normalized.location.isNotEmpty) locations.add(normalized.location);
+      }
+      // 所有验证通过，批量添加
+      _courses.addAll(normalizedCourses);
+      await _syncHomeworkTasksWithCourses();
+      for (final teacher in teachers) {
+        await _recordTeacherImpl(teacher);
+      }
+      for (final location in locations) {
+        await _recordLocationImpl(location);
+      }
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'course_group_created',
+        parameters: {
+          'schedule_count': courses.length,
+          'remaining_course_count': _courses.length,
+        },
+      );
+      _updateLiveActivity();
+    });
+  }
+
+  /// 一键重刷整份课表颜色（导入后随时可用，无需重新导入）。
+  ///
+  /// [recoloredCourses] 是调用方基于当前 [courses] 算出的重刷副本
+  /// （见 `applyCourseRecolorScheme`），这里只按 id 对位覆盖并持久化，
+  /// 不触碰其余字段。返回实际改色的课程条数；无变化时不通知。
+  Future<int> applyCourseRecolors(List<Course> recoloredCourses) {
+    return _runMutation(() async {
+      if (recoloredCourses.isEmpty || _courses.isEmpty) {
+        return 0;
+      }
+      final recoloredById = {
+        for (final course in recoloredCourses) course.id: course,
+      };
+      final nextCourses = <Course>[];
+      var updatedCount = 0;
+      for (final course in _courses) {
+        final replacement = recoloredById[course.id];
+        if (replacement == null ||
+            (replacement.color == course.color &&
+                replacement.textColor == course.textColor)) {
+          nextCourses.add(course);
+          continue;
+        }
+        // 只覆盖颜色字段：recoloredCourses 可能来自 mutation 排队前的过期
+        // 快照（弹层先算副本、这里才执行），整对象替换会把其余字段的旧值
+        // 回写，覆盖掉排队期间别的路径（云同步/伙伴课表等）刚做的改动。
+        nextCourses.add(
+          course.copyWith(
+            color: replacement.color,
+            textColor: replacement.textColor,
+          ),
+        );
+        updatedCount++;
+      }
+      if (updatedCount == 0) {
+        return 0;
+      }
+      _courses = nextCourses;
+      await _persistActiveProfileState();
+      _currentLiveCourseId = null;
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'course_colors_refreshed',
+        parameters: {'course_count': updatedCount},
+      );
+      _updateLiveActivity();
+      return updatedCount;
+    });
+  }
+
+  /// 切换课程在指定周次的停课状态
+  Future<void> toggleCourseSuspension(String courseId, int week) {
+    return _runMutation(() => _toggleCourseSuspensionImpl(courseId, week));
+  }
+
+  Future<void> _toggleCourseSuspensionImpl(String courseId, int week) async {
+    await initialize();
+    final index = _courses.indexWhere((c) => c.id == courseId);
+    if (index == -1) return;
+
+    final course = _courses[index];
+    final currentSuspended = course.suspendedWeeks ?? [];
+    List<int> newSuspended;
+    if (currentSuspended.contains(week)) {
+      newSuspended = currentSuspended.where((w) => w != week).toList();
+    } else {
+      newSuspended = [...currentSuspended, week]..sort();
+    }
+    _courses[index] = course.copyWith(
+      suspendedWeeks: newSuspended.isEmpty ? null : newSuspended,
+    );
+    await _persistActiveProfileState();
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'course_suspension_toggled',
+      parameters: {
+        'course_id': courseId,
+        'week': week,
+        'suspended': !currentSuspended.contains(week),
+      },
+    );
+    await _updateLiveActivity();
+  }
+
+  /// 停课全部周次
+  Future<void> suspendAllWeeks(String courseId) {
+    return _runMutation(() => _suspendAllWeeksImpl(courseId));
+  }
+
+  Future<void> _suspendAllWeeksImpl(String courseId) async {
+    await initialize();
+    final index = _courses.indexWhere((c) => c.id == courseId);
+    if (index == -1) return;
+    final course = _courses[index];
+    final allWeeks = course.activeWeeks;
+    _courses[index] = course.copyWith(suspendedWeeks: allWeeks);
+    await _persistActiveProfileState();
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'course_all_weeks_suspended',
+      parameters: {'course_id': courseId},
+    );
+    await _updateLiveActivity();
+  }
+
+  /// 取消全部停课
+  Future<void> unsuspendAllWeeks(String courseId) {
+    return _runMutation(() => _unsuspendAllWeeksImpl(courseId));
+  }
+
+  Future<void> _unsuspendAllWeeksImpl(String courseId) async {
+    await initialize();
+    final index = _courses.indexWhere((c) => c.id == courseId);
+    if (index == -1) return;
+    _courses[index] = _courses[index].copyWith(suspendedWeeks: null);
+    await _persistActiveProfileState();
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'course_all_weeks_unsuspended',
+      parameters: {'course_id': courseId},
+    );
+    await _updateLiveActivity();
+  }
+
+  /// Returns concrete schedule occurrences for one local calendar date.
+  ///
+  /// The source item remains attached to each instance so callers can choose
+  /// between editing the whole series and editing only this occurrence.
+  List<ScheduleItemInstance> getScheduleItemInstancesForDate(DateTime date) {
+    return ScheduleItemExpander.instancesForDate(_scheduleItems, date);
+  }
+
+  List<ScheduleItemInstance> getScheduleItemOccurrencesForDate(DateTime date) {
+    return getScheduleItemInstancesForDate(date);
+  }
+
+  /// Expands all persisted items in an inclusive local calendar date range.
+  List<ScheduleItemInstance> getScheduleItemInstancesForRange(
+    DateTime fromDate,
+    DateTime toDate,
+  ) {
+    return ScheduleItemExpander.instancesForRange(
+      _scheduleItems,
+      fromDate,
+      toDate,
+    );
+  }
+
+  /// Backward-compatible source-item query used by existing screens.
+  List<ScheduleItem> getScheduleItemsForDate(DateTime date) {
+    return getScheduleItemInstancesForDate(
+      date,
+    ).map((instance) => instance.item).toList(growable: false);
+  }
+
+  Future<void> addScheduleItem(ScheduleItem item) {
+    return _runMutation(() async {
+      await initialize();
+      final normalizedItem = _normalizeScheduleItem(item);
+      _scheduleItems = _sortScheduleItems(<ScheduleItem>[
+        ..._scheduleItems,
+        normalizedItem,
+      ]);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'schedule_item_created',
+        parameters: {
+          'has_location': normalizedItem.location?.isNotEmpty == true ? 1 : 0,
+          'has_note': normalizedItem.note?.isNotEmpty == true ? 1 : 0,
+        },
+      );
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  Future<void> updateScheduleItem(ScheduleItem item) {
+    return _runMutation(() async {
+      await initialize();
+      final index = _scheduleItems.indexWhere(
+        (existing) => existing.id == item.id,
+      );
+      if (index == -1) {
+        return;
+      }
+
+      final normalizedItem = _normalizeScheduleItem(item);
+      final nextItems = List<ScheduleItem>.from(_scheduleItems);
+      final existing = nextItems[index];
+      if (existing.seriesId == null) {
+        // Updating a root item means "all occurrences". Single-occurrence
+        // overrides are intentionally discarded by this series operation.
+        nextItems.removeWhere((candidate) => candidate.seriesId == existing.id);
+      }
+      final nextIndex = nextItems.indexWhere(
+        (candidate) => candidate.id == existing.id,
+      );
+      if (nextIndex == -1) {
+        return;
+      }
+      nextItems[nextIndex] = normalizedItem;
+      _scheduleItems = _sortScheduleItems(nextItems);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'schedule_item_updated',
+        parameters: {
+          'has_location': normalizedItem.location?.isNotEmpty == true ? 1 : 0,
+          'has_note': normalizedItem.note?.isNotEmpty == true ? 1 : 0,
+        },
+      );
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  Future<void> deleteScheduleItem(String itemId) {
+    return _runMutation(() async {
+      await initialize();
+      final target = _findScheduleItem(itemId);
+      if (target == null) {
+        return;
+      }
+      final seriesId = target.seriesId ?? target.id;
+      final previousCount = _scheduleItems.length;
+      _scheduleItems = _scheduleItems
+          .where((item) => item.id != seriesId && item.seriesId != seriesId)
+          .toList(growable: false);
+      if (_scheduleItems.length == previousCount) {
+        return;
+      }
+
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'schedule_item_deleted',
+        parameters: {'remaining_schedule_item_count': _scheduleItems.length},
+      );
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  /// Deletes one occurrence while leaving the rest of its series intact.
+  Future<void> deleteScheduleItemOccurrence(
+    String itemId,
+    DateTime occurrenceDate,
+  ) {
+    return _runMutation(() async {
+      await initialize();
+      final target = _findScheduleItem(itemId);
+      final root = _findSeriesRoot(target);
+      if (root == null) {
+        return;
+      }
+
+      final requestedDate =
+          target?.seriesId != null && target?.occurrenceDate != null
+          ? target!.occurrenceDate!
+          : ScheduleItem.dateOnly(occurrenceDate);
+      final hasOverride = _scheduleItems.any(
+        (item) => _isOverrideForOccurrence(item, root.id, requestedDate),
+      );
+      if (!root.occursOn(requestedDate) && !hasOverride) {
+        return;
+      }
+
+      // A date-only one-off has no remaining occurrences after this operation,
+      // so removing its persisted row matches whole-item deletion semantics.
+      if (root.seriesId == null &&
+          root.recurrence == ScheduleRecurrence.none &&
+          _isSameDate(root.startDate, root.endDate) &&
+          _isSameDate(root.startDate, requestedDate)) {
+        await deleteScheduleItem(root.id);
+        return;
+      }
+
+      final updatedRoot = root.copyWith(
+        exceptionDates: _normalizedExceptionDates(
+          root.exceptionDates,
+          requestedDate,
+        ),
+        updatedAt: DateTime.now(),
+      );
+      final nextItems = <ScheduleItem>[];
+      for (final item in _scheduleItems) {
+        if (item.id == root.id) {
+          nextItems.add(updatedRoot);
+        } else if (_isOverrideForOccurrence(item, root.id, requestedDate)) {
+          continue;
+        } else {
+          nextItems.add(item);
+        }
+      }
+      _scheduleItems = _sortScheduleItems(nextItems);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'schedule_item_occurrence_deleted',
+        parameters: {
+          'schedule_item_id': root.id,
+          'occurrence_date': ScheduleItem.formatCalendarDate(requestedDate),
+        },
+      );
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  /// Edits one occurrence by replacing it with a persisted one-time override.
+  /// The base series stores the original date as an exception, so the base
+  /// occurrence cannot reappear alongside the override.
+  ///
+  /// Existing editors use [root.startDate] as an unchanged-date sentinel. Set
+  /// [dateWasExplicitlyEdited] when the user intentionally moves an occurrence
+  /// to that same date, so the move remains distinguishable from that legacy
+  /// sentinel.
+  Future<void> updateScheduleItemOccurrence(
+    String itemId,
+    DateTime occurrenceDate,
+    ScheduleItem updatedItem, {
+    bool dateWasExplicitlyEdited = false,
+  }) {
+    return _runMutation(() async {
+      await initialize();
+      final target = _findScheduleItem(itemId);
+      final root = _findSeriesRoot(target);
+      if (root == null) {
+        return;
+      }
+
+      final requestedDate =
+          target?.seriesId != null && target?.occurrenceDate != null
+          ? target!.occurrenceDate!
+          : ScheduleItem.dateOnly(occurrenceDate);
+      final existingOverride = _scheduleItems.any(
+        (item) => _isOverrideForOccurrence(item, root.id, requestedDate),
+      );
+      if (!root.occursOn(requestedDate) && !existingOverride) {
+        return;
+      }
+
+      // Editing the only occurrence of a one-off can update the original row,
+      // retaining its established id and avoiding an unnecessary override.
+      if (root.seriesId == null &&
+          root.recurrence == ScheduleRecurrence.none &&
+          _isSameDate(root.startDate, root.endDate) &&
+          _isSameDate(root.startDate, requestedDate)) {
+        await updateScheduleItem(updatedItem.copyWith(id: root.id));
+        return;
+      }
+
+      final effectiveDate = _resolveOccurrenceEditDate(
+        root: root,
+        occurrenceDate: requestedDate,
+        updatedItem: updatedItem,
+        dateWasExplicitlyEdited: dateWasExplicitlyEdited,
+      );
+      final overrideId = ScheduleItem.buildOccurrenceId(root.id, requestedDate);
+      final override = _normalizeScheduleItem(
+        updatedItem.copyWith(
+          id: overrideId,
+          startDate: effectiveDate,
+          endDate: effectiveDate,
+          recurrence: ScheduleRecurrence.none,
+          exceptionDates: const <DateTime>[],
+          seriesId: root.id,
+          occurrenceDate: requestedDate,
+        ),
+      );
+      final updatedRoot = root.copyWith(
+        exceptionDates: _normalizedExceptionDates(
+          root.exceptionDates,
+          requestedDate,
+        ),
+        updatedAt: DateTime.now(),
+      );
+      final nextItems = <ScheduleItem>[];
+      for (final item in _scheduleItems) {
+        if (item.id == root.id) {
+          nextItems.add(updatedRoot);
+        } else if (_isOverrideForOccurrence(item, root.id, requestedDate)) {
+          continue;
+        } else {
+          nextItems.add(item);
+        }
+      }
+      nextItems.add(override);
+      _scheduleItems = _sortScheduleItems(nextItems);
+      await _persistActiveProfileState();
+      notifyListeners();
+      _analytics.logEventLater(
+        name: 'schedule_item_occurrence_updated',
+        parameters: {
+          'schedule_item_id': root.id,
+          'occurrence_date': ScheduleItem.formatCalendarDate(requestedDate),
+        },
+      );
+      unawaited(_syncExamReminders());
+    });
+  }
+
+  /// Convenience API for callers holding the stable occurrence id.
+  Future<void> deleteScheduleItemInstance(String occurrenceId) {
+    return _runMutation(() async {
+      await initialize();
+      final instance = _findScheduleItemInstanceById(occurrenceId);
+      if (instance == null) {
+        return;
+      }
+      await deleteScheduleItemOccurrence(
+        instance.sourceItemId,
+        instance.occurrenceDate,
+      );
+    });
+  }
+
+  /// Convenience API for callers holding the stable occurrence id.
+  Future<void> updateScheduleItemInstance(
+    String occurrenceId,
+    ScheduleItem updatedItem, {
+    bool dateWasExplicitlyEdited = false,
+  }) {
+    return _runMutation(() async {
+      await initialize();
+      final instance = _findScheduleItemInstanceById(occurrenceId);
+      if (instance == null) {
+        return;
+      }
+      await updateScheduleItemOccurrence(
+        instance.sourceItemId,
+        instance.occurrenceDate,
+        updatedItem,
+        dateWasExplicitlyEdited: dateWasExplicitlyEdited,
+      );
+    });
+  }
+
+  Future<void> updateScheduleItemSeries(ScheduleItem item) {
+    return updateScheduleItem(item);
+  }
+
+  Future<void> deleteScheduleItemSeries(String itemId) {
+    return deleteScheduleItem(itemId);
+  }
+
+  ScheduleItem? getScheduleItemById(String itemId) {
+    return _findScheduleItem(itemId);
+  }
+
+  ScheduleItem? getScheduleItemSeriesRoot(String itemId) {
+    return _findSeriesRoot(_findScheduleItem(itemId));
+  }
+
+  // ---- 考试 CRUD ----
+
+  Exam? getExamById(String id) {
+    for (final exam in _exams) {
+      if (exam.id == id) return exam;
+    }
+    return null;
+  }
+
+  Course? getCourseForExam(Exam exam) => getCourseById(exam.courseId);
+
+  /// 根据课程 ID 查找课程，找不到返回 null。
+  Course? getCourseById(String id) {
+    for (final course in _courses) {
+      if (course.id == id) return course;
+    }
+    return null;
+  }
+
+  /// 计算 [date] 在学期中的周次（从 1 开始），周一为每周起始日。
+  /// 返回 null 表示 [date] 早于学期开始日期。
+  int? getWeekIndex(DateTime date, DateTime semesterStart) =>
+      WeekCalculator.getWeekIndex(date, semesterStart);
+
+  List<Exam> getExamsForCourse(String courseId) {
+    return _exams.where((exam) => exam.courseId == courseId).toList()
+      ..sort(Exam.compareByStart);
+  }
+
+  List<Exam> getUpcomingExams({int? limit}) {
+    final upcoming = _exams.where((exam) => !exam.isExpired).toList()
+      ..sort(Exam.compareByStart);
+    if (limit != null && upcoming.length > limit) {
+      return upcoming.sublist(0, limit);
+    }
+    return upcoming;
+  }
+
+  Exam? getNextExam() {
+    final upcoming = getUpcomingExams(limit: 1);
+    return upcoming.isEmpty ? null : upcoming.first;
+  }
+
+  bool hasExamOnDate(DateTime date) {
+    final target = DateTime(date.year, date.month, date.day);
+    return _exams.any((exam) {
+      final examDate = DateTime(
+        exam.dateTime.year,
+        exam.dateTime.month,
+        exam.dateTime.day,
+      );
+      return examDate == target;
+    });
+  }
+
+  Future<void> addExam(Exam exam) {
+    return _runMutation(() async {
+      await initialize();
+      if (getCourseForExam(exam) == null) {
+        throw ArgumentError('linked_course_not_found');
+      }
+      _exams.add(exam);
+      await _persistActiveProfileState();
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      // Native widgets re-read profiles; force a snapshot push so exam line
+      // appears without waiting for the next course-boundary refresh.
+      _lastHomeWidgetSnapshotSignature = null;
+      unawaited(_syncHomeWidgetSnapshot());
+      _analytics.logEventLater(
+        name: 'exam_created',
+        parameters: {
+          'has_location': exam.location?.isNotEmpty == true ? 1 : 0,
+          'has_seat': exam.seatNumber?.isNotEmpty == true ? 1 : 0,
+        },
+      );
+    });
+  }
+
+  Future<void> updateExam(Exam exam) {
+    return _runMutation(() async {
+      await initialize();
+      final index = _exams.indexWhere((e) => e.id == exam.id);
+      if (index == -1) return;
+      _exams[index] = exam;
+      await _persistActiveProfileState();
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      _lastHomeWidgetSnapshotSignature = null;
+      unawaited(_syncHomeWidgetSnapshot());
+      _analytics.logEventLater(
+        name: 'exam_updated',
+        parameters: {'exam_id': exam.id},
+      );
+    });
+  }
+
+  Future<void> deleteExam(String examId) {
+    return _runMutation(() async {
+      await initialize();
+      _exams.removeWhere((e) => e.id == examId);
+      await _persistActiveProfileState();
+      notifyListeners();
+      unawaited(_syncExamReminders());
+      _lastHomeWidgetSnapshotSignature = null;
+      unawaited(_syncHomeWidgetSnapshot());
+      _analytics.logEventLater(
+        name: 'exam_deleted',
+        parameters: {'remaining_exam_count': _exams.length},
+      );
+    });
+  }
+
+  /// 每次考试/课程/单节课提醒 CRUD 后都会全量 reconcile 原生提醒
+  /// （25+ 个 `unawaited(_syncExamReminders())` 点火点），批量导入时
+  /// 会形成 reconcile 风暴。收敛为单飞 + 脏标记：首轮立即执行（与原
+  /// fire-and-forget 时序一致），在飞期间的后续点火只置脏，由在飞收尾
+  /// 按最新数据补跑一轮，N 次点火合并为最多 2 次 reconcile。
+  Future<void>? _examReminderSyncInFlight;
+  bool _examReminderDirty = false;
+
+  /// Reconcile native exam-reminder alarms with the active profile exam list.
+  Future<void> _syncExamReminders() {
+    final inFlight = _examReminderSyncInFlight;
+    if (inFlight != null) {
+      // 在飞：标记脏即可，收尾的 while 循环会按最新数据补跑一轮
+      // （不另起新周期，保持单飞语义）。
+      _examReminderDirty = true;
+      return inFlight;
+    }
+    _examReminderDirty = false;
+    final completer = Completer<void>();
+    _examReminderSyncInFlight = completer.future;
+    unawaited(() async {
+      try {
+        await _syncExamRemindersImpl();
+        // 在飞期间的点火：补跑一轮拿最新数据，直到安静。
+        while (_examReminderDirty) {
+          _examReminderDirty = false;
+          await _syncExamRemindersImpl();
+        }
+        completer.complete();
+      } catch (error) {
+        appDebugLog('ExamReminder', 'sync failed: $error');
+        completer.complete();
+      } finally {
+        if (identical(_examReminderSyncInFlight, completer.future)) {
+          _examReminderSyncInFlight = null;
+        }
+      }
+    }());
+    return completer.future;
+  }
+
+  Future<void> _syncExamRemindersImpl() async {
+    try {
+      // 上课/考试提醒是「我的课」的提醒，与主界面正在浏览哪份课表无关：
+      // 当前课表切到 TA 后仍按「我的课表」排程，否则点开对方的课表看一眼
+      // 就会把自己的提醒换成对方的。
+      final scope = _liveSurfaceScope(this);
+      final scopeCourses = scope?.courses ?? courses;
+      final reminderSettings = scope?.settings ?? settings;
+      final coursesById = <String, Course>{
+        for (final course in scopeCourses) course.id: course,
+      };
+      await _examReminderService.reconcile(
+        exams: scope?.exams ?? _exams,
+        resolveCourse: (exam) => coursesById[exam.courseId],
+        scheduleItems: scope?.scheduleItems ?? _scheduleItems,
+        // 单节课提醒与考试/日程共用同一原生调度管线：全量重建，
+        // 课程被删、日期已过或条目非法都会在这里被自然过滤。
+        additionalFires: ClassReminderService.buildFires(
+          entries: reminderSettings.classReminders,
+          resolveCourse: (courseId) => coursesById[courseId],
+        ),
+      );
+    } catch (error) {
+      appDebugLog('ExamReminder', 'sync failed: $error');
+    }
+  }
+
+  /// 查询某节课在某个真实日期的提醒条目；无则返回 null。
+  ClassReminderEntry? classReminderFor(String courseId, String date) {
+    for (final entry in settings.classReminders) {
+      if (entry.courseId == courseId && entry.date == date) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+  /// 设置（或覆盖）某节课某天的提醒；同课同日只保留一条。
+  Future<void> setClassReminder(ClassReminderEntry entry) async {
+    final current = settings;
+    final rest =
+        current.classReminders
+            .where(
+              (existing) =>
+                  !(existing.courseId == entry.courseId &&
+                      existing.date == entry.date),
+            )
+            .toList()
+          ..add(entry)
+          ..sort((a, b) {
+            final byDate = a.date.compareTo(b.date);
+            if (byDate != 0) {
+              return byDate;
+            }
+            return a.minuteOfDay.compareTo(b.minuteOfDay);
+          });
+    await updateSettings(current.copyWith(classReminders: rest));
+    unawaited(_syncExamReminders());
+  }
+
+  /// 取消某节课某天的提醒；不存在时静默幂等。
+  Future<void> removeClassReminder(String courseId, String date) async {
+    final current = settings;
+    final rest = current.classReminders
+        .where(
+          (existing) =>
+              !(existing.courseId == courseId && existing.date == date),
+        )
+        .toList();
+    if (rest.length == current.classReminders.length) {
+      return;
+    }
+    await updateSettings(current.copyWith(classReminders: rest));
+    unawaited(_syncExamReminders());
+  }
+
+  // ---- 节假日相关 ----
+
+  /// 节假日加载后要重置快照签名并强推桌面卡片/超级岛，与 switchProfile
+  /// 的 [_syncLiveScheduleSnapshot] 共用 live surface gate 串行化，
+  /// 避免交错时用旧课表推送一次小组件。
+  Future<void> _loadHolidayData() =>
+      _runLiveSurfaceExclusive(_loadHolidayDataImpl);
+
+  Future<void> _loadHolidayDataImpl() async {
+    try {
+      final now = DateTime.now();
+      final data = await _holidayService.getDataForYear(now.year);
+      final allEntries = <HolidayEntry>[...data.entries];
+      // If semester spans two years, also load next year
+      if (now.month >= 11) {
+        final nextYearData = await _holidayService.getDataForYear(now.year + 1);
+        allEntries.addAll(nextYearData.entries);
+      }
+      // Merge user-defined custom holidays. Null means the persisted data is
+      // corrupted (logged inside the service): skip merging instead of
+      // treating it as "no data" so a later save cannot wipe real entries.
+      final customEntries = await _holidayService.loadCustomHolidays();
+      if (customEntries != null) {
+        allEntries.addAll(customEntries);
+      }
+      _holidayData = HolidayData(
+        year: data.year,
+        version: data.version,
+        entries: allEntries,
+      );
+      notifyListeners();
+      // Holiday data is not stored in timetable profiles; force home widget /
+      // live schedule resync so desktop widgets pick up vacation days.
+      _lastHomeWidgetSnapshotSignature = null;
+      _lastLiveSnapshotSignature = null;
+      _currentLiveCourseId = null;
+      _lastLiveActivityStageKey = null;
+      // Full body: home widget + schedule snapshot + stopLiveUpdate when holiday.
+      await _updateLiveActivity();
+    } catch (e, stackTrace) {
+      // Holiday data is non-critical; keep going but leave a trace so a
+      // "vacation days missing on widget" report is diagnosable.
+      await AppLogService.instance.warn(
+        'holiday_data_refresh_failed',
+        e.toString(),
+        error: e,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  /// 获取指定日期的节假日条目
+  HolidayEntry? getHolidayForDate(DateTime date) {
+    return _holidayData?.entryForDate(date);
+  }
+
+  /// 当前加载的节假日数据信息
+  HolidayData? get holidayData => _holidayData;
+
+  /// 节假日数据更新日志
+  List<HolidayLogEntry> get holidayLogs => _holidayService.logs;
+
+  /// Refresh holiday data (clear cache and reload)
+  Future<void> refreshHolidayData() async {
+    await _holidayService.clearCache(DateTime.now().year);
+    await _loadHolidayData();
+  }
+
+  /// 用户自定义假期列表（不含远程/内置数据）
+  ///
+  /// 本地数据损坏时返回空列表兜底（损坏详情由 service 落日志），只读
+  /// 展示场景无法修复损坏，也没有写回风险。
+  Future<List<HolidayEntry>> getCustomHolidays() async {
+    return await _holidayService.loadCustomHolidays() ?? const [];
+  }
+
+  /// 读取自定义假期，数据损坏时返回 null（区别于「没有数据」的空列表）。
+  /// 供设置页区分「暂无」与「损坏」并给出提示条（getCustomHolidays 会把
+  /// 损坏兜底成空列表，用户会误以为没有数据，见 Issue #52 审核 S4）。
+  Future<List<HolidayEntry>?> loadCustomHolidaysOrNull() {
+    return _holidayService.loadCustomHolidays();
+  }
+
+  /// 新增一条自定义假期
+  Future<void> addCustomHoliday(HolidayEntry entry) async {
+    await _holidayService.addCustomHoliday(entry);
+    await _loadHolidayData();
+  }
+
+  /// 批量新增自定义假期（单次 load → append → save，避免逐条写入的竞态问题）
+  Future<void> addCustomHolidays(List<HolidayEntry> entries) async {
+    final existing = await _holidayService.loadCustomHolidays();
+    if (existing == null) {
+      // 本地数据损坏：禁止把空列表 append 后写回（会覆盖清零真实数据）。
+      throw const HolidayCustomSaveException(
+        'custom holiday storage corrupted; refusing to overwrite',
+      );
+    }
+    existing.addAll(entries);
+    await _holidayService.saveCustomHolidays(existing);
+    await _loadHolidayData();
+  }
+
+  /// 按 groupId 删除自定义假期
+  Future<void> removeCustomHoliday(String groupId) async {
+    await _holidayService.removeCustomHoliday(groupId);
+    await _loadHolidayData();
+  }
+
+  /// 按 groupId 更新自定义假期
+  Future<void> updateCustomHoliday(
+    String groupId,
+    List<HolidayEntry> newEntries,
+  ) async {
+    await _holidayService.updateCustomHoliday(groupId, newEntries);
+    await _loadHolidayData();
+  }
+
+  /// 指定日期是否为假期（应隐藏课程）
+  bool isHoliday(DateTime date) {
+    return HolidayResolver.isHoliday(
+      date,
+      data: _holidayData,
+      overrideEnabled: _settings.holidayOverrideEnabled,
+      markingEnabled: _settings.enableHolidayMarking,
+    );
+  }
+
+  /// 指定日期是否为调休上班日
+  bool isAdjustedWorkday(DateTime date) {
+    return HolidayResolver.isAdjustedWorkday(date, data: _holidayData);
+  }
+
+  Future<bool> deleteCourseOccurrence({
+    required String courseId,
+    required int sourceWeek,
+  }) {
+    return _runMutation(
+      () => _deleteCourseOccurrenceImpl(
+        courseId: courseId,
+        sourceWeek: sourceWeek,
+      ),
+    );
+  }
+
+  Future<bool> _deleteCourseOccurrenceImpl({
+    required String courseId,
+    required int sourceWeek,
+  }) async {
+    await initialize();
+    final index = _courses.indexWhere((course) => course.id == courseId);
+    if (index == -1) {
+      throw ArgumentError('course_not_found_for_delete');
+    }
+
+    final originalCourse = _courses[index];
+    if (!originalCourse.isInWeek(sourceWeek)) {
+      throw ArgumentError(
+        encodeServiceMessage('course_not_scheduled_week', {
+          'sourceWeek': sourceWeek,
+        }),
+      );
+    }
+
+    final remainingWeeks =
+        originalCourse.activeWeeks.where((week) => week != sourceWeek).toList()
+          ..sort();
+
+    if (remainingWeeks.isEmpty) {
+      _courses.removeAt(index);
+    } else {
+      _courses[index] = _syncCourseWithEffectiveTimeScheme(
+        _normalizeCourse(
+          originalCourse.copyWith(
+            startWeek: remainingWeeks.first,
+            endWeek: remainingWeeks.last,
+            isOddWeek: false,
+            isEvenWeek: false,
+            customWeeks: remainingWeeks,
+            sessionNotes: originalCourse.sessionNotesExcludingWeek(sourceWeek),
+          ),
+        ),
+      );
+    }
+
+    await _syncHomeworkTasksWithCourses();
+    await _persistActiveProfileState();
+    _currentLiveCourseId = null;
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'course_occurrence_deleted',
+      parameters: {
+        'source_week': sourceWeek,
+        'remaining_course_count': _courses.length,
+      },
+    );
+    await _updateLiveActivity();
+    return true;
+  }
+
+  Future<bool> rescheduleCourseOccurrence({
+    required String courseId,
+    required int sourceWeek,
+    required int targetWeek,
+    required int targetDayOfWeek,
+    required int targetStartSection,
+    required int targetEndSection,
+    String? targetLocation,
+    String? targetTimeSchemeIdOverride,
+  }) {
+    return _runMutation(
+      () => _rescheduleCourseOccurrenceImpl(
+        courseId: courseId,
+        sourceWeek: sourceWeek,
+        targetWeek: targetWeek,
+        targetDayOfWeek: targetDayOfWeek,
+        targetStartSection: targetStartSection,
+        targetEndSection: targetEndSection,
+        targetLocation: targetLocation,
+        targetTimeSchemeIdOverride: targetTimeSchemeIdOverride,
+      ),
+    );
+  }
+
+  Future<bool> _rescheduleCourseOccurrenceImpl({
+    required String courseId,
+    required int sourceWeek,
+    required int targetWeek,
+    required int targetDayOfWeek,
+    required int targetStartSection,
+    required int targetEndSection,
+    String? targetLocation,
+    String? targetTimeSchemeIdOverride,
+  }) async {
+    await initialize();
+    final index = _courses.indexWhere((course) => course.id == courseId);
+    if (index == -1) {
+      throw ArgumentError('course_not_found_for_reschedule');
+    }
+
+    final originalCourse = _courses[index];
+    if (!originalCourse.isInWeek(sourceWeek)) {
+      throw ArgumentError(
+        encodeServiceMessage('course_not_scheduled_week', {
+          'sourceWeek': sourceWeek,
+        }),
+      );
+    }
+    if (targetWeek < 1 || targetWeek > _settings.semesterWeekCount) {
+      throw ArgumentError('target_week_out_of_range');
+    }
+
+    final validationMessage = validateCourseTimeSchemeOverride(
+      timeSchemeId:
+          targetTimeSchemeIdOverride ?? originalCourse.timeSchemeIdOverride,
+      startSection: targetStartSection,
+      endSection: targetEndSection,
+    );
+    if (validationMessage != null) {
+      throw ArgumentError(validationMessage);
+    }
+
+    final normalizedLocation =
+        targetLocation?.trim() ?? originalCourse.location;
+    final normalizedTimeSchemeId =
+        targetTimeSchemeIdOverride ?? originalCourse.timeSchemeIdOverride;
+    final isNoop =
+        sourceWeek == targetWeek &&
+        originalCourse.dayOfWeek == targetDayOfWeek &&
+        originalCourse.startSection == targetStartSection &&
+        originalCourse.endSection == targetEndSection &&
+        originalCourse.location == normalizedLocation &&
+        originalCourse.timeSchemeIdOverride == normalizedTimeSchemeId;
+    if (isNoop) {
+      return false;
+    }
+
+    final remainingWeeks =
+        originalCourse.activeWeeks.where((week) => week != sourceWeek).toList()
+          ..sort();
+
+    final movedOccurrence = _syncCourseWithEffectiveTimeScheme(
+      _normalizeCourse(
+        originalCourse.copyWith(
+          id: remainingWeeks.isEmpty ? originalCourse.id : const Uuid().v4(),
+          dayOfWeek: targetDayOfWeek,
+          startSection: targetStartSection,
+          endSection: targetEndSection,
+          location: normalizedLocation,
+          startWeek: targetWeek,
+          endWeek: targetWeek,
+          isOddWeek: false,
+          isEvenWeek: false,
+          customWeeks: [targetWeek],
+          timeSchemeIdOverride: normalizedTimeSchemeId,
+          sessionNotes: originalCourse.sessionNotesForSingleWeek(
+            sourceWeek: sourceWeek,
+            targetWeek: targetWeek,
+          ),
+        ),
+      ),
+    );
+
+    if (remainingWeeks.isEmpty) {
+      _courses[index] = movedOccurrence;
+    } else {
+      _courses[index] = _syncCourseWithEffectiveTimeScheme(
+        _normalizeCourse(
+          originalCourse.copyWith(
+            startWeek: remainingWeeks.first,
+            endWeek: remainingWeeks.last,
+            isOddWeek: false,
+            isEvenWeek: false,
+            customWeeks: remainingWeeks,
+            sessionNotes: originalCourse.sessionNotesExcludingWeek(sourceWeek),
+          ),
+        ),
+      );
+      _courses.add(movedOccurrence);
+    }
+
+    await _syncHomeworkTasksWithCourses();
+    await _persistActiveProfileState();
+    _currentLiveCourseId = null;
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'course_rescheduled',
+      parameters: {
+        'source_week': sourceWeek,
+        'target_week': targetWeek,
+        'target_day_of_week': targetDayOfWeek,
+      },
+    );
+    await _updateLiveActivity();
+    return true;
+  }
+
+  Future<bool> clearActiveProfileCourses() {
+    return _runMutation(_clearActiveProfileCoursesImpl);
+  }
+
+  Future<bool> _clearActiveProfileCoursesImpl() async {
+    await initialize();
+    final clearedCourseCount = _courses.length;
+    if (clearedCourseCount == 0) {
+      return false;
+    }
+
+    _courses = [];
+    _tasks.removeWhere((task) => task.courseId != null);
+    await _persistActiveProfileState();
+    _currentLiveCourseId = null;
+    notifyListeners();
+    _analytics.logEventLater(
+      name: 'courses_cleared',
+      parameters: {'cleared_course_count': clearedCourseCount},
+    );
+    await _updateLiveActivity();
+    return true;
+  }
+
+  /// Persists home view mode / last viewed day without the full settings
+  /// pipeline: no notifyListeners (the home State owns this UI state locally),
+  /// no live-activity / native pref sync — nothing there reads these fields.
+  ///
+  /// Routing this through [updateTimetableSettings] made every day-view page
+  /// switch broadcast a whole-app rebuild plus platform-channel work while the
+  /// pager was still animating.
+  Future<void> persistHomeViewState({
+    required TimetableHomeViewMode mode,
+    required int dayOfWeek,
+  }) async {
+    if (_settings.timetableHomeViewMode == mode &&
+        _settings.timetableLastViewedDayOfWeek == dayOfWeek) {
+      return;
+    }
+    _settings = _settings.copyWith(
+      timetableHomeViewMode: mode,
+      timetableLastViewedDayOfWeek: dayOfWeek,
+    );
+    await _persistActiveProfileState();
+  }
+
+  Future<String?> updateTimetableSettings(TimetableSettings settings) async {
+    final sectionConfigChanged =
+        settings.sectionCount != _settings.sectionCount ||
+        _sectionSignature(settings.sections) !=
+            _sectionSignature(_settings.sections) ||
+        settings.activeTimeSchemeId != _settings.activeTimeSchemeId;
+
+    if (sectionConfigChanged && settings.sectionCount < maxUsedSection) {
+      return encodeServiceMessage('section_count_below_usage', {
+        'requiredMaxSection': maxUsedSection,
+      });
+    }
+
+    final previousBackdropPath = resolveHomePageBackdropImagePath(
+      this.settings,
+    );
+    final semesterStartChanged =
+        settings.semesterStartDate != _settings.semesterStartDate;
+    // 换学期（开学日变更）时，把旧学期的当前课表快照进「我的历史课表」。
+    // 快照体先同步读旧状态再落盘，不受下方 settings 覆盖影响。
+    _settings = _normalizeSettingsWithTimeScheme(
+      _applySettingsChangeToOwn(_settings, settings),
+    );
+    hyperosSetEdgeHapticsEnabled(this.settings.enableHaptics);
+    if (_settings.semesterStartDate != null) {
+      _currentCalendarWeek = _resolveCurrentCalendarWeek();
+      _currentDateWeek = clampCurrentWeekToSettings(
+        _currentCalendarWeek,
+        _settings,
+      );
+    }
+    // 开学时间被改动（设置页 / 云同步 / 导入合并）时，「当前周」立即按新
+    // 日期对齐——与 _applyProfileState 同一口径，避免「日期已改、周次仍旧」。
+    if (semesterStartChanged && _settings.semesterStartDate != null) {
+      _currentWeek = _currentDateWeek;
+    }
+    await _persistActiveProfileState();
+    unawaited(_syncNativeRuntimePreferences());
+    _lastLiveSnapshotSignature = null;
+    _currentLiveCourseId = null;
+    if (resolveHomePageBackdropImagePath(this.settings) !=
+        previousBackdropPath) {
+      await precacheHomePageBackdropImage(this.settings);
+    }
+    notifyListeners();
+    unawaited(_syncLiveScheduleSnapshot());
+    unawaited(_updateLiveActivity(syncScheduleSnapshot: false));
+    return null;
+  }
+
+  int previewWakeUpImportRequiredSectionCount(
+    String content, {
+    required bool replaceExisting,
+  }) => _timetablePreviewWakeUpImportRequiredSectionCount(
+    this,
+    content,
+    replaceExisting: replaceExisting,
+  );
+
+  int previewImportedCourseRequiredSectionCount(
+    List<Course> importedCourses, {
+    required bool replaceExisting,
+  }) => ImportExportLogic.previewImportedCourseRequiredSectionCount(
+    importedCourses: importedCourses,
+    currentSectionCount: _settings.sectionCount,
+  );
+
+  Future<String?> ensureSectionCapacityForImport(int requiredSectionCount) =>
+      _timetableEnsureSectionCapacityForImport(this, requiredSectionCount);
+
+  Future<int> importWakeUpCalendar(
+    String content, {
+    required bool replaceExisting,
+  }) => _timetableImportWakeUpCalendar(
+    this,
+    content,
+    replaceExisting: replaceExisting,
+  );
+
+  Future<int> importParsedCourses(
+    List<Course> importedCourses, {
+    required bool replaceExisting,
+    DateTime? semesterStart,
+    required String source,
+    bool preserveLocalColors = true,
+  }) => _timetableImportParsedCourses(
+    this,
+    importedCourses,
+    replaceExisting: replaceExisting,
+    semesterStart: semesterStart,
+    source: source,
+    preserveLocalColors: preserveLocalColors,
+  );
+
+  Future<String?> importAppDataBackup(String content) =>
+      _timetableImportAppDataBackup(this, content);
+
+  Future<String?> importAppDataBackupAsNewProfile(
+    String content, {
+    String? profileName,
+  }) => _timetableImportAppDataBackupAsNewProfile(
+    this,
+    content,
+    profileName: profileName,
+  );
+
+  Future<String?> importFullAppDataBackup(String content) =>
+      _timetableImportFullAppDataBackup(this, content);
+
+  /// Replaces the local "mine" profile from a single-profile cloud package.
+  Future<bool> restoreMyTimetable(String content) =>
+      _timetableRestoreMyTimetableFromCloud(this, content);
+
+  Future<void> syncCurrentWeekWithSemesterStart() =>
+      _runMutation(_syncCurrentWeekWithSemesterStartImpl);
+
+  /// 与 [switchProfile] 共用 mutation gate：否则并发切换课表时，周次会按
+  /// 旧课表的开学时间算出并覆写进新课表（周次口径 eec42680 的并发版）。
+  /// gate 同 Zone 重入语义使 [setCurrentWeek] 内层调用不会死锁。
+  Future<void> _syncCurrentWeekWithSemesterStartImpl() async {
+    final semesterStart = _settings.semesterStartDate;
+    if (semesterStart == null) {
+      return;
+    }
+
+    final now = DateTime.now();
+    final normalizedNow = WeekCalculator.startOfWeek(now);
+    final normalizedStart = WeekCalculator.startOfWeek(semesterStart);
+    final week = (normalizedNow.difference(normalizedStart).inDays ~/ 7) + 1;
+    final targetWeek = week < 1 ? 1 : week;
+    // Stay within the user-configured semester length. Do not auto-expand
+    // semesterWeekCount when the calendar has moved past the last teaching week.
+    _currentCalendarWeek = week < 0 ? 0 : week;
+    _currentDateWeek = targetWeek > _settings.semesterWeekCount
+        ? _settings.semesterWeekCount
+        : targetWeek;
+    await setCurrentWeek(
+      targetWeek > _settings.semesterWeekCount
+          ? _settings.semesterWeekCount
+          : targetWeek,
+    );
+  }
+
+  Future<bool> syncTemporalContext({DateTime? now}) {
+    return _runMutation(() => _syncTemporalContextImpl(now: now));
+  }
+
+  Future<bool> _syncTemporalContextImpl({DateTime? now}) async {
+    await initialize();
+    final reference = now ?? DateTime.now();
+    final targetDayOfWeek = reference.weekday;
+    final targetCalendarWeek = _settings.semesterStartDate == null
+        ? _currentCalendarWeek
+        : _calculateCalendarWeekForDate(
+            reference,
+            fallbackWeek: _currentCalendarWeek,
+          );
+    final targetWeek = _settings.semesterStartDate == null
+        ? _currentDateWeek
+        : _calculateWeekForDate(reference, fallbackWeek: _currentWeek);
+    final didChangeWeek =
+        _settings.semesterStartDate != null && targetWeek != _currentDateWeek;
+    final didChangeCalendarWeek = targetCalendarWeek != _currentCalendarWeek;
+    final didChangeDay = targetDayOfWeek != _currentDayOfWeek;
+
+    // Seasonal bulk-apply must run even when week/day labels did not change
+    // (e.g. cold start after midnight, or rule starts mid-session).
+    final didApplySeasonal = await _applyDueScheduleDateRules(now: reference);
+
+    if (!didChangeWeek && !didChangeCalendarWeek && !didChangeDay) {
+      return didApplySeasonal;
+    }
+
+    _currentCalendarWeek = targetCalendarWeek;
+    if (didChangeWeek) {
+      _currentDateWeek = clampCurrentWeekToSettings(targetWeek, _settings);
+    }
+    if (didChangeDay) {
+      _currentDayOfWeek = targetDayOfWeek;
+    }
+
+    // applyDueScheduleDateRules already notified if it mutated; still refresh
+    // week/day surfaces when only temporal labels changed.
+    if (!didApplySeasonal) {
+      _currentLiveCourseId = null;
+      notifyListeners();
+      await _updateLiveActivity();
+    } else {
+      notifyListeners();
+    }
+    return true;
+  }
+
+  Map<String, List<Course>> _buildCourseConflictMap({int? week}) {
+    return CourseDomain.buildConflictMap(_courses, week: week);
+  }
+
+  Course _normalizeCourse(Course course) {
+    final trimmedDescription = course.description?.trim();
+    final trimmedNote = course.note?.trim();
+    final resolvedDescription =
+        (trimmedDescription != null && trimmedDescription.isNotEmpty)
+        ? trimmedDescription
+        // Promote legacy per-entry note into the shared course description.
+        : ((trimmedNote != null && trimmedNote.isNotEmpty)
+              ? trimmedNote
+              : null);
+    final normalizedWeeks = Course.normalizeWeeks(
+      startWeek: course.startWeek,
+      endWeek: course.endWeek,
+      maxWeek: _settings.semesterWeekCount,
+    );
+    return course.copyWith(
+      name: course.name.trim(),
+      shortName: course.shortName?.trim().isEmpty == true
+          ? null
+          : course.shortName?.trim(),
+      teacher: course.teacher.trim(),
+      location: course.location.trim(),
+      description: resolvedDescription,
+      note: (trimmedNote != null && trimmedNote.isNotEmpty)
+          ? trimmedNote
+          : null,
+      startWeek: normalizedWeeks.startWeek,
+      endWeek: normalizedWeeks.endWeek,
+    );
+  }
+
+  ScheduleItem _normalizeScheduleItem(ScheduleItem item) {
+    final normalizedStartDate = DateTime(
+      item.startDate.year,
+      item.startDate.month,
+      item.startDate.day,
+    );
+    final normalizedEndDate = DateTime(
+      item.endDate.year,
+      item.endDate.month,
+      item.endDate.day,
+    );
+    return item.copyWith(
+      title: item.title.trim(),
+      location: item.location?.trim().isEmpty == true
+          ? null
+          : item.location?.trim(),
+      note: item.note?.trim().isEmpty == true ? null : item.note?.trim(),
+      startDate: normalizedStartDate,
+      endDate: normalizedEndDate.isBefore(normalizedStartDate)
+          ? normalizedStartDate
+          : normalizedEndDate,
+    );
+  }
+
+  ScheduleItem? _findScheduleItem(String itemId) {
+    for (final item in _scheduleItems) {
+      if (item.id == itemId) {
+        return item;
+      }
+    }
+    return null;
+  }
+
+  ScheduleItem? _findSeriesRoot(ScheduleItem? target) {
+    if (target == null) {
+      return null;
+    }
+    final rootId = target.seriesId ?? target.id;
+    return _findScheduleItem(rootId);
+  }
+
+  ScheduleItemInstance? _findScheduleItemInstanceById(String occurrenceId) {
+    for (final item in _scheduleItems) {
+      if (item.id != occurrenceId) {
+        continue;
+      }
+      if (item.seriesId != null) {
+        final date = item.occurrenceDate ?? item.startDate;
+        return ScheduleItemInstance(
+          item: item,
+          date: item.startDate,
+          occurrenceDate: date,
+        );
+      }
+      if (!item.isRecurring) {
+        return ScheduleItemInstance(item: item, date: item.startDate);
+      }
+    }
+
+    final separatorIndex = occurrenceId.lastIndexOf('@');
+    if (separatorIndex <= 0 || separatorIndex == occurrenceId.length - 1) {
+      return null;
+    }
+    final sourceId = occurrenceId.substring(0, separatorIndex);
+    final date = DateTime.tryParse(occurrenceId.substring(separatorIndex + 1));
+    final source = date == null ? null : _findScheduleItem(sourceId);
+    if (source == null || date == null) {
+      return null;
+    }
+    return ScheduleItemInstance(item: source, date: date);
+  }
+
+  bool _isOverrideForOccurrence(
+    ScheduleItem item,
+    String seriesId,
+    DateTime occurrenceDate,
+  ) {
+    if (item.seriesId != seriesId) {
+      return false;
+    }
+    final candidateDate = item.occurrenceDate ?? item.startDate;
+    return _isSameDate(candidateDate, occurrenceDate);
+  }
+
+  DateTime _resolveOccurrenceEditDate({
+    required ScheduleItem root,
+    required DateTime occurrenceDate,
+    required ScheduleItem updatedItem,
+    required bool dateWasExplicitlyEdited,
+  }) {
+    final requestedDate = ScheduleItem.dateOnly(updatedItem.startDate);
+    // A copy of the series item usually carries the series start date. Treat
+    // that unchanged value as "keep this occurrence's date" unless the caller
+    // explicitly reports that the date field was edited.
+    if (!dateWasExplicitlyEdited &&
+        _isSameDate(requestedDate, root.startDate)) {
+      return ScheduleItem.dateOnly(occurrenceDate);
+    }
+    return requestedDate;
+  }
+
+  List<DateTime> _normalizedExceptionDates(
+    List<DateTime> existing,
+    DateTime candidate,
+  ) {
+    final normalizedCandidate = ScheduleItem.dateOnly(candidate);
+    final merged = <String, DateTime>{};
+    for (final date in existing) {
+      final normalized = ScheduleItem.dateOnly(date);
+      merged[ScheduleItem.formatCalendarDate(normalized)] = normalized;
+    }
+    merged[ScheduleItem.formatCalendarDate(normalizedCandidate)] =
+        normalizedCandidate;
+    final result = merged.values.toList()..sort((a, b) => a.compareTo(b));
+    return result;
+  }
+
+  bool _isSameDate(DateTime left, DateTime right) {
+    return left.year == right.year &&
+        left.month == right.month &&
+        left.day == right.day;
+  }
+
+  List<ScheduleItem> _sortScheduleItems(List<ScheduleItem> source) {
+    source.sort((left, right) {
+      final dateCompare = left.startDate.compareTo(right.startDate);
+      if (dateCompare != 0) {
+        return dateCompare;
+      }
+      final startCompare = left.startTime.compareTo(right.startTime);
+      if (startCompare != 0) {
+        return startCompare;
+      }
+      final endCompare = left.endTime.compareTo(right.endTime);
+      if (endCompare != 0) {
+        return endCompare;
+      }
+      return left.id.compareTo(right.id);
+    });
+    return source;
+  }
+
+  int _calculateWeekForDate(DateTime date, {int? fallbackWeek}) {
+    return WeekCalculator.weekForDate(
+      date,
+      semesterStart: _settings.semesterStartDate,
+      semesterWeekCount: _settings.semesterWeekCount,
+      fallback: fallbackWeek ?? _currentCalendarWeek,
+    );
+  }
+
+  /// Real calendar week for [date] without clamping to [semesterWeekCount].
+  ///
+  /// UI week display clamps so users can stay on the last configured week after
+  /// the term ends. Live activity must use the calendar week so courses past
+  /// their [Course.endWeek] are not shown again (each school may use a
+  /// different [semesterWeekCount]).
+  int _calculateCalendarWeekForDate(DateTime date, {int? fallbackWeek}) {
+    return WeekCalculator.calendarWeekForDate(
+      date,
+      semesterStart: _settings.semesterStartDate,
+      fallback: fallbackWeek ?? _currentCalendarWeek,
+    );
+  }
+
+  int _resolveCurrentCalendarWeek() {
+    if (_settings.semesterStartDate == null) {
+      return _currentCalendarWeek;
+    }
+    return _calculateCalendarWeekForDate(
+      DateTime.now(),
+      fallbackWeek: _currentCalendarWeek,
+    );
+  }
+
+  int _resolveCurrentDateWeek() {
+    return clampCurrentWeekToSettings(_resolveCurrentCalendarWeek(), _settings);
+  }
+
+  List<Course> getCoursesForDay(int dayOfWeek, {int? week}) {
+    final targetWeek = week ?? _currentWeek;
+    return _courses
+        .where(
+          (course) =>
+              course.dayOfWeek == dayOfWeek && course.isInWeek(targetWeek),
+        )
+        .toList()
+      ..sort((a, b) => a.startSection.compareTo(b.startSection));
+  }
+
+  /// 获取指定天的有效课程（排除停课），用于小组件和超级岛
+  List<Course> getActiveCoursesForDay(int dayOfWeek, {int? week}) {
+    final targetWeek = week ?? _currentWeek;
+    return _courses
+        .where(
+          (course) =>
+              course.dayOfWeek == dayOfWeek &&
+              course.isActiveInWeek(targetWeek),
+        )
+        .toList()
+      ..sort((a, b) => a.startSection.compareTo(b.startSection));
+  }
+
+  List<Course> getTodayCourses({DateTime? now}) {
+    // After the term ends, UI currentDateWeek is clamped to semesterWeekCount.
+    // "Today's courses" must use the real calendar week so finished courses do
+    // not keep appearing every weekday that matches the last teaching week.
+    final reference = now ?? DateTime.now();
+    final targetWeek = _settings.semesterStartDate == null
+        ? _currentDateWeek
+        : _calculateCalendarWeekForDate(reference);
+    return getCoursesForDay(_currentDayOfWeek, week: targetWeek);
+  }
+
+  Course? getCurrentCourse() {
+    final todayCourses = getTodayCourses();
+    final now = DateTime.now();
+    final currentTime =
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+
+    for (final course in todayCourses) {
+      if (currentTime.compareTo(course.startTime) >= 0 &&
+          currentTime.compareTo(course.endTime) < 0) {
+        return course;
+      }
+    }
+    return null;
+  }
+
+  Course? getCourseInProgress({
+    required int dayOfWeek,
+    int? week,
+    DateTime? now,
+  }) {
+    final courses = getCoursesInProgress(
+      dayOfWeek: dayOfWeek,
+      week: week,
+      now: now,
+    );
+    return courses.isEmpty ? null : courses.first;
+  }
+
+  List<Course> getCoursesInProgress({
+    required int dayOfWeek,
+    int? week,
+    DateTime? now,
+  }) {
+    final reference = now ?? DateTime.now();
+    final targetWeek = week ?? _calculateWeekForDate(reference);
+    final currentMinutes = reference.hour * 60 + reference.minute;
+    final matches = <Course>[];
+
+    for (final course in getCoursesForDay(dayOfWeek, week: targetWeek)) {
+      final startMinutes = LiveActivityLogic.parseClockMinutes(
+        LiveActivityLogic.resolveRealTime(
+          course,
+          true,
+          _resolveSectionsForCourse(course),
+        ),
+      );
+      final endMinutes = LiveActivityLogic.parseClockMinutes(
+        LiveActivityLogic.resolveRealTime(
+          course,
+          false,
+          _resolveSectionsForCourse(course),
+        ),
+      );
+      if (startMinutes == null || endMinutes == null) {
+        continue;
+      }
+      if (currentMinutes >= startMinutes && currentMinutes < endMinutes) {
+        matches.add(resolveCourseDisplayName(course));
+      }
+    }
+    return matches;
+  }
+
+  Course? getNextCourse() {
+    final todayCourses = getTodayCourses();
+    final now = DateTime.now();
+    final currentTime =
+        '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+
+    for (final course in todayCourses) {
+      if (currentTime.compareTo(course.startTime) < 0) {
+        return course;
+      }
+    }
+    return null;
+  }
+
+  String? _normalizeShortName(String? shortName) {
+    final value = shortName?.trim();
+    if (value == null || value.isEmpty) {
+      return null;
+    }
+    return value;
+  }
+
+  String? resolveCourseShortName(Course course, {List<Course>? peers}) {
+    final directShortName = _normalizeShortName(course.shortName);
+    if (directShortName != null) {
+      return directShortName;
+    }
+
+    final normalizedName = course.name.trim();
+    if (normalizedName.isEmpty) {
+      return null;
+    }
+
+    for (final candidate in peers ?? _courses) {
+      if (candidate.id == course.id) {
+        continue;
+      }
+      if (candidate.name.trim() != normalizedName) {
+        continue;
+      }
+
+      final fallbackShortName = _normalizeShortName(candidate.shortName);
+      if (fallbackShortName != null) {
+        return fallbackShortName;
+      }
+    }
+
+    return null;
+  }
+
+  /// 课程显示名。同名课程的简称回退只在 [peers] 范围内查找：超级岛按
+  /// 「我的课表」计算时，不能拿当前正在展示的 TA 课表里的同名课当参照。
+  Course resolveCourseDisplayName(Course course, {List<Course>? peers}) {
+    final resolvedShortName = resolveCourseShortName(course, peers: peers);
+    if (resolvedShortName == null || resolvedShortName == course.shortName) {
+      return course;
+    }
+    return course.copyWith(shortName: resolvedShortName);
+  }
+
+  List<Map<String, dynamic>> buildLiveProgressMilestones(
+    Course course, {
+    int? startAtMillis,
+    int? endAtMillis,
+  }) => LiveActivityLogic.buildLiveProgressMilestones(
+    course,
+    _resolveSectionsForCourse(course),
+    startAtMillis: startAtMillis,
+    endAtMillis: endAtMillis,
+  );
+
+  List<int> buildLiveProgressBreakOffsetsMillis(
+    Course course, {
+    int? startAtMillis,
+    int? endAtMillis,
+  }) => LiveActivityLogic.buildLiveProgressBreakOffsetsMillis(
+    course,
+    _resolveSectionsForCourse(course),
+    startAtMillis: startAtMillis,
+    endAtMillis: endAtMillis,
+  );
+
+  LiveActivityCourseSelection? getLiveActivityCourseSelection({
+    DateTime? now,
+    bool allowUpcomingFallback = false,
+    int? week,
+  }) => _liveGetActivityCourseSelection(
+    this,
+    now: now,
+    allowUpcomingFallback: allowUpcomingFallback,
+    week: week,
+  );
+
+  LiveActivityCourseSelection? getTestLiveActivityCourseSelection({
+    DateTime? now,
+  }) => _liveGetTestActivityCourseSelection(this, now: now);
+
+  /// 今日小组件默认快照（未绑定指定课表的卡片读它）。
+  ///
+  /// 与超级岛同域：按「我的课表」计算，当前课表切到 TA 时不跟着走；
+  /// 需要固定展示某份课表的卡片走 [buildHomeWidgetSnapshotForProfile]。
+  HomeWidgetSnapshot? buildHomeWidgetSnapshot({DateTime? now}) {
+    final scope = _liveSurfaceScope(this);
+    return scope == null
+        ? null
+        : _liveBuildHomeWidgetSnapshot(this, scope, now: now);
+  }
+
+  HomeWidgetSnapshot? buildHomeWidgetSnapshotForProfile(
+    TimetableProfile profile, {
+    DateTime? now,
+  }) => _liveBuildHomeWidgetSnapshotForProfile(this, profile, now: now);
+
+  Future<CoupleTimetableWidgetSnapshot?> buildCoupleTimetableWidgetSnapshot() =>
+      _liveBuildCoupleWidgetSnapshot(this);
+
+  Future<void> syncCoupleTimetableWidgetSnapshot() =>
+      _liveSyncCoupleWidgetSnapshot(this);
+
+  /// 桌面情侣卡片点击课程后，请求首页展开该课程的详情弹窗。
+  ///
+  /// 原生行点击只把 courseId 递进来（见 [WidgetLaunchRouter]），弹出由
+  /// [TimetableScreen] 消费：启动早期首页尚未挂载时请求会保留，待首页
+  /// 挂载后由监听者补弹，不会丢。
+  String? _pendingCourseDetailCourseId;
+
+  bool get hasPendingCourseDetail => _pendingCourseDetailCourseId != null;
+
+  void requestCourseDetailOpen(String courseId) {
+    final trimmed = courseId.trim();
+    if (trimmed.isEmpty) {
+      return;
+    }
+    _pendingCourseDetailCourseId = trimmed;
+    notifyListeners();
+  }
+
+  String? consumePendingCourseDetailCourseId() {
+    final courseId = _pendingCourseDetailCourseId;
+    _pendingCourseDetailCourseId = null;
+    return courseId;
+  }
+
+  void suspendLiveActivitySyncFor(Duration duration) {
+    _liveActivitySuspendedUntil = DateTime.now().add(duration);
+  }
+
+  /// Clears a temporary live-sync pause (e.g. leftover from older test helpers).
+  void clearLiveActivitySyncSuspend() {
+    _liveActivitySuspendedUntil = null;
+  }
+
+  /// 超级岛选课实际使用的「今天日历周」，与 [getLiveActivityCourseSelection]
+  /// 同源（学期未设时回落 [_currentWeek]，学期开始前为 0）。供自检预设课
+  /// 按同一周次规则生成。
+  int get liveSelectionCalendarWeek {
+    final scope = _liveSurfaceScope(this);
+    // 与 [myTimetableProfile] 同域，但仍按「今天」现算：当前课表是本域时
+    // 该式与 [_resolveCurrentCalendarWeek] 完全等价。
+    return scope?.calendarWeekFor(DateTime.now()) ??
+        _resolveCurrentCalendarWeek();
+  }
+
+  bool get hasLiveTestFixtureCourses =>
+      _liveTestFixtureOverlayCourses.isNotEmpty;
+
+  /// 注入自检预设课（整体替换上一批）。只有超级岛管线可见，不进真实课表。
+  void armLiveTestFixtureCourses(List<Course> courses) {
+    if (courses.isEmpty) {
+      return;
+    }
+    _liveTestFixtureOverlayCourses = List.of(courses, growable: false);
+    notifyListeners();
+  }
+
+  void disarmLiveTestFixtureCourses() {
+    if (_liveTestFixtureOverlayCourses.isEmpty) {
+      return;
+    }
+    _liveTestFixtureOverlayCourses = const [];
+    notifyListeners();
+  }
+
+  /// 预设课全部结束（按其自由时钟）时摘除覆盖层，返回是否真的摘了。
+  /// 未结束（含节假日等选课为空的场景）时保持挂载，阶段空窗由岛自身停止。
+  /// 注意：这是管线路径（[_liveUpdateActivityBody] 顶部调用，fire-and-forget，
+  /// 可能跨越 provider 生命周期完成），刻意不发 notify——自检页通过 1s 轮询
+  /// 感知自动结束并翻转按钮；显式用户动作走 [disarmLiveTestFixtureCourses]。
+  bool disarmLiveTestFixtureCoursesIfFinished(DateTime now) {
+    if (_liveTestFixtureOverlayCourses.isEmpty) {
+      return false;
+    }
+    // 与岛同域：自检预设课的收尾判定也要用「我的课表」的时间校正。
+    final settings = _liveSurfaceScope(this)?.settings ?? _settings;
+    for (final course in _liveTestFixtureOverlayCourses) {
+      final endTime = _liveBuildCorrectedCourseDateTime(
+        this,
+        now,
+        _liveResolveRealTime(this, course, false, settings: settings),
+        settings: settings,
+      );
+      if (endTime == null || !endTime.isBefore(now)) {
+        return false;
+      }
+    }
+    _liveTestFixtureOverlayCourses = const [];
+    return true;
+  }
+
+  /// 立即取消自检测试：摘除预设课覆盖层并按正式路径重刷——预设课随本次
+  /// 快照同步从原生侧回收；若此刻有真实课在窗，岛直接切回真实课，否则停岛。
+  /// 供自检页「取消测试」按钮使用，不等下一个 30s tick。
+  Future<void> cancelLiveTestFixtureSession() async {
+    disarmLiveTestFixtureCourses();
+    await refreshLiveActivityNow(forceSnapshotSync: true);
+  }
+
+  Future<void> refreshLiveActivityNow({bool forceSnapshotSync = false}) =>
+      _liveRefreshNow(this, forceSnapshotSync: forceSnapshotSync);
+
+  void updateCurrentDayOfWeek() {
+    unawaited(syncTemporalContext());
+  }
+
+  Future<PartnerImportResult> importPartnerTimetable(
+    String content, {
+    String? partnerName,
+  }) {
+    return _runMutation(() async {
+      await initialize();
+      // 覆盖对方课表前，把当前对方的课表快照进「她的历史课表」。
+      final result = await _partnerTimetableService.importFromContent(
+        content,
+        partnerName: partnerName,
+      );
+      _profiles = await _profileRepository.loadProfiles();
+      _partnerBinding = result.binding;
+      notifyListeners();
+      await _syncHomeWidgetSnapshot();
+      return result;
+    });
+  }
+
+  Future<void> updatePartnerWeekOffset(int offset) {
+    // 与其他用户写入一致走 mutation 门：避免与云恢复/LAN 应用等
+    // 门内写者交错读写 _partnerBinding（check-then-act 竞态）。
+    return _runMutation(() async {
+      await initialize();
+      final binding = _partnerBinding;
+      if (binding == null) {
+        return;
+      }
+      final clamped = CoupleTimetableLogic.clampWeekOffset(offset);
+      if (clamped == binding.weekOffset) {
+        return;
+      }
+      _partnerBinding = binding.copyWith(weekOffset: clamped);
+      await _profileRepository.savePartnerTimetableBinding(_partnerBinding);
+      notifyListeners();
+      await _syncHomeWidgetSnapshot();
+    });
+  }
+
+  Future<void> unlinkPartner() {
+    return _runMutation(() async {
+      await initialize();
+      await _partnerTimetableService.unlink();
+      _profiles = await _profileRepository.loadProfiles();
+      _partnerBinding = null;
+      if (_activeProfileId == PartnerTimetableService.partnerProfileId) {
+        final fallback = _profiles
+            .where((profile) => !profile.isPartnerImported)
+            .firstOrNull;
+        if (fallback != null) {
+          _activeProfileId = fallback.id;
+          _applyProfileState(fallback);
+          await _profileRepository.setActiveProfileId(fallback.id);
+          unawaited(_syncExamReminders());
+        }
+      }
+      notifyListeners();
+      await _syncHomeWidgetSnapshot();
+    });
+  }
+
+  /// 「往期」快照：某角色的课表被替换前，把当前状态写入历史。方法体先同步读
+  /// 状态再异步落盘，调用点（换学期/覆盖导入）不受后续赋值影响；快照失
+}

@@ -1,0 +1,9268 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Korean (`ko`).
+class AppLocalizationsKo extends AppLocalizations {
+  AppLocalizationsKo([String locale = 'ko']) : super(locale);
+
+  @override
+  String get appTitle => '경屿 시간표';
+
+  @override
+  String get appTitleDebug => '경屿 시간표 디버그판';
+
+  @override
+  String get appTitleProfile => '경屿 시간표 프로필판';
+
+  @override
+  String get appearanceTitle => '외관 및 색상';
+
+  @override
+  String get previewTitle => '미리보기';
+
+  @override
+  String get timetableBackgroundPreview => '시간표 배경';
+
+  @override
+  String get displayModeTitle => '표시 모드';
+
+  @override
+  String get displayModeSubtitle => '시스템 연동, 라이트 모드, 다크 모드를 지원합니다';
+
+  @override
+  String get themeModeLabel => '테마 모드';
+
+  @override
+  String get themeModeSystem => '시스템 연동';
+
+  @override
+  String get themeModeLight => '라이트 모드';
+
+  @override
+  String get themeModeDark => '다크 모드';
+
+  @override
+  String get fontSectionTitle => '앱 글꼴';
+
+  @override
+  String get fontSectionSubtitle => 'Inter 기본 제공, 휴대폰에 이미 있는 글꼴도 선택할 수 있습니다';
+
+  @override
+  String get fontSectionFootnote =>
+      '제조사 글꼴은 포함되지 않으며, 시스템에 있을 때만 적용됩니다. Xiaomi에서는 보통 MiSans만 뚜렷합니다. 변화가 없으면 자동 대체되며, 직접 설치할 필요는 보통 없습니다';
+
+  @override
+  String get fontModeLabel => '글꼴 선택';
+
+  @override
+  String get fontModeSystem => '앱 기본';
+
+  @override
+  String get fontModeSansSerif => '시스템 산세리프';
+
+  @override
+  String get fontModeMiSans => 'MiSans';
+
+  @override
+  String get fontModeHarmonyOS => 'HarmonyOS Sans';
+
+  @override
+  String get fontModeOppoSans => 'OPPO Sans';
+
+  @override
+  String get fontModePingFang => 'PingFang SC';
+
+  @override
+  String get fontModeNotoSans => 'Noto Sans';
+
+  @override
+  String get fontModeSerif => '세리프체';
+
+  @override
+  String get fontModeSongti => '송체';
+
+  @override
+  String get fontModeMonospace => '고정폭';
+
+  @override
+  String get languageSectionSubtitle => '시스템 연동 또는 수동으로 지원 언어를 전환할 수 있습니다';
+
+  @override
+  String get languageModeLabel => '언어 선택';
+
+  @override
+  String get languageModeSystem => '시스템 연동';
+
+  @override
+  String get settingsTitle => '시간표 설정';
+
+  @override
+  String get dailyUsageSectionTitle => '일상 사용';
+
+  @override
+  String get appearanceEntryTitle => '외관 및 색상';
+
+  @override
+  String get appearanceEntrySubtitle => '앱 테마 모드, 글꼴, 홈 제목 및 시트 블러 설정';
+
+  @override
+  String get appearanceThemeDisplaySectionTitle => '테마 및 표시';
+
+  @override
+  String get layoutSectionEntryTitle => '레이아웃 및 교시';
+
+  @override
+  String get layoutSectionEntrySubtitle => '교시 시간, 행 높이, 시간 열, 주말 표시 및 카드 레이아웃';
+
+  @override
+  String get homeWidgetEntryTitle => '홈 위젯';
+
+  @override
+  String get homeWidgetEntrySubtitle => '오늘 수업 카드, 위젯 배경 및 표시 정보';
+
+  @override
+  String get reminderNotificationSectionTitle => '알림 및 푸시';
+
+  @override
+  String get userGuideEntryTitle => '사용 가이드 및 권한';
+
+  @override
+  String get userGuideEntrySubtitle => '약칭 설정, 알림, 자동 시작, 배터리 전략';
+
+  @override
+  String get timetableManagementSectionTitle => '시간표 관리';
+
+  @override
+  String get timeSchemeEntryTitle => '시간 템플릿';
+
+  @override
+  String get timeSchemeEntrySubtitleNoneSelected => '전환, 교시 편집, 복사 및 템플릿 관리';
+
+  @override
+  String get timeSchemeEntryNotSelected => '미선택';
+
+  @override
+  String timeSchemeEntrySubtitleSelected(String name) {
+    return '현재: $name · 전환, 교시 편집 및 복사';
+  }
+
+  @override
+  String get dataTransferEntryTitle => '데이터 백업 및 마이그레이션';
+
+  @override
+  String get dataTransferEntrySubtitle => '시간표 파일을 내보내 다른 사람이 바로 가져올 수 있습니다';
+
+  @override
+  String get coupleTimetableEntryTitle => '커플 시간표';
+
+  @override
+  String get coupleTimetableEntryBound => '연결됨';
+
+  @override
+  String get coupleTimetableModeEnableTooltip => '커플 시간표 켜기';
+
+  @override
+  String get coupleTimetableModeDisableTooltip => '커플 시간표 끄기';
+
+  @override
+  String get coupleTimetableTitle => '커플 시간표';
+
+  @override
+  String get coupleTimetableIntro =>
+      '내 시간표를 내보내서 상대방에게 보내거나, 상대방이 공유한 시간표 파일을 가져올 수 있습니다. 가져오면 겹쳐 보기에서 양쪽 수업을 확인할 수 있습니다';
+
+  @override
+  String get coupleTimetableBoundTitle => '상대방 시간표 연결됨';
+
+  @override
+  String get coupleTimetableUnboundTitle => '상대방 시간표가 연결되지 않음';
+
+  @override
+  String get coupleTimetablePartnerNameLabel => '상대방 이름';
+
+  @override
+  String coupleTimetableLastImportedAt(String time) {
+    return '마지막 가져오기: $time';
+  }
+
+  @override
+  String get coupleTimetableExportForPartner => '내 시간표를 상대방에게 내보내기';
+
+  @override
+  String get coupleTimetableImportPartner => '상대방 시간표 가져오기';
+
+  @override
+  String get coupleTimetableUnlink => '연결 해제';
+
+  @override
+  String get coupleTimetableOpenOverlay => '겹쳐 보기 열기';
+
+  @override
+  String get coupleTimetableImportSuccess => '상대방 시간표를 가져왔습니다';
+
+  @override
+  String get coupleTimetableImportUpdated => '상대방 시간표를 업데이트했습니다';
+
+  @override
+  String get coupleTimetableUnlinkConfirmTitle => '커플 시간표 연결을 해제할까요?';
+
+  @override
+  String get coupleTimetableUnlinkConfirmMessage =>
+      '해제하면 기기에 저장된 상대방 시간표가 삭제되고 겹쳐 보기도 닫힙니다';
+
+  @override
+  String get coupleTimetableUnlinkSuccess => '연결이 해제되었습니다';
+
+  @override
+  String get coupleTimetablePrivacyHint => '상대방은 내보낸 파일에 포함된 시간표 내용만 볼 수 있습니다';
+
+  @override
+  String get coupleTimetableOverlayTitle => '커플 겹쳐 보기';
+
+  @override
+  String get coupleTimetableLegendMine => '내 수업';
+
+  @override
+  String get coupleTimetableLegendPartner => '상대방 수업';
+
+  @override
+  String get coupleTimetableLegendFree => '공통 공강';
+
+  @override
+  String get coupleTimetableSharedFreeTitle => '오늘 공통 공강 시간';
+
+  @override
+  String get coupleTimetableSharedFreeTitleOtherDay => '이날 공통 공강 시간';
+
+  @override
+  String get coupleTimetableNoSharedFree => '오늘 공통 공강 시간이 없습니다';
+
+  @override
+  String get coupleTimetableNoSharedFreeOtherDay => '이날 공통 공강 시간이 없습니다';
+
+  @override
+  String get partnerTimetablePageTitle => '상대 시간표';
+
+  @override
+  String coupleTimetableSharedFreeMeta(int count) {
+    return '총 $count개 구간';
+  }
+
+  @override
+  String coupleTimetableSharedFreeMoreCount(int count) {
+    return '$count개 구간 더';
+  }
+
+  @override
+  String get coupleTimetableSharedFreeUnavailable => '지금은 공통 공강 시간을 계산할 수 없습니다';
+
+  @override
+  String get coupleTimetableSharedFreeStaleHint => '상대방 시간표가 최신이 아닐 수 있습니다';
+
+  @override
+  String get coupleTimetablePartnerReadOnlyBadge => '상대방 시간표(읽기 전용)';
+
+  @override
+  String get coupleTimetableNotBoundMessage => '먼저 상대방 시간표를 가져온 후 겹쳐 보기를 확인하세요';
+
+  @override
+  String get coupleTimetableShareText =>
+      '이것은 내 시간표입니다. 경屿 시간표의 커플 시간표로 가져오면 함께 확인할 수 있습니다';
+
+  @override
+  String get coupleTimetableShareSubject => '경屿 시간표 · 커플 시간표 공유';
+
+  @override
+  String get coupleTimetableWeekOffsetTitle => '주차 오프셋';
+
+  @override
+  String get coupleTimetableWeekOffsetSubtitle =>
+      '내 N주차를 볼 때 상대방 시간표의 N+오프셋 주차를 읽습니다. 예: +1은 상대방의 학기 진도가 한 주 빠르다는 뜻입니다';
+
+  @override
+  String get coupleTimetableWeekOffsetZero => '오프셋 없음';
+
+  @override
+  String coupleTimetableWeekOffsetSigned(String offset) {
+    return '$offset주';
+  }
+
+  @override
+  String coupleTimetableWeekOffsetPreview(int myWeek, int partnerWeek) {
+    return '내 $myWeek주차를 볼 때 상대방의 $partnerWeek주차 수업을 표시합니다';
+  }
+
+  @override
+  String get partnerImportRequiresSingleProfile =>
+      '단일 시간표 백업 파일을 가져오세요. 전체 백업은 지원하지 않습니다';
+
+  @override
+  String get withuCoupleTitle => 'withU 동기화';
+
+  @override
+  String get withuCoupleNotConnected => 'withU 미연결';
+
+  @override
+  String withuCoupleConnectedAs(String username) {
+    return '연결됨: $username';
+  }
+
+  @override
+  String withuCoupleServerHint(String url) {
+    return '서버: $url';
+  }
+
+  @override
+  String withuCoupleLastPulledAt(String time) {
+    return '마지막 가져오기: $time';
+  }
+
+  @override
+  String get withuCoupleConnect => 'withU 연결';
+
+  @override
+  String get withuCoupleDisconnect => '로그아웃';
+
+  @override
+  String get withuCoupleLogoutUnconfirmed =>
+      '이 기기에서는 로그아웃했지만 서버에 알리지 못했습니다. 서버 세션이 아직 유효할 수 있습니다.';
+
+  @override
+  String get withuCouplePullNow => '상대방 시간표 즉시 가져오기';
+
+  @override
+  String get withuCoupleCenterTitle => '情侣中心';
+
+  @override
+  String get withuCoupleSettings => '情侣课表设置';
+
+  @override
+  String get withuCoupleSyncNow => '立即同步课表';
+
+  @override
+  String get withuCouplePartnerImported => '对方课表已导入';
+
+  @override
+  String get withuCouplePartnerNotImported => '尚未导入对方课表';
+
+  @override
+  String get withuCoupleUploadForPartner => '내 시간표 업로드';
+
+  @override
+  String get withuCoupleLoginSheetTitle => 'withU 연결(커플 시간표)';
+
+  @override
+  String get withuCoupleLoginSheetSubtitle =>
+      'withU 커플 계정으로 로그인하면 상대 계정에서 시간표를 가져옵니다';
+
+  @override
+  String get withuCoupleConfirmConnect => '연결하고 가져오기';
+
+  @override
+  String get withuCoupleServerLabel => 'withU 서버';
+
+  @override
+  String get coupleTimetableSwitchSubtitle =>
+      '두 시간표를 겹쳐 표시하고 오른쪽 위 메뉴에 로그인을 먼저 표시합니다';
+
+  @override
+  String get coupleTimetableDesktopCardTitle => '데스크톱 카드 설정';
+
+  @override
+  String get coupleTimetableDetailCardTitle => '상세 카드';
+
+  @override
+  String get coupleTimetableDetailCardSubtitle =>
+      '데스크톱 카드의 수업을 탭하면 시간표를 열고 해당 수업의 상세 정보를 펼칩니다';
+
+  @override
+  String get coupleTimetableLiveSurfaceTitle => '라이브 아일랜드와 알림';
+
+  @override
+  String get coupleTimetableLiveSurfaceSwitchTitle => '현재 시간표에 연동';
+
+  @override
+  String get coupleTimetableLiveSurfaceSwitchSubtitle =>
+      '끄면 라이브 아일랜드·수업 알림·위젯이 항상 내 시간표를 따릅니다. 켜면 현재 선택한 시간표(상대방 시간표 포함)를 따릅니다.';
+
+  @override
+  String get coupleTimetableDesktopCardPlaceholder =>
+      '데스크톱 카드는 준비 중이며 이 영역은 예약되어 있습니다';
+
+  @override
+  String get withuCoupleLoginPageTitle => 'withU 로그인';
+
+  @override
+  String get withuCoupleLoginPageSubtitle =>
+      'withU 커플 계정으로 로그인하면 상대 시간표를 자동으로 가져옵니다';
+
+  @override
+  String get withuCoupleLoginAction => '로그인하고 가져오기';
+
+  @override
+  String get withuCoupleLoginMenuTitle => '계정 로그인';
+
+  @override
+  String get withuCoupleNotLoggedInPrompt => '로그인 안 됨 · 탭해서 로그인';
+
+  @override
+  String get withuLoginConfirm => '로그인';
+
+  @override
+  String get coupleHistorySheetTitle => '히스토리';
+
+  @override
+  String get coupleHistoryMineLabel => '내 지난 시간표';
+
+  @override
+  String get coupleHistoryHersLabel => '그녀의 지난 시간표';
+
+  @override
+  String get noHistoryRecords => '기록 없음';
+
+  @override
+  String get coupleHistoryRestored => '시간표를 복원했습니다';
+
+  @override
+  String get coupleHistoryRestoreFailed => '복원에 실패했습니다. 다시 시도해 주세요';
+
+  @override
+  String coupleHistoryEntryMeta(String semester, int count) {
+    return '$semester · $count교시';
+  }
+
+  @override
+  String get withuCouplePullImported => 'withU에서 상대방 시간표를 가져왔습니다';
+
+  @override
+  String get withuCouplePullUpdated => 'withU에서 상대방 시간표를 업데이트했습니다';
+
+  @override
+  String get withuCouplePullUnchanged => '상대방 시간표에 변화가 없습니다';
+
+  @override
+  String get withuCoupleUploadSuccess => '시간표를 업로드했습니다. 상대방이 가져올 수 있습니다';
+
+  @override
+  String get withuCoupleMissingCredentials => 'withU 서버, 사용자 이름, 비밀번호를 입력하세요';
+
+  @override
+  String get withuCoupleUsernameLabel => 'withU 사용자 이름';
+
+  @override
+  String get withuCoupleUsernameHint => 'withU 사용자 이름 입력';
+
+  @override
+  String get withuCouplePasswordLabel => 'withU 비밀번호';
+
+  @override
+  String get withuCouplePasswordHint => 'withU 비밀번호 입력';
+
+  @override
+  String get withuCoupleNotConnectedError => '먼저 withU에 연결하세요';
+
+  @override
+  String get withuCoupleAuthFailed => 'withU 사용자 이름 또는 비밀번호가 올바르지 않습니다';
+
+  @override
+  String get withuCoupleSessionExpired => 'withU 세션이 만료되었습니다. 다시 로그인하세요';
+
+  @override
+  String get withuCoupleAccountRequired => 'withU 커플 계정이 필요합니다';
+
+  @override
+  String get withuCouplePartnerTimetableMissing =>
+      '상대방 시간표를 찾을 수 없습니다. 먼저 업로드하도록 하세요';
+
+  @override
+  String get withuCoupleRequestFailed => 'withU 요청에 실패했습니다. 잠시 후 다시 시도하세요';
+
+  @override
+  String get withuCoupleSessionCookieMissing => 'withU에서 로그인 세션을 반환하지 않았습니다';
+
+  @override
+  String get aboutSupportSectionTitle => '앱 정보 및 지원';
+
+  @override
+  String get feedbackEntryTitle => '문제 제보';
+
+  @override
+  String get feedbackEntrySubtitle => '이슈, 커뮤니티 채널 및 피드백';
+
+  @override
+  String get aboutEntryTitle => '앱 정보';
+
+  @override
+  String get aboutEntrySubtitle => '오픈소스, 버전 업데이트 및 GitHub 저장소';
+
+  @override
+  String get setSemesterStartDateAction => '학기 시작일 설정';
+
+  @override
+  String get semesterStartDateAction => '학기 시작일';
+
+  @override
+  String get syncCurrentWeekAction => '현재 주 동기화';
+
+  @override
+  String semesterWeekCountAction(int count) {
+    return '$count주';
+  }
+
+  @override
+  String get selectSemesterWeekCountTitle => '학기 주 수 선택';
+
+  @override
+  String get selectSemesterWeekCountSubtitle =>
+      '학교에 따라 실제 수업 주 수에 맞게 조정할 수 있습니다';
+
+  @override
+  String get unifiedCourseCardColorTitle => '수업 카드 색상 통일';
+
+  @override
+  String get unifiedCourseCardColorSubtitle => '끄면 각 수업의 개별 색상을 계속 사용합니다';
+
+  @override
+  String get courseCardFontColorTitle => '수업 카드 글자 색상';
+
+  @override
+  String get importRandomCourseColorTitle => '수업 색상 무작위';
+
+  @override
+  String get importRandomCourseColorSubtitle => '수업명과 교수로 프리셋 색을 자동 배정';
+
+  @override
+  String get courseColorPaletteAllLabel => '모든 색상';
+
+  @override
+  String get courseRecolorTileTitle => '시간표 색상 다시 칠하기';
+
+  @override
+  String get courseRecolorTileSubtitle => '다시 가져올 필요 없이 언제든 한 번에 전체 수업 색상 바꾸기';
+
+  @override
+  String get courseRecolorSheetTitle => '시간표 색상 다시 칠하기';
+
+  @override
+  String get courseRecolorSheetDescription =>
+      '셔플을 누를 때마다 모든 수업에 새로운 랜덤 색상이 배정됩니다. 마음에 들지 않으면 이전 세트로 돌아가거나 가져오기 당시 원래 색상으로 되돌릴 수 있습니다.';
+
+  @override
+  String get courseRecolorNewBatchButton => '색상 셔플';
+
+  @override
+  String get courseRecolorPrevious => '이전 세트';
+
+  @override
+  String get courseRecolorNext => '다음 세트';
+
+  @override
+  String courseRecolorSchemePosition(int index, int total) {
+    return '$index/$total 세트';
+  }
+
+  @override
+  String get courseRecolorNoCoursesToast => '수업이 없습니다. 먼저 수업을 가져오거나 추가하세요';
+
+  @override
+  String get courseImportTitle => '수업 가져오기';
+
+  @override
+  String get chooseImportMethodTitle => '가져오기 방법 선택';
+
+  @override
+  String get chooseImportMethodSubtitle =>
+      '기존 .ics 캘린더 가져오기, 이미지 인식 가져오기, 저장소에서 어댑터를 읽어오는 교무 시스템 가져오기를 지원합니다';
+
+  @override
+  String get importMethodIcsTitle => '.ics 캘린더 가져오기';
+
+  @override
+  String get importMethodIcsSubtitle => '다른 시간표 앱에서 내보낸 캘린더 파일';
+
+  @override
+  String get importMethodIcsFooter =>
+      '진입 후 .ics 파일을 선택하여 추가 가져오기 또는 기존 수업을 대체할 수 있습니다.';
+
+  @override
+  String get importMethodAiTitle => '이미지 인식 가져오기';
+
+  @override
+  String get importMethodAiSubtitle => '시간표 스크린샷에서 인식해 가져오기';
+
+  @override
+  String get importMethodAiFooter =>
+      '프롬프트를 복사한 뒤 Doubao 전문가 모드에서 스크린샷과 프롬프트를 전송하고, 반환된 JSON을 복사하여 가져온 후 학기 시작일을 선택합니다.';
+
+  @override
+  String get importMethodWarehouseTitle => '교무 시스템 가져오기';
+
+  @override
+  String get importMethodWarehouseSubtitle => '학교 교무 시스템에 로그인하여 가져오기';
+
+  @override
+  String get importMethodWarehouseFooter =>
+      '진입 후 학교와 어댑터를 선택하면 교무 웹페이지를 열어 로그인 후 가져오기를 실행할 수 있습니다.';
+
+  @override
+  String get importMethodSpreadsheetTitle => '표 가져오기';
+
+  @override
+  String get importMethodSpreadsheetSubtitle => 'Excel / CSV 템플릿을 작성해 가져오기';
+
+  @override
+  String get importMethodSpreadsheetFooter =>
+      '.csv와 .xlsx 지원. 템플릿을 다운로드해 작성 후 파일을 선택하세요.';
+
+  @override
+  String get spreadsheetImportTitle => '표 가져오기';
+
+  @override
+  String get spreadsheetScenarioIntro =>
+      '경량섬 템플릿은 헤더로 열을 인식합니다. 필수: 과목명, 요일, 시작/종료 절, 주차. 나머지는 선택. 전체 템플릿을 받거나 필수 열만 유지해도 됩니다. WakeUp 7열 형식도 지원';
+
+  @override
+  String get spreadsheetStep1Subtitle =>
+      '전체 템플릿을 받아 작성하거나, 필수 열과 上课周(또는 시작周+结束周)만 남겨 최소 가져오기';
+
+  @override
+  String get spreadsheetStep2Subtitle => '작성 후 .csv로 저장하거나 .xlsx를 그대로 사용합니다';
+
+  @override
+  String get spreadsheetStep3Subtitle =>
+      '파일을 선택해 가져옵니다. 인식 경고가 있으면 먼저 표시한 뒤 추가 또는 대체를 선택합니다';
+
+  @override
+  String get spreadsheetSupportedFilesSuffix => '.csv와 .xlsx 지원(첫 번째 시트만).';
+
+  @override
+  String get chooseSpreadsheetFileAction => '표 파일 선택';
+
+  @override
+  String get downloadSpreadsheetTemplateAction => '경량섬 시간표 템플릿 다운로드';
+
+  @override
+  String get spreadsheetImportWarningsTitle => '가져오기 알림';
+
+  @override
+  String get spreadsheetImportWarningsMessage =>
+      '다음 행은 가져오지 못했습니다. 나머지 수업은 계속할 수 있습니다:';
+
+  @override
+  String get spreadsheetImportWarningsContinue => '가져오기 계속';
+
+  @override
+  String get spreadsheetFormatUnrecognized =>
+      '표 형식을 인식하지 못했습니다. 경량섬 시간표 템플릿을 사용하세요. WakeUp 등 동일 열 형식도 지원합니다.';
+
+  @override
+  String get icsImportTitle => '.ics 캘린더 가져오기';
+
+  @override
+  String get applicableScenarioTitle => '적용 시나리오';
+
+  @override
+  String get icsScenarioIntro =>
+      'WakeUp 등 시간표 앱에서 교무 시스템 수업을 가져온 뒤 .ics 파일로 내보낼 수 있다면, 이 방법이 가장 안정적입니다';
+
+  @override
+  String stepLabel(String step) {
+    return '단계 $step';
+  }
+
+  @override
+  String get icsStep1Subtitle => '먼저 다른 시간표 앱에서 .ics 캘린더 파일을 내보냅니다';
+
+  @override
+  String get icsStep2Subtitle =>
+      '여기서 파일을 선택합니다. \'추가 가져오기\' 또는 \'기존 대체\'를 선택할 수 있습니다';
+
+  @override
+  String get icsStep3Subtitle =>
+      '가져오기 전에 학기 시작일과 시간표의 1주차가 학사일정의 몇 주차에 해당하는지 확인합니다';
+
+  @override
+  String get supportedFilesTitle => '지원 파일';
+
+  @override
+  String get supportedFilesSuffix => '파일 확장자는 .ics여야 합니다.';
+
+  @override
+  String get supportedFilesImageHint =>
+      '스크린샷만 있다면 이곳이 아닌 이전 페이지에서 \'이미지 인식 가져오기\'를 선택하세요';
+
+  @override
+  String get chooseIcsFileAction => '.ics 파일 선택';
+
+  @override
+  String get timetableAppName => '경屿 시간표';
+
+  @override
+  String get switchProfileHint => '탭하여 시간표 전환';
+
+  @override
+  String get moreTooltip => '더 보기';
+
+  @override
+  String get pleaseSetSemesterStartDate => '시간표 설정에서 학기 시작일을 먼저 입력하세요';
+
+  @override
+  String get deleteScheduleTitle => '일정 삭제';
+
+  @override
+  String get deleteLessonTitle => '이 수업 삭제';
+
+  @override
+  String get cancelAction => '취소';
+
+  @override
+  String get confirmAction => '확인';
+
+  @override
+  String get deleteAction => '삭제';
+
+  @override
+  String deletedCourseMessage(String name) {
+    return '삭제됨: $name';
+  }
+
+  @override
+  String get deleteFailed => '삭제 실패';
+
+  @override
+  String get rescheduleFailed => '시간 변경 실패';
+
+  @override
+  String get timetableManagement => '시간표 관리';
+
+  @override
+  String weekLabel(int week) {
+    return '제$week주';
+  }
+
+  @override
+  String sectionLabel(int section) {
+    return '제$section교시';
+  }
+
+  @override
+  String get feedbackTitle => '문제 제보';
+
+  @override
+  String get feedbackIntro =>
+      '앱 충돌, 수업 표시 오류, 가져오기 문제 또는 기능 제안이 있다면 아래 채널을 통해 피드백해 주세요';
+
+  @override
+  String get feedbackIssueHint =>
+      '재현 단계, 스크린샷, 버전 번호, 로그가 관련된 문제는 GitHub Issue를 권장합니다';
+
+  @override
+  String get githubIssueTitle => 'GitHub Issue';
+
+  @override
+  String get githubIssueSubtitle =>
+      '저장소 Issue 페이지를 열어 문제나 제안을 제출하거나 기존 피드백을 확인할 수 있습니다';
+
+  @override
+  String get openIssuePage => 'Issue 페이지 열기';
+
+  @override
+  String get copyAddress => '주소 복사';
+
+  @override
+  String get copiedIssueAddress => 'Issue 주소를 복사했습니다';
+
+  @override
+  String get copyXiaohongshuId => '샤오홍슈 ID 복사';
+
+  @override
+  String get copiedXiaohongshuId => '샤오홍슈 ID를 복사했습니다';
+
+  @override
+  String get copyCoolapkId => 'Coolapk ID 복사';
+
+  @override
+  String get copiedCoolapkId => 'Coolapk ID를 복사했습니다';
+
+  @override
+  String get copyQqGroupId => 'QQ 그룹 ID 복사';
+
+  @override
+  String get copiedQqGroupId => 'QQ 그룹 ID를 복사했습니다';
+
+  @override
+  String get copiedWechatOaName => '공식 계정 이름을 복사했습니다';
+
+  @override
+  String get feedbackWechatOaOpenHint =>
+      '공식 계정 이름을 복사했습니다. WeChat에서 붙여넣어 검색하세요';
+
+  @override
+  String get feedbackOpeningChannel => '여는 중…';
+
+  @override
+  String get feedbackOpenChannelFailed => '열 수 없습니다. 정보를 복사했습니다.';
+
+  @override
+  String get timetableProfilesTitle => '시간표 관리';
+
+  @override
+  String get createTimetableTooltip => '새 시간표';
+
+  @override
+  String coursesAndWeekSummary(int count, int week) {
+    return '$count과목 · 제$week주';
+  }
+
+  @override
+  String get moreActionsTooltip => '더 많은 작업';
+
+  @override
+  String get switchToThisTimetable => '이 시간표로 전환';
+
+  @override
+  String get renameAction => '이름 변경';
+
+  @override
+  String get duplicateAction => '복사';
+
+  @override
+  String get clearCoursesAction => '수업 비우기';
+
+  @override
+  String get usingNow => '사용 중';
+
+  @override
+  String switchedToProfile(String name) {
+    return '$name으로 전환됨';
+  }
+
+  @override
+  String get createTimetableTitle => '새 시간표';
+
+  @override
+  String get timetableNameLabel => '시간표 이름';
+
+  @override
+  String get timetableNameHint => '예: 2학년 2학기';
+
+  @override
+  String get createAction => '생성';
+
+  @override
+  String createdProfile(String name) {
+    return '시간표 생성됨: $name';
+  }
+
+  @override
+  String get renameTimetableTitle => '시간표 이름 변경';
+
+  @override
+  String get saveAction => '저장';
+
+  @override
+  String renamedProfile(String name) {
+    return '이름 변경됨: $name';
+  }
+
+  @override
+  String get clearCurrentTimetableTitle => '현재 시간표 비우기';
+
+  @override
+  String clearCurrentTimetableMessage(String name) {
+    return '\"$name\"의 모든 수업을 비우시겠습니까? 시간표 설정은 유지됩니다';
+  }
+
+  @override
+  String get clearAction => '비우기';
+
+  @override
+  String clearedProfile(String name) {
+    return '시간표 비움: $name';
+  }
+
+  @override
+  String get noCoursesInCurrentProfile => '현재 시간표에 수업이 없습니다';
+
+  @override
+  String get deleteTimetableTitle => '시간표 삭제';
+
+  @override
+  String deleteTimetableMessage(String name) {
+    return '\"$name\"을(를) 삭제하시겠습니까?';
+  }
+
+  @override
+  String deletedProfile(String name) {
+    return '시간표 삭제됨: $name';
+  }
+
+  @override
+  String get keepAtLeastOneProfile => '최소 1개의 시간표를 유지하세요';
+
+  @override
+  String get dataTransferTitle => '데이터 백업 및 마이그레이션';
+
+  @override
+  String get dataTransferUndoSuccess => '가져오기를 실행 취소했습니다';
+
+  @override
+  String get dataTransferUndoFailed => '실행 취소 실패';
+
+  @override
+  String get selectImportModeMerge => '변경 사항 병합';
+
+  @override
+  String get fullExportTitle => '전체 내보내기';
+
+  @override
+  String get fullExportSubtitle =>
+      '현재 시간표 또는 모든 시간표, 시간 템플릿, 현재 선택 상태를 한 번에 내보낼 수 있습니다';
+
+  @override
+  String get exportCurrentTimetable => '현재 시간표 내보내기';
+
+  @override
+  String get exportAllData => '모든 데이터 내보내기';
+
+  @override
+  String get fullImportTitle => '전체 가져오기';
+
+  @override
+  String get fullImportSubtitle =>
+      '가져오기 시 현재 시간표를 덮어쓰거나 새 시간표로 가져올 수 있습니다. 먼저 백업을 권장합니다';
+
+  @override
+  String get chooseFileAndImport => '파일 선택 및 가져오기';
+
+  @override
+  String get transferOverviewTitle => '현재 마이그레이션 가능 항목';
+
+  @override
+  String courseCountBullet(int count) {
+    return '수업 수: $count개';
+  }
+
+  @override
+  String currentTimetableBullet(String name) {
+    return '현재 시간표: $name';
+  }
+
+  @override
+  String allTimetablesBullet(int count) {
+    return '전체 시간표: $count개';
+  }
+
+  @override
+  String timeSchemeCountBullet(int count) {
+    return '시간 템플릿: $count세트';
+  }
+
+  @override
+  String currentWeekBullet(int week) {
+    return '현재 주: 제$week주';
+  }
+
+  @override
+  String get semesterStartUnsetBullet => '학기 시작일: 미설정';
+
+  @override
+  String semesterStartBullet(String date) {
+    return '학기 시작일: $date';
+  }
+
+  @override
+  String fileExtensionBullet(String extension) {
+    return '파일 확장자: .$extension';
+  }
+
+  @override
+  String get selectImportModeTitle => '가져오기 모드 선택';
+
+  @override
+  String get selectImportModeMessage =>
+      '현재 시간표를 덮어쓰거나, 백업을 독립된 새 시간표로 가져올 수 있습니다';
+
+  @override
+  String get replaceCurrentTimetable => '현재 시간표 덮어쓰기';
+
+  @override
+  String get importAsNewTimetable => '새 시간표로 가져오기';
+
+  @override
+  String get createdNewTimetableAfterImport => '가져오기 성공, 새 시간표가 생성되었습니다';
+
+  @override
+  String get backupRestoredSuccess => '가져오기 성공, 백업 데이터가 복원되었습니다';
+
+  @override
+  String get importFailedInvalidFile => '가져오기 실패, 파일이 유효한지 확인하세요';
+
+  @override
+  String get thirdPartyDisclaimer =>
+      '声明：본 앱은 제3자 개발자가 독립적으로 개발하였으며, 학습 및 연구 목적으로만 사용됩니다. Xiaomi(小米) 공식 소프트웨어가 아니며 Xiaomi Technology Co., Ltd.(小米科技有限責任公司)와 어떠한 종속, 협력 또는 승인 관계도 없습니다. 콘텐츠 침해가 있는 경우 권리자께서 작성자에게 연락해 주시면 즉시 관련 콘텐츠를下架 및 삭제하겠습니다.';
+
+  @override
+  String get viewGuideTitle => '기능 설명 보기';
+
+  @override
+  String get viewGuideSubtitle => '권한, 슈퍼아일랜드 및 기본 설정 확인';
+
+  @override
+  String get migrationTitle => '이전 데이터 마이그레이션';
+
+  @override
+  String get migrationSafeTitle => '걱정 마세요, 데이터가 사라진 것이 아닙니다';
+
+  @override
+  String get migrationSafeSubtitle =>
+      '앱 패키지명이 변경되어 홈 화면에 잠시 두 개의 아이콘이 표시됩니다. 이는 정상입니다. 이전 데이터는 이전 버전 앱에 있습니다. 먼저 이전 버전에서 백업한 뒤 새 버전에서 가져오세요';
+
+  @override
+  String get migrationStep1Title => '이전 버전 열기';
+
+  @override
+  String get migrationStep1Subtitle =>
+      '\'데이터 백업 및 마이그레이션\' 페이지에서 \'모든 데이터 내보내기\'를 탭하세요. \'현재 시간표 내보내기\'를 누르지 말고, 이전 버전을 먼저 삭제하지 마세요';
+
+  @override
+  String get migrationStep2Title => '백업 파일 저장';
+
+  @override
+  String get migrationStep2Subtitle =>
+      '이전 버전에서 내보내기 후 시스템 공유 패널이 표시됩니다. \'파일에 저장\'을 우선 선택하고, 다운로드 폴더에 저장하는 것을 권장합니다';
+
+  @override
+  String get migrationStep3Title => '현재 버전에서 가져오기';
+
+  @override
+  String get migrationStep3Subtitle =>
+      '새 버전으로 돌아와 시스템 파일 선택기로 다운로드 폴더의 .mikcb 백업 파일을 선택하여 복원합니다. 새 버전의 데이터가 정상인지 확인한 뒤 이전 버전을 삭제하세요';
+
+  @override
+  String get migrationNoSaveToFilesTitle => '\'파일에 저장\'이 없는 경우';
+
+  @override
+  String get migrationNoSaveToFilesSubtitle =>
+      'WeChat의 아무 채팅에 공유한 뒤 WeChat에서 백업 파일을 열어 저장하세요. 저장 후 보통 Download/WeiXin 폴더에 나타납니다. 새 버전에서 이 .mikcb 파일을 선택하여 가져오세요';
+
+  @override
+  String get openingOldApp => '이전 버전 여는 중...';
+
+  @override
+  String get openOldAppForBackup => '이전 버전에서 백업';
+
+  @override
+  String get backupDoneGoImport => '백업 완료, 가져오기로 이동';
+
+  @override
+  String get startFreshWithoutMigration => '새 앱으로 시작, 마이그레이션 안 함';
+
+  @override
+  String get openOldAppFailed => '이전 버전을 열지 못했습니다. 홈 화면에서 수동으로 이전 버전을 여세요';
+
+  @override
+  String get viewLargeImage => '큰 이미지 보기';
+
+  @override
+  String get reloadAction => '다시 불러오기';
+
+  @override
+  String get courseOverviewTitle => '수업 전체보기 및 편집';
+
+  @override
+  String get addNewCourseTooltip => '새 수업 추가';
+
+  @override
+  String get emptyCourseOverviewHint => '시간표를 길게 누르거나 오른쪽 위에서 수업을 추가하세요';
+
+  @override
+  String conflictDetectedMessage(int count) {
+    return '$count개의 배치에 실제 충돌이 감지되었습니다. 수업 목록에 충돌 항목이 표시됩니다';
+  }
+
+  @override
+  String conflictCountLabel(int count) {
+    return '충돌 $count건';
+  }
+
+  @override
+  String scheduledCountLabel(int count) {
+    return '배치 합계 $count건';
+  }
+
+  @override
+  String scheduledCountWithConflictHint(int count) {
+    return '배치 합계 $count건 · 펼쳐서 충돌 상세 확인';
+  }
+
+  @override
+  String courseTimeSummary(int day, int start, int end) {
+    return '시간: $day요일 $start-$end교시';
+  }
+
+  @override
+  String get teacherUnset => '미설정';
+
+  @override
+  String get locationUnset => '미설정';
+
+  @override
+  String courseDetailSummary(
+    String weekDescription,
+    String teacher,
+    String location,
+  ) {
+    return '$weekDescription  교사: $teacher  강의실: $location';
+  }
+
+  @override
+  String courseDetailSummaryWithConflict(
+    String weekDescription,
+    String teacher,
+    String location,
+    String conflictSummary,
+  ) {
+    return '$weekDescription  교사: $teacher  강의실: $location\n충돌 수업: $conflictSummary';
+  }
+
+  @override
+  String get confirmDeleteTitle => '삭제 확인';
+
+  @override
+  String confirmDeleteCourseMessage(String name) {
+    return '수업 \"$name\"을(를) 삭제하시겠습니까?';
+  }
+
+  @override
+  String get currentScheduleTitle => '현재 배치';
+
+  @override
+  String get currentScheduleSubtitle =>
+      '여기의 요일, 교시, 강의실, 주차 및 홀짝주는 이 배치에만 영향을 줍니다';
+
+  @override
+  String get timeSchemeLabel => '수업 시간 방안';
+
+  @override
+  String followCurrentTimetableWithName(String name) {
+    return '현재 시간표에 연동 ($name)';
+  }
+
+  @override
+  String get followCurrentTimetableDescription =>
+      'Without a manual override, auto-match by location keywords; otherwise follow the timetable main scheme';
+
+  @override
+  String get overrideTimeSchemeDescription =>
+      '이 수업은 선택한 템플릿을 개별 사용하며 메인 템플릿에 연동되지 않습니다';
+
+  @override
+  String get weekdayLabel => '요일';
+
+  @override
+  String get startSectionLabel => '시작 교시';
+
+  @override
+  String get endSectionLabel => '종료 교시';
+
+  @override
+  String timeRangeLabel(String start, String end) {
+    return '시간: $start - $end';
+  }
+
+  @override
+  String get locationLabel => '수업 장소';
+
+  @override
+  String get singleLessonWeekTitle => '수업 주차';
+
+  @override
+  String get singleLessonWeekSubtitle =>
+      '단일 수업은 한 주차에만 나타납니다. 보충 수업이나 임시 추가에 적합합니다';
+
+  @override
+  String get selectWeekLabel => '주차 선택';
+
+  @override
+  String get weekSettingsTitle => '주차 설정';
+
+  @override
+  String get rangeWeeksLabel => '연속 주';
+
+  @override
+  String get customWeeksLabel => '사용자 정의 주';
+
+  @override
+  String get startWeekLabel => '시작 주';
+
+  @override
+  String get endWeekLabel => '종료 주';
+
+  @override
+  String get allWeeksFilter => '전체';
+
+  @override
+  String get oddWeeksFilter => '홀수 주';
+
+  @override
+  String get evenWeeksFilter => '짝수 주';
+
+  @override
+  String get rangeWeeksAllHint => '시작 주부터 종료 주까지 연속으로 수업을 배치합니다';
+
+  @override
+  String get rangeWeeksOddHint => '범위 내 홀수 주만 유지합니다';
+
+  @override
+  String get rangeWeeksEvenHint => '범위 내 짝수 주만 유지합니다';
+
+  @override
+  String get selectAllAction => '전체 선택';
+
+  @override
+  String get selectOddWeeksAction => '홀수 주';
+
+  @override
+  String get selectEvenWeeksAction => '짝수 주';
+
+  @override
+  String selectedWeeksSummary(int count, String weeks) {
+    return '$count주 선택: 제$weeks주';
+  }
+
+  @override
+  String get courseColorTitle => '수업 색상';
+
+  @override
+  String get courseColorQuickSection => '자주 쓰는 색';
+
+  @override
+  String get customPaletteAction => '팔레트에서 사용자 정의';
+
+  @override
+  String get colorPaletteTitle => '색상 팔레트';
+
+  @override
+  String get colorHexLabel => '색상 Hex';
+
+  @override
+  String get weekdayMon => '월요일';
+
+  @override
+  String get weekdayTue => '화요일';
+
+  @override
+  String get weekdayWed => '수요일';
+
+  @override
+  String get weekdayThu => '목요일';
+
+  @override
+  String get weekdayFri => '금요일';
+
+  @override
+  String get weekdaySat => '토요일';
+
+  @override
+  String get weekdaySun => '일요일';
+
+  @override
+  String hueLabel(int value) {
+    return '색상 $value';
+  }
+
+  @override
+  String saturationLabel(int value) {
+    return '채도 $value%';
+  }
+
+  @override
+  String brightnessLabel(int value) {
+    return '명도 $value%';
+  }
+
+  @override
+  String get useThisColor => '이 색상 사용';
+
+  @override
+  String get selectAtLeastOneWeek => '최소 1개의 수업 주차를 선택하세요';
+
+  @override
+  String get saveFailed => '저장 실패';
+
+  @override
+  String get courseAddedSuccess => '수업 추가 성공';
+
+  @override
+  String get courseUpdatedSuccess => '수업 업데이트 성공';
+
+  @override
+  String get aboutTitle => '앱 정보';
+
+  @override
+  String get loadingText => '불러오는 중';
+
+  @override
+  String versionLabel(String version) {
+    return '버전 $version';
+  }
+
+  @override
+  String get aboutHeroSubtitle =>
+      '시간표 조회, 수업 알림, HyperOS 슈퍼아일랜드 경험에 집중한 Android 오픈소스 프로젝트';
+
+  @override
+  String get platformLabel => '플랫폼';
+
+  @override
+  String get focusLabel => '중점';
+
+  @override
+  String get updateLabel => '업데이트';
+
+  @override
+  String get prereleaseIncluded => '시험판 포함';
+
+  @override
+  String get stableOnly => '정식판';
+
+  @override
+  String get aboutUpdatesTitle => '버전 업데이트';
+
+  @override
+  String get aboutUpdatesSubtitle => '업데이트 확인 및 다운로드';
+
+  @override
+  String get aboutChangelogTitle => '업데이트 로그';
+
+  @override
+  String get aboutChangelogSubtitle => '모든 버전의 업데이트 내용 확인';
+
+  @override
+  String get aboutPositioningTitle => '프로젝트 정체성';
+
+  @override
+  String get aboutPositioningSubtitle => '이것이 무엇인지, 누구를 위한 것인지, 핵심 역량은 무엇인지';
+
+  @override
+  String get aboutPositioningBullet1 => '주간 시간표 뷰, 수업 CRUD, .ics 가져오기 지원';
+
+  @override
+  String get aboutPositioningBullet2 =>
+      '대응 학교의 교무 시스템 웹 로그인 가져오기 및 전체 백업 마이그레이션 지원';
+
+  @override
+  String get aboutPositioningBullet3 =>
+      '실시간 알림 지원. HyperOS 3.0.300부터 슈퍼아일랜드/포커스 알림 표시 지원';
+
+  @override
+  String get aboutPositioningBullet4 =>
+      '다중 시간표, 시간 템플릿, 테마 색상 및 카드 스타일 커스터마이즈 지원';
+
+  @override
+  String get aboutImportMigrationTitle => '가져오기 및 마이그레이션';
+
+  @override
+  String get aboutImportMigrationSubtitle => '현재 가져오기 방법, 백업 복원 및 마이그레이션 권장사항';
+
+  @override
+  String get aboutImportMigrationBullet1 =>
+      '현재 버전은 대응 학교의 교무 시스템 웹 로그인 가져오기를 지원합니다. \'수업 가져오기 > 교무 시스템 가져오기\'에서 학교와 어댑터를 선택하세요.';
+
+  @override
+  String get aboutImportMigrationBullet2 =>
+      '사용하는 학교가 아직 미대응인 경우, WakeUp 등 시간표 앱에서 수업을 가져온 뒤 캘린더 형식으로 내보내고 본 앱에서 가져올 수 있습니다.';
+
+  @override
+  String get aboutImportMigrationBullet3 =>
+      '다른 사용자가 이미 본 앱을 사용 중인 경우, 전체 백업 파일을 내보내어 \'데이터 백업 및 마이그레이션\'에서 가져오면 바로 복원됩니다.';
+
+  @override
+  String get aboutImportMigrationBullet4 =>
+      '패킷 캡처, 웹 디버깅, JavaScript를 할 수 있다면, qingyu_warehouse에서 교무 적응 보충에 참여해 주세요.';
+
+  @override
+  String get aboutContributorsTitle => '코드 기여자';
+
+  @override
+  String get aboutContributorsSubtitle => '개발자 및 교무 가져오기 적응자 목록';
+
+  @override
+  String get aboutOpenSourceLicensesTitle => '오픈소스 라이선스';
+
+  @override
+  String get aboutOpenSourceLicensesSubtitle => '본 앱 라이선스와 서드파티 구성 요소 라이선스';
+
+  @override
+  String get aboutOpenSourceLicensesSearchHint => '패키지 이름 검색';
+
+  @override
+  String get aboutOpenSourceLicensesAppSectionTitle => '라이선스 안내';
+
+  @override
+  String get aboutOpenSourceLicensesAppLicenseLabel =>
+      '경屿 시간표 소스 코드는 GPL-3.0-or-later로 배포됩니다.';
+
+  @override
+  String get aboutOpenSourceLicensesIntro =>
+      '아래 목록은 이 앱이 사용하는 오픈소스 구성 요소와 라이선스입니다. 항목을 눌러 전문을 볼 수 있습니다.';
+
+  @override
+  String get aboutOpenSourceLicensesExtraSectionTitle => '라이선스 안내';
+
+  @override
+  String get aboutOpenSourceLicensesExtraNote => '';
+
+  @override
+  String aboutOpenSourceLicensesPackagesSectionTitle(int count) {
+    return '오픈소스 구성 요소($count)';
+  }
+
+  @override
+  String aboutOpenSourceLicensesPackageSubtitle(int count) {
+    return '라이선스 본문 $count개';
+  }
+
+  @override
+  String get aboutOpenSourceLicensesLoadFailed =>
+      '라이선스를 불러오지 못했습니다. 나중에 다시 시도하세요.';
+
+  @override
+  String get aboutOpenSourceLicensesEmpty => '일치하는 패키지가 없습니다';
+
+  @override
+  String get aboutAppLogsTitle => '앱 로그';
+
+  @override
+  String get aboutAppLogsSubtitle => '실행 로그 확인';
+
+  @override
+  String get appLogsShareText =>
+      '경屿 시간표가 내보낸 앱 로그입니다. 로컬 실행 기록을 포함하며, 업데이트, 가져오기, 알림, 페이지, 충돌 문제의 트러블슈팅에 사용할 수 있습니다.';
+
+  @override
+  String get appLogsShareSubject => '경屿 시간표 - 앱 로그';
+
+  @override
+  String get appLogsRecordingEnabled => '앱 로그 기록 중';
+
+  @override
+  String get appLogsRecordingDisabled => '앱 로그 기록 꺼짐';
+
+  @override
+  String get appLogsCopyAction => '로그 복사';
+
+  @override
+  String get appLogsCopied => '현재 로그를 복사했습니다';
+
+  @override
+  String get appLogsExportAction => '로그 내보내기';
+
+  @override
+  String get appLogsClearAction => '로그 비우기';
+
+  @override
+  String get appLogsCleared => '앱 로그를 비웠습니다';
+
+  @override
+  String get appLogsClearFailed => '앱 로그 비우기 실패';
+
+  @override
+  String get appLogsSourceApp => '앱';
+
+  @override
+  String get appLogsSourceNative => '슈퍼 아일랜드';
+
+  @override
+  String get appLogsRecordingPausedHint =>
+      '기록이 꺼져 있습니다. 아래는 과거 로그이며, 끈 후에는 새로 추가되지 않습니다';
+
+  @override
+  String get timeSchemeTitle => '시간 템플릿';
+
+  @override
+  String get newSchemeTooltip => '새 템플릿';
+
+  @override
+  String timeSchemeSummary(
+    int sections,
+    int profiles,
+    int courses,
+    int overrideCourses,
+  ) {
+    return '$sections교시 · $profiles개 시간표 · $courses건 수업 · $overrideCourses건 부 템플릿';
+  }
+
+  @override
+  String get viewUsageAction => '사용 현황 확인';
+
+  @override
+  String get applyToCurrentTimetable => '현재 시간표에 적용';
+
+  @override
+  String get editSectionsAction => '교시 편집';
+
+  @override
+  String get createTimeSchemeTitle => '새 템플릿';
+
+  @override
+  String get timeSchemeNameLabel => '템플릿 이름';
+
+  @override
+  String get timeSchemeNameHint => '예: 본교 하절기 시간표';
+
+  @override
+  String get renameTimeSchemeTitle => '템플릿 이름 변경';
+
+  @override
+  String renamedToMessage(String name) {
+    return '이름 변경됨: $name';
+  }
+
+  @override
+  String get deleteTimeSchemeTitle => '템플릿 삭제';
+
+  @override
+  String deleteTimeSchemeMessage(String name) {
+    return '\"$name\"을(를) 삭제하시겠습니까? 사용 중인 템플릿은 삭제할 수 없습니다';
+  }
+
+  @override
+  String deletedTimeSchemeMessage(String name) {
+    return '템플릿 삭제됨: $name';
+  }
+
+  @override
+  String get timeSchemeInUseMessage => '이 템플릿은 시간표에서 사용 중입니다';
+
+  @override
+  String get copiedTimeSchemeMessage => '템플릿을 복사했습니다';
+
+  @override
+  String appliedTimeSchemeMessage(String name) {
+    return '템플릿 적용됨: $name';
+  }
+
+  @override
+  String timeSchemeUsageTitle(String name) {
+    return '\"$name\"의 사용 현황';
+  }
+
+  @override
+  String get timeSchemeUsageIntro =>
+      '먼저 전체 영향 범위를 확인한 뒤, 직접 편집할지 복사 후 변경할지 결정하세요';
+
+  @override
+  String get profileCountLabel => '시간표';
+
+  @override
+  String get courseCountLabel => '수업';
+
+  @override
+  String get overrideTimeSchemeLabel => '부 템플릿';
+
+  @override
+  String get directlyBoundProfilesTitle => '이 템플릿에 직접 바인딩된 시간표';
+
+  @override
+  String get directlyBoundProfilesEmpty => '현재 이 템플릿을 직접 사용하는 시간표가 없습니다.';
+
+  @override
+  String get directlyBoundProfilesSubtitle =>
+      '이 시간표들은 이 템플릿으로 전환 후 이 교시 시간으로 표시됩니다';
+
+  @override
+  String get followMainSchemeCoursesTitle => '메인 템플릿에 연동되는 수업';
+
+  @override
+  String get followMainSchemeCoursesEmpty => '현재 메인 템플릿 경유로 사용하는 수업이 없습니다.';
+
+  @override
+  String get followMainSchemeCoursesSubtitle =>
+      '이 수업들은 부 템플릿을 개별 설정하지 않고 소속 시간표와 함께 이 템플릿을 사용합니다';
+
+  @override
+  String get overrideSchemeCoursesTitle => '부 템플릿으로 사용하는 수업';
+
+  @override
+  String get overrideSchemeCoursesEmpty => '현재 이 템플릿을 부 템플릿으로 사용하는 수업이 없습니다.';
+
+  @override
+  String get overrideSchemeCoursesSubtitle =>
+      '이 수업들은 소속 시간표의 메인 템플릿이 변경되어도 이 템플릿을 개별 사용합니다';
+
+  @override
+  String get closeAction => '닫기';
+
+  @override
+  String get editTimeSchemeTitle => '템플릿 편집';
+
+  @override
+  String get backToSchemeList => '템플릿 목록으로';
+
+  @override
+  String get currentInUse => '현재 사용 중';
+
+  @override
+  String get quickGenerateAction => '빠른 생성';
+
+  @override
+  String get addSectionAction => '교시 추가';
+
+  @override
+  String get removeLastSectionAction => '마지막 교시 삭제';
+
+  @override
+  String get resetDefaultAction => '기본값 복원';
+
+  @override
+  String get sectionTimesTitle => '교시 시간';
+
+  @override
+  String get sectionTimesSubtitle =>
+      '현재 시간표가 이 템플릿을 사용 중이면, 교시 수는 사용된 최대 교시 이상이어야 합니다';
+
+  @override
+  String get schemeListCurrentLabel => '현재';
+
+  @override
+  String get schemeListCountLabel => '수';
+
+  @override
+  String get sectionCountLabel => '교시 수';
+
+  @override
+  String get quickGenerateTimeSchemeTitle => '시간표 시간 빠른 생성';
+
+  @override
+  String get addBreakRuleAction => '대휴식 규칙 추가';
+
+  @override
+  String get afterSectionLabel => '몇 교시 뒤';
+
+  @override
+  String get breakDurationMinutesLabel => '휴식 시간(분)';
+
+  @override
+  String get fillNumbersValidationMessage => '교시 수와 시간을 숫자로 입력하세요';
+
+  @override
+  String get timeSchemeEditorActiveAndCoursesHint =>
+      '현재 시간표와 일부 수업이 이 템플릿을 사용 중입니다. 저장 후 관련된 모든 시간표와 수업이 동기화됩니다';
+
+  @override
+  String get timeSchemeEditorActiveHint =>
+      '현재 시간표가 이 템플릿을 사용 중입니다. 저장 후 사용 중인 모든 시간표가 동기화됩니다';
+
+  @override
+  String get timeSchemeEditorOverrideHint =>
+      '수업이 이 템플릿을 부 템플릿으로 사용 중입니다. 저장 후 참조하는 모든 수업이 동기화됩니다';
+
+  @override
+  String get editTimeAction => '시간 편집';
+
+  @override
+  String editingSchemeLabel(String name) {
+    return '편집 중: $name';
+  }
+
+  @override
+  String get copiedTimeSchemeShortMessage => '템플릿을 복사했습니다';
+
+  @override
+  String get unnamedTimeScheme => '이름 없는 템플릿';
+
+  @override
+  String get unsetLabel => '미선택';
+
+  @override
+  String get timeSchemeUsageCourseRefPrefix => '수업 참조:';
+
+  @override
+  String get mainTimeSchemeLabel => '메인 템플릿';
+
+  @override
+  String get overrideTimeSchemeShortLabel => '부 템플릿';
+
+  @override
+  String timeSchemeBottomUsageSingle(String first) {
+    return '$first';
+  }
+
+  @override
+  String timeSchemeBottomUsageMulti(String first, int count) {
+    return '$first 외 $count건 수업';
+  }
+
+  @override
+  String get morningSectionCountLabel => '오전 교시 수';
+
+  @override
+  String get morningFirstSectionTimeLabel => '오전 1교시 시작 시간';
+
+  @override
+  String get afternoonSectionCountLabel => '오후 교시 수';
+
+  @override
+  String get afternoonFirstSectionTimeLabel => '오후 1교시 시작 시간';
+
+  @override
+  String get eveningSectionCountLabel => '야간 교시 수';
+
+  @override
+  String get eveningFirstSectionTimeLabel => '야간 1교시 시작 시간';
+
+  @override
+  String get classDurationMinutesLabel => '1교시 길이(분)';
+
+  @override
+  String get smallBreakDurationMinutesLabel => '소휴식 시간(분)';
+
+  @override
+  String get largeBreakRulesTitle => '대휴식 규칙';
+
+  @override
+  String get noLargeBreakRulesHint => '대휴식 규칙 미설정. 모두 소휴식 시간이 사용됩니다';
+
+  @override
+  String get deleteRuleTooltip => '규칙 삭제';
+
+  @override
+  String get generateAction => '생성';
+
+  @override
+  String get liveSettingsTitle => '슈퍼아일랜드 및 알림';
+
+  @override
+  String get liveGroupReminders => '알림';
+
+  @override
+  String get liveGroupDisplay => '표시 내용';
+
+  @override
+  String get liveGroupMaintenance => '유지 관리 및 셀프 점검';
+
+  @override
+  String get liveReminderTimingEntryTitle => '알림 시간대';
+
+  @override
+  String get liveReminderTimingEntrySubtitle =>
+      '수업 전, 수업 중과 종료 알림, 그리고 포커스 전환 시점';
+
+  @override
+  String get liveBeforeClassDisplayEntryTitle => '수업 전 알림 표시';
+
+  @override
+  String get liveDuringEndDisplayEntryTitle => '수업 중과 종료 알림 표시';
+
+  @override
+  String get liveKeepAliveEntryTitle => '백그라운드 상주';
+
+  @override
+  String get liveKeepAliveEntrySubtitle => '숨김, 백그라운드 상주 보조 서비스 및 권한 항목';
+
+  @override
+  String get liveTestingEntryTitle => '테스트 및 진단';
+
+  @override
+  String get liveTestingEntrySubtitle => '테스트 알림 전송, 슈퍼아일랜드 및 로컬 진단 로그 확인';
+
+  @override
+  String get liveReminderTimingTitle => '알림 시간대';
+
+  @override
+  String get liveReminderSwitchesTitle => '알림 스위치';
+
+  @override
+  String get liveReminderSwitchesSubtitle =>
+      '서로 다른 알림 시간대를 자유롭게 조합할 수 있습니다. 이 스위치들은 서로 대체하지 않습니다';
+
+  @override
+  String get beforeClassReminderTitle => '수업 전 알림';
+
+  @override
+  String beforeClassReminderSubtitle(int minutes) {
+    return '수업 시작 $minutes분 전에 팝업';
+  }
+
+  @override
+  String get duringClassReminderTitle => '수업 중과 종료 알림';
+
+  @override
+  String get duringClassReminderSubtitle => '수업 시작 후부터 종료 전까지의 표시에만 영향';
+
+  @override
+  String get liveClassReminderLeadTitle => '포커스 전환 시점';
+
+  @override
+  String get liveClassReminderLeadOptionImmediate => '수업 시작과 동시에 전환';
+
+  @override
+  String liveClassReminderLeadOptionMinutes(int minutes) {
+    return '종료 $minutes분 전에 전환';
+  }
+
+  @override
+  String get liveDisplayModeTitle => '표시 모드';
+
+  @override
+  String get liveDisplayModeSubtitle => '활성화된 알림 시간대에 적용됩니다';
+
+  @override
+  String get duringClassStatusNotificationTitle => '수업 중 상태바 알림';
+
+  @override
+  String get duringClassStatusNotificationImmediate => '수업 시작 후에도 상태바 알림 유지';
+
+  @override
+  String get duringClassStatusNotificationBeforeEnd =>
+      '종료 알림 시작 전까지 일반 알림 텍스트 유지';
+
+  @override
+  String get duringClassStatusNotificationPersistent =>
+      '수업 시작 후 일반 수업 중 알림을 계속 표시하고 종료 알림 전에 전환';
+
+  @override
+  String get enableIslandDisplayTitle => '슈퍼아일랜드 표시';
+
+  @override
+  String get enableIslandDisplaySubtitle => '끄면 시스템 슈퍼아일랜드 트리거를 중단합니다';
+
+  @override
+  String get livePermanentNotificationTitle => '상시 알림';
+
+  @override
+  String get livePermanentNotificationSubtitle =>
+      '수업이 없을 때도 알림창에 알림을 남기고 커플 카드 내용을 표시합니다';
+
+  @override
+  String get liveTimeThresholdTitle => '시간 임계값';
+
+  @override
+  String get liveTimeThresholdSubtitle =>
+      '수업 전 팝업, 종료 전 슈퍼아일랜드/포커스 알림 전환, 초 단위 카운트다운을 제어합니다';
+
+  @override
+  String get beforeClassPopupLabel => '수업 전 팝업 시간';
+
+  @override
+  String beforeClassMinutesOption(int minutes) {
+    return '$minutes분';
+  }
+
+  @override
+  String timeCorrectionLabel(String value) {
+    return '종 시간 보정: $value';
+  }
+
+  @override
+  String get timeCorrectionTitle => '벨 시간 보정';
+
+  @override
+  String get timeCorrectionHelp =>
+      '학교 종이 시간표보다 몇 초 빠르면 \'앞당기기\', 느리면 \'늦추기\'로 설정하세요.';
+
+  @override
+  String get duringEndTimeDisplayLabel => '수업 중/종료 알림 시간 스타일';
+
+  @override
+  String get duringEndTimeDisplayHelp =>
+      '컴팩트 알림에서 최근 시간을 표시할지 전체 총 시간을 표시할지 제어합니다.';
+
+  @override
+  String get liveDisplayContentSubtitle =>
+      '이 설정 그룹은 현재 스테이지에만 영향을 주며, 다른 알림 표시는 변경하지 않습니다';
+
+  @override
+  String get showCourseNameTitle => '수업명 표시';
+
+  @override
+  String get countdownFormatHelp => '분만 표시는 분 단위로, 초 포함 표시는 초 단위로 갱신됩니다';
+
+  @override
+  String get liveIslandPreviewTitle => '슈퍼 아일랜드 미리보기';
+
+  @override
+  String liveIslandPreviewUntilClassStart(String time) {
+    return '수업 시작 $time 전';
+  }
+
+  @override
+  String liveIslandPreviewUntilClassEnd(String time) {
+    return '수업 종료 $time 전';
+  }
+
+  @override
+  String get liveIslandPreviewSampleCourse => '고등 수학';
+
+  @override
+  String get liveIslandPreviewSampleCourseShort => '수학';
+
+  @override
+  String get liveIslandPreviewSampleLocation => '3동-401';
+
+  @override
+  String get beforeClassQuickActionTitle => '수업 전 빠른 작업';
+
+  @override
+  String get beforeClassQuickActionSubtitle =>
+      '수업 전 알림의 펼친 알림에만 표시됩니다. 무음/방해 금지는 수업 종료 후와 재부팅 후 자동 복원됩니다. 방해 금지 모드 첫 실행 시 시스템 인증 페이지로 이동할 수 있습니다';
+
+  @override
+  String get liveBeforeClassQuickActionAutoTitle => '자동 실행';
+
+  @override
+  String get liveBeforeClassQuickActionAutoSubtitle =>
+      '수업 전에 선택한 모드를 자동으로 켜고 수업 종료 후 자동 복원됩니다. 방해 금지는 시스템 권한이 필요합니다';
+
+  @override
+  String get liveBeforeClassQuickActionAutoOptionOff => '끄기';
+
+  @override
+  String liveBeforeClassQuickActionAutoOptionMinutes(int minutes) {
+    return '수업 $minutes분 전';
+  }
+
+  @override
+  String liveMiuiLabelSizePreview(String value) {
+    return '$value';
+  }
+
+  @override
+  String get liveIslandVisualSubtitle =>
+      '왼쪽 텍스트 이미지, 펼친 상태 큰 아이콘, 사용자 정의 이미지는 모두 현재 스테이지별로 개별 저장됩니다';
+
+  @override
+  String get liveMiuiLabelLogoCornerRadiusTitle => '왼쪽 아이콘 모서리 둥글기';
+
+  @override
+  String get liveMiuiLabelFontSizeTitle => '왼쪽 텍스트 크기';
+
+  @override
+  String get liveMiuiLabelOffsetXTitle => '왼쪽 텍스트 가로 오프셋';
+
+  @override
+  String get liveMiuiLabelOffsetYTitle => '왼쪽 텍스트 세로 오프셋';
+
+  @override
+  String get liveDisplayConfigModeSubtitle =>
+      '켜면 수업 중 및 종료 알림이 수업 전 알림 표시를 완전히 따릅니다. 아래 개별 설정은 일시적으로 편집할 수 없습니다';
+
+  @override
+  String get liveKeepAliveTitle => '백그라운드 상주';
+
+  @override
+  String get liveKeepAliveOptionsTitle => '상주 옵션';
+
+  @override
+  String get liveKeepAliveOptionsSubtitle => '슈퍼아일랜드와 알림의 백그라운드 안정성을 향상시킵니다';
+
+  @override
+  String get liveBackgroundRestrictionTitle => '시스템 백그라운드 제한';
+
+  @override
+  String get liveBackgroundRestrictionSubtitle =>
+      '앱이 백그라운드로 이동하면 시스템이 일시 중지시켜 알림의 카운트다운이 마지막 프레임에서 멈출 수 있습니다. 아래 항목에서 배터리 사용량의 \"완전한 백그라운드 동작 허용\"을 선택하세요.';
+
+  @override
+  String get liveBackgroundRestrictionOpen => '배터리 사용량 열기';
+
+  @override
+  String get hideFromRecentsTitle => '최근 작업에서 앱 숨기기';
+
+  @override
+  String get hideFromRecentsSubtitle => '켜면 최근 작업 목록에 표시되지 않도록 합니다';
+
+  @override
+  String get keepAliveServiceTitle => '경屿 시간표 백그라운드 상주 서비스';
+
+  @override
+  String get keepAliveServiceEnabledSubtitle =>
+      '현재 켜짐. 시스템이 백그라운드 상주 보조 서비스를 사용 가능한 상태로 유지합니다';
+
+  @override
+  String get keepAliveServiceDisabledSubtitle =>
+      '현재 꺼짐. 시스템 접근성 설정에서 수동으로 켤 수 있습니다';
+
+  @override
+  String get goEnableAction => '활성화하기';
+
+  @override
+  String get keepAliveConfirmTitle => '백그라운드 유지 서비스 사용';
+
+  @override
+  String get keepAliveConfirmBody =>
+      '이 서비스는 백그라운드에서 홈 화면 위젯을 새로 고치고 수업 알림을 다시 예약하는 용도로만 사용되며, 화면 내용을 읽거나 사용자를 대신하여 어떤 작업도 수행하지 않습니다. 사용하려면 시스템 설정에서 \'접근성\' 권한을 허용해야 하며, 언제든지 끌 수 있습니다.';
+
+  @override
+  String get keepAliveConfirmGoAction => '활성화';
+
+  @override
+  String get layoutEntryTitle => '레이아웃 및 교시';
+
+  @override
+  String get layoutEntrySubtitle => '교시 시간, 행 높이, 시간 열, 주말 표시 및 카드 레이아웃';
+
+  @override
+  String get remindersSectionTitle => '알림 및 푸시';
+
+  @override
+  String get liveGuideEntryTitle => '사용 가이드 및 권한';
+
+  @override
+  String get liveGuideEntrySubtitle => '약칭 설정, 알림, 자동 시작, 배터리 전략';
+
+  @override
+  String get managementSectionTitle => '시간표 관리';
+
+  @override
+  String timeSchemeEntryCurrentPrefix(String name) {
+    return '현재: $name · 전환, 교시 편집 및 복사';
+  }
+
+  @override
+  String get timeSchemeEntrySubtitle => '전환, 교시 편집, 복사 및 템플릿 관리';
+
+  @override
+  String semesterOverviewCurrentWeek(int current, int total) {
+    return '현재 제$current주 / 총 $total주';
+  }
+
+  @override
+  String get semesterStartUnset => '학기 시작일 미설정';
+
+  @override
+  String semesterStartSet(String date) {
+    return '학기 시작일: $date';
+  }
+
+  @override
+  String get setSemesterStartDate => '학기 시작일 설정';
+
+  @override
+  String get semesterStartDateLabel => '학기 시작일';
+
+  @override
+  String syncedCurrentWeekMessage(int week) {
+    return '제$week주에 동기화됨';
+  }
+
+  @override
+  String get pickSemesterWeekCountTitle => '학기 주 수 선택';
+
+  @override
+  String get pickSemesterWeekCountSubtitle => '학교에 따라 실제 수업 주 수에 맞게 조정할 수 있습니다';
+
+  @override
+  String weekCountItem(int count) {
+    return '$count주';
+  }
+
+  @override
+  String get diagnosticsLogIntro =>
+      'Markdown과 원본 두 가지 보기 방식을 지원합니다. 트러블슈팅 시 스마트폰에서 전체 로그를 직접 확인할 수 있습니다';
+
+  @override
+  String get diagnosticsRawTab => '원본';
+
+  @override
+  String get diagnosticsStructuredTab => '구조화';
+
+  @override
+  String get diagnosticsLevelLabel => '레벨';
+
+  @override
+  String get diagnosticsLevelAll => '전체';
+
+  @override
+  String get diagnosticsLevelError => '오류';
+
+  @override
+  String get diagnosticsLevelWarn => '경고';
+
+  @override
+  String get diagnosticsLevelInfo => '정보';
+
+  @override
+  String get diagnosticsLevelDebug => '디버그';
+
+  @override
+  String get diagnosticsLevelVerbose => '상세';
+
+  @override
+  String diagnosticsShowingCount(int shown, int total) {
+    return '$shown / $total건 로그 표시';
+  }
+
+  @override
+  String get diagnosticsNoMatchingTitle => '현재 필터에 일치하는 로그 없음';
+
+  @override
+  String get diagnosticsNoMatchingSubtitle => '\'전체\'로 전환하거나 원본으로 트러블슈팅을 계속하세요';
+
+  @override
+  String diagnosticsLoadEarlierLabel(int count) {
+    return '이전 로그 불러오기 ($count개 남음)';
+  }
+
+  @override
+  String get diagnosticsLevelInferred => '추정 레벨';
+
+  @override
+  String get diagnosticsRawFilteredHint =>
+      '원본 뷰는 현재 레벨 필터에 연동되어 해당 로그 블록만 표시합니다';
+
+  @override
+  String get diagnosticsTimeSortAscending => '오름차순';
+
+  @override
+  String get diagnosticsTimeSortDescending => '내림차순';
+
+  @override
+  String get diagnosticsDisplayOptionsTitle => '보기 및 정렬';
+
+  @override
+  String get diagnosticsStreamingHint => '실시간 업데이트 중입니다. 새 로그가 자동으로 표시됩니다';
+
+  @override
+  String get diagnosticsEmptyTitle => '로그 없음';
+
+  @override
+  String get diagnosticsEmptySubtitle => '현재 표시할 수 있는 슈퍼아일랜드 진단 로그가 없습니다';
+
+  @override
+  String get diagnosticsLogTitleFallback => '슈퍼아일랜드 진단 로그';
+
+  @override
+  String get diagnosticsDeviceInfoTitle => '기기 및 내보내기 정보';
+
+  @override
+  String get diagnosticsContentTitle => '로그 내용';
+
+  @override
+  String get diagnosticsRecentLogsTitle => '최근 로그';
+
+  @override
+  String get diagnosticsUnknownCategory => '미분류 이벤트';
+
+  @override
+  String get diagnosticsExportedAt => '내보내기 시간';
+
+  @override
+  String get diagnosticsTime => '시간';
+
+  @override
+  String get diagnosticsCategory => '카테고리';
+
+  @override
+  String get diagnosticsMessage => '메시지';
+
+  @override
+  String get diagnosticsStackTrace => '스택 트레이스';
+
+  @override
+  String get guideAndPermissionsTitle => '사용 가이드 및 권한';
+
+  @override
+  String get refreshStatusTooltip => '상태 새로고침';
+
+  @override
+  String get quickSetupTitle => '첫 화면 빠른 설정';
+
+  @override
+  String get quickSetupSubtitle => '가장 중요한 5개 항목을 먼저 배치합니다. 아래까지 스크롤할 필요 없이';
+
+  @override
+  String get quickActionAutoStartTitle => '자동 시작';
+
+  @override
+  String get continueReadingAction => '계속 보기';
+
+  @override
+  String get startUsingAction => '시작하기';
+
+  @override
+  String get editSingleLessonTitle => '단일 수업 편집';
+
+  @override
+  String get editCourseTitle => '수업 편집';
+
+  @override
+  String get addSingleLessonTitle => '단일 수업 추가';
+
+  @override
+  String get addCourseTitle => '수업 추가';
+
+  @override
+  String get deleteCourseTitle => '수업 삭제';
+
+  @override
+  String get courseDeleted => '수업이 삭제되었습니다';
+
+  @override
+  String get addMethodTitle => '추가 방법';
+
+  @override
+  String get singleLessonLabel => '단일 수업';
+
+  @override
+  String get recurringLessonLabel => '반복 수업';
+
+  @override
+  String get singleLessonHint => '보충 수업, 임시 추가에 적합합니다. 수업은 한 주차에만 표시됩니다';
+
+  @override
+  String get recurringLessonHint => '같은 시간에 매주 연속하는 정규 수업에 적합합니다';
+
+  @override
+  String get sharedInfoTitle => '공유 정보';
+
+  @override
+  String get sharedInfoHint => '공유 필드 설명 보기';
+
+  @override
+  String get sharedInfoSheetItemCourseName =>
+      '수업명: 수업 고유 식별자. 동일한 이름의 여러 배치는 하나의 수업으로 처리됩니다. 이름을 변경하면 별도 수업 기록이 생성됩니다.';
+
+  @override
+  String get sharedInfoSheetItemShortName =>
+      '수업 약칭: 슈퍼아일랜드 등 간략 표시에 사용. 수동 입력 필요, 자동 생성되지 않음. 「수업 약칭 우선 표시」 활성화 시 적용. 3자 이내 권장.';
+
+  @override
+  String get sharedInfoSheetItemSharedSync =>
+      '공유 동기화: 약칭, 색상, 성격, 개요 등은 동일 수업명의 다른 배치에 동기화됩니다.';
+
+  @override
+  String get reuseExistingCourseLabel => '기존 수업 활용';
+
+  @override
+  String get reuseExistingCourseHelper =>
+      '기존 수업을 선택하면 수업명, 교사와 기타 공유 정보가 자동 입력됩니다';
+
+  @override
+  String get manualInputLabel => '수동 입력';
+
+  @override
+  String get noTemplateCoursesHint =>
+      '현재 시간표에 수업이 없습니다. 먼저 1개를 수동으로 등록하면 이후 임시 추가 시 바로 선택할 수 있습니다';
+
+  @override
+  String get courseNameLabel => '수업명';
+
+  @override
+  String get courseNameHelper =>
+      '수업 고유 식별자입니다. 동일한 이름의 배치는 하나의 수업으로 통합됩니다. 공식 전체 명칭을 입력하고, 표시 목적의 약칭은 사용하지 마세요';
+
+  @override
+  String get pleaseEnterCourseName => '수업명을 입력하세요';
+
+  @override
+  String get courseShortNameOptional => '수업 약칭';
+
+  @override
+  String get courseShortNameHelper =>
+      '슈퍼아일랜드 등 간략 표시에 권장. 약칭은 자동 생성되지 않으며 「수업 약칭 우선 표시」 활성화 시 적용. 3자 이내 권장';
+
+  @override
+  String get courseShortNameAutoFillAction => '앞 2자';
+
+  @override
+  String get teacherLabel => '담당 교사';
+
+  @override
+  String get courseNatureLabel => '수업 성격';
+
+  @override
+  String get courseDescriptionOptional => '수업 개요 (선택)';
+
+  @override
+  String get currentScheduleHint => '여기의 요일, 교시, 강의실, 주차 및 홀짝주는 이 배치에만 영향을 줍니다';
+
+  @override
+  String followProfileTimeScheme(String name) {
+    return '현재 시간표에 연동 ($name)';
+  }
+
+  @override
+  String get timeSchemeOverrideLabel => '수업 시간 방안';
+
+  @override
+  String get lessonWeeksTitle => '수업 주차';
+
+  @override
+  String get singleLessonWeekHint =>
+      '단일 수업은 한 주차에만 나타납니다. 보충 수업이나 임시 추가에 적합합니다';
+
+  @override
+  String get rangeWeekLabel => '연속 주';
+
+  @override
+  String get customWeekLabel => '사용자 정의 주';
+
+  @override
+  String get allWeeksLabel => '전체';
+
+  @override
+  String get oddWeeksLabel => '홀수 주';
+
+  @override
+  String get evenWeeksLabel => '짝수 주';
+
+  @override
+  String get allWeeksHint => '시작 주부터 종료 주까지 연속으로 수업을 배치합니다';
+
+  @override
+  String get oddWeeksHint => '범위 내 홀수 주만 유지합니다';
+
+  @override
+  String get evenWeeksHint => '범위 내 짝수 주만 유지합니다';
+
+  @override
+  String get customPaletteColor => '팔레트에서 사용자 정의';
+
+  @override
+  String timeSchemeSetCountValue(int count) {
+    return '$count세트';
+  }
+
+  @override
+  String profileCountValue(int count) {
+    return '$count개';
+  }
+
+  @override
+  String courseSectionCountValue(int count) {
+    return '$count건';
+  }
+
+  @override
+  String timeSchemeStartsAt(String start) {
+    return '$start부터';
+  }
+
+  @override
+  String get weekdayShortMonday => '월';
+
+  @override
+  String get weekdayShortTuesday => '화';
+
+  @override
+  String get weekdayShortWednesday => '수';
+
+  @override
+  String get weekdayShortThursday => '목';
+
+  @override
+  String get weekdayShortFriday => '금';
+
+  @override
+  String get weekdayShortSaturday => '토';
+
+  @override
+  String get weekdayShortSunday => '일';
+
+  @override
+  String weekdaySectionRange(String weekday, int startSection, int endSection) {
+    return '$weekday요일 $startSection-$endSection교시';
+  }
+
+  @override
+  String timeSchemeUsageReference(
+    String profileName,
+    String courseName,
+    String weekday,
+    int startSection,
+    int endSection,
+    String usageType,
+  ) {
+    return '$profileName · $courseName（$weekday요일 $startSection-$endSection교시, $usageType）';
+  }
+
+  @override
+  String weekdaySectionSummary(
+    String weekday,
+    int startSection,
+    int endSection,
+  ) {
+    return '$weekday요일 $startSection-$endSection교시';
+  }
+
+  @override
+  String get timeRangeValidationNoCrossDay => '종료 시간은 시작 시간보다 나중이어야 합니다';
+
+  @override
+  String get timeSchemeNameEmptyValidation => '템플릿 이름은 비워둘 수 없습니다';
+
+  @override
+  String get liveTimeCorrectionNone => '보정 없음';
+
+  @override
+  String liveTimeCorrectionDelay(int seconds) {
+    return '전체를 $seconds초 늦추기';
+  }
+
+  @override
+  String liveTimeCorrectionAdvance(int seconds) {
+    return '전체를 $seconds초 앞당기기';
+  }
+
+  @override
+  String get liveSettingsEntrySubtitle => '알림 시간대, 아일랜드 표시, 알림바 및 표시 내용';
+
+  @override
+  String get timetableProfilesEntrySubtitle => '새로 만들기, 전환, 복사, 이름 변경 및 삭제';
+
+  @override
+  String get homeTitleSectionTitle => '홈 제목';
+
+  @override
+  String get homeTitleSectionSubtitle => '홈 왼쪽 위 시간표 전환 항목의 스타일을 제어합니다';
+
+  @override
+  String get homeTitleStyleLabel => '제목 스타일';
+
+  @override
+  String get frostedSheetSectionTitle => '프로스트 글래스';
+
+  @override
+  String get frostedSheetSectionSubtitle =>
+      '홈 팝업 패널의 가우시안 블러 강도와 성에 유리 밝기를 조절합니다. 슬라이더가 오른쪽일수록 흰 성에 유리 층이 뚜렷해집니다';
+
+  @override
+  String get frostedBlurEnabledTitle => '블러 활성화';
+
+  @override
+  String get frostedBlurEnabledSubtitle =>
+      '끄면 팝업, 홈 블러 영역, \'이번 주로\' 버튼이 반투명 배경만 남고 블러 샘플링을 하지 않습니다';
+
+  @override
+  String get frostedSheetPreviewOpenAction => '미리보기 패널 열기';
+
+  @override
+  String get frostedSheetPreviewDemoTitle => '미리보기';
+
+  @override
+  String get frostedSheetPreviewDemoSubtitle => '프로스트 글래스 효과 실시간 미리보기';
+
+  @override
+  String get frostedSheetBlurLabel => '블러 강도';
+
+  @override
+  String get frostedSheetTintLabel => '성에 유리 밝기';
+
+  @override
+  String get timetableBackgroundColorSectionTitle => '시간표 배경색';
+
+  @override
+  String get timetableBackgroundColorSectionSubtitle => '시간표 페이지의 큰 배경에만 적용됩니다';
+
+  @override
+  String get homePageBackgroundFillLabel => '배경 채우기';
+
+  @override
+  String get homePageBackgroundFillColor => '단색';
+
+  @override
+  String get homePageBackgroundFillImage => '이미지';
+
+  @override
+  String get homePageBackgroundImageTitle => '배경 이미지';
+
+  @override
+  String get homePageBackgroundImageSubtitle =>
+      '\'이미지\' 모드에서 아래에서 선택한 표시 영역에 적용됩니다';
+
+  @override
+  String get homePageWallpaperTitle => '배경 이미지';
+
+  @override
+  String get homePageWallpaperSubtitle =>
+      '전체 화면에 이미지 하나를 깔아 줍니다. 아래 영역을 선택해 비치는 범위를 정하며, 선택하지 않은 영역은 시간표 배경색이 유지됩니다';
+
+  @override
+  String get homePageBackdropFollowsWeekPagerTitle => '배경이 주차 스와이프를 따라감';
+
+  @override
+  String get homePageBackdropFollowsWeekPagerSubtitle =>
+      '좌우로 주차를 전환할 때 배경 이미지가 시간표 페이지와 함께 움직입니다';
+
+  @override
+  String get homePageBackdropTuningTitle => '배경 조정';
+
+  @override
+  String get homePageBackdropBlurLabel => '흐림 강도';
+
+  @override
+  String get homePageBackdropFrostLabel => '서리 밝기';
+
+  @override
+  String get homePageBackgroundScopeTitle => '배경 표시 영역';
+
+  @override
+  String get homePageBackgroundScopeSubtitle =>
+      '위에서부터 각 영역의 배경 이미지 노출 여부를 제어합니다. 선택하지 않은 영역은 시간표 배경색이 유지됩니다';
+
+  @override
+  String get homePageBackgroundScopeStatusBar => '상태 표시줄';
+
+  @override
+  String get homePageBackgroundScopeTimetable => '시간표 영역';
+
+  @override
+  String get homePageBackgroundScopeWeekdayBar => '정보 바';
+
+  @override
+  String get homePageBackgroundScopeHeader => '상단 바';
+
+  @override
+  String get homePageHeaderBlurTitle => '상단 바 가우시안 블러';
+
+  @override
+  String get homePageHeaderBlurSubtitle =>
+      '제목 표시줄(경屿 시간표) 영역을 흐리게 합니다. \'상태 표시줄\'을 선택하면 상태 표시줄도 함께 흐리게 합니다';
+
+  @override
+  String get homePageWeekdayBarBlurTitle => '정보 바 가우시안 블러';
+
+  @override
+  String get homePageWeekdayBarBlurSubtitle =>
+      '주차와 요일 정보 바를 흐리게 하고 아래 배경 이미지를 비춥니다';
+
+  @override
+  String get homePageTimeColumnBlurTitle => '시간 열 가우시안 블러';
+
+  @override
+  String get homePageTimeColumnBlurSubtitle =>
+      '왼쪽 교시·시간 열을 흐리게 하고 아래 배경 이미지를 비춥니다';
+
+  @override
+  String get homePageRegionBlurSectionSubtitle =>
+      '배경 이미지와 함께 사용해야 합니다. 블러 강도는 \'팝업 성에 유리\' 설정을 따릅니다';
+
+  @override
+  String get homePagePickImageAction => '이미지 선택';
+
+  @override
+  String get homePageSwitchImageAction => '사진 변경';
+
+  @override
+  String get homePageClearImageAction => '이미지 지우기';
+
+  @override
+  String get homePageImageNotSelected => '선택 안 됨';
+
+  @override
+  String get wallpaperPositionPickerTitle => '배경화면 표시 위치 조정';
+
+  @override
+  String get wallpaperPositionPickerResetTooltip => '중앙으로 초기화';
+
+  @override
+  String get wallpaperPositionPickerDragHint => '배경화면을 드래그해 위치 조정';
+
+  @override
+  String get wallpaperPositionPickerSwitchWallpaper => '배경화면 바꾸기';
+
+  @override
+  String get wallpaperPositionPickerDone => '완료';
+
+  @override
+  String get wallpaperPositionPickerExit => '나가기';
+
+  @override
+  String get appearanceTextColorsSectionTitle => '텍스트 색상';
+
+  @override
+  String get appearanceTextColorsSectionSubtitle =>
+      '수업 카드, 요일 바, 시간 축의 텍스트 색상을 설정합니다';
+
+  @override
+  String get defaultTimetablePreviewName => '기본 시간표';
+
+  @override
+  String get beforeClassDisplaySettingsTitle => '수업 전 알림 표시';
+
+  @override
+  String get liveDisplaySummaryShortName => '약칭';
+
+  @override
+  String get liveDisplaySummaryCourseName => '수업명';
+
+  @override
+  String get liveDisplaySummaryLocation => '장소';
+
+  @override
+  String liveDisplaySummaryCountdown(String style) {
+    return '카운트다운（$style）';
+  }
+
+  @override
+  String get liveDisplaySummaryStageText => '스테이지 텍스트';
+
+  @override
+  String get liveDisplaySummaryLeftLabelImage => '아이콘';
+
+  @override
+  String get liveDisplaySummaryMinimal => '최소 표시';
+
+  @override
+  String get liveDisplaySummaryCountdownShort => '카운트다운';
+
+  @override
+  String liveDisplaySummaryMore(String first, int count) {
+    return '$first 외 $count개';
+  }
+
+  @override
+  String get guideStatusNotificationPermission => '알림 권한';
+
+  @override
+  String get guideStatusEnabled => '활성화됨';
+
+  @override
+  String get guideStatusDisabled => '비활성화됨';
+
+  @override
+  String get guideStatusIslandSupport => '포커스 알림 / 슈퍼아일랜드';
+
+  @override
+  String get guideStatusSystemAllowed => '시스템 허용됨';
+
+  @override
+  String get guideStatusEnabledPending => '활성화됨 but 시스템 미확인';
+
+  @override
+  String get guideStatusSuggestedCheck => '확인 권장';
+
+  @override
+  String get guideStatusBatteryOptimization => '배터리 최적화';
+
+  @override
+  String get guideStatusBatteryUnrestricted => '제한 없음';
+
+  @override
+  String get guideStatusBatteryRestricted => '아직 제한됨';
+
+  @override
+  String get liveDiagnosticsUnavailable => '현재 볼 수 있는 슈퍼아일랜드 진단 로그가 없습니다';
+
+  @override
+  String get liveDiagnosticsViewerTitle => '슈퍼아일랜드 진단 로그';
+
+  @override
+  String get liveDiagnosticsShareText =>
+      '경屿 시간표가 내보낸 슈퍼아일랜드 진단 로그입니다. \'슈퍼아일랜드가 표시되지 않는\' 등의 문제 트러블슈팅에 사용할 수 있습니다.';
+
+  @override
+  String get liveDiagnosticsShareSubject => '경屿 시간표 - 슈퍼아일랜드 진단 로그';
+
+  @override
+  String get liveDiagnosticsSnapshotShareText =>
+      '경屿 시간표의 현재 테스트 진단 페이지가 내보낸 슈퍼아일랜드 상태 스냅샷입니다. \'슈퍼아일랜드가 표시되지 않는\' 등의 문제 트러블슈팅에 사용할 수 있습니다.';
+
+  @override
+  String get liveDiagnosticsSnapshotShareSubject => '경屿 시간표 - 슈퍼아일랜드 상태 스냅샷';
+
+  @override
+  String get liveDiagnosticsNothingToExport =>
+      '현재 내보낼 수 있는 로그 파일이나 상태 스냅샷이 없습니다';
+
+  @override
+  String get liveDiagnosticsCleared => '슈퍼아일랜드 진단 로그를 비웠습니다. 이후 다시 수집을 시작합니다';
+
+  @override
+  String get liveDiagnosticsClearFailed => '슈퍼아일랜드 진단 로그 비우기 실패';
+
+  @override
+  String get liveTestingNotRefreshed => '아직 새로고침 안 됨';
+
+  @override
+  String get liveTestingTitle => '테스트 및 진단';
+
+  @override
+  String get liveTestingNotificationTitle => '테스트 알림';
+
+  @override
+  String get liveTestingNotificationSubtitle =>
+      '슈퍼아일랜드, 알림바, 수업 약칭 등의 표시 효과를 검증합니다';
+
+  @override
+  String get liveTestingStartAction => '테스트 시작';
+
+  @override
+  String get liveTestingCancelAction => '테스트 취소';
+
+  @override
+  String get liveTestingSessionRunning => '셀프 체크 진행 중';
+
+  @override
+  String get liveTestingSessionCanceled => '셀프 체크를 취소했습니다';
+
+  @override
+  String get liveTestingIslandStatusTitle => '아일랜드 상태 진단';
+
+  @override
+  String get liveTestingIslandStatusSubtitle =>
+      '네이티브 실시간 서비스, 알림 구성 결과 및 비아일랜드 사유를 직접 표시합니다';
+
+  @override
+  String get liveTestingServiceStatusRunning => '서비스 실행 중';
+
+  @override
+  String get liveTestingServiceStatusStopped => '서비스 미실행';
+
+  @override
+  String get liveTestingNoIslandReasonTitle => '비아일랜드 사유';
+
+  @override
+  String get liveTestingNoIslandReasonEmpty => '현재 차단 사유 없음';
+
+  @override
+  String get liveTestingRefreshAction => '진단 새로고침';
+
+  @override
+  String get liveTestingRefreshing => '새로고침 중';
+
+  @override
+  String get liveTestingExportAction => '로그 내보내기 및 공유';
+
+  @override
+  String get liveTestingExporting => '내보내는 중';
+
+  @override
+  String get liveTestingAutoRefreshTitle => '자동 새로고침';
+
+  @override
+  String liveTestingAutoRefreshOn(int seconds) {
+    return '$seconds초마다 진단 상태를 자동으로 가져옵니다';
+  }
+
+  @override
+  String get liveTestingAutoRefreshOff =>
+      '끄면 수동 새로고침 시에만 업데이트됩니다. 현재 상태를 안정적으로 확인할 수 있습니다.';
+
+  @override
+  String liveTestingRefreshedAt(String time) {
+    return '마지막 새로고침: $time';
+  }
+
+  @override
+  String get liveTestingSectionEnvironment => '환경 및 권한';
+
+  @override
+  String get liveTestingSectionService => '서비스 상태';
+
+  @override
+  String get liveTestingSectionCourse => '수업 데이터';
+
+  @override
+  String get liveTestingSectionTiming => '시간 및 스테이지';
+
+  @override
+  String get liveTestingSectionSwitches => '스테이지 스위치';
+
+  @override
+  String get liveTestingSectionDisplay => '아일랜드 표시 설정';
+
+  @override
+  String get liveTestingSectionNotification => '알림 판정 결과';
+
+  @override
+  String get liveTestingSectionRecentLogs => '최근 진단 로그';
+
+  @override
+  String get liveTestingRawDataTitle => '원시 디버그 데이터';
+
+  @override
+  String get liveTestingRawDataSubtitle =>
+      '기본 접힘. 트러블슈팅 시 펼쳐서 전체 네이티브 필드를 확인하세요';
+
+  @override
+  String get liveTestingExpandRawJson => '원시 JSON 펼치기';
+
+  @override
+  String get liveTestingExpandRawJsonSubtitle => '대량의 원시 필드가 페이지를 차지하는 것을 방지';
+
+  @override
+  String get liveTestingLocalLogsTitle => '로컬 진단 로그';
+
+  @override
+  String get liveTestingLocalLogsSubtitle =>
+      '원클릭으로 로그 파일을 내보내고 시스템 공유로 개발자에게 전송. 비운 후 재수집도 가능합니다';
+
+  @override
+  String get liveTestingClearLogsAction => '로그 비우기';
+
+  @override
+  String get liveTestingClearingLogs => '비우는 중';
+
+  @override
+  String get liveTestingViewPhoneLogsAction => '기기 로그 확인';
+
+  @override
+  String get liveTestingMoreTesterOptionsAction => '기본 테스터 옵션';
+
+  @override
+  String get yesLabel => '예';
+
+  @override
+  String get noLabel => '아니오';
+
+  @override
+  String get liveTestingCurrentNativeFieldsSubtitle => '현재 네이티브 진단 필드를 표시합니다';
+
+  @override
+  String get liveTestingNoCourseAvailable => '현재 테스트 가능한 수업이 없습니다';
+
+  @override
+  String get liveTestingPresetArmedButHidden =>
+      '자가 점검 프리셋 수업이 주입되었지만 지금은 아일랜드가 표시되지 않습니다. \'수업 전 알림\'이 꺼져 있으면 수업이 실제로 시작된 후(약 1분 뒤) 표시됩니다';
+
+  @override
+  String get liveTestingHolidayBlocked =>
+      '현재 휴가 기간에 포함되어 있어 아일랜드가 표시되지 않습니다. 테스트하려면 먼저 \'시간표 설정 → 공휴일 표시\'에서 오늘을 포함하는 휴가를 삭제하세요';
+
+  @override
+  String get liveTestingNotIslandHoliday =>
+      '현재 휴가 기간에 포함되어 있습니다——휴가 기간에는 아일랜드가 표시되지 않습니다. 휴가는 \'시간표 설정 → 공휴일 표시\'에서 관리할 수 있습니다';
+
+  @override
+  String get liveTestingCourseTestAction => '과목 테스트';
+
+  @override
+  String get liveTestingCourseTestPickerTitle => '테스트할 과목 선택';
+
+  @override
+  String get liveTestingCourseTestStageTitle => '미리 볼 단계 선택';
+
+  @override
+  String get liveTestingCourseTestStageBeforeClass => '수업 전 카운트다운(약 3분 표시)';
+
+  @override
+  String get liveTestingCourseTestStageDuringClass => '수업 중(약 4분 표시)';
+
+  @override
+  String liveTestingCourseTestActiveChip(String course) {
+    return '과목 테스트 중 · $course';
+  }
+
+  @override
+  String get liveTestingCourseTestStopAction => '테스트 중지';
+
+  @override
+  String liveTestingCourseTestStartedToast(String course, String stage) {
+    return '\'$course\' 슈퍼 아일랜드 테스트를 강제 시작했습니다($stage). Home 키로 홈 화면에서 확인하세요. 테스트 시간이 끝나면 아일랜드가 자동으로 사라지고 일정 예약이 복구됩니다';
+  }
+
+  @override
+  String get liveTestingCourseTestStoppedToast =>
+      '과목 테스트를 중지했습니다. 일정 예약이 복구되었습니다';
+
+  @override
+  String get liveTestingInFlight => '테스트가 진행 중입니다. 중복으로 탭하지 말고 잠시 후 다시 시도해 주세요';
+
+  @override
+  String get liveTestingProductionHomeHint =>
+      '정식 슈퍼아일랜드 선택 경로를 사용했습니다. Home 키로 홈 화면에 나가서 확인하세요(앱을 열어 둔 상태에서는 보통 표시되지 않습니다)';
+
+  @override
+  String get liveTestingPresetFallbackNote =>
+      '(테스트 가능한 실제 수업이 없어 자가 점검 프리셋 수업을 대신 사용했습니다. 시간표에는 기록되지 않습니다)';
+
+  @override
+  String get liveTestingTestCourseNote =>
+      '여기에 메모가 표시됩니다. 수업 편집 페이지에서 설정할 수 있습니다';
+
+  @override
+  String get liveTestingNotificationSent =>
+      '수업 알림 테스트 알림을 전송했습니다. 약 8초 내에 수업 전 알림 단계로 진입합니다';
+
+  @override
+  String sendFailedWithError(String error) {
+    return '전송 실패: $error';
+  }
+
+  @override
+  String get homeWidgetSettingsTitle => '홈 위젯';
+
+  @override
+  String get homeWidgetTodayCourseTitle => '오늘 수업 위젯';
+
+  @override
+  String get homeWidgetTodayCourseSubtitle =>
+      '2×2, 2×4, 4×4 세 가지 크기를 지원합니다. 위젯을 탭하면 홈을 열고, 수업 시작/종료 시 자동 갱신됩니다';
+
+  @override
+  String get homeWidgetQuickAddTitle => '홈에 빠른 추가';
+
+  @override
+  String get homeWidgetCheckingPinSupport => '현재 홈이 앱 내 위젯 추가를 지원하는지 확인 중…';
+
+  @override
+  String get homeWidgetPinSupported =>
+      '지원하면 시스템 추가 확인이 직접 팝업됩니다. 별도의 권한 팝업이 아닙니다. 확인 후 홈에 고정할 수 있습니다.';
+
+  @override
+  String get homeWidgetPinUnsupported =>
+      '현재 홈이 앱 내 직접 추가를 지원하지 않으면, 홈을 길게 눌러 → 위젯 → 경屿 시간표에서 수동으로 추가할 수 있습니다.';
+
+  @override
+  String get homeWidgetBackgroundStyleLabel => '배경 스타일';
+
+  @override
+  String get homeWidgetShowLocationTitle => '장소 표시';
+
+  @override
+  String get homeWidgetShowLocationSubtitle => '끄면 주차와 수업 수를 대신 표시합니다';
+
+  @override
+  String get homeWidgetShowCountdownTitle => '카운트다운 표시';
+
+  @override
+  String get homeWidgetShowCountdownSubtitle => '다음 수업까지 카운트다운 표시';
+
+  @override
+  String get homeWidgetCountdownLeadTitle => '카운트다운 선행량';
+
+  @override
+  String get homeWidgetCountdownLeadSubtitle =>
+      '수업 전 몇 분에 카운트다운 모드로 전환할지 설정합니다';
+
+  @override
+  String get homeWidgetCountdownLeadAlways => '항상 표시';
+
+  @override
+  String homeWidgetCountdownLeadMinutes(String minutes) {
+    return '수업 전 $minutes분';
+  }
+
+  @override
+  String get widgetCountdownStyleTitle => '카운트다운 스타일';
+
+  @override
+  String get homeWidgetHideCompletedTitle => '완료된 수업 숨기기';
+
+  @override
+  String get homeWidgetHideCompletedSubtitle => '아직 끝나지 않은 수업만 표시합니다';
+
+  @override
+  String get homeWidgetShowTomorrowTitle => '수업 후 내일 수업 표시';
+
+  @override
+  String get homeWidgetShowTomorrowSubtitle => '오늘 수업이 끝나면 내일 수업을 자동으로 표시합니다';
+
+  @override
+  String get homeWidgetAppearanceTitle => '카드 외관';
+
+  @override
+  String get homeWidgetHeightAdjustTitle => '카드 높이';
+
+  @override
+  String get homeWidgetHeightAdjustHint =>
+      '범위 -16~16, 0은 기본값입니다. 양수는 더 높게, 음수는 더 낮게';
+
+  @override
+  String get defaultLabel => '기본';
+
+  @override
+  String higherByValue(String value) {
+    return '높게 $value';
+  }
+
+  @override
+  String lowerByValue(String value) {
+    return '낮게 $value';
+  }
+
+  @override
+  String get homeWidgetCornerRadiusTitle => '카드 둥근 모서리';
+
+  @override
+  String get homeWidgetDescriptionTitle => '설명';
+
+  @override
+  String get homeWidgetDescriptionText =>
+      '위젯은 현재 오늘 수업을 우선 표시합니다. 수업 없음 상태는 완전한 카드를 유지하며 빈 화면이 나타나지 않습니다. 시간표 전환이나 스타일 변경 시 데스크톱 컴포넌트도 연동하여 갱신됩니다';
+
+  @override
+  String homeWidgetPinRequested(String label) {
+    return '\"$label\" 추가 요청을 보냈습니다. 시스템 팝업에서 확인하고 홈에 배치하세요.';
+  }
+
+  @override
+  String homeWidgetPinUnsupportedManual(String label) {
+    return '현재 시스템 홈이 앱 내 직접 위젯 추가를 지원하지 않습니다. 홈을 길게 눌러 → 위젯 → 경屿 시간표에서 \"$label\"을(를) 수동으로 추가하세요.';
+  }
+
+  @override
+  String get homeWidgetInvalidType => '위젯 타입이 유효하지 않습니다. 나중에 다시 시도하세요.';
+
+  @override
+  String homeWidgetPinFailedManual(String label) {
+    return '추가 요청 실패. 홈을 길게 눌러 → 위젯 → 경屿 시간표에서 \"$label\"을(를) 수동으로 추가하세요.';
+  }
+
+  @override
+  String get homeWidgetBindingSectionTitle => '위젯 바인딩 관리';
+
+  @override
+  String get homeWidgetBindingFollowActive => '현재 시간표 따르기';
+
+  @override
+  String get homeWidgetBindingEmpty =>
+      '홈 화면에 오늘 수업 위젯이 아직 없어요. 먼저 추가한 뒤 바인딩해 주세요.';
+
+  @override
+  String get homeWidgetBindingSaveFailed =>
+      '위젯 바인딩 저장에 실패했어요. 잠시 후 다시 시도해 주세요.';
+
+  @override
+  String get homeWidgetCoupleModeOffMessage => '커플 모드가 꺼져 있어요. 아래 스위치로 켤 수 있어요';
+
+  @override
+  String get coupleModeTitle => '커플 모드';
+
+  @override
+  String get homeWidgetBindingMissingToast =>
+      '이 위젯에 바인딩된 시간표가 더 이상 없어요. 일반 방식으로 열었어요.';
+
+  @override
+  String get homeWidgetExactAlarmBannerTitle => '정확한 알람 권한 미허용';
+
+  @override
+  String get homeWidgetExactAlarmBannerText =>
+      '\"알람 및 리마인더\" 권한이 없으면 수업 경계 갱신이 부정확한 알람으로 대체되어 위젯이 늦게 갱신될 수 있어요. 정확한 갱신을 위해 권한을 허용해 주세요';
+
+  @override
+  String get homeWidgetExactAlarmGrantAction => '권한 허용';
+
+  @override
+  String get homeWidgetExactAlarmOpenFailed =>
+      '권한 페이지를 열 수 없습니다. 시스템 설정에서 \"알람 및 리마인더\"를 직접 허용해 주세요';
+
+  @override
+  String get homeWidgetExactAlarmFallbackHint =>
+      '앱 정보 페이지를 열었습니다. 해당 페이지에서 \"알람 및 리마인더\"를 허용해 주세요';
+
+  @override
+  String get layoutSettingsTitle => '레이아웃 및 교시';
+
+  @override
+  String get layoutDensityTitle => '시간표 밀도';
+
+  @override
+  String get layoutAutoFitHeightTitle => '화면 높이에 자동 맞춤';
+
+  @override
+  String get layoutAutoFitHeightSubtitle =>
+      '켜면 현재 교시 수에 따라 페이지 하단까지 자동 맞춤됩니다. 아래 여백을 유지하지 않습니다';
+
+  @override
+  String get layoutVerticalScrollEffectTitle => '세로 스크롤 효과';
+
+  @override
+  String get layoutVerticalScrollEffectSubtitle =>
+      '자동 맞춤이 꺼져 있을 때 사용할 수 있어요. 꺼지면 세로 스크롤이 더 깔끔해요';
+
+  @override
+  String get layoutHideWeekendsTitle => '토요일과 일요일 숨기기';
+
+  @override
+  String get layoutHideWeekendsSubtitle =>
+      '켜면 홈에 월~금만 표시됩니다. 나머지 열 너비는 자동 맞춤됩니다';
+
+  @override
+  String get layoutEnableHapticsTitle => '앱 내 진동 피드백 활성화';
+
+  @override
+  String get layoutEnableHapticsSubtitle =>
+      '끄면 페이지 전환 등의 상호작용에서 가벼운 진동이 발생하지 않습니다';
+
+  @override
+  String pageTransitionSpeedLabel(String speed) {
+    return '페이지 전환 속도 $speed×';
+  }
+
+  @override
+  String get pageTransitionSpeedTitle => '페이지 전환 속도';
+
+  @override
+  String get pageTransitionSpeedSubtitle =>
+      '하위 페이지 슬라이드 애니메이션 속도를 조절합니다. 값이 클수록 빠르고, 작을수록 느립니다. Android 시스템 \'전환 애니메이션 배율\'과 함께 적용됩니다';
+
+  @override
+  String pageTransitionSpeedDurationHint(int milliseconds) {
+    return '약 ${milliseconds}ms';
+  }
+
+  @override
+  String get layoutTimeColumnDisplayLabel => '홈 시간 열 표시';
+
+  @override
+  String get layoutTimeColumnWidthLabel => '시간 열 너비';
+
+  @override
+  String get layoutBackToCurrentWeekButtonStyleLabel => '\"이번주로 돌아가기\" 버튼 스타일';
+
+  @override
+  String get layoutBackToCurrentWeekButtonStyleHelper =>
+      '기본은 현재 인라인 스타일을 유지합니다. 주간 뷰 오른쪽 아래의 소형 플로팅 버튼으로도 변경할 수 있습니다';
+
+  @override
+  String get layoutBackToCurrentWeekButtonStyleInline => '시간 열 인라인';
+
+  @override
+  String get layoutBackToCurrentWeekButtonStyleFloating => '오른쪽 아래 플로팅';
+
+  @override
+  String layoutBackToCurrentWeekButtonOpacityLabel(int value) {
+    return '플로팅 버튼 불투명도 $value%';
+  }
+
+  @override
+  String get layoutBackToCurrentWeekButtonOpacityTitle => '플로팅 버튼 불투명도';
+
+  @override
+  String get layoutBackToCurrentWeekButtonOpacitySubtitle =>
+      '오른쪽 아래 플로팅 스타일에만 유효합니다';
+
+  @override
+  String layoutCourseCardGapLabel(String value) {
+    return '수업 카드 간격 $value';
+  }
+
+  @override
+  String get layoutCourseCardGapTitle => '수업 카드 간격';
+
+  @override
+  String layoutSectionHeightLabel(String value) {
+    return '시간표 행 높이 $value';
+  }
+
+  @override
+  String get layoutSectionHeightTitle => '시간표 행 높이';
+
+  @override
+  String layoutCompactFontSizeLabel(String value) {
+    return '컴팩트 폰트 크기 $value';
+  }
+
+  @override
+  String get layoutCompactFontSizeTitle => '컴팩트 글꼴 크기';
+
+  @override
+  String layoutCourseCardFontSizeLabel(String value) {
+    return '수업 카드 폰트 크기 $value';
+  }
+
+  @override
+  String get layoutCourseCardFontSizeTitle => '수업 카드 글꼴 크기';
+
+  @override
+  String get layoutCourseCardDisplayTitle => '수업 카드 표시';
+
+  @override
+  String get layoutCourseCardDisplaySubtitle =>
+      '기본으로 수업명, 교사, 강의실을 표시합니다. 다른 정보는 시간표별로 자유롭게 조합할 수 있습니다';
+
+  @override
+  String get layoutShowTeacherTitle => '교사 표시';
+
+  @override
+  String get layoutShowClassroomTitle => '강의실 표시';
+
+  @override
+  String get layoutShowTimeTitle => '시간 표시';
+
+  @override
+  String get layoutShowTimeLabelsTitle => '수업 시작과 종료 텍스트 표시';
+
+  @override
+  String get layoutShowTimeLabelsSubtitle =>
+      '끄면 시간 포인트만 표시합니다. \'수업 시작\' \'수업 종료\' 텍스트는 숨겨집니다';
+
+  @override
+  String get layoutShowWeeksTitle => '주차 수 표시';
+
+  @override
+  String get layoutShowWeeksSubtitle => '예: 1-16주, 홀짝주';
+
+  @override
+  String get layoutShowDescriptionTitle => '수업 개요 표시';
+
+  @override
+  String get layoutShowDescriptionSubtitle => '기본 꺼짐. 공간 부족 시 가장 먼저 압축됩니다';
+
+  @override
+  String get layoutShowOtherWeeksTitle => '비이번주 수업 표시';
+
+  @override
+  String get layoutShowOtherWeeksSubtitle => '현재 주가 아닌 수업은 반투명 회색으로 표시됩니다';
+
+  @override
+  String get layoutVerticalAlignLabel => '수직 레이아웃';
+
+  @override
+  String get layoutHorizontalAlignLabel => '수평 레이아웃';
+
+  @override
+  String get layoutShowConflictBadgeTitle => '홈에 충돌 캡슐 표시';
+
+  @override
+  String get layoutShowConflictBadgeSubtitle =>
+      '끄면 홈 시간표에서 충돌 수업에 \'충돌\' 캡슐을 표시하지 않습니다';
+
+  @override
+  String layoutConflictOpacityLabel(int value) {
+    return '충돌 수업 투명도 $value%';
+  }
+
+  @override
+  String get layoutConflictOpacityTitle => '충돌 수업 투명도';
+
+  @override
+  String get layoutConflictOpacitySubtitle =>
+      '충돌 수업은 자동으로 겹쳐 표시됩니다. 투명도를 낮추면 여러 수업을 동시에 확인할 수 있습니다';
+
+  @override
+  String get layoutTipsText =>
+      '템플릿은 설정 홈으로 이동했습니다. 여기서는 시간표의 행 높이, 시간 열, 주말 표시, 수업 카드 레이아웃을 조정합니다. 현재 시간표의 시간만 변경하려면 먼저 템플릿에서 복사한 뒤 적용하세요.';
+
+  @override
+  String currentWeekCompact(int week) {
+    return '$week주';
+  }
+
+  @override
+  String get sampleCourseNumericalControl => '수치';
+
+  @override
+  String get sampleCourseAdvancedMath => '미적';
+
+  @override
+  String get sampleTeacherZhang => '장 선생님';
+
+  @override
+  String get sampleCourseEnglish => '영어';
+
+  @override
+  String get sampleTeacherLi => '이 선생님';
+
+  @override
+  String get aboutUpdateScreenTitle => '버전 업데이트';
+
+  @override
+  String get aboutUpdateStatusTitle => '업데이트 상태';
+
+  @override
+  String get aboutRefreshCheckTooltip => '다시 확인';
+
+  @override
+  String get aboutCheckingLatestVersion => '최신 버전 정보 확인 중…';
+
+  @override
+  String get aboutCheckingForUpdate => '업데이트 확인 중…';
+
+  @override
+  String get aboutReadVersionFailed => '버전 정보를 일시적으로 읽을 수 없습니다. 나중에 다시 시도하세요.';
+
+  @override
+  String get aboutReadVersionFailedHint =>
+      '업데이트 서버에 연결할 수 없습니다. 네트워크 연결을 확인한 후 다시 시도하세요.';
+
+  @override
+  String get aboutViewReleaseAction => 'Release 보기';
+
+  @override
+  String get aboutDownloadNowAction => '지금 다운로드';
+
+  @override
+  String get aboutSkipVersionAction => '이 버전 건너뛰기';
+
+  @override
+  String get aboutOpenDownloadPageAction => '다운로드 페이지 열기';
+
+  @override
+  String get aboutCurrentVersionLabel => '현재 버전';
+
+  @override
+  String get aboutLatestVersionLabel => '최신 버전';
+
+  @override
+  String get aboutUnreleasedLabel => '미출시';
+
+  @override
+  String get aboutVersionChannelLabel => '버전 채널';
+
+  @override
+  String get aboutPrereleaseChannel => '시험판';
+
+  @override
+  String get aboutUpdateAvailableHint =>
+      '새 버전을 사용할 수 있습니다. 아래의 \'지금 다운로드\'를 눌러 설치하세요.';
+
+  @override
+  String get aboutUpdateNoUpdateHint =>
+      '현재 버전은 정상 사용 가능합니다. 시험판을 체험하려면 뒤의 고급 옵션에서 시험판 검출을 켜세요';
+
+  @override
+  String aboutUpdatedAt(String time) {
+    return '업데이트 시간: $time';
+  }
+
+  @override
+  String get aboutUpdateNowTitle => '지금 업데이트';
+
+  @override
+  String get aboutUpdateNowAndroidSubtitle =>
+      '일반 사용은 \'지금 다운로드\'를 한 번 탭하기만 하면 됩니다. 다운로드 느림, 실패, 회선 변경 시 아래의 고급 옵션으로 이동하세요';
+
+  @override
+  String get aboutUpdateNowOtherSubtitle =>
+      '현재 플랫폼은 다운로드 페이지를 직접 열며 앱 내에서 설치하지 않습니다';
+
+  @override
+  String get aboutMirrorDownloadHint =>
+      '현재 국내 다운로드를 우선합니다. 대부분의 국내 네트워크에서는 \'지금 다운로드\'를 탭하기만 하면 됩니다';
+
+  @override
+  String get aboutOriginalDownloadHint =>
+      '현재 국제 소스 다운로드를 우선합니다. 다운로드가 느리거나 열리지 않으면 먼저 \'국내 다운로드\'로 전환하세요';
+
+  @override
+  String get aboutUseSystemDownloaderAction => '시스템 다운로더로 다운로드';
+
+  @override
+  String get aboutOpenReleasePageAction => 'Release 페이지 열기';
+
+  @override
+  String get aboutDownloadMethodTitle => '다운로드 방식';
+
+  @override
+  String get aboutDownloadMethodSubtitle =>
+      '기본으로 국내 다운로드를 권장합니다. GitHub에 안정적으로 접근할 수 있을 때만 국제 소스로 전환하세요';
+
+  @override
+  String get aboutDownloadMethodMirror => '국내 다운로드';
+
+  @override
+  String get aboutDownloadMethodOriginal => '국제 소스 다운로드';
+
+  @override
+  String aboutMirrorModeHintRecommended(String current, String recommended) {
+    return '현재 국내 다운로드 사용 중 · $current. 최근 속도 측정에서 \"$recommended\"이(가) 권장됩니다. 필요 시 뒤의 고급 옵션에서 전환할 수 있습니다';
+  }
+
+  @override
+  String aboutMirrorModeHintCurrent(String current) {
+    return '현재 국내 다운로드 사용 중 · $current. 다운로드가 느리거나 실패하면 뒤의 고급 옵션에서 속도 측정, 회선 변경 또는 사용자 정의 주소를 입력하세요';
+  }
+
+  @override
+  String get aboutOriginalModeHint =>
+      '현재 국제 소스 다운로드 사용 중. GitHub에 안정적으로 접근할 수 있을 때만 이 설정을 권장합니다. 그렇지 않으면 국내 다운로드로 전환하세요';
+
+  @override
+  String get aboutReleaseNotesTitle => '이번 업데이트 내용';
+
+  @override
+  String get aboutReleaseNotesSubtitle => '현재 감지된 버전의 Release 설명을 표시합니다.';
+
+  @override
+  String get aboutAdvancedOptionsTitle => '고급 옵션';
+
+  @override
+  String get aboutAdvancedOptionsSubtitle =>
+      '다운로드 느림, 수동 회선 전환, 시험판 검출 시에만 펼치세요';
+
+  @override
+  String get aboutMirrorSectionTitle => '다운로드 회선 및 미러';
+
+  @override
+  String get aboutMirrorSectionMirrorHint =>
+      '현재 국내 다운로드 사용 중. 여기서 수동으로 회선 전환, 속도 측정 권장, 사용자 정의 다운로드 주소 입력이 가능합니다';
+
+  @override
+  String get aboutMirrorSectionOriginalHint =>
+      '현재 국제 소스 다운로드를 사용 중입니다. 아래 회선 설정은 \'국내 다운로드\'로 전환 후에만 유효합니다';
+
+  @override
+  String get aboutFillCustomMirrorFirst => '먼저 사용자 정의 다운로드 주소를 입력하세요';
+
+  @override
+  String get aboutCurrentCustomMirrorTitle => '현재 사용자 정의 다운로드 주소';
+
+  @override
+  String get aboutCurrentMirrorTitle => '현재 다운로드 회선 주소';
+
+  @override
+  String get aboutCurrentCustomMirrorHint => '현재 수동으로 입력한 다운로드 주소를 사용 중입니다';
+
+  @override
+  String get aboutCurrentMirrorHint =>
+      '현재 회선 접속 실패 시 다른 내장 회선으로 전환하거나 사용자 정의 주소로 변경할 수 있습니다';
+
+  @override
+  String get aboutProbeMirrorsAction => '속도 측정 및 권장';
+
+  @override
+  String get aboutProbingMirrors => '속도 측정 중…';
+
+  @override
+  String get aboutEditCustomMirrorAction => '사용자 정의 주소 변경';
+
+  @override
+  String get aboutSetCustomMirrorAction => '사용자 정의 주소 입력';
+
+  @override
+  String aboutSwitchToRecommendedAction(String label) {
+    return '권장으로 전환: $label';
+  }
+
+  @override
+  String get aboutMirrorDisabledHint =>
+      '현재 국내 다운로드를 사용하지 않아 여기의 회선 설정이 일시적으로 유효하지 않습니다. 필요하면 위의 \'다운로드 방식\'에서 국내 다운로드로 전환하세요';
+
+  @override
+  String get aboutRecentProbeResultsTitle => '최근 속도 측정 결과';
+
+  @override
+  String get aboutUnavailable => '사용 불가';
+
+  @override
+  String get aboutRecommended => '권장';
+
+  @override
+  String get aboutCheckPrereleaseTitle => '시험판 검출';
+
+  @override
+  String get aboutCheckPrereleaseSubtitle =>
+      '켜면 시험판도 업데이트 확인에 포함됩니다. 일반 사용은 끄기를 권장합니다';
+
+  @override
+  String get aboutUpdatePromptTitle => '업데이트 알림';
+
+  @override
+  String get aboutUpdatePromptSubtitle => '새 버전이 감지되면 홈 화면에 자동으로 표시합니다';
+
+  @override
+  String get aboutDiagnosticsTitle => '테스트 및 진단';
+
+  @override
+  String get aboutDiagnosticsSubtitle =>
+      '\'슈퍼아일랜드가 표시되지 않음\' 또는 개발자 피드백이 필요한 경우에만 펼치세요';
+
+  @override
+  String get aboutRecordDiagnosticsTitle => '앱 로그 기록';
+
+  @override
+  String get aboutRecordDiagnosticsSubtitle =>
+      '켜면 로컬에서 중요 로그를 지속적으로 기록합니다. \'표시되어야 할 것이 표시되지 않는\' 문제 트러블슈팅 전용입니다';
+
+  @override
+  String get aboutExportDiagnosticsAction => '앱 로그 내보내기';
+
+  @override
+  String get aboutViewPhoneLogsAction => '로그 페이지 열기';
+
+  @override
+  String get aboutClearAndRecollectAction => '비우고 재수집';
+
+  @override
+  String get aboutLiveDiagnosticsEnabled => '슈퍼아일랜드 진단 로그 활성화됨';
+
+  @override
+  String get aboutLiveDiagnosticsDisabled => '슈퍼아일랜드 진단 로그 비활성화됨';
+
+  @override
+  String get aboutNoDiagnosticsExportYet => '내보낼 수 있는 슈퍼아일랜드 진단 로그가 아직 없습니다';
+
+  @override
+  String get aboutProbeNoMirrorFound => '속도 측정 완료. 사용 가능한 미러 회선을 찾지 못했습니다';
+
+  @override
+  String aboutProbeCurrentFastest(String label) {
+    return '속도 측정 완료. 현재 회선 \"$label\"이(가) 가장 빠른 사용 가능한 회선입니다';
+  }
+
+  @override
+  String aboutProbeRecommendSwitch(String label) {
+    return '속도 측정 완료. \"$label\"(으)로 전환을 권장합니다';
+  }
+
+  @override
+  String get switchAction => '전환';
+
+  @override
+  String aboutSwitchToMirrorAfterError(String error) {
+    return '$error. 국내 미러로 전환 후 재시도할 수 있습니다';
+  }
+
+  @override
+  String aboutSwitchPresetAfterError(String error, String label) {
+    return '$error. \"$label\"(으)로 전환 후 재시도를 권장합니다';
+  }
+
+  @override
+  String get aboutSetMirrorSourceTitle => '미러 소스 설정';
+
+  @override
+  String get aboutMirrorPrefixLabel => '미러 접두사';
+
+  @override
+  String get aboutMirrorPrefixInvalid =>
+      '미러 소스 형식이 올바르지 않습니다. 전체 http 또는 https 주소를 입력하세요';
+
+  @override
+  String get aboutMirrorSaved => '미러 소스가 저장되었습니다';
+
+  @override
+  String get aboutDownloadCancelled => '다운로드가 취소되었습니다';
+
+  @override
+  String get aboutInstallReady =>
+      '설치 패키지 준비 완료. 설치 화면을 열려고 했습니다. 시스템이 표시하지 않으면 나중에 알림 또는 파일 관리자에서 수동으로 설치하세요';
+
+  @override
+  String get aboutUpdatePackageTitle => '경屿 시간표 업데이트 패키지';
+
+  @override
+  String get aboutUpdatePackageDescription =>
+      '시스템 다운로드 관리자에 전달하여 다운로드 중입니다. 완료 후 시스템 알림에서 바로 설치할 수 있습니다';
+
+  @override
+  String get aboutSystemDownloaderQueued =>
+      '시스템 다운로드 관리자에 전달했습니다. 시스템 알림 또는 다운로드 목록에서 진행 상황을 확인하세요';
+
+  @override
+  String get aboutSystemDownloaderFailed => '시스템 다운로드 관리자 호출 실패';
+
+  @override
+  String get aboutDownloadCancelling => '다운로드 취소 중…';
+
+  @override
+  String aboutDownloadingBytes(String value) {
+    return '업데이트 다운로드 중 $value';
+  }
+
+  @override
+  String aboutDownloadingPercent(String value) {
+    return '업데이트 다운로드 중 $value%';
+  }
+
+  @override
+  String get aboutMirrorUnknownSizeHint =>
+      '아직 업데이트 파일의 전체 크기를 가져올 수 없어 다운로드된 크기를 먼저 표시합니다.';
+
+  @override
+  String get aboutCancelDownloadAction => '다운로드 취소';
+
+  @override
+  String get aboutContinueDownloadAction => '다운로드 재개';
+
+  @override
+  String get aboutDismissDialogAction => '닫기';
+
+  @override
+  String get aboutContributorsScreenTitle => '코드 기여자';
+
+  @override
+  String get aboutDevelopersTitle => '개발자';
+
+  @override
+  String get aboutDeveloperMaintainerSubtitle => '경屿 시간표 개발 및 유지보수';
+
+  @override
+  String get aboutWarehouseMaintainersTitle => '교무 가져오기 적응자';
+
+  @override
+  String get aboutWarehouseMaintainersIntro =>
+      '아래 목록은 qingyu_warehouse 적응 저장소의 maintainer 필드에서 집계한 것입니다. 로컬 캐시가 있으면 먼저 캐시를 표시한 뒤 백그라운드에서 갱신합니다';
+
+  @override
+  String aboutWarehouseMaintainersLoadFailed(String error) {
+    return '적응자 목록을 일시적으로 읽을 수 없습니다: $error';
+  }
+
+  @override
+  String get aboutWarehouseMaintainersEmpty => '현재 적응자 정보를 읽지 못했습니다.';
+
+  @override
+  String aboutWarehouseMaintainerCount(int count) {
+    return '$count개 적응 항목';
+  }
+
+  @override
+  String get importFileReadFailed => '선택한 파일을 읽을 수 없습니다';
+
+  @override
+  String get importCleartextBlockedHint =>
+      '이 사이트는 HTTPS를 지원하지 않고 평문 통신 허용 목록에도 없어서 여기서 열 수 없습니다';
+
+  @override
+  String get importReplaceExistingTitle => '수업 가져오기';
+
+  @override
+  String importReplaceExistingMessage(String name) {
+    return '$name을(를) 가져올 때 기존 수업을 대체하시겠습니까? 이 작업은 현재 시간표의 독립 일정(자습, 회의 등)도 함께 비웁니다.';
+  }
+
+  @override
+  String get importNoCoursesRecognized => '가져올 수 있는 수업이 인식되지 않았습니다';
+
+  @override
+  String get importConfirmSemesterMappingTitle => '학기 시작일과 주차 대응 확인';
+
+  @override
+  String get importConfirmSemesterMappingSubtitleIcs =>
+      '학교 학사일정의 학기 시작일을 선택하세요. 파일 내 가장 이른 수업 날짜에 따라 기본 주차 대응을 제안했습니다. 수동으로 조정할 수도 있습니다';
+
+  @override
+  String importOverwriteCount(int count) {
+    return '$count건 수업을 덮어쓰기 가져왔습니다';
+  }
+
+  @override
+  String importUpdatedCount(int count) {
+    return '시간표 업데이트: $count건 수업을 새로 추가 또는 업데이트';
+  }
+
+  @override
+  String get importNoCourseChanges => '추가 또는 업데이트할 수업이 없습니다';
+
+  @override
+  String get aiImportTitle => '이미지 인식 가져오기';
+
+  @override
+  String aiPreviewSummary(
+    int courseCount,
+    int sectionCount,
+    String warningSuffix,
+  ) {
+    return '$courseCount과목 인식, 최대 제$sectionCount교시$warningSuffix';
+  }
+
+  @override
+  String aiWarningCountSuffix(int count) {
+    return ', $count건 주의사항';
+  }
+
+  @override
+  String get aiWorkflowCompactTitle => '프롬프트 복사 → Doubao 이미지 인식 → 가져오기';
+
+  @override
+  String get aiWorkflowCompactSubtitle => 'Doubao 전문가 모드 → JSON 복사 → 학기 시작일 선택';
+
+  @override
+  String get aiWorkflowTitle => '프롬프트 복사 → Doubao 이미지 인식 → JSON 붙여넣기 → 가져오기';
+
+  @override
+  String get aiWorkflowSubtitle =>
+      '먼저 프롬프트를 복사하고, Doubao 왼쪽 아래에서 전문가 모드로 전환한 뒤, 시간표 스크린샷과 프롬프트를 함께 전송합니다. Doubao가 반환한 JSON을 여기에 복사하고 가져오기를 탭한 뒤 학기 시작일을 선택합니다';
+
+  @override
+  String get aiPromptShortAction => '프롬프트';
+
+  @override
+  String get aiExpertModeSuggestion =>
+      'Doubao 전문가 모드를 권장합니다. 다중 이미지 지원, 스크린샷에 요일 헤더가 필요합니다.';
+
+  @override
+  String get aiHintExpertMode => '먼저 Doubao 전문가 모드로 전환';
+
+  @override
+  String get aiHintSendScreenshot => '스크린샷과 프롬프트를 함께 전송';
+
+  @override
+  String get aiHintCopyJsonBack => '반환된 결과에서 JSON 복사';
+
+  @override
+  String get aiHintPickSemesterAfterImport => '가져오기 후 학기 시작일 선택';
+
+  @override
+  String get jsonLabelShort => 'JSON';
+
+  @override
+  String get aiPasteJsonTitle => 'AI가 반환한 JSON 붙여넣기';
+
+  @override
+  String aiCourseCountChip(int count) {
+    return '$count과목';
+  }
+
+  @override
+  String get aiParseFailedChip => '파싱 실패';
+
+  @override
+  String get aiPasteJsonHintShort => 'AI가 반환한 JSON 붙여넣기';
+
+  @override
+  String get aiPasteJsonHintLong =>
+      'Doubao가 반환한 JSON을 그대로 여기에 붙여넣고 가져오기를 탭하세요. 순수 JSON과 ```json 코드 블록 모두 지원합니다';
+
+  @override
+  String get detailAction => '상세';
+
+  @override
+  String get aiParseErrorTitle => '파싱 오류';
+
+  @override
+  String get viewDetailsAction => '상세 보기';
+
+  @override
+  String get aiWorkflowFooter =>
+      '프롬프트 복사 → Doubao에서 스크린샷과 프롬프트 전송 → JSON을 여기에 붙여넣기 → 가져오기 탭 → 학기 시작일 선택.';
+
+  @override
+  String get previewAction => '미리보기';
+
+  @override
+  String get confirmImportAction => '가져오기 확인';
+
+  @override
+  String get promptCopiedHint => '프롬프트를 복사했습니다. Doubao에서 스크린샷과 프롬프트를 전송하세요';
+
+  @override
+  String get clipboardNoText => '클립보드에 사용 가능한 텍스트가 없습니다';
+
+  @override
+  String get aiPromptSheetTitle => '이미지 인식 프롬프트';
+
+  @override
+  String get aiPromptSheetSubtitle =>
+      'Doubao 사용을 권장합니다. 먼저 Doubao 왼쪽 아래에서 전문가 모드로 전환하고, 아래 프롬프트 전체와 시간표 스크린샷을 함께 전송하여 JSON만 반환하도록 합니다. 생성 후 JSON을 이 페이지에 복사하고 가져오기를 탭한 뒤 학기 시작일을 선택합니다';
+
+  @override
+  String get aiPreviewTitle => '파싱 미리보기';
+
+  @override
+  String get aiPasteJsonFirst => '먼저 AI가 반환한 JSON을 붙여넣으세요';
+
+  @override
+  String get aiParseFailedIncompleteJson => '파싱 실패. 완전한 JSON이 붙여넣어졌는지 확인하세요';
+
+  @override
+  String get importAiResultTitle => 'AI 파싱 결과 가져오기';
+
+  @override
+  String get importAiReplaceMessage =>
+      '현재 AI 파싱 결과로 기존 수업을 대체하시겠습니까? 이 작업은 현재 시간표의 독립 일정(자습, 회의 등)도 함께 비웁니다.';
+
+  @override
+  String get importConfirmSemesterMappingSubtitleAi =>
+      '학교 학사일정의 학기 시작일을 선택하고, 시간표의 1주차가 학사일정의 몇 주차에 해당하는지 확인하세요. 학교 첫 주에 수업이 없으면 보통 2주차로 변경해야 합니다';
+
+  @override
+  String aiWarningExtraSuffix(int count) {
+    return ', 추가로 $count건 인식 주의사항';
+  }
+
+  @override
+  String get pasteAction => '붙여넣기';
+
+  @override
+  String get importConfirmSemesterMappingSubtitleWarehouse =>
+      '교무 스크립트가 수업 주차를 반환했습니다. 학사일정 학기 시작일을 확인하세요. 학교 첫 몇 주에 수업이 없으면 \'시간표 1주차\'를 학사일정后面的 주차에 대응할 수 있습니다';
+
+  @override
+  String aiPreviewCourseCount(int count) {
+    return '수업 수: $count';
+  }
+
+  @override
+  String aiPreviewMaxSection(int section) {
+    return '최대 교시: 제$section교시';
+  }
+
+  @override
+  String get aiPreviewWarningsTitle => '인식 주의사항';
+
+  @override
+  String get aiPreviewCoursesTitle => '수업 미리보기';
+
+  @override
+  String aiPreviewRemainingCourses(int count) {
+    return '나머지 $count건은 가져오기 후 현재 시간표에 기록됩니다';
+  }
+
+  @override
+  String get warehouseMissingSchoolTitle => '학교 목록에 해당 학교가 없으신가요?';
+
+  @override
+  String get warehouseMissingSchoolSubtitle =>
+      '피드백 페이지에서 Issue를 제출하세요. 학교 이름, 교무 시스템 URL, 로그인 후 시간표 페이지 링크 또는 스크린샷을 함께 작성하면 적응 보충이 더 원활합니다';
+
+  @override
+  String get laterAction => '나중에';
+
+  @override
+  String get goFeedbackAction => '피드백 페이지로';
+
+  @override
+  String get warehouseFeedbackMissingSchoolTitle => '학교가 없으신가요? 피드백으로';
+
+  @override
+  String get warehouseCustomDebugTitle => '사용자 정의 디버그';
+
+  @override
+  String get warehouseImportExecutionLogTitle => '시간표 가져오기 실행 로그';
+
+  @override
+  String get warehouseImportExecutionLogMenuLabel => '시간표 가져오기 실행 로그';
+
+  @override
+  String get warehouseImportExecutionLogShareText =>
+      '경屿 시간표에서 내보낸 교무 가져오기 실행 로그입니다. 스크립트 주입, 브리지 메시지, 시간 초과, 가져오기 결과 등 과정 기록이 포함되어 개발자에게 피드백할 수 있습니다.';
+
+  @override
+  String get warehouseImportExecutionLogShareSubject =>
+      '경屿 시간표 - 시간표 가져오기 실행 로그';
+
+  @override
+  String get warehouseImportExecutionLogEmpty =>
+      '가져오기 실행 기록이 아직 없습니다. 교무 웹페이지를 열고 가져오기 스크립트를 실행한 뒤 다시 확인하세요.';
+
+  @override
+  String get warehouseRootLoadFailedTitle => '적응 저장소를 일시적으로 읽을 수 없습니다';
+
+  @override
+  String get searchSchoolHint => '학교 이름, 이니셜 또는 코드로 검색';
+
+  @override
+  String get clearSearchTooltip => '비우기';
+
+  @override
+  String get noMatchingSchools => '일치하는 학교가 없습니다';
+
+  @override
+  String get noAvailableSchools => '사용 가능한 학교가 없습니다';
+
+  @override
+  String get searchSchoolSuggestion => '학교 정식명칭, 이니셜 또는 저장소의 학교 코드를 시도해 보세요.';
+
+  @override
+  String get deleteDebugRecordTitle => '디버그 레코드 삭제';
+
+  @override
+  String deleteDebugRecordMessage(String name) {
+    return '\"$name\"을(를) 삭제하시겠습니까? 삭제 후 이미 가져온 수업에는 영향을 주지 않습니다';
+  }
+
+  @override
+  String deletedDebugRecord(String name) {
+    return '디버그 레코드 삭제됨: $name';
+  }
+
+  @override
+  String get customDebugName => '사용자 정의 디버그';
+
+  @override
+  String get localDebugMaintainer => '로컬 디버그';
+
+  @override
+  String get customDebugDescription => '사용자가 저장한 사용자 정의 교무 디버그 스크립트';
+
+  @override
+  String get addDebugRecordTooltip => '디버그 레코드 추가';
+
+  @override
+  String get customDebugIntroTitle => '여기에 나만의 교무 디버그 레코드를 배치하세요';
+
+  @override
+  String get customDebugIntroSubtitle =>
+      '각 레코드에 사용자 정의 URL과 스크립트 전체를 저장할 수 있습니다. 저장 후 다음에 \'디버그 시작\'을 탭하기만 하면 재사용할 수 있습니다';
+
+  @override
+  String get addDebugRecordAction => '디버그 레코드 추가';
+
+  @override
+  String get noSavedDebugRecords => '저장된 디버그 레코드가 없습니다';
+
+  @override
+  String get noSavedDebugRecordsHint =>
+      '먼저 1건 추가하고 URL과 스크립트를 붙여넣으세요. 이후 바로 재사용할 수 있습니다';
+
+  @override
+  String debugScriptLength(int count) {
+    return '스크립트 $count자';
+  }
+
+  @override
+  String get startDebugAction => '디버그 시작';
+
+  @override
+  String get editAction => '편집';
+
+  @override
+  String get scriptFileReadFailed => '스크립트 파일을 읽을 수 없습니다';
+
+  @override
+  String scriptFileImported(String name) {
+    return '스크립트 파일 가져옴: $name';
+  }
+
+  @override
+  String scriptFileImportFailed(String error) {
+    return '스크립트 파일 가져오기 실패: $error';
+  }
+
+  @override
+  String get debugRecordNameRequired => '디버그 레코드 이름을 입력하세요';
+
+  @override
+  String get invalidImportUrl => '유효한 교무 URL을 입력하세요';
+
+  @override
+  String get debugScriptRequired => '스크립트를 입력하거나 가져오세요';
+
+  @override
+  String get editDebugRecordTitle => '디버그 레코드 편집';
+
+  @override
+  String get addDebugRecordTitle => '디버그 레코드 추가';
+
+  @override
+  String get savingAction => '저장 중…';
+
+  @override
+  String get debugRecordFormula => '1레코드 = 1URL + 1스크립트';
+
+  @override
+  String get debugRecordFormulaSubtitle =>
+      '같은 학교를 반복 디버그하거나, 다른 학교에 여러 스크립트 세트를 유지하는 데 적합합니다. 저장 후 언제든 수정 가능합니다';
+
+  @override
+  String get debugRecordNameLabel => '레코드 이름';
+
+  @override
+  String get debugRecordNameHint => '예: 충칭기전-신규교무';
+
+  @override
+  String get importUrlLabel => '교무 URL';
+
+  @override
+  String get debugScriptLabel => '디버그 스크립트';
+
+  @override
+  String get importFromFileAction => '파일에서 가져오기';
+
+  @override
+  String get debugScriptHint => '브라우저 확장 프로그램이 내보낸 전체 스크립트를 여기에 붙여넣으세요';
+
+  @override
+  String get saveDebugRecordAction => '디버그 레코드 저장';
+
+  @override
+  String get fillUrlThenImport => 'URL 입력 후 가져오기';
+
+  @override
+  String get webLoginImport => '웹 로그인 가져오기';
+
+  @override
+  String get fillUrlThenRecord => 'URL 입력 후 녹화';
+
+  @override
+  String get recordImportAction => '녹화 가져오기';
+
+  @override
+  String get quickImportAction => '빠른 가져오기';
+
+  @override
+  String get quickImportTooltip => '빠른 가져오기';
+
+  @override
+  String get selectQuickImportTitle => '빠른 가져오기 선택';
+
+  @override
+  String quickImportMacroSteps(String adapterName, int stepCount) {
+    return '$adapterName · $stepCount단계';
+  }
+
+  @override
+  String quickImportTitle(String name) {
+    return '빠른 가져오기 - $name';
+  }
+
+  @override
+  String get noSavedQuickImportRecords => '저장된 빠른 가져오기 기록이 없습니다';
+
+  @override
+  String get noValidWarehouseLoginUrl => '유효한 교무 로그인 URL을 찾을 수 없습니다';
+
+  @override
+  String get noMacroRecordFound => '녹화 기록을 찾을 수 없습니다. 먼저 녹화를 완료하세요';
+
+  @override
+  String get quickImportPlayingTitle => '자동 가져오는 중…';
+
+  @override
+  String get quickImportExecutingScriptTitle => '재생 완료, 가져오기 스크립트 실행 중…';
+
+  @override
+  String get quickImportManualInputTitle => '수동 작업 필요';
+
+  @override
+  String get quickImportManualInputHint => '필요한 수동 작업을 완료한 후 계속을 탭하세요';
+
+  @override
+  String get quickImportCancelImportAction => '가져오기 취소';
+
+  @override
+  String get quickImportContinueAction => '계속';
+
+  @override
+  String get quickImportFinishedTitle => '가져오기 완료';
+
+  @override
+  String get quickImportDismissAction => '완료';
+
+  @override
+  String get quickImportRetryAction => '재시도';
+
+  @override
+  String get homePullQuickImportTitle => '홈 당겨서 빠른 가져오기';
+
+  @override
+  String get homePullQuickImportSubtitle =>
+      '홈 시간표를 아래로 당기면 교무 빠른 가져오기를 백그라운드에서 실행합니다';
+
+  @override
+  String get homePullQuickImportFetchingCourses => '새 수업을 가져오는 중…';
+
+  @override
+  String get homePullQuickImportNeedsManualAction =>
+      '수동 작업이 필요합니다. 교무 가져오기 페이지에서 계속하세요';
+
+  @override
+  String quickImportPlaybackStepProgress(int current, int total) {
+    return '단계 $current / $total';
+  }
+
+  @override
+  String get quickImportCancelPlaybackAction => '취소';
+
+  @override
+  String get quickImportUnknownError => '알 수 없는 오류가 발생했습니다';
+
+  @override
+  String get recentSchoolLabel => '최근 사용';
+
+  @override
+  String get warehouseSchoolTapHint => '탭하여 어댑터를 선택하고 가져오기';
+
+  @override
+  String get warehouseAdaptersLoadFailedTitle => '어댑터 목록을 불러올 수 없습니다';
+
+  @override
+  String get stopRecordingTooltip => '녹화 중지';
+
+  @override
+  String get startRecordingTooltip => '동작 녹화';
+
+  @override
+  String get savedImportUrlHint => '교무 URL 저장됨. 다음에 바로 가져올 수 있습니다';
+
+  @override
+  String get adapterIntroSubtitle => '어댑터 정보, 로그인 항목과 스크립트 상태를 확인할 수 있습니다';
+
+  @override
+  String get schoolLabel => '학교';
+
+  @override
+  String get categoryLabel => '카테고리';
+
+  @override
+  String get maintainerLabel => '유지보수자';
+
+  @override
+  String get adapterInfoTitle => '어댑터 정보';
+
+  @override
+  String get scriptPathLabel => '스크립트 경로';
+
+  @override
+  String get loginEntryLabel => '로그인 항목';
+
+  @override
+  String get unsetConfigLabel => '미설정';
+
+  @override
+  String get adapterOverrideImportUrlHint => '현재 수동으로 덮어쓴 로그인 주소를 사용 중입니다';
+
+  @override
+  String get scriptStatusTitle => '스크립트 상태';
+
+  @override
+  String scriptLoadedLength(int count) {
+    return '스크립트 읽기 성공. 길이 $count자.';
+  }
+
+  @override
+  String get scriptEmpty => '스크립트가 비어 있습니다';
+
+  @override
+  String get openLoginInAppAction => '앱 내에서 로그인 항목 열기';
+
+  @override
+  String get openInSystemBrowserAction => '시스템 브라우저에서 열기';
+
+  @override
+  String get copiedImportLoginUrl => '교무 로그인 주소를 복사했습니다';
+
+  @override
+  String get copyLoginAddressAction => '로그인 주소 복사';
+
+  @override
+  String get copiedScriptRawUrl => '스크립트 원본 주소를 복사했습니다';
+
+  @override
+  String get copyScriptAddressAction => '스크립트 주소 복사';
+
+  @override
+  String get customLoginAddressAction => '사용자 정의 로그인 주소';
+
+  @override
+  String get editCustomLoginAddressAction => '사용자 정의 주소 변경';
+
+  @override
+  String get clearCustomLoginAddressAction => '사용자 정의 주소 삭제';
+
+  @override
+  String get restoreRepositoryAddressAction => '저장소 주소 복원';
+
+  @override
+  String get invalidLoginEntryUrl => '로그인 항목 주소가 유효하지 않습니다';
+
+  @override
+  String get savedCustomLoginAddress => '사용자 정의 로그인 주소 저장됨';
+
+  @override
+  String get clearedCustomLoginAddress => '사용자 정의 로그인 주소 삭제됨';
+
+  @override
+  String get restoredRepositoryImportUrl => '저장소의 로그인 주소를 복원했습니다';
+
+  @override
+  String get backToCurrentWeekAction => '이번주로';
+
+  @override
+  String get nonCurrentWeekLabel => '비이번주';
+
+  @override
+  String get conflictLabel => '충돌';
+
+  @override
+  String get courseConflictSectionTitle => '충돌 수업';
+
+  @override
+  String get courseNormalSectionTitle => '기타 수업';
+
+  @override
+  String get courseConflictDetailTitle => '충돌 상세';
+
+  @override
+  String get courseConflictDetailEntryTitle => '충돌 상세 보기';
+
+  @override
+  String get courseConflictDetailEntrySubtitle => '겹치는 시간과 상대 수업 확인';
+
+  @override
+  String courseConflictWithCourse(String name) {
+    return '「$name」와 충돌';
+  }
+
+  @override
+  String get courseConflictOpenPartnerAction => '상대 시간표 열기';
+
+  @override
+  String get courseConflictEmpty => '충돌이 없습니다';
+
+  @override
+  String get courseConflictPairTitle => '충돌 쌍';
+
+  @override
+  String get selectWeekTitle => '주차 선택';
+
+  @override
+  String availableWeeksCount(int count) {
+    return '총 $count주';
+  }
+
+  @override
+  String goToWeekLabel(int week) {
+    return '제$week주';
+  }
+
+  @override
+  String get homeMenuUpdateTitle => '소프트웨어 업데이트';
+
+  @override
+  String get homeMenuProfilesTitle => '시간표 관리';
+
+  @override
+  String get homeMenuOverviewTitle => '수업 전체보기';
+
+  @override
+  String get homeMenuAddCourseTitle => '수업 추가';
+
+  @override
+  String get homeMenuImportTitle => '수업 가져오기';
+
+  @override
+  String get homeMenuSettingsTitle => '시간표 설정';
+
+  @override
+  String get homeMenuFeedbackTitle => '문제 제보';
+
+  @override
+  String get switchTimetableTitle => '시간표 전환';
+
+  @override
+  String get todayTimetableTitle => '오늘 시간표';
+
+  @override
+  String get dayTimetableTitle => '일간 타임라인';
+
+  @override
+  String get backToWeekViewAction => '주간 뷰로 돌아가기';
+
+  @override
+  String get backToTodayAction => '오늘로 돌아가기';
+
+  @override
+  String get ongoingCourseBadge => '수업 중';
+
+  @override
+  String get dayViewEmptyTitle => '수업 없음';
+
+  @override
+  String shortNamePrefix(String value) {
+    return '약칭: $value';
+  }
+
+  @override
+  String teacherPrefix(String value) {
+    return '교사: $value';
+  }
+
+  @override
+  String locationPrefix(String value) {
+    return '장소: $value';
+  }
+
+  @override
+  String courseDialogCurrentWeekHint(int week) {
+    return '현재 제$week주를 보고 있습니다. 이 주의 이 수업을 바로 시간 변경할 수 있습니다';
+  }
+
+  @override
+  String courseDialogNotThisWeekHint(int week) {
+    return '현재 제$week주를 보고 있습니다. 이 수업은 이번 주에 없으므로 \'이번주 이 수업\'으로 시간 변경할 수 없습니다';
+  }
+
+  @override
+  String get editActionShort => '편집';
+
+  @override
+  String get rescheduleAction => '시간 변경';
+
+  @override
+  String get deleteActionShort => '삭제';
+
+  @override
+  String get deleteModeTitle => '삭제 방식';
+
+  @override
+  String get deleteModeSubtitle =>
+      '배치 전체를 삭제하거나, 현재 보고 있는 이 주의 이 수업만 삭제할 수 있습니다';
+
+  @override
+  String get deleteCourseAction => '이 수업 삭제';
+
+  @override
+  String get deleteOccurrenceAction => '이 수업 회 삭제';
+
+  @override
+  String deleteModeHintCurrentWeek(int week) {
+    return '\'이 수업 삭제\'는 배치의 전체 주차를 삭제합니다. \'이 수업 회 삭제\'는 제$week주 이번만 삭제합니다';
+  }
+
+  @override
+  String deleteModeHintUnavailable(int week) {
+    return '현재 카드는 제$week주 실제 배치가 아니므로 배치 전체만 삭제할 수 있습니다';
+  }
+
+  @override
+  String deleteScheduleConfirmMessage(String name, String detail) {
+    return '\"$name\" 배치를 삭제하시겠습니까?\n$detail';
+  }
+
+  @override
+  String deleteOccurrenceConfirmMessage(String name, int week, String detail) {
+    return '\"$name\"의 제$week주 이 수업을 삭제하시겠습니까?\n$detail';
+  }
+
+  @override
+  String occurrenceDeletedMessage(int week) {
+    return '제$week주 이 수업이 삭제되었습니다';
+  }
+
+  @override
+  String get noChangesDetected => '변경 사항이 감지되지 않았습니다';
+
+  @override
+  String get rescheduleCurrentOccurrenceTitle => '이번주 이 수업 시간 변경';
+
+  @override
+  String rescheduleCurrentOccurrenceSubtitle(int week) {
+    return '제$week주 이 수업만 조정합니다. 원래 수업은 이 주에서 자동으로 제거되며 다른 주는 변경 없습니다';
+  }
+
+  @override
+  String get rescheduleTargetWeekLabel => '변경할 주차';
+
+  @override
+  String get weekdayFieldLabel => '요일';
+
+  @override
+  String get startSectionFieldLabel => '시작 교시';
+
+  @override
+  String get endSectionFieldLabel => '종료 교시';
+
+  @override
+  String get courseLocationFieldLabel => '수업 장소';
+
+  @override
+  String get confirmRescheduleAction => '시간 변경 확인';
+
+  @override
+  String get homeTitleStyleClassicLabel => '클래식 텍스트';
+
+  @override
+  String get homeTitleStyleBrandLabel => '큰 로고';
+
+  @override
+  String get homeTitleStyleClassicDescription =>
+      '원래 제목 스타일을 유지합니다. 텍스트만 표시하고 탭하면 시간표를 전환합니다';
+
+  @override
+  String get homeTitleStyleBrandDescription =>
+      '큰 로고와 작은 시간표 이름을 표시합니다. 브랜드 감성을 강조합니다';
+
+  @override
+  String get widgetBackgroundStyleGlass => '반투명 유리';
+
+  @override
+  String get widgetBackgroundStyleSolid => '단색 카드';
+
+  @override
+  String get widgetBackgroundStyleGradient => '그라데이션 카드';
+
+  @override
+  String get homeWidgetTargetCompact22 => '메인 카드 2×2';
+
+  @override
+  String get homeWidgetTargetMiniList22 => '미니 목록 2×2';
+
+  @override
+  String get homeWidgetTargetMedium24 => '개요 2×4';
+
+  @override
+  String get homeWidgetTargetLarge44 => '목록 4×4';
+
+  @override
+  String get homeWidgetTargetStats22 => '통계 2×2';
+
+  @override
+  String get homeWidgetTargetStats24 => '통계 개요 2×4';
+
+  @override
+  String get homeWidgetTargetTodayStrip41 => '오늘 바 4×1';
+
+  @override
+  String get homeWidgetTargetStatsStrip41 => '통계 바 4×1';
+
+  @override
+  String get homeWidgetTargetExamCard22 => '시험 카운트다운 2×2';
+
+  @override
+  String get homeWidgetTargetTodayWide42 => '오늘 와이드 4×2';
+
+  @override
+  String get homeWidgetTargetCoupleTimetable42 => '커플 시간표 4×3';
+
+  @override
+  String get addCourseSheetTitle => '콘텐츠 추가';
+
+  @override
+  String get addCourseSheetSubtitle =>
+      '빈 시간표 영역은 탭에 반응하지 않습니다. 임시 수업, 학기 전체 반복 수업, 또는 단일 일정 삽입을 명확히 선택하세요';
+
+  @override
+  String courseWeekdaySectionSummary(
+    String weekDescription,
+    String weekday,
+    int startSection,
+    int endSection,
+  ) {
+    return '$weekDescription · $weekday $startSection-$endSection교시';
+  }
+
+  @override
+  String weekdaySectionTimeSummary(
+    String weekday,
+    int startSection,
+    int endSection,
+    String startTime,
+    String endTime,
+  ) {
+    return '$weekday $startSection-$endSection교시 · $startTime-$endTime';
+  }
+
+  @override
+  String rescheduledToMessage(
+    int week,
+    String weekday,
+    int startSection,
+    int endSection,
+  ) {
+    return '제$week주 $weekday $startSection-$endSection교시로 변경됨';
+  }
+
+  @override
+  String courseCountSummary(int count) {
+    return '$count과목';
+  }
+
+  @override
+  String dayAgendaInProgressStatus(int minutes) {
+    return '진행 중 · 남은 $minutes분';
+  }
+
+  @override
+  String dayAgendaEndingSoonStatus(int minutes) {
+    return '곧 종료 · 남은 $minutes분';
+  }
+
+  @override
+  String scheduleAgendaInProgressStatus(int minutes) {
+    return '진행 중 · 남은 $minutes분';
+  }
+
+  @override
+  String scheduleAgendaEndingSoonStatus(int minutes) {
+    return '곧 종료 · 남은 $minutes분';
+  }
+
+  @override
+  String get currentBadge => '현재';
+
+  @override
+  String get feedbackXiaohongshuTitle => '샤오홍슈';
+
+  @override
+  String feedbackXiaohongshuSubtitle(String id) {
+    return '샤오홍슈 ID: $id';
+  }
+
+  @override
+  String get feedbackCoolapkTitle => 'Coolapk';
+
+  @override
+  String feedbackCoolapkSubtitle(String id) {
+    return 'Coolapk ID: $id';
+  }
+
+  @override
+  String get feedbackQqGroupTitle => 'QQ 그룹';
+
+  @override
+  String feedbackQqGroupSubtitle(String id) {
+    return '그룹 ID: $id';
+  }
+
+  @override
+  String get feedbackWechatOaTitle => 'WeChat 공식 계정';
+
+  @override
+  String feedbackWechatOaSubtitle(String name) {
+    return '$name';
+  }
+
+  @override
+  String get copiedCurrentTimetable => '현재 시간표를 복사했습니다';
+
+  @override
+  String sectionRangeLabel(int startSection, int endSection) {
+    return '$startSection-$endSection교시';
+  }
+
+  @override
+  String classStartsAtLabel(String time) {
+    return '$time 시작';
+  }
+
+  @override
+  String classEndsAtLabel(String time) {
+    return '$time 종료';
+  }
+
+  @override
+  String get invalidSectionTimeFormat => '교시 시간 형식이 올바르지 않습니다';
+
+  @override
+  String get noSectionTimesToSave => '저장할 교시 시간이 없습니다';
+
+  @override
+  String warehouseImportedTimeSchemeName(String schoolName) {
+    return '$schoolName 가져온 교시';
+  }
+
+  @override
+  String get unnamedScript => '이름 없는 스크립트';
+
+  @override
+  String localDebugModeScriptStatus(String scriptName) {
+    return '로컬 디버그 모드: $scriptName';
+  }
+
+  @override
+  String get executeImportScriptTooltip => '가져오기 스크립트 실행';
+
+  @override
+  String get switchToMobileWebTooltip => '모바일 페이지로 전환';
+
+  @override
+  String get switchToDesktopWebTooltip => '데스크톱 페이지로 전환';
+
+  @override
+  String get rememberCurrentInputTooltip => '현재 입력 기억';
+
+  @override
+  String get fillRememberedTooltip => '기억된 계정 입력';
+
+  @override
+  String get clearRememberedTooltip => '기억된 계정 삭제';
+
+  @override
+  String get copyCurrentAddressTooltip => '현재 주소 복사';
+
+  @override
+  String get copiedCurrentAddress => '현재 주소를 복사했습니다';
+
+  @override
+  String get warehouseLoginHintLocalDebug => '현재 로컬 디버그 스크립트 모드';
+
+  @override
+  String get warehouseLoginHintImport => '여기서 교무 시스템에 로그인한 뒤 가져오기를 실행합니다';
+
+  @override
+  String get currentPageModeDesktop => '현재 페이지 모드: 데스크톱';
+
+  @override
+  String get currentPageModeMobile => '현재 페이지 모드: 모바일';
+
+  @override
+  String localScriptLabel(String scriptName) {
+    return '로컬 스크립트: $scriptName';
+  }
+
+  @override
+  String get webAddressHint => '웹 주소 입력';
+
+  @override
+  String get goAction => '이동';
+
+  @override
+  String rememberedAccountLabel(String username) {
+    return '기억된 계정: $username';
+  }
+
+  @override
+  String get importingAction => '가져오는 중...';
+
+  @override
+  String get executeLocalDebugScriptAction => '로컬 디버그 스크립트 실행';
+
+  @override
+  String get executeImportScriptAction => '가져오기 스크립트 실행';
+
+  @override
+  String get invalidWebAddress => '웹 주소가 유효하지 않습니다';
+
+  @override
+  String get injectingLocalDebugScript => '로컬 디버그 스크립트 주입 중';
+
+  @override
+  String get injectingAdapterScript => '어댑터 스크립트 주입 중';
+
+  @override
+  String get localDebugScriptInjected => '로컬 디버그 스크립트 주입됨';
+
+  @override
+  String get scriptInjected => '스크립트 주입됨';
+
+  @override
+  String get scriptInjectionFailed => '스크립트 주입 실패';
+
+  @override
+  String executeFailedWithError(String error) {
+    return '실행 실패: $error';
+  }
+
+  @override
+  String get importFlowFinished => '가져오기 프로세스 완료';
+
+  @override
+  String get defaultContinuePrompt => '안내에 따라 계속 진행하세요';
+
+  @override
+  String get inputRequiredTitle => '입력 필요';
+
+  @override
+  String get pleaseEnterFourDigitYear => '4자리 연도를 입력하세요';
+
+  @override
+  String get pleaseChooseTitle => '선택하세요';
+
+  @override
+  String get invalidCourseConfigFormat => '수업 설정 형식이 올바르지 않습니다';
+
+  @override
+  String saveCourseConfigFailedWithError(String error) {
+    return '수업 설정 저장 실패: $error';
+  }
+
+  @override
+  String saveSectionTimesFailedWithError(String error) {
+    return '교시 시간 저장 실패: $error';
+  }
+
+  @override
+  String get invalidCourseDataFormat => '수업 데이터 형식이 올바르지 않습니다';
+
+  @override
+  String get noImportableCoursesFromScript => '스크립트가 가져올 수 있는 수업을 반환하지 않았습니다';
+
+  @override
+  String importCourseCountPrompt(int count) {
+    return '$count과목을 인식했습니다. 가져오시겠습니까?';
+  }
+
+  @override
+  String get importCancelledStatus => '가져오기 취소됨';
+
+  @override
+  String applyReturnedTimeSchemeFailed(String error) {
+    return '반환된 템플릿 적용 실패: $error';
+  }
+
+  @override
+  String get importInterruptedStatus => '가져오기 중단됨';
+
+  @override
+  String get importFailedStatus => '가져오기 실패';
+
+  @override
+  String importFailedWithError(String error) {
+    return '가져오기 실패: $error';
+  }
+
+  @override
+  String get unknownTeacher => '알 수 없는 교사';
+
+  @override
+  String get unknownLocation => '알 수 없는 장소';
+
+  @override
+  String get autofillLoginTitle => '로그인 정보 자동 입력';
+
+  @override
+  String autofillLoginMessage(String username) {
+    return '기억된 계정 $username을(를) 감지했습니다. 자동 입력하시겠습니까?';
+  }
+
+  @override
+  String get notNowAction => '나중에';
+
+  @override
+  String get autofillAction => '자동 입력';
+
+  @override
+  String get rememberPasswordTitle => '비밀번호 기억';
+
+  @override
+  String rememberPasswordMessage(String username) {
+    return '계정 $username의 로그인 정보를 기억하고 다음에 자동 입력하시겠습니까?';
+  }
+
+  @override
+  String get dontRememberAction => '기억 안 함';
+
+  @override
+  String get rememberAndAutofillAction => '기억하고 자동 입력';
+
+  @override
+  String get savedRememberedLoginStatus => '기억된 로그인 정보 저장됨';
+
+  @override
+  String get autofilledRememberedLoginStatus => '기억된 로그인 정보 자동 입력됨';
+
+  @override
+  String get noRecognizedLoginInputs => '로그인 입력 항목이 인식되지 않았습니다';
+
+  @override
+  String get noUsernameOrPasswordRecognized => '사용자 이름 또는 비밀번호가 인식되지 않았습니다';
+
+  @override
+  String get rememberedCurrentLoginStatus => '현재 로그인 정보 기억됨';
+
+  @override
+  String get rememberedCurrentLoginSuccess => '현재 로그인 정보를 기억했습니다';
+
+  @override
+  String rememberLoginFailedWithError(String error) {
+    return '로그인 정보 기억 실패: $error';
+  }
+
+  @override
+  String get clearedRememberedLoginStatus => '기억된 로그인 정보 삭제됨';
+
+  @override
+  String get clearedRememberedLoginSuccess => '기억된 로그인 정보를 삭제했습니다';
+
+  @override
+  String get addScheduleTitle => '일정 추가';
+
+  @override
+  String get editScheduleTitle => '일정 편집';
+
+  @override
+  String get addScheduleAction => '일정 추가';
+
+  @override
+  String get scheduleTitleLabel => '일정 제목';
+
+  @override
+  String get scheduleTitleHint => '예: 조모임, 서류 처리, 택배 수령';
+
+  @override
+  String get scheduleTitleRequired => '일정 제목을 입력하세요';
+
+  @override
+  String get scheduleInfoSectionTitle => '일정 정보';
+
+  @override
+  String get scheduleInfoSectionSubtitle =>
+      '일정은 구체적인 날짜로 일간 뷰 타임라인에 삽입됩니다. 수업 자체는 변경하지 않습니다';
+
+  @override
+  String get scheduleTimeSectionTitle => '시간 설정';
+
+  @override
+  String get scheduleTimeSectionSubtitle =>
+      '이 일정이 실제로 발생하는 날짜와 시작/종료 시간을 선택하세요';
+
+  @override
+  String get scheduleAppearanceSectionTitle => '표시 스타일';
+
+  @override
+  String get scheduleAppearanceSectionSubtitle => '수업과 쉽게 구분되는 일정 색상을 선택하세요';
+
+  @override
+  String get scheduleLocationLabel => '장소';
+
+  @override
+  String get scheduleLocationHint => '선택사항';
+
+  @override
+  String get scheduleDateLabel => '날짜';
+
+  @override
+  String get scheduleStartGroupLabel => '시작';
+
+  @override
+  String get scheduleEndGroupLabel => '종료';
+
+  @override
+  String get scheduleStartDateLabel => '시작일';
+
+  @override
+  String get scheduleEndDateLabel => '종료일';
+
+  @override
+  String get scheduleStartTimeLabel => '시작 시간';
+
+  @override
+  String get scheduleEndTimeLabel => '종료 시간';
+
+  @override
+  String get scheduleColorLabel => '일정 색상';
+
+  @override
+  String get scheduleNoteLabel => '메모';
+
+  @override
+  String get scheduleNoteHint => '선택사항';
+
+  @override
+  String get scheduleBadgeLabel => '일정';
+
+  @override
+  String scheduleCountSummary(int count) {
+    return '일정 $count건';
+  }
+
+  @override
+  String get scheduleTimeRangeInvalid => '종료 시간은 시작 시간보다 나중이어야 합니다';
+
+  @override
+  String get scheduleDateRangeInvalid => '종료일은 시작일보다 이전일 수 없습니다';
+
+  @override
+  String get scheduleSingleDayHint => '같은 날 종료 시 종료 시간은 시작 시간보다 나중이어야 합니다';
+
+  @override
+  String get scheduleCrossDayHint => '날짜 초과 일정은 당일 슬라이스로 일간 뷰에 표시됩니다';
+
+  @override
+  String get scheduleSavedHint => '일정이 추가되었습니다';
+
+  @override
+  String get scheduleUpdatedHint => '일정이 업데이트되었습니다';
+
+  @override
+  String get crossDayBadgeLabel => '날짜 초과';
+
+  @override
+  String deleteScheduleMessage(String title) {
+    return '일정 \"$title\"을(를) 삭제하시겠습니까?';
+  }
+
+  @override
+  String get scheduleDeletedHint => '일정이 삭제되었습니다';
+
+  @override
+  String get scheduleListTitle => '일정';
+
+  @override
+  String get scheduleListEmptyTitle => '일정이 없습니다';
+
+  @override
+  String get scheduleUpcomingSection => '다가오는 일정';
+
+  @override
+  String get schedulePastSection => '지난 일정';
+
+  @override
+  String get schedulePausedSection => '일시 중지';
+
+  @override
+  String get scheduleOngoingLabel => '진행 중';
+
+  @override
+  String scheduleTimeRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String scheduleWeeklyWithDay(String day) {
+    return '매주 $day';
+  }
+
+  @override
+  String get examListTitle => '시험 일정';
+
+  @override
+  String get addExam => '시험 추가';
+
+  @override
+  String get editExam => '시험 편집';
+
+  @override
+  String get saveExam => '시험 저장';
+
+  @override
+  String get noExams => '시험 일정 없음';
+
+  @override
+  String get examToday => '오늘 시험 있음';
+
+  @override
+  String daysUntilExam(int days) {
+    return '시험까지 $days일 남음';
+  }
+
+  @override
+  String get examPassed => '종료됨';
+
+  @override
+  String get linkCourse => '수업 연결';
+
+  @override
+  String get linkCourseRequired => '연결할 수업을 선택하세요';
+
+  @override
+  String get examNameLabel => '시험명';
+
+  @override
+  String get examNameRequired => '시험명을 입력하세요';
+
+  @override
+  String get examDateLabel => '시험일';
+
+  @override
+  String get examDateHint => '날짜 선택';
+
+  @override
+  String get examDateRequired => '시험일을 선택하세요';
+
+  @override
+  String get examEndTimeBeforeStart => '종료 시간은 시작 시간보다 빠를 수 없습니다';
+
+  @override
+  String get examStartTimeLabel => '시작 시간';
+
+  @override
+  String get examEndTimeLabel => '종료 시간';
+
+  @override
+  String get examLocationLabel => '시험 장소';
+
+  @override
+  String get examLocationHint => '비워두면 수업 강의실을 사용합니다';
+
+  @override
+  String get sameAsClassroom => '수업 강의실과 동일';
+
+  @override
+  String get examSeatLabel => '좌석 번호';
+
+  @override
+  String get examReminderLabel => '알림 설정';
+
+  @override
+  String get examNoteLabel => '메모';
+
+  @override
+  String get deleteExam => '시험 삭제';
+
+  @override
+  String deleteExamConfirm(String name) {
+    return '시험 \'$name\'을(를) 삭제하시겠습니까?';
+  }
+
+  @override
+  String get examBadgeLabel => '시험';
+
+  @override
+  String get examCountdownToday => '오늘';
+
+  @override
+  String examCountdownDays(int days) {
+    return '$days일 후';
+  }
+
+  @override
+  String get examOverviewCountdown => '카운트다운';
+
+  @override
+  String get examOverviewCountdownUnit => '일 후';
+
+  @override
+  String examOverviewTodayCount(int count) {
+    return '오늘 $count건';
+  }
+
+  @override
+  String examOverviewUpcomingCount(int count) {
+    return '총 $count건';
+  }
+
+  @override
+  String get examOverviewInProgress => '시험 진행 중';
+
+  @override
+  String get examOverviewLiveBadge => '진행 중';
+
+  @override
+  String examOverviewStartsAt(String time) {
+    return '$time 시작';
+  }
+
+  @override
+  String examOverviewUntilTime(String time) {
+    return '$time까지';
+  }
+
+  @override
+  String get examOverviewReminderOn => '알림 설정됨';
+
+  @override
+  String get examOverviewReminderOff => '알림 없음';
+
+  @override
+  String examTimeRange(String start, String end) {
+    return '$start – $end';
+  }
+
+  @override
+  String get sortAction => '정렬';
+
+  @override
+  String get sortByAdded => '추가 순서';
+
+  @override
+  String get sortByName => '수업명 순';
+
+  @override
+  String get sortBySchedule => '배치 시간 순';
+
+  @override
+  String scheduleEntryTitle(int index) {
+    return '배치 레코드 $index';
+  }
+
+  @override
+  String get scheduleEntrySingleTitle => '수업 일정';
+
+  @override
+  String get scheduleEntryCardSubtitle =>
+      '이 수업이 언제, 어떤 주에, 누가 어디에서 진행되는지 설정합니다';
+
+  @override
+  String get scheduleEntryTimeSectionTitle => '언제';
+
+  @override
+  String get scheduleEntryTimeSectionSubtitle =>
+      '요일과 교시를 선택하세요. 연강은 시작·종료 교시를, 단일 교시는 같은 번호로 맞춥니다';
+
+  @override
+  String get scheduleEntryWeeksSectionTitle => '어떤 주';
+
+  @override
+  String get scheduleEntryPeopleSectionTitle => '교수와 강의실';
+
+  @override
+  String get scheduleEntryTimeSchemeSectionTitle => '별도 시간표';
+
+  @override
+  String get scheduleEntryTimeSchemeSectionSubtitle =>
+      '기본값은 현재 시간표를 따릅니다. 이 수업만 종 다른 시간이면 변경하세요';
+
+  @override
+  String scheduleSectionNumberLabel(int section) {
+    return '$section교시';
+  }
+
+  @override
+  String get addScheduleEntryAction => '배치 시간 추가';
+
+  @override
+  String get deleteScheduleEntryAction => '배치 삭제';
+
+  @override
+  String get holidaySettingsEntryTitle => '공휴일 표시';
+
+  @override
+  String get holidaySettingsEntrySubtitle => '시간표에 법정 공휴일과 대체 근무일을 표시합니다';
+
+  @override
+  String get holidayMakeupWorkday => '대체 근무';
+
+  @override
+  String get holidaySettingsTitle => '공휴일 표시';
+
+  @override
+  String get holidayEnableTitle => '공휴일 표시 활성화';
+
+  @override
+  String get holidayEnableSubtitle => '켜면 시간표에 법정 공휴일과 대체 근무일을 표시합니다';
+
+  @override
+  String get holidayDataSectionTitle => '공휴일 데이터';
+
+  @override
+  String get holidayDataYear => '연도';
+
+  @override
+  String get holidayDataCount => '건수';
+
+  @override
+  String get holidayDataEmpty => '공휴일 데이터 없음';
+
+  @override
+  String get holidayCheckUpdate => '업데이트 확인';
+
+  @override
+  String get holidayAdvancedTitle => '공휴일 데이터 업데이트';
+
+  @override
+  String get holidayUpcomingSectionTitle => '다가오는 공휴일';
+
+  @override
+  String get holidayNoUpcoming => '다가오는 공휴일 없음';
+
+  @override
+  String get holidayBadgeLabel => '휴';
+
+  @override
+  String get holidayStatusLabel => '휴일';
+
+  @override
+  String get suspendedBadgeLabel => '정';
+
+  @override
+  String get suspendedStatusLabel => '수업 중단';
+
+  @override
+  String get courseActionSuspend => '수업 중단';
+
+  @override
+  String get courseActionUnsuspend => '복구';
+
+  @override
+  String get courseActionEditPrimary => '수업 편집';
+
+  @override
+  String get courseActionRescheduleSecondary => '시간 변경';
+
+  @override
+  String get courseActionSuspendSecondary => '휴강';
+
+  @override
+  String get courseActionDeleteSecondary => '삭제';
+
+  @override
+  String get courseHeaderAlarmAction => '알람';
+
+  @override
+  String get courseHeaderTaskAction => '과제';
+
+  @override
+  String get courseHeaderNoteAction => '메모';
+
+  @override
+  String get courseHeaderEditAction => '편집';
+
+  @override
+  String get courseNoteSheetTitle => '수업 메모';
+
+  @override
+  String get courseNoteAction => '메모';
+
+  @override
+  String get courseNoteSaveAction => '저장';
+
+  @override
+  String get courseNoteTabWholeCourse => '수업 소개';
+
+  @override
+  String get courseNoteTabThisSession => '이번 수업';
+
+  @override
+  String get courseNoteWholeCourseLabel => '수업 소개';
+
+  @override
+  String get courseNoteWholeCourseHint =>
+      '같은 이름의 수업에서 공유되며 장기간 유지됩니다(예: 수업 설명, 주의사항 등).';
+
+  @override
+  String get courseNoteWholeCoursePlaceholder =>
+      '예: 이 선생님은 출석을 자주 부른다, 교실은 새 건물…';
+
+  @override
+  String get courseNoteSessionLabel => '이번 수업 메모';
+
+  @override
+  String courseNoteSessionHint(int week) {
+    return '$week주차의 이번 수업에만 적용됩니다. 숙제나 준비물 기록에 적합합니다.';
+  }
+
+  @override
+  String get courseNoteSessionPlaceholder => '예: 3장 연습문제 제출, 노트북 지참…';
+
+  @override
+  String get courseNoteHasHomeworkTitle => '숙제 있음';
+
+  @override
+  String get courseNoteHasHomeworkSubtitle => '켜면 주간 보기 수업 카드에 숙제 표시가 나타납니다';
+
+  @override
+  String get courseNoteHomeworkMarked => '이번 수업은 숙제 있음';
+
+  @override
+  String get courseNoteTileSubtitleEmpty => '숙제, 준비물, 수업 알림 기록';
+
+  @override
+  String get courseNoteTileSubtitleWhole => '수업 소개 있음';
+
+  @override
+  String get courseNoteTileSubtitleSession => '이번 수업 메모 있음';
+
+  @override
+  String get courseNoteTileSubtitleBoth => '수업 소개와 이번 수업 메모가 모두 있습니다';
+
+  @override
+  String get courseNoteReadOnlyNotice => '상대방 수업은 메모만 볼 수 있으며 편집할 수 없습니다.';
+
+  @override
+  String get courseNoteDoneEditingAction => '완료';
+
+  @override
+  String courseActionSheetNotice(int week) {
+    return '현재 제$week주를 보고 있습니다. 시험이나 충돌이 생기면 아래에서 바로 변경하거나 휴강할 수 있습니다.';
+  }
+
+  @override
+  String get courseActionOddWeekShort => '홀수 주';
+
+  @override
+  String get courseActionEvenWeekShort => '짝수 주';
+
+  @override
+  String get courseActionConflictExpandHint => '다른 충돌 수업을 펼쳐 작업 대상을 전환합니다';
+
+  @override
+  String get courseActionConflictCollapseHint => '탭하여 충돌 목록 접기';
+
+  @override
+  String get courseActionConflictSwitchAction => '전환';
+
+  @override
+  String get suspendSheetTitle => '수업 중단';
+
+  @override
+  String get suspendSheetSubtitle => '중단 범위 선택';
+
+  @override
+  String get suspendThisWeek => '이번주 중단';
+
+  @override
+  String get suspendThisWeekDesc => '현재 주만 일시 중단';
+
+  @override
+  String get suspendAllWeeks => '전체 중단';
+
+  @override
+  String get suspendAllWeeksDesc => '모든 주차 일시 중단';
+
+  @override
+  String get unsuspendAllWeeks => '전체 복구';
+
+  @override
+  String get unsuspendAllWeeksDesc => '모든 주차 복구';
+
+  @override
+  String get customHolidayTitle => '사용자 정의 휴일';
+
+  @override
+  String get customHolidayAdd => '휴일 추가';
+
+  @override
+  String get customHolidayEdit => '휴일 편집';
+
+  @override
+  String get customHolidayDelete => '삭제';
+
+  @override
+  String get customHolidayDeleteConfirm => '이 사용자 정의 휴일을 삭제하시겠습니까?';
+
+  @override
+  String get customHolidayNameLabel => '휴일 이름';
+
+  @override
+  String get customHolidayStartDate => '시작일';
+
+  @override
+  String get customHolidayEndDate => '종료일';
+
+  @override
+  String get customHolidayType => '유형';
+
+  @override
+  String get customHolidayTypeVacation => '휴일';
+
+  @override
+  String get customHolidayTypeWorkday => '대체 근무';
+
+  @override
+  String get customHolidayEmpty => '사용자 정의 휴일 없음';
+
+  @override
+  String get customHolidayCorrupted =>
+      '사용자 정의 휴일 데이터를 읽지 못했습니다. 데이터 보호를 위해 읽기/쓰기를 중지했습니다';
+
+  @override
+  String get customHolidayNameRequired => '휴일 이름을 입력하세요';
+
+  @override
+  String customHolidayDateRange(Object start, Object end) {
+    return '$start ~ $end';
+  }
+
+  @override
+  String get selectTeacherTitle => '교사 선택';
+
+  @override
+  String get selectLocationTitle => '강의실 선택';
+
+  @override
+  String get historyRecordsLabel => '기록';
+
+  @override
+  String get weekPickerTitle => '수업 주차 선택';
+
+  @override
+  String get selectTimeSchemeTitle => '시간 방안 선택';
+
+  @override
+  String get manageTimeSchemesAction => '시간 방안 관리';
+
+  @override
+  String get examDefaultName => '기말고사';
+
+  @override
+  String get examDateWeekPickerTitle => '시험일 선택';
+
+  @override
+  String get weekPickerCalendarTooltip => '달력으로 선택';
+
+  @override
+  String get thisWeekLabel => '이번주';
+
+  @override
+  String get guidePermissionsHeader => '시스템 권한 설정';
+
+  @override
+  String get guidePermissionsSubtitle => '이 설정을 완료해야 슈퍼아일랜드와 알림이 정상 작동합니다';
+
+  @override
+  String get guidePermissionsFooterHint =>
+      '탭하면 시스템 설정으로 이동합니다. 앱으로 돌아오면 인식 가능한 상태가 자동으로 갱신됩니다. 자동 시작은 시스템 제한이 있으므로 시스템 페이지 스위치를 기준으로 하세요';
+
+  @override
+  String holidayDataYearLabel(Object year) {
+    return '$year년 법정 공휴일';
+  }
+
+  @override
+  String get holidayUpdateLog => '업데이트 로그';
+
+  @override
+  String holidayUpdateLogCount(int count) {
+    return '$count건';
+  }
+
+  @override
+  String holidayDateSameMonth(int month, int start, int end) {
+    return '$month월 $start일 - $end일';
+  }
+
+  @override
+  String holidayDateSameDay(int month, int day) {
+    return '$month월 $day일';
+  }
+
+  @override
+  String holidayDateDiffMonth(
+    int startMonth,
+    int startDay,
+    int endMonth,
+    int endDay,
+  ) {
+    return '$startMonth월 $startDay일 - $endMonth월 $endDay일';
+  }
+
+  @override
+  String get liveTestingHolidayOverride => '휴일 상태 덮어쓰기';
+
+  @override
+  String get liveTestingHolidayOverrideSubtitle =>
+      '켜면 휴일 상태를 시뮬레이션합니다. 알림과 위젯이 수업을 올바르게 숨기는지 테스트할 수 있습니다';
+
+  @override
+  String get liveTestingHolidayModeEnabled => '휴일 모드 활성화됨';
+
+  @override
+  String get liveTestingHolidayModeDisabled => '휴일 모드 비활성화됨';
+
+  @override
+  String get liveTestingHolidayModeEnabledDesc => '수업 알림과 위젯이 모든 수업을 숨깁니다';
+
+  @override
+  String get liveTestingHolidayModeDisabledDesc => '현재 일반 휴일 데이터를 사용 중입니다';
+
+  @override
+  String get textColorTitle => '텍스트 색상';
+
+  @override
+  String get textColorSubtitle => '시간표 각 영역의 텍스트 색상 사용자 지정';
+
+  @override
+  String get textColorIndependentDetail => '세부 색상 개별 설정';
+
+  @override
+  String get textColorCourseCardTitle => '수업 카드 제목 색상';
+
+  @override
+  String get textColorCourseCardDetail => '수업 카드 세부 색상';
+
+  @override
+  String get textColorWeekdayBar => '요일 바 글꼴 색상';
+
+  @override
+  String get textColorWeekdayBarAccent => '요일 바 강조 색상';
+
+  @override
+  String get textColorTimeAxis => '시간축 글꼴 색상';
+
+  @override
+  String get textColorSelectColor => '색상 선택';
+
+  @override
+  String get textColorCurrentColor => '현재 색상';
+
+  @override
+  String get textColorLowContrastWarning => '색상 대비가 낮아 가독성에 영향을 줄 수 있습니다';
+
+  @override
+  String get themeUndo => '실행 취소';
+
+  @override
+  String get courseNatureRequired => '필수';
+
+  @override
+  String get courseNatureElective => '선택';
+
+  @override
+  String get homeMenuStatisticsTitle => '수업 통계';
+
+  @override
+  String get statisticsTitle => '수업 통계';
+
+  @override
+  String get statisticsOverview => '이번 주 개요';
+
+  @override
+  String get statisticsCourseCount => '수업 수';
+
+  @override
+  String get statisticsSectionCount => '이번 주 수업 시간';
+
+  @override
+  String get statisticsWeeklyCourses => '이번 주 수업';
+
+  @override
+  String get statisticsDailyDistribution => '요일별 수업 분포';
+
+  @override
+  String get statisticsNatureRatio => '필수 / 선택';
+
+  @override
+  String get statisticsCourseList => '수업 목록';
+
+  @override
+  String get statisticsSectionsUnit => '교시';
+
+  @override
+  String get statisticsSectionUnit => '교시';
+
+  @override
+  String get statisticsNoData => '수업 데이터 없음';
+
+  @override
+  String get statisticsCourseCountRatio => '수업 수 비율';
+
+  @override
+  String get statisticsSectionCountRatio => '수업 시간 비율';
+
+  @override
+  String statisticsWeekSelector(int week) {
+    return '$week주차';
+  }
+
+  @override
+  String get statisticsStoryBusiestDayTitle => '가장 바쁜 날';
+
+  @override
+  String statisticsStoryBusiestDayContent(int week, String day, String avg) {
+    return '$week주차까지 가장 바쁜 날은 **$day**, 평균 **$avg** 교시';
+  }
+
+  @override
+  String get statisticsStoryLightestDayTitle => '가장 여유로운 날';
+
+  @override
+  String statisticsStoryLightestDayContent(int week, String day, String avg) {
+    return '$week주차까지 가장 여유로운 날은 **$day**, 단 **$avg** 교시';
+  }
+
+  @override
+  String get statisticsStoryFavoriteRoomTitle => '자주 가는 강의실';
+
+  @override
+  String statisticsStoryFavoriteRoomContent(int week, String room, int count) {
+    return '$week주차까지 가장 자주 간 강의실은 **$room**, **$count**회';
+  }
+
+  @override
+  String get statisticsStoryBuildingCountTitle => '캠퍼스 탐험';
+
+  @override
+  String statisticsStoryBuildingCountContent(int week, int count) {
+    return '$week주차까지 수업이 **$count**개 건물에 분포';
+  }
+
+  @override
+  String get statisticsStoryTimeRangeTitle => '시간 범위';
+
+  @override
+  String statisticsStoryTimeRangeContent(String earliest, String latest) {
+    return '가장 이른 수업 **$earliest**, 가장 늦은 수업 **$latest**';
+  }
+
+  @override
+  String get statisticsSemesterLabelCourses => '과목';
+
+  @override
+  String get statisticsSemesterLabelSections => '교시';
+
+  @override
+  String get statisticsSemesterLabelWeeks => '주';
+
+  @override
+  String get statisticsSemesterLabelDayStreak => '일 연속';
+
+  @override
+  String get statisticsAchievementsTitle => '업적 배지';
+
+  @override
+  String get statisticsStoriesTitle => '데이터 스토리';
+
+  @override
+  String get statisticsRankingTitle => '과목 순위';
+
+  @override
+  String get statisticsNoDataHint => '수업을 추가하면 통계를 볼 수 있습니다';
+
+  @override
+  String get statisticsShareLabel => '통계 공유';
+
+  @override
+  String get statisticsExportTitle => '통계 내보내기';
+
+  @override
+  String get statisticsExportModulesSection => '포함할 모듈';
+
+  @override
+  String get statisticsExportFormatSection => '내보내기 형식';
+
+  @override
+  String get statisticsExportFormatImage => '긴 이미지 (PNG)';
+
+  @override
+  String get statisticsExportFormatPdf => 'PDF 문서';
+
+  @override
+  String get statisticsExportAction => '내보내기';
+
+  @override
+  String get statisticsExportSelectModuleHint => '모듈을 하나 이상 선택하세요';
+
+  @override
+  String get statisticsExportModuleOverview => '학기 개요';
+
+  @override
+  String get statisticsExportBrandTagline => '수업 정보를 시스템 경험으로';
+
+  @override
+  String statisticsExportGithubHint(String url) {
+    return 'GitHub에서 검색: $url';
+  }
+
+  @override
+  String get statisticsExportQrScanHint => '스캔하여 공식 사이트';
+
+  @override
+  String statisticsExportRankingMore(int count) {
+    return '외 $count개 수업은 생략';
+  }
+
+  @override
+  String get statisticsShareTitle => '내 학기 통계';
+
+  @override
+  String statisticsRankingSlotDetail(
+    String day,
+    int startSection,
+    int endSection,
+  ) {
+    return '$day $startSection-$endSection교시';
+  }
+
+  @override
+  String get statisticsAchievementEarlyBirdName => '얼리버드';
+
+  @override
+  String get statisticsAchievementEarlyBirdDescription => '8:00 수업 있음';
+
+  @override
+  String get statisticsAchievementPerfectAttendanceName => '개근상';
+
+  @override
+  String get statisticsAchievementPerfectAttendanceDescription =>
+      '매주 빠짐없이 듣는 과목';
+
+  @override
+  String get statisticsAchievementWeekendWarriorName => '주말 전사';
+
+  @override
+  String get statisticsAchievementWeekendWarriorDescription => '주말 수업 있음';
+
+  @override
+  String get statisticsAchievementClassKingName => '수업왕';
+
+  @override
+  String get statisticsAchievementClassKingDescription => '하루 6교시 이상';
+
+  @override
+  String get statisticsAchievementScholarName => '학습왕';
+
+  @override
+  String get statisticsAchievementScholarDescription => '총 100교시 이상';
+
+  @override
+  String get statisticsAchievementBalancedName => '균형 마스터';
+
+  @override
+  String get statisticsAchievementBalancedDescription => '요일별 차이 2교시 이내';
+
+  @override
+  String get statisticsAchievementNightOwlName => '올빼미';
+
+  @override
+  String get statisticsAchievementNightOwlDescription => '18:00 이후 수업 있음';
+
+  @override
+  String get statisticsAchievementExplorerName => '교실 탐험가';
+
+  @override
+  String get statisticsAchievementExplorerDescription => '5개 이상 교실 이용';
+
+  @override
+  String statisticsNatureLegendDetail(int count, int sections) {
+    return '$count 과목 · $sections 교시';
+  }
+
+  @override
+  String get statisticsWeekCurrentHint => '이번 주';
+
+  @override
+  String get weeklyReportTitle => '이번 주 수업 요약';
+
+  @override
+  String weeklyReportBody(
+    int week,
+    int sections,
+    int courses,
+    String delta,
+    String busiestDay,
+  ) {
+    return '$week주차 · 총 $sections교시 · $courses과목\n지난주 대비 $delta교시\n가장 바쁜 날: $busiestDay';
+  }
+
+  @override
+  String get weeklyReportBodyEmpty => '이번 주 수업이 없어요. 푹 쉬세요';
+
+  @override
+  String weeklyReportNextFire(String date, String time) {
+    return '다음 알림 $date $time';
+  }
+
+  @override
+  String get weeklyReportEnabledHint => '주간 리포트가 켜졌습니다';
+
+  @override
+  String get weeklyReportDisabledHint => '주간 리포트가 꺼졌습니다';
+
+  @override
+  String get statisticsCompareTitle => '시간표 비교';
+
+  @override
+  String get statisticsCompareActive => '현재 시간표';
+
+  @override
+  String get statisticsCompareNone => '다른 시간표가 없습니다. 시간표 관리에서 만들 수 있어요';
+
+  @override
+  String statisticsCompareDelta(String delta) {
+    return '현재 대비 $delta교시';
+  }
+
+  @override
+  String get statisticsCompareDetailTitle => '비교 상세';
+
+  @override
+  String get statisticsCompareWeek => '현재 주차';
+
+  @override
+  String get statisticsMoreTitle => '심층 분석';
+
+  @override
+  String get statisticsMoreGroupTrend => '추세 · 분포';
+
+  @override
+  String get statisticsMoreGroupPeople => '강의실 · 교수 · 순위';
+
+  @override
+  String get statisticsNatureNoneRequired => '필수 과목 없음';
+
+  @override
+  String get statisticsNatureNoneElective => '선택 과목 없음';
+
+  @override
+  String get statisticsAchievementMorningPersonName => '모닝 버드';
+
+  @override
+  String get statisticsAchievementMorningPersonDescription => '오전 수업 50% 이상';
+
+  @override
+  String get statisticsAchievementGapMasterName => '시간 관리 마스터';
+
+  @override
+  String get statisticsAchievementGapMasterDescription => '최장 공백 2교시 이하';
+
+  @override
+  String get statisticsAchievementEarlyBirdDetail =>
+      '해제 조건: 08:00 이전에 시작하는 수업이 있어야 해요.';
+
+  @override
+  String get statisticsAchievementPerfectAttendanceDetail =>
+      '해제 조건: 최소 한 과목이 개강 기간 동안 매주 있어야 해요 (휴강·격주 없음).';
+
+  @override
+  String get statisticsAchievementWeekendWarriorDetail =>
+      '해제 조건: 주말(토요일 또는 일요일)에 수업이 있어야 해요.';
+
+  @override
+  String get statisticsAchievementClassKingDetail =>
+      '해제 조건: 하루에 6교시 이상 수업이 있어야 해요.';
+
+  @override
+  String get statisticsAchievementScholarDetail =>
+      '해제 조건: 학기 누적 수업이 100교시에 도달해야 해요.';
+
+  @override
+  String get statisticsAchievementBalancedDetail =>
+      '해제 조건: 요일별 수업 수 차이가 2교시 이하여야 해요.';
+
+  @override
+  String get statisticsAchievementNightOwlDetail =>
+      '해제 조건: 18:00 이후에 끝나는 수업이 있어야 해요.';
+
+  @override
+  String get statisticsAchievementExplorerDetail =>
+      '해제 조건: 5개 이상의 서로 다른 강의실을 사용해야 해요.';
+
+  @override
+  String get statisticsAchievementFullDayKingDetail =>
+      '해제 조건: 하루에 8교시 이상 수업이 있어야 해요.';
+
+  @override
+  String get statisticsAchievementBuildingHopperDetail =>
+      '해제 조건: 같은 날 3개 이상의 다른 건물에 가야 해요.';
+
+  @override
+  String get statisticsAchievementMorningPersonDetail =>
+      '해제 조건: 오전(12:00 전 시작) 수업이 전체의 절반 이상이어야 해요.';
+
+  @override
+  String get statisticsAchievementGapMasterDetail =>
+      '해제 조건: 하루 최장 쉬는 시간이 2교시 이하여야 해요.';
+
+  @override
+  String get statisticsAchievementDetailConfirm => '알겠어요';
+
+  @override
+  String get statisticsAchievementLocked => '미달성';
+
+  @override
+  String get statisticsSettingsTitle => '통계 설정';
+
+  @override
+  String get statisticsTabSemester => '학기';
+
+  @override
+  String get statisticsTabWeek => '주';
+
+  @override
+  String get statisticsSemesterProgressTitle => '학기 진행도';
+
+  @override
+  String statisticsSemesterProgressRange(String start, String end) {
+    return '학기 $start - $end';
+  }
+
+  @override
+  String statisticsSemesterProgressAsOf(String date) {
+    return '오늘 $date';
+  }
+
+  @override
+  String statisticsSemesterProgressDetail(int week, int done, int total) {
+    return '$week주차 기준, 수강 $done교시 / 총 $total교시';
+  }
+
+  @override
+  String statisticsSemesterProgressRemaining(int count) {
+    return '남은 $count교시';
+  }
+
+  @override
+  String get statisticsSemesterProgressNotStarted => '학기가 아직 시작하지 않았어요';
+
+  @override
+  String get statisticsSemesterProgressEstimated => '주 단위 추정';
+
+  @override
+  String get statisticsTrendTitle => '주별 수업 시간 추이';
+
+  @override
+  String statisticsTrendTooltip(int week, int sections) {
+    return '$week주차 · $sections교시';
+  }
+
+  @override
+  String get statisticsComparisonTitle => '이번 주 요약';
+
+  @override
+  String get statisticsComparisonLastWeek => '지난주';
+
+  @override
+  String get statisticsComparisonAverage => '학기 평균';
+
+  @override
+  String statisticsComparisonVsLastWeek(String delta) {
+    return '지난주 대비 $delta교시';
+  }
+
+  @override
+  String statisticsComparisonVsAverage(String delta) {
+    return '평균 대비 $delta교시';
+  }
+
+  @override
+  String get statisticsComparisonNew => '새 학기 첫 주';
+
+  @override
+  String get statisticsHeatmapTitle => '학기 히트맵';
+
+  @override
+  String get statisticsHeatmapHint => '색이 진할수록 수업이 많음';
+
+  @override
+  String get statisticsTimeUtilTitle => '시간 활용';
+
+  @override
+  String get statisticsTimeEarliest => '가장 이른 수업';
+
+  @override
+  String get statisticsTimeLatest => '가장 늦은 수업';
+
+  @override
+  String get statisticsTimeMorning => '오전 수업';
+
+  @override
+  String get statisticsTimeNoon => '점심 수업';
+
+  @override
+  String get statisticsTimeEvening => '저녁 수업';
+
+  @override
+  String get statisticsTimeWeekend => '주말 수업';
+
+  @override
+  String get statisticsTimeGap => '최장 쉬는 시간';
+
+  @override
+  String statisticsTimeGapValue(int sections) {
+    return '$sections교시';
+  }
+
+  @override
+  String get statisticsVenueTitle => '강의실과 건물';
+
+  @override
+  String get statisticsVenueTopRooms => '자주 가는 강의실';
+
+  @override
+  String get statisticsVenueBuildings => '건물별 수업 시간';
+
+  @override
+  String statisticsVenueVisits(int count) {
+    return '$count회';
+  }
+
+  @override
+  String get statisticsTeacherTitle => '교수별 수업 랭킹';
+
+  @override
+  String statisticsTeacherCourseCount(int count) {
+    return '$count과목';
+  }
+
+  @override
+  String get statisticsAchievementFullDayKingName => '풀타임 킹';
+
+  @override
+  String get statisticsAchievementFullDayKingDescription => '하루 8교시 이상';
+
+  @override
+  String get statisticsAchievementBuildingHopperName => '건물 탐험가';
+
+  @override
+  String get statisticsAchievementBuildingHopperDescription => '하루 3개 건물 이상';
+
+  @override
+  String statisticsAchievementProgress(int current, int target) {
+    return '$current/$target';
+  }
+
+  @override
+  String get statisticsAchievementDone => '달성 완료';
+
+  @override
+  String statisticsWeekDailyHint(int week) {
+    return '탭하여 $week주차 세부 정보 보기';
+  }
+
+  @override
+  String get weekListSeparator => ', ';
+
+  @override
+  String courseWeekListLabel(String weeks) {
+    return '제$weeks주';
+  }
+
+  @override
+  String courseWeekRangeLabel(int startWeek, int endWeek, String mode) {
+    return '제$startWeek-$endWeek주$mode';
+  }
+
+  @override
+  String courseWeekSuspendedLabel(String weeks) {
+    return '제$weeks주 휴강';
+  }
+
+  @override
+  String get importSemesterStartDateTitle => '개학일';
+
+  @override
+  String get importSemesterStartDateSubtitle =>
+      'Treat the week containing this date as calendar week 1';
+
+  @override
+  String get importFirstCourseWeekMappingLabel =>
+      'Timetable week 1 maps to calendar week';
+
+  @override
+  String get importFirstCourseWeekMappingSubtitle =>
+      'If the first school week has no classes, choose week 2; if the first two weeks are empty, choose week 3.';
+
+  @override
+  String get importSemesterMappingNoShiftHint =>
+      'After import, timetable week 1 will be treated as calendar week 1.';
+
+  @override
+  String importSemesterMappingShiftHint(int shiftedWeeks, int calendarWeek) {
+    return 'All course weeks will shift forward by $shiftedWeeks so timetable week 1 lands on calendar week $calendarWeek';
+  }
+
+  @override
+  String calendarWeekOption(int week) {
+    return 'Calendar week $week';
+  }
+
+  @override
+  String get aboutDownloadPackageMethodTitle => 'Download install method';
+
+  @override
+  String get aboutInAppDownloadTitle => 'In-app download';
+
+  @override
+  String get aboutInAppDownloadSubtitle =>
+      'Install directly in the app after download completes';
+
+  @override
+  String get aboutSystemDownloaderTitle => 'System download manager';
+
+  @override
+  String get aboutSystemDownloaderChoiceSubtitle =>
+      'Hand off to the system download manager';
+
+  @override
+  String get sectionTimeDisplayHidden => 'Hidden';
+
+  @override
+  String get sectionTimeDisplayStartOnly => 'Start time only';
+
+  @override
+  String get sectionTimeDisplayStartAndEnd => 'Start and end times';
+
+  @override
+  String get examReminderNone => 'No reminder';
+
+  @override
+  String get examReminderMin30 => '30 minutes before';
+
+  @override
+  String get examReminderHour1 => '1 hour before';
+
+  @override
+  String get examReminderHour1AndMin30 => '1 hour and 30 minutes before';
+
+  @override
+  String get examReminderDay1 => '1 day before';
+
+  @override
+  String get examReminderDay1AndHour1 => '1 day and 1 hour before';
+
+  @override
+  String get examReminderCustom => 'Custom';
+
+  @override
+  String examReminderOffsetMinutes(int minutes) {
+    return '$minutes minutes before';
+  }
+
+  @override
+  String examReminderOffsetHours(int hours) {
+    return '$hours hours before';
+  }
+
+  @override
+  String examReminderOffsetDays(int days) {
+    return '$days days before';
+  }
+
+  @override
+  String get examReminderCustomEmpty => 'Select at least one reminder time';
+
+  @override
+  String get examReminderAddCustom => 'Add reminder';
+
+  @override
+  String get examReminderAddCustomTitle => 'Custom reminder time';
+
+  @override
+  String get examReminderAddCustomHint =>
+      'How long before the exam starts; you can add multiple';
+
+  @override
+  String get examReminderPickerDays => 'Days';
+
+  @override
+  String get examReminderPickerHours => 'Hours';
+
+  @override
+  String get examReminderPickerMinutes => 'Minutes';
+
+  @override
+  String get examReminderCustomAlreadyAdded => 'This reminder is already added';
+
+  @override
+  String get examReminderCustomInvalid => 'Set a time greater than zero';
+
+  @override
+  String get examReminderCustomEmptyHint =>
+      'No custom reminders yet — tap below to add';
+
+  @override
+  String get debugCopiedJson => 'JSON copied';
+
+  @override
+  String get liveDuringClassTimeNearest => 'Nearest time';
+
+  @override
+  String get liveDuringClassTimeTotal => 'Total time';
+
+  @override
+  String get liveCountdownTextStyleSmart => 'Smart (localized)';
+
+  @override
+  String get liveCountdownTextStyleSmartMinS => 'Smart (min/s)';
+
+  @override
+  String get liveCountdownTextStyleMinuteSecondCn =>
+      'Minutes and seconds (5m19s)';
+
+  @override
+  String get liveCountdownTextStyleMinuteSecondColon => 'mm:ss (05:19)';
+
+  @override
+  String get liveCountdownTextStyleMinuteSecondMinS => 'min+s (5min19s)';
+
+  @override
+  String get liveCountdownTextStyleMinuteSecondMinSlashS => 'min/s (5min/19s)';
+
+  @override
+  String get liveCountdownTextStyleMinuteOnlyCn => 'Minutes only (5 min)';
+
+  @override
+  String get liveCountdownTextStyleMinuteOnlyMin => 'min (5min)';
+
+  @override
+  String get liveCountdownTextStyleMinuteOnlySlash => '/min (5/min)';
+
+  @override
+  String get liveCountdownTextStyleSecondOnlyCn => 'Seconds only (5 s)';
+
+  @override
+  String get liveCountdownTextStyleSecondOnlyShort => 's (5s)';
+
+  @override
+  String get liveCountdownTextStyleSecondOnlySlash => '/s (5/s)';
+
+  @override
+  String get liveBeforeClassQuickActionNone => 'Hidden';
+
+  @override
+  String get liveBeforeClassQuickActionSilent => 'Turn on silent mode';
+
+  @override
+  String get liveBeforeClassQuickActionDoNotDisturb => 'Turn on Do Not Disturb';
+
+  @override
+  String get liveBeforeClassQuickActionBoth => '무음과 방해 금지';
+
+  @override
+  String get courseCardVerticalAlignTop => 'Top';
+
+  @override
+  String get courseCardVerticalAlignCenter => 'Center';
+
+  @override
+  String get courseCardVerticalAlignBottom => 'Bottom';
+
+  @override
+  String get courseCardVerticalAlignSpaceEvenly => 'Space evenly';
+
+  @override
+  String get courseCardHorizontalAlignLeft => 'Left';
+
+  @override
+  String get courseCardHorizontalAlignCenter => 'Center';
+
+  @override
+  String get courseCardHorizontalAlignRight => 'Right';
+
+  @override
+  String get timetableTimeColumnWidthNarrow => 'Narrow';
+
+  @override
+  String get timetableTimeColumnWidthWide => 'Wide';
+
+  @override
+  String get timetableCourseSpacingNarrow => 'Narrow';
+
+  @override
+  String get timetableCourseSpacingWide => 'Wide';
+
+  @override
+  String get appUpdateDownloadSourceOriginal => 'GitHub original';
+
+  @override
+  String get appUpdateDownloadSourceMirror => 'Mirror';
+
+  @override
+  String get holidayStatutoryLabel => '공휴일';
+
+  @override
+  String get serviceMsgImportFileUnrecognized =>
+      'Import failed. The file content could not be recognized.';
+
+  @override
+  String get serviceMsgImportUseOverwriteForFullBackup =>
+      'This is a full data backup. Please import using overwrite current timetable.';
+
+  @override
+  String get serviceMsgImportNoProfilesInBackup =>
+      'No recoverable timetables were found in the backup file.';
+
+  @override
+  String get serviceMsgUnrecognizedMikcbDataFile =>
+      'Not a recognizable mikcb data file.';
+
+  @override
+  String get serviceMsgMissingSettingsData => 'Settings data is missing.';
+
+  @override
+  String get serviceMsgUnrecognizedMikcbFullBackup =>
+      'Not a recognizable mikcb full backup file.';
+
+  @override
+  String get serviceMsgMissingFullBackupData =>
+      'Complete backup data is missing.';
+
+  @override
+  String get serviceMsgUseProfileBackupNotFull =>
+      'Use a timetable profile backup JSON, not a full data backup.';
+
+  @override
+  String get serviceMsgTimeSchemeNotFound => 'Time scheme not found.';
+
+  @override
+  String get serviceMsgTimeSchemeConfigUnavailable =>
+      'Current timetable time configuration is unavailable.';
+
+  @override
+  String get serviceMsgTimeSchemeNotFoundSelected =>
+      'Selected time scheme was not found.';
+
+  @override
+  String serviceMsgTimeSchemeSectionsInsufficient(
+    int startSection,
+    int endSection,
+  ) {
+    return 'Selected time scheme does not have enough sections for sections $startSection-$endSection';
+  }
+
+  @override
+  String serviceMsgSectionCountBelowUsage(int requiredMaxSection) {
+    return 'Courses go to period $requiredMaxSection';
+  }
+
+  @override
+  String serviceMsgSectionCountBelowUsageDetail(
+    int requiredMaxSection,
+    String profileName,
+    String courseName,
+    int dayOfWeek,
+    int startSection,
+    int endSection,
+    String usageType,
+  ) {
+    return 'Section count cannot be less than the maximum section in use (section $requiredMaxSection). In use: $profileName · $courseName (weekday $dayOfWeek sections $startSection-$endSection, $usageType)';
+  }
+
+  @override
+  String get serviceMsgAtLeastOneSectionRequired =>
+      'At least one section time must be kept';
+
+  @override
+  String serviceMsgSectionEndMustAfterStart(int sectionNumber) {
+    return 'Section $sectionNumber end time must be later than start time. Overnight classes are not supported';
+  }
+
+  @override
+  String serviceMsgSectionStartBeforePreviousEnd(int sectionNumber) {
+    return 'Section $sectionNumber start time cannot be earlier than the previous section end time';
+  }
+
+  @override
+  String get serviceMsgPeriodStartTimeRequired =>
+      'Set the first section start time for periods that have sections.';
+
+  @override
+  String serviceMsgSectionCrossesMidnight(int sectionNumber) {
+    return 'Section $sectionNumber would cross midnight. Overnight classes are not supported';
+  }
+
+  @override
+  String get serviceMsgClassDurationMustPositive =>
+      'Class duration must be greater than 0.';
+
+  @override
+  String get serviceMsgBreakDurationMustNonNegative =>
+      'Break duration cannot be less than 0.';
+
+  @override
+  String get serviceMsgAtLeastOnePeriodSection =>
+      'At least one period must have sections';
+
+  @override
+  String get serviceMsgInvalidTimeFormat => 'Time format is invalid.';
+
+  @override
+  String get serviceMsgLinkedCourseNotFound => 'Linked course was not found.';
+
+  @override
+  String get serviceMsgCourseNotFoundForDelete =>
+      'Course to delete was not found.';
+
+  @override
+  String serviceMsgCourseNotScheduledWeek(int sourceWeek) {
+    return 'This course is not scheduled in week $sourceWeek.';
+  }
+
+  @override
+  String get serviceMsgCourseNotFoundForReschedule =>
+      'Course to reschedule was not found.';
+
+  @override
+  String get serviceMsgTargetWeekOutOfRange =>
+      'Target week is outside the current semester range.';
+
+  @override
+  String get serviceMsgAtLeastOneScheduleSlot =>
+      'At least one class time slot must be kept.';
+
+  @override
+  String get serviceMsgCourseNameRequired => 'Course name cannot be empty.';
+
+  @override
+  String get serviceMsgBackupContentRequired =>
+      'Backup content cannot be empty.';
+
+  @override
+  String get serviceMsgSpreadsheetFormatOrEncodingUnrecognized =>
+      'Could not recognize spreadsheet format or encoding. Save CSV as UTF-8 and try again.';
+
+  @override
+  String serviceMsgSpreadsheetXlsxParseFailed(String error) {
+    return 'Failed to parse XLSX file: $error';
+  }
+
+  @override
+  String serviceMsgSpreadsheetRowWarning(int rowNumber, String message) {
+    return 'Row $rowNumber: $message';
+  }
+
+  @override
+  String serviceMsgSpreadsheetWakeupInsufficientColumns(
+    int rowNumber,
+    int columnCount,
+  ) {
+    return 'WakeUp format needs at least 7 columns, but row $rowNumber has only $columnCount.';
+  }
+
+  @override
+  String get serviceMsgWeekdayMustBe1To7 => 'Weekday must be between 1 and 7.';
+
+  @override
+  String get serviceMsgCustomWeeksRequired => 'Weeks cannot be empty.';
+
+  @override
+  String get serviceMsgClassWeeksRequired => 'Class weeks cannot be empty.';
+
+  @override
+  String get serviceMsgStartWeekMustBeAtLeast1 =>
+      'Start week must be at least 1.';
+
+  @override
+  String serviceMsgStartWeekExceedsSemester(
+    int startWeek,
+    int semesterWeekCount,
+  ) {
+    return 'Start week $startWeek exceeds semester week count $semesterWeekCount.';
+  }
+
+  @override
+  String get serviceMsgEndWeekBeforeStartWeek =>
+      'End week cannot be earlier than start week.';
+
+  @override
+  String get serviceMsgWeeksRangeRequired =>
+      'Class weeks or start week + end week must be provided.';
+
+  @override
+  String serviceMsgFieldMustBeAtLeast1(String field) {
+    return '$field must be at least 1.';
+  }
+
+  @override
+  String serviceMsgFieldCannotBeLessThan(String startField, String endField) {
+    return '$endField cannot be less than $startField.';
+  }
+
+  @override
+  String serviceMsgSectionOutOfRange(int section, int maxSection) {
+    return 'Section $section is outside the time scheme range (1-$maxSection)';
+  }
+
+  @override
+  String serviceMsgFieldMustBeInteger(String field) {
+    return '$field must be an integer.';
+  }
+
+  @override
+  String serviceMsgFieldCannotBeEmpty(String field) {
+    return '$field cannot be empty.';
+  }
+
+  @override
+  String serviceMsgSpreadsheetEndWeekClamped(
+    int rowNumber,
+    int endWeek,
+    int semesterWeekCount,
+  ) {
+    return 'Row $rowNumber: end week $endWeek exceeds semester week count $semesterWeekCount; adjusted to $semesterWeekCount.';
+  }
+
+  @override
+  String serviceMsgSpreadsheetOddEvenBoth(int rowNumber) {
+    return 'Row $rowNumber: odd and even weeks cannot both be selected; treated as odd weeks.';
+  }
+
+  @override
+  String get serviceMsgFieldCourseName => 'Course name';
+
+  @override
+  String get serviceMsgFieldWeekday => 'Weekday';
+
+  @override
+  String get serviceMsgFieldStartSection => 'Start section';
+
+  @override
+  String get serviceMsgFieldEndSection => 'End section';
+
+  @override
+  String get serviceMsgFieldCustomWeeks => 'Weeks';
+
+  @override
+  String get serviceMsgFieldClassWeeks => 'Class weeks';
+
+  @override
+  String get serviceMsgFieldStartWeek => 'Start week';
+
+  @override
+  String get serviceMsgFieldEndWeek => 'End week';
+
+  @override
+  String serviceMsgWeekStartInvalid(String itemName) {
+    return '$itemName: week range start is invalid.';
+  }
+
+  @override
+  String serviceMsgWeekRangeInvalid(String itemName) {
+    return '$itemName: week range is invalid.';
+  }
+
+  @override
+  String serviceMsgWeekRangeTooLarge(String itemName) {
+    return '$itemName: week range is too large. Please check.';
+  }
+
+  @override
+  String serviceMsgWeekTokenUnrecognized(String itemName, String token) {
+    return '$itemName: unrecognized week token: $token';
+  }
+
+  @override
+  String serviceMsgWeeksExceedSemesterClamped(
+    String itemName,
+    int semesterWeekCount,
+    String weeks,
+  ) {
+    return '$itemName contains weeks beyond semester week count $semesterWeekCount ($weeks); excess weeks were ignored.';
+  }
+
+  @override
+  String get serviceMsgAiResultNotObject =>
+      'AI result is not a valid JSON object. Copy the full JSON again.';
+
+  @override
+  String serviceMsgAiSchemaMustBe(String schema) {
+    return 'schema must be $schema';
+  }
+
+  @override
+  String get serviceMsgAiCoursesMustBeArray => 'courses must be an array.';
+
+  @override
+  String get serviceMsgAiWarningsMustBeArray =>
+      'warnings must be a string array.';
+
+  @override
+  String get serviceMsgAiWarningItemMustBeString =>
+      'Each warnings item must be a string.';
+
+  @override
+  String serviceMsgAiCourseNotObject(int index) {
+    return 'courses[$index] is not a valid object.';
+  }
+
+  @override
+  String serviceMsgAiCourseNameEmpty(int index) {
+    return 'courses[$index].name cannot be empty.';
+  }
+
+  @override
+  String serviceMsgAiCourseDayOfWeekInvalid(int index) {
+    return 'courses[$index].dayOfWeek must be between 1 and 7.';
+  }
+
+  @override
+  String serviceMsgAiCourseStartSectionInvalid(int index) {
+    return 'courses[$index].startSection must be at least 1.';
+  }
+
+  @override
+  String serviceMsgAiCourseEndSectionInvalid(int index) {
+    return 'courses[$index].endSection cannot be less than startSection';
+  }
+
+  @override
+  String serviceMsgAiCourseCustomWeeksEmpty(int index) {
+    return 'courses[$index].customWeeks cannot be empty.';
+  }
+
+  @override
+  String serviceMsgAiCourseNatureInvalid(int index) {
+    return 'courses[$index].courseNature must be required or elective.';
+  }
+
+  @override
+  String serviceMsgAiUnknownFields(String targetName, String fields) {
+    return '$targetName contains unsupported fields: $fields';
+  }
+
+  @override
+  String serviceMsgAiFieldMustBeString(String field) {
+    return '$field must be a string.';
+  }
+
+  @override
+  String serviceMsgAiFieldMustBeInteger(String field) {
+    return '$field must be an integer.';
+  }
+
+  @override
+  String serviceMsgAiWeekListInvalid(String itemName) {
+    return '$itemName can only contain integers greater than or equal to 1.';
+  }
+
+  @override
+  String serviceMsgAiWeekListTypeInvalid(String field) {
+    return '$field must be an integer array or week string.';
+  }
+
+  @override
+  String get serviceMsgNoReleaseAvailable =>
+      'No release has been published yet.';
+
+  @override
+  String get serviceMsgNoReleaseWithPrerelease =>
+      'No stable or prerelease version is available yet.';
+
+  @override
+  String serviceMsgUpdateCheckHttpFailed(int statusCode) {
+    return 'Update check failed (HTTP $statusCode).';
+  }
+
+  @override
+  String get serviceMsgUpdateCheckNetworkFailed =>
+      'Network error. Unable to check for updates right now.';
+
+  @override
+  String get serviceMsgUpdateDownloadHashMismatch =>
+      '패키지 검증에 실패했습니다. 변조된 파일 설치를 방지하기 위해 이번 업데이트를 취소했습니다';
+
+  @override
+  String get serviceMsgUpdateSha256UnverifiedRefused =>
+      '패키지 무결성을 검증할 수 없어(공식 SHA-256 없음) 앱 내 업데이트를 취소했습니다. 릴리스 페이지에서 수동으로 다운로드해 주세요';
+
+  @override
+  String get serviceMsgUpdateDownloadUrlUntrusted =>
+      'Update download URL failed security validation.';
+
+  @override
+  String serviceMsgUpdateDownloadHttpFailed(int statusCode) {
+    return 'Download failed (HTTP $statusCode).';
+  }
+
+  @override
+  String serviceMsgUpdateOpenInstallerFailed(String detail) {
+    return 'Failed to open installer: $detail';
+  }
+
+  @override
+  String serviceMsgUpdateDownloadInstallError(String detail) {
+    return 'Download or installation error: $detail';
+  }
+
+  @override
+  String get serviceMsgInvalidUrl => 'Invalid URL.';
+
+  @override
+  String get serviceMsgUpdateAvailablePrerelease =>
+      'A new prerelease version is available.';
+
+  @override
+  String get serviceMsgUpdateAvailable => 'A new version is available.';
+
+  @override
+  String get serviceMsgAlreadyLatest =>
+      'You are already on the latest version.';
+
+  @override
+  String get serviceMsgShareBackupText =>
+      'This is a full backup of the current timetable. Import it to restore courses and settings.';
+
+  @override
+  String get serviceMsgShareBackupSubject => 'Qingyu Timetable backup';
+
+  @override
+  String serviceMsgShareBackupSubjectNamed(String profileName) {
+    return '$profileName - Qingyu Timetable backup';
+  }
+
+  @override
+  String get serviceMsgShareFullBackupText =>
+      'This is a full data backup containing all timetables, the active timetable, and time schemes.';
+
+  @override
+  String get serviceMsgShareFullBackupSubject =>
+      'Qingyu Timetable - full data backup';
+
+  @override
+  String get serviceMsgInvalidRepositoryUrl =>
+      'Repository URL format is invalid.';
+
+  @override
+  String get serviceMsgIncompleteGithubRepoUrl =>
+      'GitHub repository URL is incomplete.';
+
+  @override
+  String get serviceMsgIncompleteRawGithubUrl =>
+      'raw.githubusercontent.com URL is incomplete.';
+
+  @override
+  String get serviceMsgGithubOnlySupported =>
+      'Only GitHub repository URLs are supported.';
+
+  @override
+  String get serviceMsgWarehouseNoSchoolsIndex =>
+      'No school or tool index was found.';
+
+  @override
+  String serviceMsgWarehouseNoAdapters(String schoolName) {
+    return 'No adapter information was found for $schoolName.';
+  }
+
+  @override
+  String serviceMsgWarehouseFetchFailedMirror(int candidatesCount) {
+    return 'Unable to read the adapter repository. Tried $candidatesCount mirror endpoints. Check your network or switch mirror in Version Update.';
+  }
+
+  @override
+  String get serviceMsgWarehouseFetchFailedGithub =>
+      'Unable to read the adapter repository on GitHub. Check your network or switch to a mirror in Version Update.';
+
+  @override
+  String get serviceMsgWarehouseScriptChecksumFailed =>
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qingyu_warehouse.';
+
+  @override
+  String get serviceMsgManualInputCaptcha =>
+      'Enter the captcha manually, then tap Continue.';
+
+  @override
+  String get serviceMsgManualInputPassword =>
+      'Enter the password manually. If it was auto-filled, tap Continue.';
+
+  @override
+  String get serviceMsgMacroNoSteps => 'No recorded steps.';
+
+  @override
+  String get serviceMsgMacroUserCancelled => 'Cancelled by user.';
+
+  @override
+  String serviceMsgMacroStepFailed(
+    int stepIndex,
+    int totalSteps,
+    String detail,
+  ) {
+    return 'Step $stepIndex/$totalSteps failed: $detail';
+  }
+
+  @override
+  String get serviceMsgMacroNavigateUrlEmpty => 'Navigation URL is empty.';
+
+  @override
+  String serviceMsgMacroNavigateUrlInvalid(String url) {
+    return 'Invalid URL: $url';
+  }
+
+  @override
+  String get serviceMsgMacroFillSelectorEmpty =>
+      'Fill-field selector is empty.';
+
+  @override
+  String serviceMsgMacroElementNotFound(String selector) {
+    return 'Element not found: $selector';
+  }
+
+  @override
+  String get serviceMsgMacroClickSelectorEmpty => 'Click selector is empty.';
+
+  @override
+  String get serviceMsgMacroUrlPatternEmpty => 'URL pattern is empty.';
+
+  @override
+  String get serviceMsgMacroWaitSelectorEmpty => 'Wait selector is empty.';
+
+  @override
+  String get serviceMsgMacroManualInputDefault => 'Manual action required.';
+
+  @override
+  String serviceMsgMacroPollTimeout(
+    String stepLabel,
+    int timeoutSeconds,
+    String lastError,
+  ) {
+    return '$stepLabel timed out (${timeoutSeconds}s)$lastError';
+  }
+
+  @override
+  String get serviceMsgMacroReplayNavigate => 'Navigating…';
+
+  @override
+  String get serviceMsgMacroReplayFillField => 'Filling form…';
+
+  @override
+  String get serviceMsgMacroReplayClick => 'Clicking…';
+
+  @override
+  String get serviceMsgMacroReplayWaitUrl => 'Waiting for navigation…';
+
+  @override
+  String get serviceMsgMacroReplayWaitSelector => 'Waiting for page element…';
+
+  @override
+  String get serviceMsgMacroReplayWaitManual => 'Waiting for user action…';
+
+  @override
+  String get serviceMsgMacroReplayExecuteScript => 'Running import script…';
+
+  @override
+  String get serviceMsgMacroReplayDelay => 'Waiting…';
+
+  @override
+  String serviceMsgMacroReplayFailed(String detail) {
+    return 'Failed: $detail';
+  }
+
+  @override
+  String serviceMsgMacroReplayPaused(String reason) {
+    return 'Waiting for manual action: $reason';
+  }
+
+  @override
+  String serviceMsgStatisticsShareFailed(String detail) {
+    return 'Share failed: $detail';
+  }
+
+  @override
+  String get serviceMsgAuthFailed => 'Invalid username or password.';
+
+  @override
+  String get serviceMsgAccessDenied => 'Access denied.';
+
+  @override
+  String get serviceMsgCertificateError => 'Certificate validation failed.';
+
+  @override
+  String get serviceMsgConnectionTimeout => 'Connection timed out.';
+
+  @override
+  String get serviceMsgConnectionFailed => 'Could not connect to the server.';
+
+  @override
+  String get serviceMsgInvalidResponse => 'Invalid server response.';
+
+  @override
+  String get serviceMsgUsageTypeOverride => 'override time scheme';
+
+  @override
+  String get serviceMsgUsageTypeProfile => 'profile main time scheme';
+
+  @override
+  String get dataTransferProfileShareText =>
+      'This is a full backup of the current timetable from Qingyu Timetable. Import it to restore courses and settings.';
+
+  @override
+  String get dataTransferProfileShareSubject => 'Qingyu Timetable backup';
+
+  @override
+  String dataTransferProfileShareSubjectNamed(String profileName) {
+    return '$profileName - Qingyu Timetable backup';
+  }
+
+  @override
+  String get dataTransferFullBackupShareText =>
+      'This is a full data backup from Qingyu Timetable, including all timetables, the active timetable, and time schemes.';
+
+  @override
+  String get dataTransferFullBackupShareSubject =>
+      'Qingyu Timetable - Full data backup';
+
+  @override
+  String courseWeekCustomDescription(String weeks) {
+    return 'Weeks $weeks';
+  }
+
+  @override
+  String courseWeekRangeDescription(int startWeek, int endWeek, String mode) {
+    return 'Weeks $startWeek-$endWeek$mode';
+  }
+
+  @override
+  String get courseWeekOddModeSuffix => ' odd weeks';
+
+  @override
+  String get courseWeekEvenModeSuffix => ' even weeks';
+
+  @override
+  String courseWeekSuspensionDescription(String weeks) {
+    return 'Suspended weeks $weeks';
+  }
+
+  @override
+  String get courseWeekListSeparator => ', ';
+
+  @override
+  String holidayLogMemoryCacheHit(int year, int count) {
+    return '$year: memory cache hit ($count entries), refreshing in background…';
+  }
+
+  @override
+  String holidayLogLocalCacheHit(int year, int count) {
+    return '$year: local cache hit ($count entries), refreshing in background…';
+  }
+
+  @override
+  String holidayLogNoCacheFetching(int year) {
+    return '$year: no cache, fetching remote data…';
+  }
+
+  @override
+  String holidayLogRemoteSuccess(int year, int count) {
+    return '$year: remote fetch succeeded ($count entries), cached';
+  }
+
+  @override
+  String holidayLogRemoteFailedBuiltin(int year) {
+    return '$year: remote fetch failed, using built-in fallback';
+  }
+
+  @override
+  String holidayLogBuiltinLoaded(int year, int count) {
+    return '$year: loaded built-in data ($count entries)';
+  }
+
+  @override
+  String holidayLogBackgroundSuccess(int year, int count) {
+    return '$year: background update succeeded ($count entries), cache updated';
+  }
+
+  @override
+  String holidayLogBackgroundNoData(int year) {
+    return '$year: background update returned no new data';
+  }
+
+  @override
+  String get holidayLogPrimaryApiFailed =>
+      'Primary API failed, trying fallback API…';
+
+  @override
+  String holidayLogRequesting(String uri) {
+    return 'Requesting $uri …';
+  }
+
+  @override
+  String holidayLogPrimaryApiStatus(int statusCode) {
+    return 'Primary API responded $statusCode, skipping';
+  }
+
+  @override
+  String holidayLogPrimaryApiError(String message) {
+    return 'Primary API error: $message';
+  }
+
+  @override
+  String holidayLogPrimaryApiException(String error) {
+    return 'Primary API exception: $error';
+  }
+
+  @override
+  String holidayLogPrimaryApiParsing(int count) {
+    return 'Primary API returned $count raw entries, parsing…';
+  }
+
+  @override
+  String get holidayLogNoValidEntries =>
+      'No valid entries after parsing, skipping';
+
+  @override
+  String holidayLogFallbackApiStatus(int statusCode) {
+    return 'Fallback API responded $statusCode, skipping';
+  }
+
+  @override
+  String get holidayLogFallbackApiError => 'Fallback API returned an error';
+
+  @override
+  String holidayLogFallbackApiParsing(int count) {
+    return 'Fallback API returned $count raw entries, parsing…';
+  }
+
+  @override
+  String holidayLogFallbackApiException(String error) {
+    return 'Fallback API exception: $error';
+  }
+
+  @override
+  String get holidayNameNewYear => 'New Year';
+
+  @override
+  String get holidayNameLaborDay => 'Labor Day';
+
+  @override
+  String get holidayNameNationalDay => 'National Day';
+
+  @override
+  String get holidayNameSpringFestival => 'Spring Festival';
+
+  @override
+  String get holidayNameQingming => 'Qingming Festival';
+
+  @override
+  String get holidayNameDragonBoat => 'Dragon Boat Festival';
+
+  @override
+  String get holidayNameMidAutumn => 'Mid-Autumn Festival';
+
+  @override
+  String macroReplayStatusFailed(String error) {
+    return 'Failed: $error';
+  }
+
+  @override
+  String macroReplayStatusPaused(String reason) {
+    return 'Waiting for manual action: $reason';
+  }
+
+  @override
+  String get macroReplayStepNavigating => 'Navigating…';
+
+  @override
+  String get macroReplayStepFilling => 'Filling form…';
+
+  @override
+  String get macroReplayStepClicking => 'Clicking…';
+
+  @override
+  String get macroReplayStepWaitUrl => 'Waiting for navigation…';
+
+  @override
+  String get macroReplayStepWaitSelector => 'Waiting for page element…';
+
+  @override
+  String get macroReplayStepWaitManual => 'Waiting for user action';
+
+  @override
+  String get macroReplayStepExecuteScript => 'Running import script…';
+
+  @override
+  String get macroReplayStepDelay => 'Waiting…';
+
+  @override
+  String get macroReplayAcceleratedFallbackTip =>
+      'Quick path failed; retrying with the full recorded steps…';
+
+  @override
+  String get macroReplayNoSteps => 'No recorded steps';
+
+  @override
+  String get macroReplayUserCancelled => 'Cancelled by user';
+
+  @override
+  String macroReplayStepFailed(int current, int total, String error) {
+    return 'Step $current/$total failed: $error';
+  }
+
+  @override
+  String get macroReplayEmptyNavigateUrl => 'Navigation URL is empty';
+
+  @override
+  String macroReplayInvalidUrl(String url) {
+    return 'Invalid URL: $url';
+  }
+
+  @override
+  String get macroReplayEmptyFillSelector => 'Fill selector is empty';
+
+  @override
+  String macroReplayFieldNotFound(String selector) {
+    return 'Form field not found: $selector';
+  }
+
+  @override
+  String get macroReplayEmptyClickSelector => 'Click selector is empty';
+
+  @override
+  String macroReplayClickNotFound(String selector) {
+    return 'Click target not found: $selector';
+  }
+
+  @override
+  String macroReplayWaitUrlPattern(String pattern) {
+    return 'Waiting for URL match: $pattern';
+  }
+
+  @override
+  String get macroReplayEmptyWaitSelector => 'Wait selector is empty';
+
+  @override
+  String macroReplayWaitSelector(String selector) {
+    return 'Waiting for element: $selector';
+  }
+
+  @override
+  String get macroReplayManualActionRequired => 'Manual action required';
+
+  @override
+  String macroReplayNavigateTo(String url) {
+    return 'Navigate to $url';
+  }
+
+  @override
+  String get macroReplayWaitPageLoad => 'Waiting for page load';
+
+  @override
+  String get macroReplayWaitDomReady => 'Waiting for DOM ready';
+
+  @override
+  String get hyperosShowcaseTitle => 'HyperOS UI Kit';
+
+  @override
+  String get hyperosShowcaseSectionSummary => 'Summary card';
+
+  @override
+  String get hyperosShowcaseKitSubtitle => 'mikcb HyperOS-style components';
+
+  @override
+  String get hyperosShowcaseSectionTags => 'Tags / Accordion / Hints';
+
+  @override
+  String get hyperosShowcaseAccordionSection1 => 'Section 1';
+
+  @override
+  String get hyperosShowcaseAccordionSection1Body =>
+      'Content shown after expanding';
+
+  @override
+  String get hyperosShowcaseAccordionSection2 => 'Section 2';
+
+  @override
+  String get hyperosShowcaseAccordionSection2Body =>
+      'Collapsible group replacing FAccordion';
+
+  @override
+  String get hyperosShowcaseSectionNavRows => 'List rows · Navigation';
+
+  @override
+  String get hyperosShowcaseNavRowWithIcon => 'With icon';
+
+  @override
+  String get hyperosShowcaseNavRowNoIconSubtitle => 'No leading tinted icon';
+
+  @override
+  String get hyperosShowcaseNavRowDetails => 'Details';
+
+  @override
+  String get hyperosShowcaseSectionSwitchRows =>
+      'List rows · Switch / Destructive';
+
+  @override
+  String get hyperosShowcaseSwitchRowSubtitle => 'Switch row with icon';
+
+  @override
+  String get hyperosShowcaseSwitchRowPlain => 'Plain switch row';
+
+  @override
+  String get hyperosShowcaseSectionChoiceRows =>
+      'List rows · Radio / Select / Date';
+
+  @override
+  String get hyperosShowcaseOptionA => 'Option A';
+
+  @override
+  String get hyperosShowcaseOptionB => 'Option B';
+
+  @override
+  String get hyperosShowcaseOptionC => 'Option C';
+
+  @override
+  String get hyperosShowcaseSelectSizeTitle => 'Choose size';
+
+  @override
+  String get hyperosShowcaseSizeSmall => 'S';
+
+  @override
+  String get hyperosShowcaseSizeMedium => 'M';
+
+  @override
+  String get hyperosShowcaseSizeLarge => 'L';
+
+  @override
+  String get hyperosShowcaseSectionControls => 'Control card';
+
+  @override
+  String get hyperosShowcaseControlsSubtitle => 'Slider, segments, buttons';
+
+  @override
+  String get hyperosShowcaseSegmentLeft => 'Left';
+
+  @override
+  String get hyperosShowcaseSegmentRight => 'Right';
+
+  @override
+  String get hyperosShowcaseSectionInput => 'Input';
+
+  @override
+  String get hyperosShowcaseInputHint => 'Enter content';
+
+  @override
+  String get hyperosShowcaseInputCardLabel => 'Input in card';
+
+  @override
+  String get hyperosShowcaseSectionPicker => 'Wheel picker';
+
+  @override
+  String hyperosShowcasePickerCurrentValue(int value) {
+    return 'Current value: $value';
+  }
+
+  @override
+  String get hyperosShowcaseSectionInline => 'Inline basics';
+
+  @override
+  String get hyperosShowcaseCheckboxSubtitle => 'Multi-select preference row';
+
+  @override
+  String get hyperosShowcaseSectionNavActions => 'Navigation & actions';
+
+  @override
+  String get hyperosShowcaseTooltipButton => 'Button with tooltip';
+
+  @override
+  String get hyperosShowcaseSectionProgress => 'Progress & refresh';
+
+  @override
+  String get hyperosShowcaseSectionColorChip => 'ColorChip';
+
+  @override
+  String get hyperosShowcaseSectionNavBar => 'HyperosNavigationBar';
+
+  @override
+  String get hyperosShowcaseNavHome => 'Home';
+
+  @override
+  String get hyperosShowcaseNavTimetable => 'Timetable';
+
+  @override
+  String get hyperosShowcaseNavSettings => 'Settings';
+
+  @override
+  String get hyperosShowcaseSectionEmpty => 'Empty / Divider / Decoration';
+
+  @override
+  String get hyperosShowcaseEmptySubtitle => 'Placeholder when list is empty';
+
+  @override
+  String get hyperosShowcaseActionButton => 'Action';
+
+  @override
+  String get hyperosShowcaseDividerRowTitle =>
+      'Second row (indented divider above)';
+
+  @override
+  String get hyperosShowcaseSectionPressable => 'HyperosPressableRow';
+
+  @override
+  String get hyperosShowcaseSectionShell => 'Page shell';
+
+  @override
+  String get hyperosShowcaseRootPageDetails => 'Root page without back button';
+
+  @override
+  String get hyperosShowcaseSubpageSubtitle =>
+      'Current page is Subpage + HyperosListView';
+
+  @override
+  String get hyperosShowcaseAlreadyInSubpage => 'Already in Subpage';
+
+  @override
+  String get hyperosShowcaseSectionFrosted => 'Frosted header · scroll physics';
+
+  @override
+  String get hyperosShowcaseSectionFeedback => 'Feedback · overlays';
+
+  @override
+  String get hyperosShowcaseSectionIconColors => 'HyperosIconColors';
+
+  @override
+  String get hyperosShowcaseFooterNote =>
+      'Visible on the settings home page in non-release builds for component QA';
+
+  @override
+  String get hyperosShowcaseUndoAction => 'Undo';
+
+  @override
+  String get hyperosShowcaseDialogMessage => 'System-style dialog example';
+
+  @override
+  String get hyperosShowcaseConfirmTitle => 'Confirm action';
+
+  @override
+  String get hyperosShowcaseConfirmed => 'Confirmed';
+
+  @override
+  String get hyperosShowcaseToastDescription =>
+      'With icon and subtitle, same as app toast';
+
+  @override
+  String get hyperosShowcaseMenuCopy => 'Copy';
+
+  @override
+  String get hyperosShowcaseMenuShare => 'Share';
+
+  @override
+  String get hyperosShowcaseMenuDelete => 'Delete';
+
+  @override
+  String get hyperosShowcaseRefreshDone => 'Refresh complete';
+
+  @override
+  String get hyperosShowcaseSearchTooltip => 'Search';
+
+  @override
+  String get hyperosShowcaseRootShellLabel => 'Root shell';
+
+  @override
+  String get hyperosShowcasePushSubtitle => 'Enter via HyperosNavigation.push';
+
+  @override
+  String get hyperosShowcaseSampleText => 'Sample text';
+
+  @override
+  String courseImportQuickImportDescription(
+    String schoolName,
+    String adapterName,
+  ) {
+    return 'Quick import $schoolName $adapterName';
+  }
+
+  @override
+  String get courseImportScriptNoCourses =>
+      'Import script returned no course data';
+
+  @override
+  String get courseImportScriptFailed => 'Script execution failed';
+
+  @override
+  String get courseImportRecordingStatus => 'Recording… tap Stop to finish';
+
+  @override
+  String get courseImportRecordingStartedTip =>
+      'Recording started. Continue through the academic portal as usual';
+
+  @override
+  String get courseImportAutoRecordingStartedTip =>
+      '조작을 백그라운드에서 기록 중입니다. 가져오기 성공 후 빠른 가져오기로 저장할 수 있습니다';
+
+  @override
+  String get courseImportRecordingEmptyStatus => 'No actions recorded';
+
+  @override
+  String get courseImportRecordingEmptyTip => 'No actions recorded';
+
+  @override
+  String get courseImportSaveRecordingTitle => 'Save recording';
+
+  @override
+  String courseImportSaveRecordingMessage(int count) {
+    return 'Recorded $count steps. Save as quick import?';
+  }
+
+  @override
+  String courseImportSaveAutoRecordingMessage(int count) {
+    return '가져오기에 성공했습니다. $count개 단계를 기록했습니다. 다음 빠른 가져오기를 위해 이 경로를 저장할까요?';
+  }
+
+  @override
+  String courseImportRecordingSavedStatus(int count) {
+    return 'Recording saved ($count steps)';
+  }
+
+  @override
+  String get courseImportWeekNotProvided => 'Weeks not provided';
+
+  @override
+  String get courseImportLocationNotFilled => 'Location not filled';
+
+  @override
+  String courseImportPreviewLine(
+    String weekday,
+    int startSection,
+    int endSection,
+    String name,
+    String location,
+    String weekText,
+  ) {
+    return 'Weekday $weekday Sections $startSection-$endSection  $name  $location  Weeks: $weekText';
+  }
+
+  @override
+  String courseImportCalendarWeekLabel(int week) {
+    return 'Calendar week $week';
+  }
+
+  @override
+  String get courseImportTermStartDateTitle => 'Term start date';
+
+  @override
+  String get courseImportFirstWeekMappingLabel =>
+      'Which calendar week is timetable week 1';
+
+  @override
+  String get courseImportFirstWeekMappingSubtitle =>
+      'If week 1 has no classes, choose week 2; if weeks 1-2 have none, choose week 3.';
+
+  @override
+  String get courseImportFirstWeekNoShift =>
+      'Import will treat timetable week 1 as calendar week 1.';
+
+  @override
+  String courseImportFirstWeekShifted(int weeks, int targetWeek) {
+    return 'Import will shift all course weeks by $weeks so timetable week 1 lands on calendar week $targetWeek.';
+  }
+
+  @override
+  String get courseImportContinueAction => 'Continue import';
+
+  @override
+  String get courseImportUpdateRecommendedAction =>
+      'Update timetable (recommended)';
+
+  @override
+  String get courseImportOverwriteAction => 'Overwrite import';
+
+  @override
+  String get courseImportSectionCountInsufficientTitle =>
+      'Not enough sections in time scheme';
+
+  @override
+  String courseImportSectionCountInsufficientMessage(
+    int current,
+    int required,
+  ) {
+    return 'Current time scheme has only $current sections, but import needs up to section $required. Auto-fill and continue?';
+  }
+
+  @override
+  String get courseImportAutoFillAndImportAction => 'Auto-fill and import';
+
+  @override
+  String get courseImportPortalUrlTitle => 'Enter academic portal URL';
+
+  @override
+  String get courseImportPortalUrlSaveContinue => 'Save and continue';
+
+  @override
+  String get courseImportPortalUrlLabel => 'Portal URL';
+
+  @override
+  String get courseImportPortalUrlHint =>
+      'Saved URL will be reused next time. You can also edit it on the adapter info page';
+
+  @override
+  String get courseImportPortalUrlInvalid => 'Invalid login URL format';
+
+  @override
+  String get logAppLoggerInitialized => 'App log service initialized';
+
+  @override
+  String get logAppLogRecordingEnabled => 'App log recording enabled';
+
+  @override
+  String get logAppLogRecordingRemainsEnabled =>
+      'App log recording remains enabled';
+
+  @override
+  String get logStartupFlowStarted => 'Startup flow started';
+
+  @override
+  String get logStartupFlowCompletedNoOnboarding =>
+      'Startup flow completed (no onboarding)';
+
+  @override
+  String get logStartupFlowCompletedAfterGuide =>
+      'Startup flow completed (after guide)';
+
+  @override
+  String get logStartupFlowFailed =>
+      'Startup flow failed; entering degraded mode';
+
+  @override
+  String get logAppLifecycleChanged => 'App lifecycle changed';
+
+  @override
+  String get logNavigatorRouteReplaced => 'Navigation route replaced';
+
+  @override
+  String get logNavigatorRouteChanged => 'Navigation route changed';
+
+  @override
+  String get logAppLogsDefaultMigrated =>
+      'App log recording enabled by default during migration';
+
+  @override
+  String get logTimetableLoadSettingsFailed =>
+      'Failed to load timetable settings';
+
+  @override
+  String get logTimetableLoadCoursesFailed => 'Failed to load course data';
+
+  @override
+  String get logTimetableLoadCurrentWeekFailed => 'Failed to load current week';
+
+  @override
+  String get logHomeWidgetPinSupportFailed =>
+      'Failed to check home widget pin support';
+
+  @override
+  String get logHomeWidgetPinRequestFailed =>
+      'Failed to request home widget pin';
+
+  @override
+  String get logHomeWidgetSyncFailed => 'Failed to sync home widget snapshot';
+
+  @override
+  String get logHomeWidgetClearFailed => 'Failed to clear home widget snapshot';
+
+  @override
+  String get logHomeWidgetScheduleFailed =>
+      'Failed to schedule home widget refresh';
+
+  @override
+  String get logHomeWidgetExactAlarmCheckFailed => '정확한 알람 권한 확인 실패';
+
+  @override
+  String get logHomeWidgetExactAlarmRequestFailed => '정확한 알람 권한 요청 실패';
+
+  @override
+  String get logMiuiLiveInitializeFailed =>
+      'Failed to initialize MIUI Live Island channel';
+
+  @override
+  String get logMiuiLiveOpenPromotedSettingsFailed =>
+      'Failed to open Live Island permission settings';
+
+  @override
+  String get logMiuiLiveOpenNotificationSettingsFailed =>
+      'Failed to open notification settings';
+
+  @override
+  String get logMiuiLiveOpenAutostartSettingsFailed =>
+      'Failed to open autostart settings';
+
+  @override
+  String get logMiuiLiveOpenBatterySettingsFailed =>
+      'Failed to open battery optimization settings';
+
+  @override
+  String get logMiuiLiveOpenAccessibilitySettingsFailed =>
+      'Failed to open accessibility settings';
+
+  @override
+  String get logMiuiLiveHideFromRecentsFailed =>
+      'Failed to update hide-from-recents';
+
+  @override
+  String get logLiveUpdateStartFailed =>
+      'Failed to start Live Island from Flutter';
+
+  @override
+  String get logLiveUpdateStopFailed =>
+      'Failed to stop Live Island from Flutter';
+
+  @override
+  String get logLiveUpdateDebugStatusFailed =>
+      'Failed to get native Live Island debug status';
+
+  @override
+  String get logLiveUpdateSnapshotSyncFailed =>
+      'Failed to sync Live Island timetable snapshot';
+
+  @override
+  String get logLiveUpdateSnapshotClearFailed =>
+      'Failed to clear Live Island timetable snapshot';
+
+  @override
+  String get logLiveUpdateSuspendTriggersFailed =>
+      'Failed to suspend Live Island schedule triggers';
+
+  @override
+  String get logLiveUpdatePermanentNotificationFailed => '상시 알림 스위치 동기화 실패';
+
+  @override
+  String get logLiveUpdateTestRequested =>
+      'User requested manual Live Island test notification';
+
+  @override
+  String get logLiveUpdateTestNoSelection =>
+      'Manual Live Island test: no course available';
+
+  @override
+  String get logLiveUpdateTestSelectionReady =>
+      'Manual Live Island test: target course resolved';
+
+  @override
+  String get logLiveUpdateTestSuspendSync =>
+      'Manual Live Island test: scheduled sync paused temporarily';
+
+  @override
+  String get logLiveUpdateTestStarting =>
+      'Manual Live Island test: starting native Live Island';
+
+  @override
+  String get logLiveUpdateTestStarted =>
+      'Manual Live Island test: native Live Island requested successfully';
+
+  @override
+  String get logLiveUpdateTestFailed =>
+      'Manual Live Island test: failed before Live Island appeared';
+
+  @override
+  String logLiveUpdateSettingsSynced(
+    String beforeClass,
+    String duringClass,
+    String promote,
+    String notification,
+    String countdown,
+    String courseName,
+    String location,
+  ) {
+    return 'Flutter Live Island settings synced: beforeClass=$beforeClass, duringClass=$duringClass, promote=$promote, notification=$notification, countdown=$countdown, courseName=$courseName, location=$location';
+  }
+
+  @override
+  String get logFieldSource => 'source';
+
+  @override
+  String get logFieldPlatform => 'platform';
+
+  @override
+  String get logFieldVersion => 'version';
+
+  @override
+  String get logFieldBuildNumber => 'build Number';
+
+  @override
+  String get logFieldLoggingEnabled => 'logging Enabled';
+
+  @override
+  String get logFieldPrivacyAccepted => 'privacy Accepted';
+
+  @override
+  String get logFieldAccepted => 'accepted';
+
+  @override
+  String get logFieldPrevious => 'previous';
+
+  @override
+  String get logFieldTruncated => 'truncated';
+
+  @override
+  String get logFieldTruncatedHint => 'truncated Hint';
+
+  @override
+  String get logFieldThrowable => 'throwable';
+
+  @override
+  String get logFieldExtras => 'extras';
+
+  @override
+  String get logFieldContext => 'context';
+
+  @override
+  String get logFieldError => 'error';
+
+  @override
+  String get logFieldBrand => 'brand';
+
+  @override
+  String get logFieldManufacturer => 'manufacturer';
+
+  @override
+  String get logFieldModel => 'model';
+
+  @override
+  String get logFieldSdkInt => 'sdk Int';
+
+  @override
+  String get logFieldVersionName => 'version Name';
+
+  @override
+  String get logFieldChannel => 'channel';
+
+  @override
+  String get logFieldHasNotificationPermission => 'has Notification Permission';
+
+  @override
+  String get logFieldHasPromotedPermissionDeclared =>
+      'has Promoted Permission Declared';
+
+  @override
+  String get logFieldCanPostPromotedNotifications =>
+      'can Post Promoted Notifications';
+
+  @override
+  String get logFieldIgnoringBatteryOptimizations =>
+      'ignoring Battery Optimizations';
+
+  @override
+  String get logFieldKeepAliveAccessibilityEnabled =>
+      'keep Alive Accessibility Enabled';
+
+  @override
+  String get logFieldHideFromRecentsEnabled => 'hide From Recents Enabled';
+
+  @override
+  String get logFieldTaskRemovedRecently => 'task Removed Recently';
+
+  @override
+  String get logFieldLastTaskRemovedAt => 'last Task Removed At';
+
+  @override
+  String get logFieldProcessImportance => 'process Importance';
+
+  @override
+  String get logFieldAutoStartStatus => 'auto Start Status';
+
+  @override
+  String get logFieldLiveEnableBeforeClass => 'live Enable Before Class';
+
+  @override
+  String get logFieldLiveEnableDuringClass => 'live Enable During Class';
+
+  @override
+  String get logFieldLivePromoteDuringClass => 'live Promote During Class';
+
+  @override
+  String get logFieldLiveShowDuringClassNotification =>
+      'live Show During Class Notification';
+
+  @override
+  String get logFieldLiveShowCountdown => 'live Show Countdown';
+
+  @override
+  String get logFieldLiveShowStageText => 'live Show Stage Text';
+
+  @override
+  String get logFieldLiveShowCourseName => 'live Show Course Name';
+
+  @override
+  String get logFieldLiveShowLocation => 'live Show Location';
+
+  @override
+  String get logFieldLiveUseShortName => 'live Use Short Name';
+
+  @override
+  String get logFieldLiveHidePrefixText => 'live Hide Prefix Text';
+
+  @override
+  String get logFieldLiveDuringClassTimeDisplayMode =>
+      'live During Class Time Display Mode';
+
+  @override
+  String get logFieldLiveEnableMiuiIslandLabelImage =>
+      'live Enable Miui Island Label Image';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelStyle => 'live Miui Island Label Style';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelContent =>
+      'live Miui Island Label Content';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelFontColor =>
+      'live Miui Island Label Font Color';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelFontWeight =>
+      'live Miui Island Label Font Weight';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelRenderQuality =>
+      'live Miui Island Label Render Quality';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelFontSize =>
+      'live Miui Island Label Font Size';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelOffsetX =>
+      'live Miui Island Label Offset X';
+
+  @override
+  String get logFieldLiveMiuiIslandLabelOffsetY =>
+      'live Miui Island Label Offset Y';
+
+  @override
+  String get logFieldLiveMiuiIslandExpandedIconMode =>
+      'live Miui Island Expanded Icon Mode';
+
+  @override
+  String get logFieldLiveShowBeforeClassMinutes =>
+      'live Show Before Class Minutes';
+
+  @override
+  String get logFieldLiveClassReminderStartMinutes =>
+      'live Class Reminder Start Minutes';
+
+  @override
+  String get logFieldState => 'state';
+
+  @override
+  String get logFieldRoute => 'route';
+
+  @override
+  String get logFieldPreviousRoute => 'previous Route';
+
+  @override
+  String get logFieldProfileId => 'profile Id';
+
+  @override
+  String get logFieldReason => 'reason';
+
+  @override
+  String get logFieldClientIp => 'client Ip';
+
+  @override
+  String get logFieldPort => 'port';
+
+  @override
+  String get logFieldCourseName => 'course Name';
+
+  @override
+  String get logFieldStage => 'stage';
+
+  @override
+  String get logFieldFrom => 'from';
+
+  @override
+  String get logFieldCurrentWeek => 'current Week';
+
+  @override
+  String get logFieldWeekday => 'weekday';
+
+  @override
+  String get logFieldUntilMillis => 'until Millis';
+
+  @override
+  String get logFieldStartAtMillis => 'start At Millis';
+
+  @override
+  String get logFieldMergedCourseCount => 'merged Course Count';
+
+  @override
+  String get logFieldDeletedCount => 'deleted Count';
+
+  @override
+  String get logFieldRequested => 'requested';
+
+  @override
+  String get logFieldTarget => 'target';
+
+  @override
+  String get logFieldCount => 'count';
+
+  @override
+  String get logFieldValue => 'value';
+
+  @override
+  String get logFieldSnapshotLength => 'snapshot Length';
+
+  @override
+  String get logFieldStoredSnapshotVersion => 'stored Snapshot Version';
+
+  @override
+  String get logFieldIntentIsNull => 'intent Is Null';
+
+  @override
+  String get logFieldAction => 'action';
+
+  @override
+  String get logFieldStep => 'step';
+
+  @override
+  String get logCatAppLoggerInitialized => 'app log: ger initialized';
+
+  @override
+  String get logCatAppLogRecordingEnabled => 'app log: recording enabled';
+
+  @override
+  String get logCatStartupFlowStarted => 'startup: started';
+
+  @override
+  String get logCatStartupFlowCompleted => 'startup: completed';
+
+  @override
+  String get logCatStartupFlowFailed => 'startup: failed';
+
+  @override
+  String get logCatAppLifecycleStateChanged => 'app lifecycle state changed';
+
+  @override
+  String get logCatRoutePushed => 'route pushed';
+
+  @override
+  String get logCatRoutePopped => 'route popped';
+
+  @override
+  String get logCatRouteReplaced => 'route replaced';
+
+  @override
+  String get logCatFlutterFrameworkError => 'flutter framework error';
+
+  @override
+  String get logCatFlutterPlatformError => 'flutter platform error';
+
+  @override
+  String get logCatFlutterZoneError => 'flutter zone error';
+
+  @override
+  String get logCatAppLogsDefaultMigrated => 'app log: s default migrated';
+
+  @override
+  String get logCatTimetableLoadSettingsFailed =>
+      'timetable: load settings failed';
+
+  @override
+  String get logCatTimetableLoadCoursesFailed =>
+      'timetable: load courses failed';
+
+  @override
+  String get logCatTimetableLoadCurrentWeekFailed =>
+      'timetable: load current week failed';
+
+  @override
+  String get logCatHomeWidgetPinSupportFailed =>
+      'home widget: pin support failed';
+
+  @override
+  String get logCatHomeWidgetPinRequestFailed =>
+      'home widget: pin request failed';
+
+  @override
+  String get logCatHomeWidgetSyncFailed => 'home widget: sync failed';
+
+  @override
+  String get logCatHomeWidgetClearFailed => 'home widget: clear failed';
+
+  @override
+  String get logCatHomeWidgetScheduleFailed => 'home widget: schedule failed';
+
+  @override
+  String get logCatMiuiLiveInitializeFailed => 'live island: initialize failed';
+
+  @override
+  String get logCatMiuiLiveOpenPromotedSettingsFailed =>
+      'live island: open promoted settings failed';
+
+  @override
+  String get logCatMiuiLiveOpenNotificationSettingsFailed =>
+      'live island: open notification settings failed';
+
+  @override
+  String get logCatMiuiLiveOpenAutostartSettingsFailed =>
+      'live island: open autostart settings failed';
+
+  @override
+  String get logCatMiuiLiveOpenBatterySettingsFailed =>
+      'live island: open battery settings failed';
+
+  @override
+  String get logCatMiuiLiveOpenAccessibilitySettingsFailed =>
+      'live island: open accessibility settings failed';
+
+  @override
+  String get logCatMiuiLiveHideFromRecentsFailed =>
+      'live island: hide from recents failed';
+
+  @override
+  String get logCatLiveUpdateFlutterInitializeFailed =>
+      'live island: flutter initialize failed';
+
+  @override
+  String get logCatLiveUpdateStartFailed => 'live island: start failed';
+
+  @override
+  String get logCatLiveUpdateStopFailed => 'live island: stop failed';
+
+  @override
+  String get logCatLiveUpdateDebugStatusFailed =>
+      'live island: debug status failed';
+
+  @override
+  String get logCatLiveUpdateSettingsSynced => 'live island: settings synced';
+
+  @override
+  String get logCatLiveUpdateSnapshotSyncFailed =>
+      'live island: snapshot sync failed';
+
+  @override
+  String get logCatLiveUpdateSnapshotClearFailed =>
+      'live island: snapshot clear failed';
+
+  @override
+  String get logCatLiveUpdateTestRequested => 'live island: test requested';
+
+  @override
+  String get logCatLiveUpdateTestNoSelection =>
+      'live island: test no selection';
+
+  @override
+  String get logCatLiveUpdateTestSelectionReady =>
+      'live island: test selection ready';
+
+  @override
+  String get logCatLiveUpdateTestSuspendSync =>
+      'live island: test suspend sync';
+
+  @override
+  String get logCatLiveUpdateTestStarting => 'live island: test starting';
+
+  @override
+  String get logCatLiveUpdateTestStarted => 'live island: test started';
+
+  @override
+  String get logCatLiveUpdateTestFailed => 'live island: test failed';
+
+  @override
+  String get logCatLiveUpdateSnapshotSettings =>
+      'live island: snapshot settings';
+
+  @override
+  String get logCatLiveUpdateSnapshotSynced => 'live island: snapshot synced';
+
+  @override
+  String get logCatLiveUpdateSnapshotCleared => 'live island: snapshot cleared';
+
+  @override
+  String get logCatLiveUpdateAlarmTriggered => 'live island: alarm triggered';
+
+  @override
+  String get logCatLiveUpdateSchedulerResume => 'live island: scheduler resume';
+
+  @override
+  String get logCatLiveUpdateRescheduleHoliday =>
+      'live island: reschedule holiday';
+
+  @override
+  String get logCatLiveUpdateRescheduleActive =>
+      'live island: reschedule active';
+
+  @override
+  String get logCatLiveUpdateRescheduleScheduled =>
+      'live island: reschedule scheduled';
+
+  @override
+  String get logCatLiveUpdateSnapshotParseFailed =>
+      'live island: snapshot parse failed';
+
+  @override
+  String get logCatLiveUpdateSnapshotInvalidatedAfterUpgrade =>
+      'live island: snapshot invalidated after upgrade';
+
+  @override
+  String get logCatLiveUpdatePayloadSelected => 'live island: payload selected';
+
+  @override
+  String get logCatLiveUpdateSchedulerStartFailed =>
+      'live island: scheduler start failed';
+
+  @override
+  String get logCatLiveUpdateStartRequested => 'live island: start requested';
+
+  @override
+  String get logCatLiveUpdateStopRequested => 'live island: stop requested';
+
+  @override
+  String get logCatLiveUpdateServiceMissingPayload =>
+      'live island: service missing payload';
+
+  @override
+  String get logCatLiveUpdateServiceStarted => 'live island: service started';
+
+  @override
+  String get logCatLiveUpdateServiceStartFailed =>
+      'live island: service start failed';
+
+  @override
+  String get logCatLiveUpdateTaskRemoved => 'live island: task removed';
+
+  @override
+  String get logCatLiveUpdateTaskRemovedResumed =>
+      'live island: task removed resumed';
+
+  @override
+  String get logCatLiveUpdateBeforeClassQuickAction =>
+      'live island: before class quick action';
+
+  @override
+  String get logCatLiveUpdateBeforeClassQuickActionRestored =>
+      'live island: before class quick action restored';
+
+  @override
+  String get logCatLiveUpdateStatusBarDismissed =>
+      'live island: status bar dismissed';
+
+  @override
+  String get logCatLiveUpdateNotPromoted => 'live island: not promoted';
+
+  @override
+  String get logCatLiveUpdatePromotedNotShown =>
+      'live island: promoted not shown';
+
+  @override
+  String get logCatLiveUpdateServiceStopped => 'live island: service stopped';
+
+  @override
+  String get logCatKeepAliveAccessibilityConnected =>
+      'keep-alive: accessibility connected';
+
+  @override
+  String get logCatDiagnosticsEnabled => 'diagnostics: enabled';
+
+  @override
+  String get logCatDiagnosticsCleared => 'diagnostics: cleared';
+
+  @override
+  String get logCatDiagnosticsBootstrap => 'diagnostics: bootstrap';
+
+  @override
+  String get logCatFlutterDiagnostic => 'flutter diagnostic';
+
+  @override
+  String get logCatFlutterDiagnosticEvent => 'flutter diagnostic event';
+
+  @override
+  String get logCatRenderFailed => 'render failed';
+
+  @override
+  String get logCatDebugSnapshot => 'debug snapshot';
+
+  @override
+  String get logExportTitle => 'Qingyu Timetable - App logs';
+
+  @override
+  String get appUpdateMirrorPresetGhfast => 'Default mirror';
+
+  @override
+  String get appUpdateMirrorPresetGhproxyCn => 'Backup mirror 1';
+
+  @override
+  String get appUpdateMirrorPresetGhLlkk => 'Backup mirror 2';
+
+  @override
+  String get appUpdateMirrorPresetGhProxyCom => 'Backup mirror 3';
+
+  @override
+  String get appUpdateMirrorPresetGhproxyNet => 'Backup mirror 4';
+
+  @override
+  String get appUpdateMirrorPresetCustom => 'Custom';
+
+  @override
+  String get appUpdateMirrorPresetCustomDescription =>
+      'Enter a custom mirror URL prefix';
+
+  @override
+  String get statisticsShareText => 'Semester statistics from mikcb';
+
+  @override
+  String get aboutUpdateAvailableHeadline => 'Update available';
+
+  @override
+  String get aboutAlreadyLatestHeadline => 'Already up to date';
+
+  @override
+  String get aboutDownloadChannelSectionTitle => 'Download channel';
+
+  @override
+  String get aboutMirrorProbeFailedLabel => 'Failed';
+
+  @override
+  String timeSchemeImportSupplementName(String name) {
+    return '$name (import supplement)';
+  }
+
+  @override
+  String profileTimeSchemeName(String profileName) {
+    return '$profileName schedule';
+  }
+
+  @override
+  String get currentProfileTimeSchemeName => 'Current timetable schedule';
+
+  @override
+  String get unnamedTimetableProfile => 'Unnamed timetable';
+
+  @override
+  String courseImportPortalUrlMissingBody(
+    String schoolName,
+    String adapterName,
+  ) {
+    return '\"$schoolName / $adapterName\" has no default login URL. Enter the school portal URL first.';
+  }
+
+  @override
+  String guidePermissionsProgressLabel(int ready, int total) {
+    return 'Ready $ready/$total';
+  }
+
+  @override
+  String get locationTimeMatchEntryTitle => 'Location-based schedule';
+
+  @override
+  String get locationTimeMatchEntrySubtitle =>
+      'Auto-select time schemes by classroom keywords';
+
+  @override
+  String get locationTimeMatchTitle => 'Location-based schedule';
+
+  @override
+  String get locationTimeMatchSubtitle =>
+      'Match time schemes by location keywords. Rematching updates clocks for matched courses only; unmatched courses stay unchanged.';
+
+  @override
+  String get locationTimeMatchWeekAxisNote =>
+      'Note: the week-view time axis still shows the timetable default scheme. Card/live times use the matched scheme.';
+
+  @override
+  String get locationTimeMatchPreviewLabel => 'Try a location';
+
+  @override
+  String get locationTimeMatchPreviewHint => 'e.g. A1062 or A主201';
+
+  @override
+  String get locationTimeMatchPreviewNoMatch =>
+      'No group matched; the default timetable scheme will be used';
+
+  @override
+  String locationTimeMatchPreviewResult(
+    String group,
+    String scheme,
+    String keyword,
+  ) {
+    return 'Matches: $group · $scheme (keyword $keyword)';
+  }
+
+  @override
+  String get locationTimeMatchApplyActive => 'Rematch current timetable';
+
+  @override
+  String get locationTimeMatchApplyTitle => 'Rematch current timetable?';
+
+  @override
+  String locationTimeMatchApplyMessage(int count) {
+    return '$count courses currently match a location rule. Courses whose sections fit will return to automatic routing and update their clocks; any manual scheme on those courses will be cleared. Unmatched courses will remain unchanged.';
+  }
+
+  @override
+  String get locationTimeMatchApplyConfirm => 'Rematch';
+
+  @override
+  String locationTimeMatchApplyUpdated(int matched, int updated) {
+    return 'Rematched $matched courses, updated $updated clocks';
+  }
+
+  @override
+  String locationTimeMatchApplyAlreadyAligned(int matched) {
+    return 'Rematched $matched courses; clocks already correct';
+  }
+
+  @override
+  String get locationTimeMatchApplyNoneMatched =>
+      'No courses matched the place rules';
+
+  @override
+  String locationTimeMatchApplyOverflowResult(int matched, int count) {
+    return 'Matched $matched; $count exceed the scheme sections';
+  }
+
+  @override
+  String locationTimeMatchApplyOverflowHint(String names) {
+    return 'Examples: $names';
+  }
+
+  @override
+  String get locationTimeMatchEmpty => 'No place groups yet';
+
+  @override
+  String get locationTimeMatchCreateGroup => 'New place group';
+
+  @override
+  String get locationTimeMatchEditGroup => 'Edit place group';
+
+  @override
+  String get locationTimeMatchUnknownScheme => 'Unknown time scheme';
+
+  @override
+  String get locationTimeMatchNoKeywords => 'No keywords';
+
+  @override
+  String locationTimeMatchBoundScheme(String name) {
+    return 'Time scheme: $name';
+  }
+
+  @override
+  String locationTimeMatchKeywordsLine(String keywords) {
+    return 'Keywords: $keywords';
+  }
+
+  @override
+  String get locationTimeMatchDeleteTitle => 'Delete place group?';
+
+  @override
+  String locationTimeMatchDeleteMessage(String name) {
+    return 'Delete \"$name\"? Automatically matched courses will return to the timetable default; manually selected schemes will stay unchanged.';
+  }
+
+  @override
+  String get locationTimeMatchDeleted => 'Place group deleted';
+
+  @override
+  String get locationTimeMatchGroupNameLabel => 'Group name';
+
+  @override
+  String get locationTimeMatchGroupNameHint => 'e.g. Main building';
+
+  @override
+  String get locationTimeMatchBoundSchemeLabel => 'Bound time scheme';
+
+  @override
+  String get locationTimeMatchNeedTimeScheme =>
+      'Create at least one time scheme first';
+
+  @override
+  String get locationTimeMatchEnabledLabel => 'Enable this group';
+
+  @override
+  String get locationTimeMatchKeywordsSection => 'Location keywords';
+
+  @override
+  String get locationTimeMatchKeywordsHelp =>
+      'Pick buildings from your timetable locations, or type keywords (A主, A1, A6). Prefer prefix match; longer keywords win.';
+
+  @override
+  String get locationTimeMatchSelectedKeywords => 'Selected keywords';
+
+  @override
+  String get locationTimeMatchNoSelectedKeywords => 'No keywords yet';
+
+  @override
+  String get locationTimeMatchPickFromLocations =>
+      'Pick from timetable locations';
+
+  @override
+  String get locationTimeMatchBuildingSuggestions =>
+      'Buildings found in timetable';
+
+  @override
+  String get locationTimeMatchNoBuildingSuggestions =>
+      'No recognizable building locations yet';
+
+  @override
+  String get locationTimeMatchAddBuilding => 'Add';
+
+  @override
+  String get locationTimeMatchAddAllBuildings => 'Add all uncovered buildings';
+
+  @override
+  String locationTimeMatchBuildingRoomCount(int count) {
+    return '$count rooms';
+  }
+
+  @override
+  String locationTimeMatchBuildingGateTags(String tags) {
+    return 'Tags: $tags';
+  }
+
+  @override
+  String locationTimeMatchKeywordExtracted(String keyword) {
+    return 'Extracted keyword $keyword';
+  }
+
+  @override
+  String get locationTimeMatchKeywordAlreadyExists => 'Keyword already added';
+
+  @override
+  String locationTimeMatchKeywordUsedByGroup(String group) {
+    return 'Keyword already used by \"$group\"';
+  }
+
+  @override
+  String get locationTimeMatchAddKeyword => 'Add keyword manually';
+
+  @override
+  String get locationTimeMatchKeywordLabel => 'Keyword';
+
+  @override
+  String get locationTimeMatchKeywordHint => 'A1 / A主';
+
+  @override
+  String get locationTimeMatchModeLabel => 'Match mode';
+
+  @override
+  String get locationTimeMatchModePrefix => 'Prefix';
+
+  @override
+  String get locationTimeMatchModeContains => 'Contains';
+
+  @override
+  String get locationTimeMatchModeExact => 'Exact';
+
+  @override
+  String get locationTimeMatchKeywordTooShort =>
+      'Keyword is very short and may mis-match';
+
+  @override
+  String get locationTimeMatchNameRequired => 'Enter a group name';
+
+  @override
+  String get locationTimeMatchKeywordRequired => 'Add at least one keyword';
+
+  @override
+  String get locationTimeMatchSaved => 'Place group saved';
+
+  @override
+  String get locationTimeMatchSaveFailed => 'Save failed';
+
+  @override
+  String get followLocationAutoTimeScheme => 'Follow timetable / location auto';
+
+  @override
+  String get followLocationAutoTimeSchemeDescription =>
+      'Without a manual override, match a time scheme by location keywords; otherwise use the timetable default';
+
+  @override
+  String locationTimeMatchedSchemeHint(String scheme) {
+    return 'Auto · $scheme';
+  }
+
+  @override
+  String locationTimeAutoResolvedByGroup(String group, String scheme) {
+    return 'Place group \"$group\" → $scheme';
+  }
+
+  @override
+  String locationTimeAutoResolvedByTimetable(String scheme) {
+    return 'Timetable default → $scheme';
+  }
+
+  @override
+  String get scheduleDateRuleSectionTitle => 'Date-based schedule';
+
+  @override
+  String get scheduleDateRuleSectionSubtitle =>
+      'On the start date, apply the selected scheme as the default for all timetables. Max 2 non-overlapping rules; location-based schedule takes priority.';
+
+  @override
+  String get scheduleDateRuleAdd => 'Add date rule';
+
+  @override
+  String get scheduleDateRuleEdit => 'Edit date rule';
+
+  @override
+  String get scheduleDateRuleEmpty => 'No date rules';
+
+  @override
+  String get scheduleDateRuleNameLabel => 'Rule name';
+
+  @override
+  String get scheduleDateRuleNameHint => 'e.g. Summer / Winter';
+
+  @override
+  String get scheduleDateRuleStartDate => 'Start date';
+
+  @override
+  String get scheduleDateRuleEndDate => 'End date';
+
+  @override
+  String get scheduleDateRuleBoundScheme => 'Time scheme';
+
+  @override
+  String get scheduleDateRuleEnabled => 'Enabled';
+
+  @override
+  String get scheduleDateRuleActiveToday => 'In range today';
+
+  @override
+  String scheduleDateRuleRangeSummary(String start, String end) {
+    return '$start ~ $end';
+  }
+
+  @override
+  String get scheduleDateRuleMaxReached => 'At most 2 date rules';
+
+  @override
+  String get scheduleDateRuleNeedScheme => 'Create a time scheme first';
+
+  @override
+  String get scheduleDateRuleNameRequired => 'Enter a rule name';
+
+  @override
+  String get scheduleDateRuleSaved => 'Date rule saved';
+
+  @override
+  String get scheduleDateRuleSavedAndApplied =>
+      'Date rule saved; every timetable\'s default schedule has been updated today';
+
+  @override
+  String get scheduleDateRuleSavedForFuture =>
+      'Date rule saved; every timetable\'s default schedule will update on the start date';
+
+  @override
+  String get scheduleDateRuleSavedButApplyFailed =>
+      'Date rule saved, but today\'s auto-apply failed (check scheme section count)';
+
+  @override
+  String get scheduleDateRuleDeleted => 'Date rule deleted';
+
+  @override
+  String get scheduleDateRuleDeleteTitle => 'Delete date rule?';
+
+  @override
+  String scheduleDateRuleDeleteMessage(String name) {
+    return 'Delete “$name”? Already-applied schedules are not rolled back automatically; adjust them manually if needed.';
+  }
+
+  @override
+  String scheduleDateRuleSaveFailed(String reason) {
+    return 'Save failed: $reason';
+  }
+
+  @override
+  String get scheduleDateRuleErrorMax => 'Limit of 2 rules reached';
+
+  @override
+  String get scheduleDateRuleErrorOverlap => 'Date range overlaps another rule';
+
+  @override
+  String get scheduleDateRuleErrorInvalidDate => 'Invalid date';
+
+  @override
+  String get scheduleDateRuleErrorEndBeforeStart =>
+      'End date cannot be before start date';
+
+  @override
+  String get scheduleDateRuleErrorSchemeRequired => 'Pick a time scheme';
+
+  @override
+  String get scheduleDateRuleErrorNameRequired => 'Enter a name';
+
+  @override
+  String get scheduleDateRuleNote =>
+      'Location match takes priority over date rules.';
+
+  @override
+  String get courseCardSettingsTitle => '강의 카드';
+
+  @override
+  String get courseCardSectionFields => '표시 필드';
+
+  @override
+  String get courseCardSectionLayout => '레이아웃';
+
+  @override
+  String get courseCardSectionColor => '색상';
+
+  @override
+  String get liveSelfCheckTitle => '자체 점검';
+
+  @override
+  String get collapsibleLargeTitle => '접을 수 있는 큰 제목';
+
+  @override
+  String get diagnosticsEntryTitle => '진단';
+
+  @override
+  String get memoryStatsEntryTitle => '메모리 상태';
+
+  @override
+  String get generalSettingsTitle => '일반';
+
+  @override
+  String get settingsResetDefaultsTitle => '기본 설정으로 초기화';
+
+  @override
+  String get settingsResetDefaultsConfirmTitle => '초기화 확인';
+
+  @override
+  String get settingsResetConfirmBodyCourseCard =>
+      '강의 카드 표시 항목·레이아웃·색상을 기본값으로 되돌립니다.';
+
+  @override
+  String get settingsResetConfirmBodyTimetablePage =>
+      '시간표 페이지 밀도·이번 주 버튼·배경(배경화면 포함)을 기본값으로 되돌립니다.';
+
+  @override
+  String get settingsResetConfirmBodyAppearance =>
+      '테마 모드·글꼴·테마 색상·유리 질감을 기본값으로 되돌립니다.';
+
+  @override
+  String get settingsResetConfirmBodyHomeWidget =>
+      '홈 위젯 표시 항목과 외관을 기본값으로 되돌립니다.';
+
+  @override
+  String get settingsResetConfirmBodyHomeNavigation =>
+      '하단 바·메뉴·홈 제목 설정을 기본값으로 되돌립니다.';
+
+  @override
+  String get settingsResetDoneMessage => '설정이 초기화되었습니다';
+
+  @override
+  String get timetablePageSettingsTitle => '시간표 페이지';
+
+  @override
+  String get timetablePageSectionDensity => '밀도';
+
+  @override
+  String get timetablePageSectionBackToWeek => '현재 주로 돌아가기';
+
+  @override
+  String get timetablePageSectionBackground => '배경';
+
+  @override
+  String get largeTitleContentGap => '16.0';
+
+  @override
+  String get selectTimeTitle => '시간 선택';
+
+  @override
+  String get liveSelfCheckSubtitle => '자체 점검 실행';
+
+  @override
+  String get frostedSheetPreviewShowTitle => '미리보기 표시';
+
+  @override
+  String get frostedSheetPreviewShowSubtitle => '상단에 프로스트 글래스 미리보기를 표시합니다';
+
+  @override
+  String get aboutSupportUpdatesSectionTitle => '지원 및 업데이트';
+
+  @override
+  String get aboutProductSectionTitle => '제품';
+
+  @override
+  String get aboutCommunitySectionTitle => '커뮤니티';
+
+  @override
+  String get selectStartTimeTitle => '시작 시간 선택';
+
+  @override
+  String get selectEndTimeTitle => '종료 시간 선택';
+
+  @override
+  String get weekdayInkContrastTitle => '텍스트 대비 부족';
+
+  @override
+  String get weekdayInkContrastBodyDark =>
+      '요일 표시줄 텍스트 색상이 어두운 배경화면과 대비가 충분하지 않아 일시적으로 자동 흰색을 사용합니다. 가독성을 보장하기 위한 조치이며, \"시간표 페이지 → 텍스트 색상\"에서 색상을 변경하거나 기본값으로 재설정할 수 있습니다.';
+
+  @override
+  String get weekdayInkContrastBodyLight =>
+      '요일 표시줄 텍스트 색상이 밝은 배경화면과 대비가 충분하지 않아 일시적으로 자동 검은색을 사용합니다. 가독성을 보장하기 위한 조치이며, \"시간표 페이지 → 텍스트 색상\"에서 색상을 변경하거나 기본값으로 재설정할 수 있습니다.';
+
+  @override
+  String get gotItAction => '알겠습니다';
+
+  @override
+  String get settingsTimetableSectionTitle => '시간표';
+
+  @override
+  String get liveIslandLabelEntryEnabled => '켜짐';
+
+  @override
+  String get liveIslandLabelEntryDisabled => '꺼짐';
+
+  @override
+  String get settingsDisplayAppearanceSectionTitle => '시간표 표시';
+
+  @override
+  String get settingsReminderDesktopSectionTitle => '알림 및 데스크톱';
+
+  @override
+  String get settingsAppSectionTitle => '앱';
+
+  @override
+  String get settingsDataShareSectionTitle => '데이터 및 공유';
+
+  @override
+  String get coupleTimetableEntryUnboundLabel => '연결 안 됨';
+
+  @override
+  String get settingsAboutSectionTitle => '정보';
+
+  @override
+  String get diagnosticsEntrySubtitle => '로그 · 셀프 점검 · 메모리';
+
+  @override
+  String get settingsSemesterScreenTitle => '학기 설정';
+
+  @override
+  String get syncCurrentWeekNeedsStartDate => '먼저 시작일을 설정해 주세요';
+
+  @override
+  String get liveNotificationPermissionMissing => '알림 권한이 없습니다';
+
+  @override
+  String get developerSectionTitle => '개발자 옵션';
+
+  @override
+  String get liveTestingFixtureEntryTitle => '라이브 테스트 픽스처';
+
+  @override
+  String get hyperosShowcaseEntryTitle => 'HyperOS 컴포넌트 쇼케이스';
+
+  @override
+  String get hyperosShowcaseEntrySubtitle => 'HyperOS 컴포넌트 미리보기';
+
+  @override
+  String get miuixShowcaseEntryTitle => 'Miuix 컴포넌트 쇼케이스';
+
+  @override
+  String get miuixShowcaseEntrySubtitle => 'Miuix 컴포넌트 미리보기';
+
+  @override
+  String get debugUiOverlayToggleTitle => '디버그 UI 오버레이';
+
+  @override
+  String get scheduleRepeatSectionTitle => '반복';
+
+  @override
+  String get scheduleRepeatNone => '반복하지 않음';
+
+  @override
+  String get scheduleRepeatDaily => '매일';
+
+  @override
+  String get scheduleRepeatWeekly => '매주';
+
+  @override
+  String get scheduleRepeatEndDateLabel => '반복 종료일';
+
+  @override
+  String get scheduleRepeatEndDateHint => '반복 일정에는 종료일이 필요합니다';
+
+  @override
+  String get scheduleRepeatWeeklyHint => '시작 날짜의 요일에 반복합니다';
+
+  @override
+  String get scheduleReminderSectionTitle => '일정 알림';
+
+  @override
+  String get scheduleReminderOff => '알림 없음';
+
+  @override
+  String scheduleReminderMinutes(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String get scheduleReminderPermissionMissing =>
+      '알림 권한이 꺼져 있습니다. 일정은 저장되지만 알림이 전달되지 않을 수 있습니다';
+
+  @override
+  String get scheduleReminderPermissionAction => '알림 권한 확인';
+
+  @override
+  String get scheduleEnabledTitle => '일정 사용';
+
+  @override
+  String get scheduleDisabledSubtitle => '일시 중지됨. 알림이 비활성화됩니다';
+
+  @override
+  String get scheduleEditScopeTitle => '편집 범위';
+
+  @override
+  String get scheduleEditScopeThis => '이번 항목만';
+
+  @override
+  String get scheduleEditScopeAll => '모든 반복 항목';
+
+  @override
+  String get scheduleDeleteScopeTitle => '삭제 범위';
+
+  @override
+  String get scheduleDeleteScopeThis => '이번 항목만 삭제';
+
+  @override
+  String get scheduleDeleteScopeAll => '모든 반복 항목 삭제';
+
+  @override
+  String get scheduleOccurrenceEditHint => '반복 일정의 한 항목을 편집하고 있습니다';
+
+  @override
+  String get scheduleRepeatEndRequired => '반복 종료일을 선택하세요';
+
+  @override
+  String get homeMenuTasksTitle => '할 일';
+
+  @override
+  String get taskListTitle => '할 일';
+
+  @override
+  String get addTask => '할 일 추가';
+
+  @override
+  String get editTask => '할 일 편집';
+
+  @override
+  String get saveTask => '할 일 저장';
+
+  @override
+  String get taskTitleLabel => '할 일 제목';
+
+  @override
+  String get taskTitleHint => '예: 3장 연습문제 끝내기';
+
+  @override
+  String get taskTitleRequired => '할 일 제목을 입력해 주세요';
+
+  @override
+  String get taskNoteLabel => '메모';
+
+  @override
+  String get taskNoteHint => '추가 내용(선택 사항)';
+
+  @override
+  String get taskDueDateLabel => '마감일';
+
+  @override
+  String get taskNoDueDate => '마감일 없음';
+
+  @override
+  String get taskCourseLabel => '수업';
+
+  @override
+  String get taskCourseFilter => '수업 필터';
+
+  @override
+  String get taskAllCourses => '모든 수업';
+
+  @override
+  String get taskNoCourse => '연결된 수업 없음';
+
+  @override
+  String get taskAllFilter => '전체';
+
+  @override
+  String get taskTodayFilter => '오늘';
+
+  @override
+  String get taskWeekFilter => '이번 주';
+
+  @override
+  String get taskOverdueSection => '기한 초과';
+
+  @override
+  String get taskCompletedSection => '완료됨';
+
+  @override
+  String get taskNoTasks => '아직 할 일이 없습니다';
+
+  @override
+  String get taskNoTasksForToday => '오늘 마감인 할 일이 없습니다';
+
+  @override
+  String get taskNoTasksForWeek => '이번 주 마감인 할 일이 없습니다';
+
+  @override
+  String get taskNoTasksForCourse => '이 수업의 할 일이 없습니다';
+
+  @override
+  String get taskDelete => '할 일 삭제';
+
+  @override
+  String get taskDeleteConfirm => '이 할 일을 삭제할까요?';
+
+  @override
+  String get taskHomeworkDefaultTitle => '과제';
+
+  @override
+  String get taskAddFromCourse => '할 일 추가';
+
+  @override
+  String get taskViewCourse => '수업 보기';
+
+  @override
+  String get taskSaved => '할 일이 저장되었습니다';
+
+  @override
+  String get taskUpdated => '할 일이 업데이트되었습니다';
+
+  @override
+  String get taskDeleted => '할 일이 삭제되었습니다';
+
+  @override
+  String get icsExportSectionTitle => '캘린더 내보내기';
+
+  @override
+  String get icsExportSectionSubtitle => '수업, 시험, 일정을 선택해 ICS 캘린더로 공유합니다';
+
+  @override
+  String get icsExportTitle => '캘린더 내보내기';
+
+  @override
+  String get icsExportProfileLabel => '시간표 프로필';
+
+  @override
+  String get icsExportProfileSelectTitle => '시간표 프로필 선택';
+
+  @override
+  String get icsExportDateRangeTitle => '날짜 범위';
+
+  @override
+  String get icsExportStartDate => '시작 날짜';
+
+  @override
+  String get icsExportEndDate => '종료 날짜';
+
+  @override
+  String get icsExportTypesTitle => '캘린더 내용';
+
+  @override
+  String get icsExportCourses => '수업';
+
+  @override
+  String get icsExportExams => '시험';
+
+  @override
+  String get icsExportSchedules => '일정';
+
+  @override
+  String get icsExportButton => '내보내고 공유';
+
+  @override
+  String get icsExportSharing => '캘린더 준비 중…';
+
+  @override
+  String get icsExportNoProfiles => '내보낼 시간표 프로필이 없습니다';
+
+  @override
+  String get icsExportDateRangeInvalid => '종료 날짜를 시작 날짜 이후로 선택하세요';
+
+  @override
+  String get icsExportNoSelection => '하나 이상의 캘린더 내용 유형을 선택하세요';
+
+  @override
+  String get icsExportSemesterStartRequired => '수업을 내보내기 전에 학기 시작 날짜를 설정하세요';
+
+  @override
+  String get icsExportNoEvents => '선택한 날짜 범위에 캘린더 이벤트가 없습니다';
+
+  @override
+  String get icsExportCancelled => '캘린더 공유가 취소되었습니다';
+
+  @override
+  String get icsExportFailed => '캘린더를 내보내지 못했습니다. 잠시 후 다시 시도하세요';
+
+  @override
+  String icsExportShared(int count) {
+    return '캘린더 이벤트 $count개를 내보내고 공유했습니다';
+  }
+
+  @override
+  String get icsExportShareText => '轻屿课表에서 내보낸 캘린더 파일';
+
+  @override
+  String get icsExportShareSubject => '轻屿课表 캘린더';
+
+  @override
+  String get homeNavigationTitle => '홈 및 탐색';
+
+  @override
+  String get homeNavigationSubtitle => '하단 바 형태·메뉴·홈 제목';
+
+  @override
+  String get homeNavigationFormLabel => '홈 형태';
+
+  @override
+  String get homeNavigationFormClassic => '클래식';
+
+  @override
+  String get homeNavigationFormClassicSubtitle => '현재 페이지와 내비게이션 방식을 유지';
+
+  @override
+  String get homeNavigationFormGlassDock => '글래스 독';
+
+  @override
+  String get homeNavigationFormGlassDockSubtitle =>
+      '떠 있는 글래스 하단 바로 일간/주간 시간표 전환';
+
+  @override
+  String get glassDockTabWeek => '주간';
+
+  @override
+  String get glassDockTabDay => '일간';
+
+  @override
+  String get glassDockLayoutLabel => '글래스 독 레이아웃';
+
+  @override
+  String get glassDockLayoutOverlay => '전체 화면 오버레이';
+
+  @override
+  String get glassDockLayoutOverlaySubtitle => '시간표 전체 화면 표시, 독이 위에 떠 있음';
+
+  @override
+  String get glassDockLayoutInset => '하단 공간 확보';
+
+  @override
+  String get glassDockLayoutInsetSubtitle => '시간표 하단 공간 확보, 독은 아래에 배치';
+
+  @override
+  String get glassDockInsetClearanceLabel => '여백 높이';
+
+  @override
+  String get glassDockRoundActionLabel => '라운드 버튼 기능';
+
+  @override
+  String get glassDockButtonIconTitle => '라운드 버튼 아이콘';
+
+  @override
+  String get glassDockButtonIconDefault => '기본(+)';
+
+  @override
+  String get glassDockButtonIconSearchHint => '아이콘 검색';
+
+  @override
+  String get glassDockCustomizeSectionTitle => '하단 내비게이션';
+
+  @override
+  String get glassDockCustomizeTitle => '독 버튼 사용자 지정';
+
+  @override
+  String get homeDockEditorViewCategory => '뷰 전환';
+
+  @override
+  String get glassDockEntriesSectionTitle => '독 항목';
+
+  @override
+  String get glassDockShowDayTabTitle => '일간 탭 표시';
+
+  @override
+  String get glassDockShowWeekTabTitle => '주간 탭 표시';
+
+  @override
+  String get glassDockShowAddButtonTitle => '원형 버튼 표시';
+
+  @override
+  String get glassDockShowAddButtonSubtitle =>
+      '알약 오른쪽에 독립된 원형 버튼을 표시 — 기능과 아이콘은 아래에서 설정';
+
+  @override
+  String get glassDockButtonBackToWeekLabel => '이번 주로 / 오늘';
+
+  @override
+  String get glassDockExtraButtonSemanticLabel => '수업 추가';
+
+  @override
+  String homeGridCustomizeDetails(int count, int max) {
+    return '$count/$max개 사용 중';
+  }
+
+  @override
+  String homeGridEditorHintBody(int max) {
+    return '최대 $max개의 버튼을 배치할 수 있으며, 항목을 길게 눌러 드래그하면 순서가 바뀝니다.';
+  }
+
+  @override
+  String get homeGridEditorEnabledTitle => '사용 중';
+
+  @override
+  String get homeGridEditorRemoveTooltip => '제거';
+
+  @override
+  String get homeGridEditorResetAction => '기본 배열로 되돌리기';
+
+  @override
+  String get homeGridEditorAllAdded => '모든 항목이 사용 중입니다';
+
+  @override
+  String get homeGridEditorMaxReached => '한도 초과';
+
+  @override
+  String get homeMenuCategoryFeatures => '기능';
+
+  @override
+  String get homeMenuCategoryData => '데이터 및 동기화';
+
+  @override
+  String get homeMenuCategoryPreferences => '환경설정';
+
+  @override
+  String get homeMenuCategoryAbout => '정보 및 지원';
+
+  @override
+  String classAlarmLeadMinutesLabel(int minutes) {
+    return '$minutes분 전';
+  }
+
+  @override
+  String get classAlarmInvalidTimeToast =>
+      '이 수업의 교시가 시간표 템플릿 범위를 벗어나 알람을 설정할 수 없습니다';
+
+  @override
+  String get classAlarmSheetTitle => '수업 알림';
+
+  @override
+  String classAlarmQuickOption(Object minutes) {
+    return '수업 $minutes분 전에 알림';
+  }
+
+  @override
+  String get classAlarmCustomOption => '직접 시간 지정…';
+
+  @override
+  String classAlarmExistingLabel(Object time) {
+    return '$time 알림 설정됨';
+  }
+
+  @override
+  String get classAlarmSetToast => '알림이 설정되었습니다';
+
+  @override
+  String get classAlarmRemovedToast => '이 수업 알림을 취소했습니다';
+
+  @override
+  String get classAlarmPastToast => '선택한 시간이 이미 지났습니다. 다른 시간을 고르세요';
+
+  @override
+  String get classAlarmNoSemesterToast => '설정에서 학기 시작일을 먼저 입력하세요';
+
+  @override
+  String get classAlarmActionLabel => '이 수업 알람 설정';
+
+  @override
+  String classAlarmConfirmMessage(String detail) {
+    return '시계 앱에 생성합니다: $detail. 시스템 알람은 공휴일과 휴강을 인식하지 못하고 그대로 울립니다. 삭제는 시계 앱에서 하세요.';
+  }
+
+  @override
+  String classAlarmVariableSuffix(String days) {
+    return '또한 $days의 첫 수업 시간은 주마다 달라 해당 요일에는 알람을 만들지 않았습니다.';
+  }
+
+  @override
+  String get classAlarmEntryTitle => '수업 알람';
+
+  @override
+  String get classAlarmGroupSetup => '알람 추가';
+
+  @override
+  String get classAlarmGroupBehavior => '동작 설정';
+
+  @override
+  String get classAlarmAddAllTitle => '수업 알람 일괄 추가';
+
+  @override
+  String get classAlarmRangeNext4Weeks => '앞으로 4주';
+
+  @override
+  String get classAlarmRangeNext8Weeks => '앞으로 8주';
+
+  @override
+  String get classAlarmRangeLabel => '범위';
+
+  @override
+  String get classAlarmRangeRemaining => '이번 주부터 학기 끝까지';
+
+  @override
+  String get classAlarmRangeWhole => '학기 전체';
+
+  @override
+  String get classAlarmLeadTitle => '시간 여유';
+
+  @override
+  String get classAlarmSkipUiTitle => '확인 화면 건너뛰기';
+
+  @override
+  String get classAlarmSkipUiSubtitle => '바로 쓰기를 시도합니다(일부 기기는 표시됨)';
+
+  @override
+  String get classAlarmOpenClock => '시계 앱 열기';
+
+  @override
+  String get classAlarmConfirmTitle => '반복 알람을 만들까요?';
+
+  @override
+  String get classAlarmNoSchemeToast => '먼저 설정에서 시간표 템플릿을 선택하세요';
+
+  @override
+  String get classAlarmNoDataToast => '선택한 범위에서 시간표를 찾을 수 없습니다';
+
+  @override
+  String get classAlarmAddedToast => '시계 앱으로 전달했습니다';
+
+  @override
+  String get classAlarmLaunchFailedToast => '처리할 시계 앱을 찾을 수 없습니다';
+
+  @override
+  String get classAlarmCourseConfirmTitle => '이 수업의 반복 알람을 추가할까요?';
+
+  @override
+  String classAlarmCourseConfirmMessage(
+    String weekday,
+    String time,
+    int lead,
+    String weeks,
+  ) {
+    return '시스템 시계에 매주 $weekday $time 반복 알람을 만듭니다(수업 $lead분 전 울림, 대상 주차: $weeks). 휴일·휴강 주에도 울리니 삭제는 시스템 시계에서 해주세요.';
+  }
+
+  @override
+  String get classAlarmDaySeparator => ', ';
+
+  @override
+  String get classAlarmDetailSeparator => '; ';
+
+  @override
+  String get globalSettingsTitle => '전역 표시 설정';
+
+  @override
+  String get globalSettingsConfigured => '구성됨';
+
+  @override
+  String get globalSettingsNotConfigured => '구성되지 않음';
+
+  @override
+  String get globalSettingsDescriptionTitle => '설명';
+
+  @override
+  String get globalSettingsDescriptionBody =>
+      '여기에서 설정한 표시 항목은 모든 시간표에 적용됩니다. 특정 시간표에서 변경한 항목은 해당 시간표의 자체 설정이 우선합니다. 학기, 교시(시간 템플릿) 등 시간표 고유 항목은 전역 설정 대상이 아닙니다.';
+
+  @override
+  String get globalSettingsClearTitle => '전역 표시 설정 지우기';
+
+  @override
+  String get globalSettingsClearConfirm => '지우면 모든 시간표가 각자의 설정을 다시 사용합니다.';
+
+  @override
+  String get globalSettingsCleared => '전역 표시 설정을 지웠습니다';
+
+  @override
+  String get liveIslandVisualTitle => '왼쪽 아이콘 및 펼친 상태';
+
+  @override
+  String get liveMiuiExpandedIconLabel => '펼친 상태 큰 아이콘';
+
+  @override
+  String get liveMiuiLabelContentLabel => '왼쪽 텍스트 내용';
+
+  @override
+  String liveMiuiLabelFontSizeLabel(String value) {
+    return '왼쪽 텍스트 크기 $value';
+  }
+
+  @override
+  String get liveMiuiLabelFontWeightLabel => '왼쪽 텍스트 굵기';
+
+  @override
+  String get liveMiuiLabelImageSubtitle =>
+      '샤오미 기기 스타일에서만 유효합니다. 수업명 또는 장소를 왼쪽 아이콘 위치에 생성합니다';
+
+  @override
+  String get liveMiuiLabelImageTitle => '샤오미 아일랜드 왼쪽 텍스트 아이콘';
+
+  @override
+  String liveMiuiLabelLogoCornerRadiusLabel(String value) {
+    return '왼쪽 아이콘 둥근 모서리 $value';
+  }
+
+  @override
+  String get liveMiuiLabelLogoSubtitle =>
+      '\'아이콘+텍스트\' 스타일에서만 유효합니다. 미선택 시 앱 아이콘을 계속 사용합니다';
+
+  @override
+  String get liveMiuiLabelLogoTitle => '왼쪽 아이콘 로고';
+
+  @override
+  String liveMiuiLabelOffsetXLabel(String value) {
+    return '왼쪽 텍스트 수평 오프셋 $value';
+  }
+
+  @override
+  String liveMiuiLabelOffsetYLabel(String value) {
+    return '왼쪽 텍스트 수직 오프셋 $value';
+  }
+
+  @override
+  String get liveMiuiLabelRenderQualityLabel => '왼쪽 텍스트 선명도';
+
+  @override
+  String get liveMiuiLabelStyleLabel => '왼쪽 아이콘 스타일';
+
+  @override
+  String get miuiIslandExpandedIconAppIcon => 'App icon';
+
+  @override
+  String get miuiIslandExpandedIconCustomImage => 'Custom image';
+
+  @override
+  String get miuiIslandExpandedIconHidden => 'Hidden';
+
+  @override
+  String get miuiIslandLabelContentCourseName => 'Course name';
+
+  @override
+  String get miuiIslandLabelContentCourseNameAndLocation => 'Course + room';
+
+  @override
+  String get miuiIslandLabelContentLocation => 'Room';
+
+  @override
+  String get miuiIslandLabelFontWeightBold => 'Bold';
+
+  @override
+  String get miuiIslandLabelFontWeightMedium => 'Medium';
+
+  @override
+  String get miuiIslandLabelFontWeightRegular => 'Regular';
+
+  @override
+  String get miuiIslandLabelRenderQualityHigh => 'High';
+
+  @override
+  String get miuiIslandLabelRenderQualityStandard => 'Standard';
+
+  @override
+  String get miuiIslandLabelRenderQualityUltra => 'Ultra';
+
+  @override
+  String get miuiIslandLabelStyleIconAndText => 'Icon + text';
+
+  @override
+  String get miuiIslandLabelStyleTextOnly => 'Text only';
+
+  @override
+  String get replaceImageAction => '이미지 변경';
+
+  @override
+  String get selectImageAction => '이미지 선택';
+}

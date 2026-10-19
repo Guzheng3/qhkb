@@ -1,0 +1,158 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file("key.properties")
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.withInputStream { keystoreProperties.load(it) }
+}
+
+def releaseStoreFile =
+        keystoreProperties.getProperty("storeFile") ?: System.getenv("ANDROID_KEYSTORE_PATH")
+def releaseStorePassword =
+        keystoreProperties.getProperty("storePassword") ?: System.getenv("ANDROID_KEYSTORE_PASSWORD")
+def releaseKeyAlias =
+        keystoreProperties.getProperty("keyAlias") ?: System.getenv("ANDROID_KEY_ALIAS")
+def releaseKeyPassword =
+        keystoreProperties.getProperty("keyPassword") ?: System.getenv("ANDROID_KEY_PASSWORD")
+def hasReleaseSigning =
+        releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+def overrideVersionName = project.findProperty("OVERRIDE_VERSION_NAME") ?: System.getenv("OVERRIDE_VERSION_NAME")
+
+android {
+    namespace = "vip.qinghan.withu"
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId = "vip.qinghan.withu"
+        minSdk = 26
+        targetSdk = 36
+        // +100000 offset: Flutter 3.35+ 的 --split-per-abi 会在 versionCode 上加 ABI 乘数 (e.g., arm64: ×2000),
+        // 移除 --split-per-abi 后 versionCode 会变小，导致 Android 误判为降级安装。
+        // 加此偏移确保 versionCode 始终高于旧版分 ABI 构建的值。
+        versionCode = (flutter.versionCode as int) + 100000
+        versionName = overrideVersionName ?: flutter.versionName
+        missingDimensionStrategy 'env', 'prod'
+        // 仅保留 arm64: ML Kit AAR 自带三份 ABI 的 so(共 ~13MB),其中 x86_64/armeabi-v7a
+        // 约 9MB 是纯冗余——minSdk 26 的真机全为 arm64。注意 defaultConfig 对 debug 同样
+        // 生效,x86_64 模拟器将装不上本工程直出的任何 APK,真机/ARM 模拟器不受影响。
+        // 必须用赋值整体替换:Flutter 插件 apply 时会 clear 后填入它支持的全部 ABI,
+        // 方法调用写法(abiFilters 'arm64-v8a')只是往里追加,压不掉另两个。
+        ndk {
+            abiFilters = ['arm64-v8a']
+        }
+    }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile rootProject.file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    // Product Flavors for different package names
+    flavorDimensions "env"
+    productFlavors {
+        dev {
+            dimension "env"
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            manifestPlaceholders = [
+                    appLabel: "轻屿课表调试版"
+            ]
+        }
+        perf {
+            dimension "env"
+            applicationIdSuffix ".profile"
+            versionNameSuffix "-profile"
+            manifestPlaceholders = [
+                    appLabel: "轻屿课表性能版"
+            ]
+        }
+        prod {
+            dimension "env"
+            manifestPlaceholders = [
+                    appLabel: "轻屿课表"
+            ]
+        }
+    }
+
+    buildTypes {
+        debug {
+            // Debug build type - no applicationIdSuffix here, handled by flavor
+        }
+        profile {
+            initWith(getByName("debug"))
+            matchingFallbacks = ['debug', 'release']
+        }
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 签名缺失不再于配置期抛错——配置期对所有 gradle 调用生效，会连带
+            // CI 的 testProdDebugUnitTest 等纯 JVM 任务一起失败（CI 无
+            // key.properties）。有签名则挂上；没有时改由文件尾 taskGraph
+            // 校验，真正请求 release 打包任务时才报同样的错。
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.release
+            }
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+// Work around flutter/flutter#187553: merge*JniLibFolders may stay UP-TO-DATE while
+// Flutter jniLibs changed, packaging a stale libapp.so into flavor APKs.
+tasks.configureEach { task ->
+    if (task.name.startsWith("merge") && task.name.endsWith("JniLibFolders")) {
+        task.outputs.upToDateWhen { false }
+    }
+}
+
+// 无签名配置时，仅当任务图真的包含 release 打包任务（assemble/bundle 前缀
+// + release 名）才报错；纯 JVM 测试/分析任务不被连坐。报错文案与原配置期
+// 校验一致，指引不变。CNB/GitHub 发布流水线均注入真实签名，不受影响。
+gradle.taskGraph.whenReady { graph ->
+    if (hasReleaseSigning) {
+        return
+    }
+    def needsSigning = graph.allTasks.any { task ->
+        def name = task.name.toLowerCase()
+        (name.startsWith("assemble") || name.startsWith("bundle")) && name.contains("release")
+    }
+    if (needsSigning) {
+        throw new GradleException(
+                "Missing release signing config. Provide android/key.properties or ANDROID_KEYSTORE_PATH / ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD."
+        )
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'androidx.work:work-runtime-ktx:2.10.1'
+    testImplementation 'junit:junit:4.13.2'
+}

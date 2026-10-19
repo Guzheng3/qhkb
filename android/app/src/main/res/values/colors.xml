@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="splash_background">#FFFFFFFF</color>
+    <color name="widget_loading_bg">#F8FAFC</color>
+    <color name="widget_loading_text">#5D6D7E</color>
+    <color name="widget_loading_indicator">#3B82F6</color>
+    <color name="widget_couple_bg">#FEF7FF</color>
+    <color name="widget_couple_current_bg">#F3F7FE</color>
+    <color name="widget_couple_text_primary">#2C3E50</color>
+    <color name="widget_couple_text_secondary">#5D6D7E</color>
+    <color name="widget_couple_shadow">#262C3E50</color>
+    <color name="widget_couple_text_hint">#808B96</color>
+    <color name="widget_couple_divider">#EAECEE</color>
+    <color name="widget_couple_male_accent">#3B82F6</color>
+    <color name="widget_couple_female_accent">#EC4899</color>
+    <color name="live_card_title">#2C3E50</color>
+    <color name="live_card_body">#5D6D7E</color>
+    <color name="live_card_footer">#808B96</color>
+    <color name="live_card_progress_track">#EAECEE</color>
+    <color name="live_card_progress">#3B82F6</color>
+</resources>

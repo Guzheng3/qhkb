@@ -1,0 +1,790 @@
+import 'dart:convert';
+
+import 'dart:async';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:provider/provider.dart';
+
+import '../domain/couple_timetable_logic.dart';
+import '../providers/timetable_provider.dart';
+import '../providers/withu_couple_session_provider.dart';
+import '../services/partner_timetable_service.dart';
+import '../services/home_widget_service.dart';
+import '../services/withu_couple_auth_service.dart';
+import '../services/withu_couple_config.dart';
+import '../services/withu_couple_session_store.dart';
+import '../services/withu_couple_timetable_service.dart';
+import '../ui/hyperos/hyperos.dart';
+import '../utils/app_toast.dart';
+import 'withu_couple_login_screen.dart';
+
+class CoupleTimetableSettingsScreen extends StatefulWidget {
+  const CoupleTimetableSettingsScreen({super.key});
+
+  @override
+  State<CoupleTimetableSettingsScreen> createState() =>
+      _CoupleTimetableSettingsScreenState();
+}
+
+class _CoupleTimetableSettingsScreenState
+    extends State<CoupleTimetableSettingsScreen> {
+  bool _isExporting = false;
+  bool _isImporting = false;
+  bool _isUnlinking = false;
+  bool _isPullingWithu = false;
+  bool _isUploadingWithu = false;
+  bool _isPinningCoupleWidget = false;
+
+  late final WithuCoupleAuthService _withuAuthService;
+  final HomeWidgetService _homeWidgetService = HomeWidgetService();
+  late final WithuCoupleTimetableService _withuTimetableService;
+  WithuCoupleConfig _withuCoupleConfig = const WithuCoupleConfig();
+  WithuCoupleSession? _withuCoupleSession;
+
+  @override
+  void initState() {
+    super.initState();
+    // 复用首页 provider 的认证服务：凭证只有一份，登录/退出都要立刻反映到
+    // 首页登录态。借用方不负责 dispose（所有者是 provider）。
+    _withuAuthService = context.read<WithuCoupleSessionProvider>().authService;
+    _withuTimetableService = WithuCoupleTimetableService(
+      authService: _withuAuthService,
+    );
+    _loadWithuCoupleState();
+  }
+
+  bool get _isWithuCoupleConnected =>
+      _withuCoupleConfig.baseUrl.trim().isNotEmpty &&
+      _withuCoupleSession != null &&
+      _withuCoupleSession!.isUsable;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.watch<TimetableProvider>();
+    final binding = provider.partnerBinding;
+    final partnerProfile = provider.partnerProfile;
+
+    return HyperosSubpage(
+      onBack: () => Navigator.pop(context),
+      title: Text(l10n.coupleTimetableTitle),
+      child: HyperosListView(
+        children: [
+          HyperosControlCard(
+            edgeToEdge: true,
+            child: HyperosControlCardRowScope(
+              isFirst: true,
+              isLast: true,
+              child: HyperosSwitchTile(
+                icon: Icons.favorite_outline_rounded,
+                iconAccent: provider.settings.coupleTimetableOverlayEnabled
+                    ? HyperosIconColors.red
+                    : HyperosIconColors.blue,
+                title: l10n.coupleTimetableTitle,
+                subtitle: l10n.coupleTimetableSwitchSubtitle,
+                value: provider.settings.coupleTimetableOverlayEnabled,
+                onChanged: (value) {
+                  unawaited(() async {
+                    await provider.updateSettings(
+                      provider.settings.copyWith(
+                        coupleTimetableOverlayEnabled: value,
+                      ),
+                    );
+                    if (!value) {
+                      await _leavePartnerTimetableIfActive(provider);
+                    }
+                    await provider.syncCoupleTimetableWidgetSnapshot();
+                  }());
+                },
+              ),
+            ),
+          ),
+          if (binding != null) ...[
+            const HyperosSectionGap(),
+            HyperosControlCard(
+              child: HyperosControlCardRowScope(
+                isFirst: true,
+                isLast: true,
+                child: HyperosNavTile(
+                  icon: Icons.favorite_rounded,
+                  iconAccent: HyperosIconColors.red,
+                  title: l10n.partnerTimetablePageTitle,
+                  subtitle: l10n.coupleTimetableBoundTitle,
+                  onTap: _openPartnerTimetable,
+                ),
+              ),
+            ),
+          ],
+          const HyperosSectionGap(),
+          HyperosSectionLabel(
+            text: binding == null
+                ? l10n.coupleTimetableUnboundTitle
+                : l10n.coupleTimetableBoundTitle,
+          ),
+          if (binding != null)
+            HyperosControlCard(
+              child: HyperosControlCardInset(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildInfoRow(
+                      context,
+                      l10n.coupleTimetablePartnerNameLabel,
+                      partnerProfile?.name ?? binding.partnerName,
+                    ),
+                    _buildInfoRow(
+                      context,
+                      l10n.courseCountBullet(
+                        partnerProfile?.courses.length ?? 0,
+                      ),
+                      binding.lastImportedAt == null
+                          ? '-'
+                          : _formatDateTime(binding.lastImportedAt!),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          const HyperosSectionGap(),
+          HyperosSectionLabel(text: l10n.withuCoupleTitle),
+          HyperosControlCard(
+            child: HyperosControlCardInset(
+              child: _buildWithuCoupleControl(context, l10n),
+            ),
+          ),
+          if (binding != null &&
+              provider.settings.coupleTimetableOverlayEnabled) ...[
+            const HyperosSectionGap(),
+            HyperosSectionLabel(text: l10n.coupleTimetableDesktopCardTitle),
+            HyperosControlCard(
+              edgeToEdge: true,
+              child: HyperosControlCardRowScope(
+                isFirst: true,
+                isLast: true,
+                child: HyperosSwitchTile(
+                  icon: Icons.article_outlined,
+                  iconAccent:
+                      provider.settings.coupleTimetableDetailCardEnabled
+                      ? HyperosIconColors.orange
+                      : HyperosIconColors.blue,
+                  title: l10n.coupleTimetableDetailCardTitle,
+                  subtitle: l10n.coupleTimetableDetailCardSubtitle,
+                  value: provider.settings.coupleTimetableDetailCardEnabled,
+                  onChanged: (value) {
+                    unawaited(
+                      provider.updateSettings(
+                        provider.settings.copyWith(
+                          coupleTimetableDetailCardEnabled: value,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            HyperosControlCard(
+              title: l10n.coupleTimetableDesktopCardTitle,
+              child: HyperosControlCardInset(
+                child: HyperosButton(
+                  label: _isPinningCoupleWidget
+                      ? '${l10n.homeWidgetTargetCoupleTimetable42}...'
+                      : l10n.homeWidgetTargetCoupleTimetable42,
+                  variant: HyperosButtonVariant.secondary,
+                  loading: _isPinningCoupleWidget,
+                  onPressed: _isPinningCoupleWidget
+                      ? null
+                      : _pinCoupleTimetableWidget,
+                ),
+              ),
+            ),
+          ],
+          const HyperosSectionGap(),
+          HyperosSectionLabel(text: l10n.coupleTimetableLiveSurfaceTitle),
+          HyperosControlCard(
+            edgeToEdge: true,
+            child: HyperosControlCardRowScope(
+              isFirst: true,
+              isLast: true,
+              child: HyperosSwitchTile(
+                icon: Icons.notifications_active_outlined,
+                iconAccent: provider.liveSurfaceFollowsActiveTimetable
+                    ? HyperosIconColors.orange
+                    : HyperosIconColors.blue,
+                title: l10n.coupleTimetableLiveSurfaceSwitchTitle,
+                subtitle: l10n.coupleTimetableLiveSurfaceSwitchSubtitle,
+                value: provider.liveSurfaceFollowsActiveTimetable,
+                onChanged: (value) => unawaited(
+                  provider.setLiveSurfaceFollowsActiveTimetable(value),
+                ),
+              ),
+            ),
+          ),
+          const HyperosSectionGap(),
+          HyperosSectionLabel(text: l10n.coupleTimetableTitle),
+          HyperosControlCard(
+            child: HyperosControlCardInset(
+              child: Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  HyperosButton(
+                    label: _isExporting
+                        ? '${l10n.coupleTimetableExportForPartner}...'
+                        : l10n.coupleTimetableExportForPartner,
+                    loading: _isExporting,
+                    onPressed: _isExporting ? null : _exportForPartner,
+                  ),
+                  HyperosButton(
+                    label: _isImporting
+                        ? '${l10n.coupleTimetableImportPartner}...'
+                        : l10n.coupleTimetableImportPartner,
+                    variant: HyperosButtonVariant.secondary,
+                    loading: _isImporting,
+                    onPressed: _isImporting ? null : _importPartner,
+                  ),
+                  if (binding != null)
+                    HyperosButton(
+                      label: _isUnlinking
+                          ? '${l10n.coupleTimetableUnlink}...'
+                          : l10n.coupleTimetableUnlink,
+                      variant: HyperosButtonVariant.secondary,
+                      loading: _isUnlinking,
+                      onPressed: _isUnlinking ? null : _confirmUnlink,
+                    ),
+                ],
+              ),
+            ),
+          ),
+          if (binding != null) ...[
+            const HyperosSectionGap(),
+            HyperosSectionLabel(text: l10n.coupleTimetableWeekOffsetTitle),
+            HyperosControlCard(
+              child: HyperosControlCardInset(
+                child: _buildWeekOffsetControl(
+                  context,
+                  provider,
+                  binding.weekOffset,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Future<void> _loadWithuCoupleState() async {
+    final config = await _withuAuthService.loadConfig();
+    final session = await _withuAuthService.loadSession();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _withuCoupleConfig = config;
+      _withuCoupleSession = session;
+    });
+  }
+
+  /// 把当前课表切到 TA 的课表：TA 课表现在是可切换课表，在原来的
+  /// 主课表界面里查看；回到主界面即可看到。入口本身就是情侣动作，
+  /// 开关未开时自动打开，保证「停在 TA 课表 ⇒ 开关开启」不变量。
+  Future<void> _openPartnerTimetable() async {
+    final provider = context.read<TimetableProvider>();
+    final partnerProfile = provider.partnerProfile;
+    if (partnerProfile == null) {
+      return;
+    }
+    if (!provider.settings.coupleTimetableOverlayEnabled) {
+      await provider.updateSettings(
+        provider.settings.copyWith(coupleTimetableOverlayEnabled: true),
+      );
+    }
+    await provider.switchProfile(partnerProfile.id);
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
+  }
+
+  /// 开关关闭时若当前正停在 TA 课表，退回我的课表：关闭后课表界面
+  /// 回到原来的「轻屿课表」（我的课表），不停留在情侣课表上。
+  /// 极端情况：没有任何非 partner profile 可退时，恢复开关为开启，
+  /// 保持「停在 TA 课表 ⇒ 开关开启」不变量，避免 UI 与内容不一致。
+  Future<void> _leavePartnerTimetableIfActive(TimetableProvider provider) async {
+    if (provider.activeProfileId != PartnerTimetableService.partnerProfileId) {
+      return;
+    }
+    final myProfile = provider.myTimetableProfile;
+    if (myProfile != null) {
+      await provider.switchProfile(myProfile.id);
+    } else {
+      await provider.updateSettings(
+        provider.settings.copyWith(coupleTimetableOverlayEnabled: true),
+      );
+    }
+  }
+
+  Widget _buildWithuCoupleControl(BuildContext context, AppLocalizations l10n) {
+    final connected = _isWithuCoupleConnected;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          connected
+              ? l10n.withuCoupleConnectedAs(_withuCoupleSession!.username)
+              : l10n.withuCoupleNotConnected,
+          style: HyperosTypography.listTitle(context),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          l10n.withuCoupleServerHint(_withuCoupleConfig.baseUrl),
+          style: HyperosTypography.listDetail(context),
+        ),
+        if (_withuCoupleConfig.lastPulledAt != null) ...[
+          const SizedBox(height: 8),
+          Text(
+            l10n.withuCoupleLastPulledAt(
+              _formatDateTime(_withuCoupleConfig.lastPulledAt!),
+            ),
+            style: HyperosTypography.listDetail(context),
+          ),
+        ],
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: [
+            if (!connected)
+              HyperosButton(
+                label: l10n.withuCoupleConnect,
+                onPressed: _connectWithuCouple,
+              )
+            else ...[
+              HyperosButton(
+                label: _isPullingWithu
+                    ? '${l10n.withuCouplePullNow}...'
+                    : l10n.withuCouplePullNow,
+                loading: _isPullingWithu,
+                onPressed: _isPullingWithu ? null : _pullPartnerWithu,
+              ),
+              HyperosButton(
+                label: _isUploadingWithu
+                    ? '${l10n.withuCoupleUploadForPartner}...'
+                    : l10n.withuCoupleUploadForPartner,
+                variant: HyperosButtonVariant.secondary,
+                loading: _isUploadingWithu,
+                onPressed: _isUploadingWithu
+                    ? null
+                    : _uploadMyTimetableForWithu,
+              ),
+              HyperosButton(
+                label: l10n.withuCoupleDisconnect,
+                variant: HyperosButtonVariant.secondary,
+                onPressed: _disconnectWithuCouple,
+              ),
+            ],
+          ],
+        ),
+      ],
+    );
+  }
+
+  Future<void> _connectWithuCouple() async {
+    final provider = context.read<TimetableProvider>();
+    final sessionProvider = context.read<WithuCoupleSessionProvider>();
+    final connected = await showWithuCoupleLoginSheet(
+      context: context,
+      authService: sessionProvider.authService,
+      initialConfig: _withuCoupleConfig,
+      onPullPartner: (service) => service.syncAfterLogin(provider: provider),
+    );
+    if (connected != true || !mounted) {
+      return;
+    }
+    // 登录成功后刷新首页情侣标题的登录态与昵称（凭证刚由 connect 落盘，
+    // 直接按本地凭证收敛，不再多发一次 bootstrap）。
+    await sessionProvider.refreshFromLocal();
+    await provider.syncCoupleTimetableWidgetSnapshot();
+    await _loadWithuCoupleState();
+  }
+
+  Future<void> _disconnectWithuCouple() async {
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.read<TimetableProvider>();
+    final sessionProvider = context.read<WithuCoupleSessionProvider>();
+    // 1) 本机立即退出：只读本地凭证，返回时首页已经是未登录态，不等服务端。
+    await sessionProvider.signOutLocally();
+    await _withuTimetableService.forgetPartnerPullMarkers();
+    await provider.syncCoupleTimetableWidgetSnapshot();
+    await _loadWithuCoupleState();
+    if (!mounted) {
+      return;
+    }
+    // 2) 尽力注销服务端会话（吊销 withu_device 可信设备）。本页不关闭，
+    //    所以这里可以放心等结果再用自己的 context 提示。
+    final serverConfirmed = await sessionProvider.completeServerLogout();
+    if (!mounted) {
+      return;
+    }
+    if (!serverConfirmed) {
+      showAppToast(
+        context,
+        message: l10n.withuCoupleLogoutUnconfirmed,
+        kind: AppToastKind.warning,
+      );
+    }
+  }
+
+  Future<void> _pinCoupleTimetableWidget() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isPinningCoupleWidget = true);
+    final result = await _homeWidgetService.requestPinWidget(
+      HomeWidgetPinTarget.coupleTimetable42,
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(() => _isPinningCoupleWidget = false);
+    final message = switch (result) {
+      HomeWidgetPinRequestResult.requested => l10n.homeWidgetPinRequested(
+        l10n.homeWidgetTargetCoupleTimetable42,
+      ),
+      HomeWidgetPinRequestResult.unsupported =>
+        l10n.homeWidgetPinUnsupportedManual(
+          l10n.homeWidgetTargetCoupleTimetable42,
+        ),
+      HomeWidgetPinRequestResult.invalidWidgetType =>
+        l10n.homeWidgetInvalidType,
+      HomeWidgetPinRequestResult.failed => l10n.homeWidgetPinFailedManual(
+        l10n.homeWidgetTargetCoupleTimetable42,
+      ),
+    };
+    showAppToast(context, message: message);
+  }
+
+  Future<void> _pullPartnerWithu({
+    bool force = false,
+    bool showProgress = true,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (showProgress) {
+      setState(() => _isPullingWithu = true);
+    }
+    try {
+      final result = await _withuTimetableService.pullPartnerTimetable(
+        provider: context.read<TimetableProvider>(),
+        force: force,
+      );
+      await _loadWithuCoupleState();
+      if (!mounted) {
+        return;
+      }
+      switch (result.status) {
+        case WithuCouplePullStatus.imported:
+          showAppToast(
+            context,
+            message: l10n.withuCouplePullImported,
+            kind: AppToastKind.success,
+          );
+        case WithuCouplePullStatus.updated:
+          showAppToast(
+            context,
+            message: l10n.withuCouplePullUpdated,
+            kind: AppToastKind.success,
+          );
+        case WithuCouplePullStatus.unchanged:
+          showAppToast(context, message: l10n.withuCouplePullUnchanged);
+        case WithuCouplePullStatus.failed:
+          showAppToast(
+            context,
+            message: localizeServiceMessage(
+              l10n,
+              result.errorCode ?? 'withu_request_failed',
+            ),
+            kind: AppToastKind.error,
+          );
+      }
+    } finally {
+      if (mounted && showProgress) {
+        setState(() => _isPullingWithu = false);
+      }
+    }
+  }
+
+  Future<void> _uploadMyTimetableForWithu() async {
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isUploadingWithu = true);
+    try {
+      final errorCode = await _withuTimetableService
+          .uploadMyTimetableForPartner(
+            provider: context.read<TimetableProvider>(),
+          );
+      if (!mounted) {
+        return;
+      }
+      if (errorCode != null) {
+        showAppToast(
+          context,
+          message: localizeServiceMessage(l10n, errorCode),
+          kind: AppToastKind.error,
+        );
+        return;
+      }
+      showAppToast(
+        context,
+        message: l10n.withuCoupleUploadSuccess,
+        kind: AppToastKind.success,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingWithu = false);
+      }
+    }
+  }
+
+  Widget _buildWeekOffsetControl(
+    BuildContext context,
+    TimetableProvider provider,
+    int weekOffset,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    final previewWeek = provider.currentWeek;
+    final partnerWeek = provider.partnerWeekFor(previewWeek);
+    final canDecrement = weekOffset > CoupleTimetableLogic.minWeekOffset;
+    final canIncrement = weekOffset < CoupleTimetableLogic.maxWeekOffset;
+    final offsetLabel = weekOffset == 0
+        ? l10n.coupleTimetableWeekOffsetZero
+        : l10n.coupleTimetableWeekOffsetSigned(
+            weekOffset > 0 ? '+$weekOffset' : '$weekOffset',
+          );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            _WeekOffsetStepButton(
+              icon: Icons.remove_rounded,
+              enabled: canDecrement,
+              onPressed: canDecrement
+                  ? () => provider.updatePartnerWeekOffset(weekOffset - 1)
+                  : null,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                offsetLabel,
+                textAlign: TextAlign.center,
+                style: HyperosTypography.listTitle(context),
+              ),
+            ),
+            const SizedBox(width: 12),
+            _WeekOffsetStepButton(
+              icon: Icons.add_rounded,
+              enabled: canIncrement,
+              onPressed: canIncrement
+                  ? () => provider.updatePartnerWeekOffset(weekOffset + 1)
+                  : null,
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Text(
+          l10n.coupleTimetableWeekOffsetPreview(previewWeek, partnerWeek),
+          style: HyperosTypography.listDetail(context),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoRow(BuildContext context, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(label, style: HyperosTypography.listTitle(context)),
+          ),
+          Flexible(
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              style: HyperosTypography.listDetail(context),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _formatDateTime(DateTime value) {
+    final local = value.toLocal();
+    return '${local.year}-${local.month.toString().padLeft(2, '0')}-${local.day.toString().padLeft(2, '0')} '
+        '${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _exportForPartner() async {
+    final provider = context.read<TimetableProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    // 导出的是「我的课表」：当前课表停在 TA 时不能把 TA 的课表发给她自己。
+    final myProfile = provider.myTimetableProfile;
+    if (myProfile == null) {
+      return;
+    }
+    setState(() => _isExporting = true);
+    try {
+      await provider.dataTransferService.exportAndShare(
+        profileName: myProfile.name,
+        courses: myProfile.courses,
+        tasks: myProfile.tasks,
+        scheduleItems: myProfile.scheduleItems,
+        settings: myProfile.settings,
+        currentWeek: myProfile.currentWeek,
+        shareText: l10n.coupleTimetableShareText,
+        shareSubject: l10n.coupleTimetableShareSubject,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isExporting = false);
+      }
+    }
+  }
+
+  Future<void> _importPartner() async {
+    final provider = context.read<TimetableProvider>();
+    final l10n = AppLocalizations.of(context)!;
+    setState(() => _isImporting = true);
+    try {
+      final result = await FilePicker.pickFiles(
+        type: FileType.custom,
+        withData: true,
+        allowedExtensions: const ['json', 'mikcb'],
+      );
+      final file = result?.files.single;
+      if (file == null) {
+        return;
+      }
+      final bytes = file.bytes;
+      final content = bytes == null ? '' : utf8.decode(bytes);
+      if (!mounted || content.isEmpty) {
+        if (mounted && content.isEmpty) {
+          throw FormatException(l10n.importFileReadFailed);
+        }
+        return;
+      }
+      final importResult = await provider.importPartnerTimetable(content);
+      if (!mounted) {
+        return;
+      }
+      showAppToast(
+        context,
+        message: importResult.kind == PartnerImportResultKind.updated
+            ? l10n.coupleTimetableImportUpdated
+            : l10n.coupleTimetableImportSuccess,
+        kind: AppToastKind.success,
+      );
+    } on FormatException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      showAppToast(
+        context,
+        message: localizeServiceMessage(l10n, error.message),
+        kind: AppToastKind.error,
+      );
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      showAppToast(
+        context,
+        message: l10n.importFailedInvalidFile,
+        kind: AppToastKind.error,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isImporting = false);
+      }
+    }
+  }
+
+  Future<void> _confirmUnlink() async {
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showHyperosDialog<bool>(
+      context: context,
+      title: l10n.coupleTimetableUnlinkConfirmTitle,
+      message: l10n.coupleTimetableUnlinkConfirmMessage,
+      actions: [
+        HyperosDialogAction(
+          label: l10n.cancelAction,
+          onPressed: () => Navigator.pop(context, false),
+        ),
+        HyperosDialogAction(
+          label: l10n.coupleTimetableUnlink,
+          isPrimary: true,
+          onPressed: () => Navigator.pop(context, true),
+        ),
+      ],
+    );
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    setState(() => _isUnlinking = true);
+    try {
+      await context.read<TimetableProvider>().unlinkPartner();
+      if (!mounted) {
+        return;
+      }
+      showAppToast(
+        context,
+        message: l10n.coupleTimetableUnlinkSuccess,
+        kind: AppToastKind.success,
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUnlinking = false);
+      }
+    }
+  }
+}
+
+class _WeekOffsetStepButton extends StatelessWidget {
+  const _WeekOffsetStepButton({
+    required this.icon,
+    required this.enabled,
+    required this.onPressed,
+  });
+
+  final IconData icon;
+  final bool enabled;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return HyperosFrostedSurface(
+      borderRadius: BorderRadius.circular(HyperosTokens.controlRadius),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: enabled ? onPressed : null,
+          borderRadius: BorderRadius.circular(HyperosTokens.controlRadius),
+          child: SizedBox(
+            width: 44,
+            height: 44,
+            child: Icon(
+              icon,
+              size: 20,
+              color: enabled
+                  ? colors.primary
+                  : colors.onSurface.withValues(alpha: 0.35),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

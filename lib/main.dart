@@ -1,0 +1,1472 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:ui';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter_blackbox/flutter_blackbox.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'blackbox_adapters.dart';
+import 'logging/app_log_messages.dart';
+import 'models/timetable_settings.dart';
+import 'providers/timetable_provider.dart';
+import 'providers/withu_couple_session_provider.dart';
+import 'screens/course_import_screen.dart';
+import 'screens/startup_flow_screens.dart';
+import 'screens/user_guide_screen.dart';
+import 'screens/timetable_screen.dart';
+import 'screens/timetable_settings_screen.dart';
+import 'utils/app_toast.dart';
+import 'utils/home_startup_visual_primer.dart';
+import 'widgets/app_startup_splash.dart';
+import 'widgets/home_menu_route_catalog.dart';
+import 'widgets/home_update_prompt.dart';
+import 'widgets/miuix_font_weight_scope.dart';
+import 'services/app_log_service.dart';
+import 'services/fair_memory_service.dart';
+import 'services/memory_stats_service.dart';
+import 'services/debug_deep_link_navigator.dart';
+import 'services/debug_deep_link_service.dart';
+import 'services/app_migration_service.dart';
+import 'services/storage_service.dart';
+import 'services/android_animation_scale_service.dart';
+import 'services/app_diagnostic_service.dart';
+import 'services/withu_couple_auth_service.dart';
+import 'services/withu_couple_auto_sync_service.dart';
+import 'services/withu_couple_timetable_service.dart';
+import 'services/withu_app_update_service.dart';
+import 'services/app_update_service.dart';
+import 'services/frosted_blur_service.dart';
+import 'services/widget_launch_router.dart';
+import 'ui/app_fonts.dart';
+import 'ui/debug/debug.dart';
+import 'ui/hyperos/hyperos.dart';
+import 'ui/hyperos/hyperos_motion.dart';
+import 'ui/hyperos_motion_bridge.dart';
+
+ThemeMode _themeModeFromSettings(AppThemeMode mode) {
+  return switch (mode) {
+    AppThemeMode.system => ThemeMode.system,
+    AppThemeMode.light => ThemeMode.light,
+    AppThemeMode.dark => ThemeMode.dark,
+  };
+}
+
+ThemeData _appThemeData(
+  Brightness brightness, {
+  required AppFontSpec fontSpec,
+}) {
+  final theme = ThemeData(
+    brightness: brightness,
+    useMaterial3: true,
+    pageTransitionsTheme: HyperosNavigation.pageTransitionsTheme,
+  );
+  final fontFamily = fontSpec.fontFamily;
+  if (fontFamily == null || fontFamily.isEmpty) {
+    return theme;
+  }
+  return theme.copyWith(
+    textTheme: theme.textTheme.apply(
+      fontFamily: fontFamily,
+      fontFamilyFallback: fontSpec.fontFamilyFallback,
+    ),
+  );
+}
+
+Locale? _localeFromSettings(String localeTag) {
+  final normalized = localeTag.trim();
+  if (normalized.isEmpty) {
+    return null;
+  }
+  final canonical = normalized.replaceAll('-', '_');
+  for (final locale in AppLocalizations.supportedLocales) {
+    final tag = locale.countryCode?.isNotEmpty == true
+        ? '${locale.languageCode}_${locale.countryCode}'
+        : locale.languageCode;
+    if (tag.toLowerCase() == canonical.toLowerCase()) {
+      return locale;
+    }
+  }
+  final languageCode = canonical.split('_').first.toLowerCase();
+  for (final locale in AppLocalizations.supportedLocales) {
+    if (locale.languageCode.toLowerCase() == languageCode) {
+      return locale;
+    }
+  }
+  return Locale(languageCode);
+}
+
+String _bootSwitcherLabel(PackageInfo packageInfo, AppLocalizations l10n) {
+  if (packageInfo.packageName.endsWith('.profile')) {
+    return l10n.appTitleProfile;
+  }
+  if (packageInfo.packageName.endsWith('.debug')) {
+    return l10n.appTitleDebug;
+  }
+  final label = packageInfo.appName.trim();
+  return label.isNotEmpty ? label : l10n.appTitle;
+}
+
+String _windowTitleForPackage(PackageInfo packageInfo, AppLocalizations l10n) {
+  if (kReleaseMode) {
+    return l10n.appTitle;
+  }
+  if (packageInfo.packageName.endsWith('.profile')) {
+    return l10n.appTitleProfile;
+  }
+  if (packageInfo.packageName.endsWith('.debug')) {
+    return l10n.appTitleDebug;
+  }
+  final label = packageInfo.appName.trim();
+  if (label.isNotEmpty) {
+    return label;
+  }
+  return l10n.appTitle;
+}
+
+/// 首帧放行门：正常路径由 _AppEntryScreenState 在自绘启动画面首帧渲染后
+/// 触发；main() 中的看门狗超时后强制放行，避免启动管线挂死时永久停在
+/// 纯色底上不触发 ANR。
+final Completer<void> _firstFrameReleased = Completer<void>();
+
+void _releaseFirstFrame({required bool forced}) {
+  if (_firstFrameReleased.isCompleted) return;
+  _firstFrameReleased.complete();
+  try {
+    WidgetsBinding.instance.allowFirstFrame();
+  } catch (_) {
+    // defer/allow mismatch is non-fatal; future first frame will proceed.
+  }
+  if (forced) {
+    debugPrint('[boot] first-frame watchdog fired: forcing allowFirstFrame');
+    unawaited(
+      AppLogService.instance.error(
+        'first_frame_watchdog',
+        '启动首帧超时未放行，看门狗已强制放行',
+      ),
+    );
+  }
+}
+
+/// 看门狗强制换入首页的钩子：由 AppEntryScreen 状态注册（见
+/// _AppEntryScreenState.initState）。runApp 之前挂死时为空——此时尚无
+/// 自绘启动画面可卡住，首帧放行即回到系统画面，无需处理。
+void Function()? _forcedHomeRevealHook;
+
+Future<void> main() async {
+  runZonedGuarded(
+    () async {
+      // ensureInitialized() MUST be called inside the same zone as runApp()
+      // to avoid a "Zone mismatch" assertion. The binding records the zone
+      // in which it was first initialized; if runApp() runs in a different
+      // zone (e.g. this runZonedGuarded child zone), Flutter throws a debug
+      // assertion that — on some devices — is promoted to a fatal crash,
+      // particularly after an Android process restart (e.g. returning from
+      // the system image picker).
+      WidgetsFlutterBinding.ensureInitialized();
+      // 金标联盟「谷歌Android导航条适配」（Edge-to-Edge，截止 2026-10-31）：
+      // 全局启用手势导航条沉浸式。Android 15+（targetSdk 35+）系统已强制
+      // 生效；此处覆盖 Android 10~14 设备，使内容延伸到透明导航条下方，
+      // 更低版本由引擎回退为传统系统栏。不 await：平台通道异步生效，
+      // 不阻塞启动管线；基线只声明导航栏字段（引擎按字段合并），状态栏
+      // 样式仍由各页面 AnnotatedRegion 控制。
+      if (!kIsWeb && Platform.isAndroid) {
+        unawaited(SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge));
+        // 该 API 在当前 SDK 返回 void（内部自行排队发送），直接调用即可。
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            systemNavigationBarColor: Colors.transparent,
+            systemNavigationBarDividerColor: Colors.transparent,
+            systemNavigationBarIconBrightness: Brightness.dark,
+            systemNavigationBarContrastEnforced: false,
+          ),
+        );
+      }
+      // 启动品牌由应用自绘启动画面（AppStartupSplash）接管：系统启动画面
+      // 已在原生侧剥为纯色底。首帧扣住到启动画面首帧可绘制即放行，让它
+      // 覆盖存储/课表初始化期，完成后换入首页——避免多段闪切。
+      WidgetsBinding.instance.deferFirstFrame();
+      // 看门狗保险丝：若启动管线在任何放行点之前挂死（如存储 init 卡住）
+      // 或 widget 构建阶段抛异常，首帧将永不放行——表现为永远停在系统
+      // 启动画面且不触发 ANR。超时强制放行并留痕，保证可进入、可诊断。
+      Timer(const Duration(seconds: 6), () {
+        if (!_firstFrameReleased.isCompleted) {
+          _releaseFirstFrame(forced: true);
+        }
+        // 首帧放行 ≠ 首页换入：build 在 _homeRevealed 前恒渲染自绘启动
+        // 画面，若启动管线挂死（无异常、仅 await 永不返回），catch 分支
+        // 的降级换入同样不会触发——补一道强制换入，保证极端情况下仍能
+        // 进入主界面（正常路径已换入时钩子内部直接跳过）。
+        _forcedHomeRevealHook?.call();
+      });
+      unawaited(AppLogService.instance.initialize());
+      // 课表解码器在进程获得平台绑定后立即启动：存储初始化、profile JSON
+      // 反序列化和课表字段解码全部提前，与 packageInfo / runApp / splash
+      // 入场并行。启动流程稍后 await 同一个幂等 Future，不会重复加载。
+      final timetableProvider = TimetableProvider(autoInitialize: false);
+      unawaited(
+        timetableProvider.initialize().catchError((
+          Object error,
+          StackTrace stackTrace,
+        ) {
+          unawaited(
+            AppLogService.instance.error(
+              'early_timetable_initialization_failed',
+              '启动即刻课表初始化失败，启动流程稍后按降级路径处理',
+              error: error,
+              stackTrace: stackTrace,
+            ),
+          );
+        }),
+      );
+      // 预热诊断包名判定缓存：菜单目录用它同步过滤调试/性能版专属
+      // 入口（内存监控），不 await，晚到前该入口按不可见处理（保守）。
+      unawaited(MemoryStatsService.warmDiagnosticsBuildCache());
+      FairMemoryService.instance.ensureInitialized();
+      WidgetsBinding.instance.addObserver(_AppLifecycleLogObserver());
+
+      FlutterError.onError = (details) {
+        // Debug 构建下 presentError 会把异常重新抛进 zone，中断当前帧导致
+        // UI 卡死但"看起来没报错"。这里强制落盘（force: true），并同步
+        // 打印到终端，方便定位这类「卡死无响应」的框架异常。
+        debugPrint(
+          '[FlutterError.onError] ${details.exceptionAsString()}\n'
+          '${details.stack ?? StackTrace.current}',
+        );
+        // 仍保留默认呈现，让开发者工具/IDE 也能看到异常。
+        FlutterError.presentError(details);
+        final stackTrace = details.stack ?? StackTrace.current;
+        unawaited(
+          AppLogService.instance.error(
+            'flutter_framework_error',
+            details.exceptionAsString(),
+            error: details.exception,
+            stackTrace: stackTrace,
+            force: true,
+          ),
+        );
+        unawaited(
+          AppDiagnosticService.reportUnhandledError(
+            details.exception,
+            stackTrace,
+            category: 'flutter_framework_error',
+          ),
+        );
+      };
+
+      PlatformDispatcher.instance.onError = (error, stackTrace) {
+        unawaited(
+          AppLogService.instance.error(
+            'flutter_platform_error',
+            error.toString(),
+            error: error,
+            stackTrace: stackTrace,
+          ),
+        );
+        unawaited(
+          AppDiagnosticService.reportUnhandledError(
+            error,
+            stackTrace,
+            category: 'flutter_platform_error',
+          ),
+        );
+        return false;
+      };
+
+      if (!kReleaseMode) {
+        setupBlackBox();
+      }
+      late final PackageInfo packageInfo;
+      try {
+        packageInfo = await PackageInfo.fromPlatform();
+      } catch (error, stackTrace) {
+        debugPrint('PackageInfo.fromPlatform failed: $error');
+        unawaited(
+          AppLogService.instance.error(
+            'package_info_load_failed',
+            error.toString(),
+            error: error,
+            stackTrace: stackTrace,
+          ),
+        );
+        packageInfo = PackageInfo(
+          appName: '轻屿课表',
+          packageName: 'vip.qinghan.withu',
+          version: '',
+          buildNumber: '',
+        );
+      }
+      // 落一条真实版本号：发布事故里最难核对的就是「云端记录的版本号 vs 包内 versionName」，
+      // 而 release 包不打印 debugPrint，只能靠运行日志留痕。
+      unawaited(
+        AppLogService.instance.info(
+          'app_version',
+          'versionName=${packageInfo.version} versionCode='
+          '${packageInfo.buildNumber} package=${packageInfo.packageName}',
+        ),
+      );
+      // 依赖倒置登记：菜单目录（widgets 层）经此回调取设置库私有子页，
+      // 拆分后 home_menu_catalog 不再直接 import 设置页（消除 widgets →
+      // screens 循环依赖）。登记唯一的显式入口，早于任何菜单渲染。
+      registerSettingsPages(
+        settingsScreen: () => const TimetableSettingsScreen(),
+        subpageById: settingsSubpageById,
+      );
+      runApp(
+        MyApp(packageInfo: packageInfo, timetableProvider: timetableProvider),
+        );
+      unawaited(_warmUpAfterFirstFrame(packageInfo));
+    },
+    (error, stackTrace) {
+      unawaited(
+        AppLogService.instance.error(
+          'flutter_zone_error',
+          error.toString(),
+          error: error,
+          stackTrace: stackTrace,
+        ),
+      );
+      unawaited(
+        AppDiagnosticService.reportUnhandledError(
+          error,
+          stackTrace,
+          category: 'flutter_zone_error',
+        ),
+      );
+    },
+  );
+}
+
+Future<void> _warmUpAfterFirstFrame(PackageInfo packageInfo) async {
+  try {
+    await Future.wait([
+      AndroidAnimationScaleService.ensureInitialized(),
+      FrostedBlurService.probeNativeSupport(),
+    ]);
+    configureHyperosMotionFromAndroid();
+    if (!kReleaseMode) {
+      await loadBlackBoxOverlayPreferencesIfNeeded();
+    }
+    final l10n = lookupAppLocalizations(PlatformDispatcher.instance.locale);
+    await SystemChrome.setApplicationSwitcherDescription(
+      ApplicationSwitcherDescription(
+        label: _bootSwitcherLabel(packageInfo, l10n),
+        // Android 14+ rejects null primaryColor in the platform channel envelope.
+        primaryColor: HyperosMiuixLightColors.primary.toARGB32(),
+      ),
+    );
+  } catch (error, stackTrace) {
+    unawaited(
+      AppLogService.instance.error(
+        'startup_warmup_failed',
+        error.toString(),
+        error: error,
+        stackTrace: stackTrace,
+      ),
+    );
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({
+    super.key,
+    required this.packageInfo,
+    required this.timetableProvider,
+  });
+
+  final PackageInfo packageInfo;
+  final TimetableProvider timetableProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: timetableProvider),
+        ChangeNotifierProvider(create: (_) => WithuCoupleSessionProvider()),
+      ],
+      child:
+          Selector<
+            TimetableProvider,
+            ({AppFontMode fontMode, AppThemeMode themeMode, String localeTag})
+          >(
+            selector: (_, p) => (
+              fontMode: p.settings.appFontMode,
+              themeMode: p.settings.appThemeMode,
+              localeTag: p.settings.appLocaleTag,
+            ),
+            builder: (context, settings, child) {
+              final fontSpec = settings.fontMode.fontSpec;
+
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                onGenerateTitle: (context) => _windowTitleForPackage(
+                  packageInfo,
+                  AppLocalizations.of(context)!,
+                ),
+                localizationsDelegates: const [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: AppLocalizations.supportedLocales,
+                locale: _localeFromSettings(settings.localeTag),
+                themeMode: _themeModeFromSettings(settings.themeMode),
+                theme: _appThemeData(Brightness.light, fontSpec: fontSpec),
+                darkTheme: _appThemeData(Brightness.dark, fontSpec: fontSpec),
+                // Android VIEW deep links (mikcb-debug://...) are also delivered
+                // as Flutter pushNamed routes. We navigate via MethodChannel +
+                // DebugDeepLinkNavigator; swallow unknown platform routes so
+                // WidgetsApp does not assert "Could not find a generator".
+                onUnknownRoute: _buildUnknownPlatformRoute,
+                navigatorObservers: <NavigatorObserver>[
+                  _AppRouteLogObserver(),
+                  FairMemoryService.instance.routeObserver,
+                  hyperosRouteObserver,
+                  if (!kReleaseMode) BlackBox.journeyObserver,
+                ],
+                builder: (context, child) {
+                  final frostedAppearance = context
+                      .watch<TimetableProvider>()
+                      .settings
+                      .frostedAppearance;
+                  return BlackBoxOverlayHost(
+                    child: HyperosMotionHost(
+                      child: FrostedAppearanceScope(
+                        appearance: frostedAppearance,
+                        child: ScaffoldMessenger(
+                          child: Scaffold(
+                            backgroundColor: Colors.transparent,
+                            resizeToAvoidBottomInset: false,
+                            body: MiuixFontWeightScope(child: child!),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                home: AppEntryScreen(packageInfo: packageInfo),
+              );
+            },
+          ),
+    );
+  }
+}
+
+/// Ghost route for platform deep links that Flutter auto pushNamed's.
+///
+/// Immediately removes itself so the navigation stack stays clean while our
+/// debug MethodChannel handler performs the real navigation.
+Route<dynamic> _buildUnknownPlatformRoute(RouteSettings settings) {
+  return PageRouteBuilder<void>(
+    settings: settings,
+    opaque: false,
+    barrierDismissible: true,
+    transitionDuration: Duration.zero,
+    reverseTransitionDuration: Duration.zero,
+    pageBuilder: (context, animation, secondaryAnimation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted) {
+          return;
+        }
+        final route = ModalRoute.of(context);
+        if (route != null && route.isActive) {
+          final navigator = Navigator.of(context);
+          if (navigator.canPop()) {
+            navigator.removeRoute(route);
+          }
+        }
+      });
+      return const SizedBox.shrink();
+    },
+  );
+}
+
+class AppEntryScreen extends StatefulWidget {
+  const AppEntryScreen({super.key, required this.packageInfo});
+
+  final PackageInfo packageInfo;
+
+  @override
+  State<AppEntryScreen> createState() => _AppEntryScreenState();
+}
+
+class _AppEntryScreenState extends State<AppEntryScreen>
+    with WidgetsBindingObserver {
+  static const Duration _startupCrossFadeDuration = Duration(
+    microseconds: 290131,
+  );
+
+  final StorageService _storageService = StorageService();
+  final AppMigrationService _migrationService = AppMigrationService();
+  final WithuCoupleAuthService _withuAuthService = WithuCoupleAuthService();
+  late final WithuCoupleTimetableService _withuTimetableService =
+      WithuCoupleTimetableService(authService: _withuAuthService);
+  late final WithuCoupleAutoSyncService _withuAutoSyncService =
+      WithuCoupleAutoSyncService(timetableService: _withuTimetableService);
+  final WithuAppUpdateService _withuAppUpdateService = WithuAppUpdateService();
+  final AppUpdateService _appUpdateService = AppUpdateService();
+  bool _startupHandled = false;
+  bool _fairMemoryRecoveryHandled = false;
+  bool _allowFirstFrameCalled = false;
+  bool _homeRevealed = false;
+  bool _homeFadeIn = false;
+  bool _splashGone = false;
+  bool _splashFadingOut = false;
+  bool _revealScheduled = false;
+  bool _withuUpdateCheckRunning = false;
+  bool _withuUpdatePromptShowing = false;
+  AppUpdateDownloadController? _withuUpdateDownloadController;
+  final Stopwatch _splashClock = Stopwatch()..start();
+  Timer? _splashReplayHold;
+
+  void _allowFirstFrameOnce() {
+    if (_allowFirstFrameCalled) return;
+    _allowFirstFrameCalled = true;
+    _releaseFirstFrame(forced: false);
+  }
+
+  /// 启动流程完成，自绘启动画面退场、换入首页。
+  ///
+  /// 持有最短展示时长（kMinSplashDuration）：deferFirstFrame 期间首帧只
+  /// 构建不投递，放行后的第一个投递帧取投递时刻的树——初始化在帧间隙内
+  /// 跑完时（release 热缓存可 <16ms）首页会先于任何投递帧就位，启动画面
+  /// 一帧都上不了屏。按启动计时器剩余时间延迟换入，快设备强制可感知、
+  /// 慢设备零额外等待。
+  void _revealHomeOnce() {
+    if (_revealScheduled || !mounted) {
+      return;
+    }
+    _revealScheduled = true;
+    void reveal() {
+      if (!mounted || _homeRevealed) {
+        return;
+      }
+      setState(() {
+        _homeRevealed = true;
+      });
+      // 先让首页和 splash 合成一帧：首页的壁纸、课表与首屏材质完成布局
+      // 绘制后，才启动交叉过渡。淡出与淡入使用同一段约 290ms 时间线，
+      // 避免 splash 揭开尚未可见的内容。
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || !_homeRevealed || _splashFadingOut) {
+          return;
+        }
+        setState(() {
+          _homeFadeIn = true;
+          _splashFadingOut = true;
+        });
+      });
+    }
+
+    final hold = splashHoldRemaining(_splashClock.elapsed);
+    if (hold == Duration.zero) {
+      reveal();
+    } else {
+      Future.delayed(hold, reveal);
+    }
+  }
+
+  /// 看门狗强制换入：仅当首页既未换入也未排程时生效并留痕；正常启动
+  /// 路径先到时这里是空操作，不产生日志噪音。
+  void _forceRevealHomeFromWatchdog() {
+    if (_homeRevealed || _revealScheduled) {
+      return;
+    }
+    unawaited(
+      AppLogService.instance.error(
+        'home_reveal_watchdog',
+        '启动 6s 首页仍未换入，看门狗已强制换入首页',
+      ),
+    );
+    _revealHomeOnce();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    // 注册启动看门狗的强制换入钩子（顶层看门狗在 runApp 前就已挂上，
+    // 无法直接持有状态，经全局钩子解耦）。
+    _forcedHomeRevealHook = _forceRevealHomeFromWatchdog;
+    final provider = context.read<TimetableProvider>();
+    // 恢复 withU 情侣登录态：首页情侣标题（昵称/爱心/登录提示）依赖它。
+    unawaited(context.read<WithuCoupleSessionProvider>().restoreSession());
+    FairMemoryService.instance.registerSnapshotProvider(() async {
+      return <String, Object?>{
+        'activeProfileId': provider.activeProfileId,
+        'currentWeek': provider.currentWeek,
+        'currentDateWeek': provider.currentDateWeek,
+        'currentDayOfWeek': provider.currentDayOfWeek,
+      };
+    });
+    // Shared MethodChannel handler for external import + debug deep links.
+    // Installed early so routes that arrive during splash are not dropped.
+    unawaited(_installSharedMethodChannelHandler());
+    if (!kReleaseMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) {
+          return;
+        }
+        DebugDeepLinkNavigator.attach(context);
+        unawaited(DebugDeepLinkService.drainPending());
+      });
+    }
+    // 首帧 = 自绘启动画面：预解码启动图标后再放行——第一个投递帧就带
+    // 完整图标，不留图标晚一帧弹入的破绽；解码失败也照常放行。
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      precacheImage(
+        const AssetImage('assets/branding/launcher_icon.png'),
+        context,
+      ).whenComplete(_allowFirstFrameOnce);
+    });
+    unawaited(_handleStartupFlows());
+  }
+
+  Future<void> _installSharedMethodChannelHandler() async {
+    const channel = MethodChannel('vip.qinghan.withu/miui_live');
+    channel.setMethodCallHandler((call) async {
+      if (call.method == 'onExternalImportReceived') {
+        await Future.delayed(const Duration(milliseconds: 300));
+        await _checkPendingExternalImport();
+      } else if (call.method == 'onWidgetLaunchReceived') {
+        await _checkPendingWidgetLaunch();
+      } else if (call.method == 'onDebugRouteReceived' && !kReleaseMode) {
+        await DebugDeepLinkService.onNativeRouteReceived();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _splashReplayHold?.cancel();
+    _withuUpdateDownloadController?.cancel();
+    _withuAutoSyncService.dispose();
+    _withuAuthService.dispose();
+    _withuAppUpdateService.dispose();
+    if (!kReleaseMode) {
+      DebugDeepLinkNavigator.detach();
+    }
+    _forcedHomeRevealHook = null;
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    // 热重载重放启动淡出：splash 重新以不透明状态盖住已渲染的内容，
+    // 停留 kMinSplashDuration 后按同一约 290ms 淡出，便于直接验证动画。
+    if (!_homeRevealed) {
+      return;
+    }
+    _splashReplayHold?.cancel();
+    _splashGone = false;
+    _homeFadeIn = false;
+    _splashFadingOut = false;
+    _splashReplayHold = Timer(kMinSplashDuration, () {
+      if (mounted && _homeRevealed) {
+        setState(() {
+          _homeFadeIn = true;
+          _splashFadingOut = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(refreshHyperosMotionFromAndroid());
+      unawaited(_handleAppResumed());
+      unawaited(_checkWithuAppUpdate());
+    } else {
+      // 退到后台/被切走：把还在防抖窗口里的本地改动立刻上传——系统随时可能
+      // 回收进程，等不到 3s 防抖这次改动就只剩冷启动补传了。
+      if (state == AppLifecycleState.inactive ||
+          state == AppLifecycleState.hidden ||
+          state == AppLifecycleState.paused ||
+          state == AppLifecycleState.detached) {
+        unawaited(_withuAutoSyncService.handleAppPaused());
+      }
+    }
+  }
+
+  Future<void> _handleAppResumed() async {
+    if (!mounted) {
+      return;
+    }
+    unawaited(_withuAutoSyncService.handleAppResumed());
+    await context.read<TimetableProvider>().handleAppResumed();
+  }
+
+  Future<void> _checkWithuAppUpdate() async {
+    if (!mounted || _withuUpdateCheckRunning || _withuUpdatePromptShowing) {
+      return;
+    }
+    final currentVersion = widget.packageInfo.version.trim();
+    if (currentVersion.isEmpty) {
+      return;
+    }
+
+    _withuUpdateCheckRunning = true;
+    try {
+      final result = await _withuAppUpdateService.checkForUpdates(
+        currentVersion: currentVersion,
+      );
+      if (!mounted || result == null || !result.hasUpdate) {
+        return;
+      }
+      final release = result.latestRelease;
+      if (release == null || release.downloadUrl?.trim().isEmpty != false) {
+        return;
+      }
+      // 记下「当前版本 vs 云端声明的版本」：两者若对不上（例如云端把旧包标成新版本号），
+      // 这条日志就是最直接的证据，release 包没有它无从回溯。
+      unawaited(
+        AppLogService.instance.info(
+          'withu_update_available',
+          'current=$currentVersion remote=${release.version}',
+        ),
+      );
+      await _showWithuUpdatePrompt(release, currentVersion);
+    } catch (error, stackTrace) {
+      unawaited(
+        AppLogService.instance.warn(
+          'withu_update_check_failed',
+          error.toString(),
+          error: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    } finally {
+      _withuUpdateCheckRunning = false;
+    }
+  }
+
+  Future<void> _showWithuUpdatePrompt(
+    AppReleaseInfo release,
+    String currentVersion,
+  ) async {
+    if (!mounted || _withuUpdatePromptShowing) {
+      return;
+    }
+
+    _withuUpdatePromptShowing = true;
+    final promptController = HomeUpdatePromptController();
+    final downloadController = AppUpdateDownloadController();
+    _withuUpdateDownloadController = downloadController;
+
+    try {
+      await showHomeUpdatePrompt(
+        context,
+        release: release,
+        currentVersion: currentVersion,
+        controller: promptController,
+        onDownload: () => _downloadWithuUpdate(
+          release: release,
+          promptController: promptController,
+          downloadController: downloadController,
+        ),
+        onViewRelease: () async {
+          final uri = Uri.tryParse(release.releaseUrl);
+          if (uri != null) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          }
+        },
+        onSkipVersion: () async {
+          if (release.forceUpdate) {
+            return;
+          }
+          await _withuAppUpdateService.ignoreNonForcedVersion(release.version);
+        },
+        onCancelDownload: () {
+          _withuUpdateDownloadController?.cancel();
+          promptController.finishInAppDownload(success: false, cancelled: true);
+        },
+        onResumeDownload: () {
+          downloadController.reset();
+          return _downloadWithuUpdate(
+            release: release,
+            promptController: promptController,
+            downloadController: downloadController,
+          );
+        },
+      );
+    } finally {
+      if (identical(_withuUpdateDownloadController, downloadController)) {
+        _withuUpdateDownloadController = null;
+      }
+      _withuUpdatePromptShowing = false;
+      promptController.dispose();
+    }
+  }
+
+  Future<bool> _downloadWithuUpdate({
+    required AppReleaseInfo release,
+    required HomeUpdatePromptController promptController,
+    required AppUpdateDownloadController downloadController,
+  }) async {
+    final url = release.downloadUrl?.trim() ?? '';
+    if (url.isEmpty) {
+      promptController.finishInAppDownload(success: false);
+      return true;
+    }
+
+    promptController.beginInAppDownload();
+    _withuUpdateDownloadController = downloadController;
+    final error = await _appUpdateService.downloadAndInstallUpdate(
+      url,
+      (downloadedBytes, totalBytes) {
+        promptController.updateInAppProgress(downloadedBytes, totalBytes);
+      },
+      downloadController,
+      expectedApkSha256: release.expectedApkSha256,
+    );
+
+    if (!mounted) {
+      return false;
+    }
+    if (error == null) {
+      promptController.finishInAppDownload(success: true);
+      return false;
+    }
+
+    final cancelled = error == AppUpdateService.downloadCancelledMessage;
+    promptController.finishInAppDownload(success: false, cancelled: cancelled);
+    return true;
+  }
+
+  Future<void> _handleStartupFlows() async {
+    if (_startupHandled) {
+      return;
+    }
+    _startupHandled = true;
+    unawaited(
+      AppLogService.instance.info(
+        'startup_flow_started',
+        AppLogMessages.startupFlowStarted,
+      ),
+    );
+
+    try {
+      await _storageService.init();
+      if (!mounted) {
+        return;
+      }
+
+      final hasSeenGuide = await _storageService.hasSeenUserGuide();
+      if (!mounted) {
+        return;
+      }
+      final provider = context.read<TimetableProvider>();
+
+      // 老用户快速路径：等待本地课表快照完成后再进入主界面。
+      if (hasSeenGuide) {
+        await provider.initialize();
+        // 启动画面保持到首页视觉资产（壁纸位图 / 预模糊磨砂 / 墨色亮度采样）
+        // 就绪：放行后的第一帧必须是完整界面，不允许露出主题兜底的半成品
+        // 底色。prime 内部有预算与异常兜底，不会拖死启动管线。
+        await HomeStartupVisualPrimer.prime(provider.settings);
+        _withuAutoSyncService.bind(provider);
+        _revealHomeOnce();
+        unawaited(_checkWithuAppUpdate());
+        unawaited(_checkPendingExternalImport());
+        unawaited(_checkPendingWidgetLaunch());
+        unawaited(
+          AppLogService.instance.info(
+            'startup_flow_completed',
+            AppLogMessages.startupFlowCompletedNoOnboarding,
+          ),
+        );
+        unawaited(_maybeShowDeferredMigrationGuide());
+        await _revealMainContent();
+        return;
+      }
+
+      final legacyPackageFuture = _migrationService
+          .findInstalledLegacyPackage();
+      final providerInitFuture = provider.initialize();
+
+      final startupResults = await Future.wait([
+        _storageService.isAppDataEffectivelyEmpty(),
+        _storageService.hasCompletedOnboarding(),
+        _storageService.hasHandledPackageMigration(),
+        Future<bool>.value(hasSeenGuide),
+      ]);
+
+      final isDataEmpty = startupResults[0];
+      final hasHandledPackageMigration = startupResults[2];
+
+      await Future.wait([providerInitFuture, legacyPackageFuture]);
+      await HomeStartupVisualPrimer.prime(provider.settings);
+      _withuAutoSyncService.bind(provider);
+      _revealHomeOnce();
+      final legacyPackage = await legacyPackageFuture;
+      final shouldShowMigrationGuide =
+          !hasHandledPackageMigration && isDataEmpty && legacyPackage != null;
+
+      if (!mounted) {
+        return;
+      }
+
+      if (shouldShowMigrationGuide) {
+        final action = await Navigator.of(context).push<MigrationFlowAction>(
+          HyperosPageRoute(
+            builder: (_) =>
+                PackageMigrationGuideScreen(legacyPackageName: legacyPackage),
+            fullscreenDialog: true,
+          ),
+        );
+        if (!mounted) {
+          return;
+        }
+        if (action == MigrationFlowAction.restoreBackup) {
+          final imported = await _runBackupImportFlow(
+            forcedMode: _BackupImportMode.replaceCurrent,
+          );
+          if (imported) {
+            await _storageService.setHandledPackageMigration(true);
+            await _storageService.setCompletedOnboarding(true);
+          }
+        } else if (action == MigrationFlowAction.skip) {
+          await _storageService.setHandledPackageMigration(true);
+          await _storageService.setCompletedOnboarding(true);
+        }
+      }
+
+      if (!mounted) {
+        return;
+      }
+
+      await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) {
+        return;
+      }
+
+      final guideCompleted = await _openGuide(
+        markGuideSeenAfterExit: !hasSeenGuide,
+      );
+      if (!mounted || !guideCompleted) {
+        return;
+      }
+
+      unawaited(_checkPendingExternalImport());
+      unawaited(
+        AppLogService.instance.info(
+          'startup_flow_completed',
+          AppLogMessages.startupFlowCompletedAfterGuide,
+        ),
+      );
+      await _revealMainContent();
+      unawaited(_checkWithuAppUpdate());
+    } catch (e, stackTrace) {
+      // 初始化失败时降级换入主界面，避免白屏 hang
+      _revealHomeOnce();
+      unawaited(
+        AppLogService.instance.error(
+          'startup_flow_failed',
+          AppLogMessages.startupFlowFailed,
+          error: e,
+          stackTrace: stackTrace,
+        ),
+      );
+      if (mounted) {
+        await _revealMainContent();
+        unawaited(_checkWithuAppUpdate());
+      }
+    }
+  }
+
+  /// 快速启动路径下，极少数未完成迁移的老用户仍可能在后台弹出迁移引导。
+  Future<void> _maybeShowDeferredMigrationGuide() async {
+    try {
+      if (!mounted) {
+        return;
+      }
+      if (await _storageService.hasHandledPackageMigration()) {
+        return;
+      }
+      if (!await _storageService.isAppDataEffectivelyEmpty()) {
+        return;
+      }
+      final legacyPackage = await _migrationService
+          .findInstalledLegacyPackage();
+      if (!mounted || legacyPackage == null) {
+        return;
+      }
+
+      final action = await Navigator.of(context).push<MigrationFlowAction>(
+        HyperosPageRoute(
+          builder: (_) =>
+              PackageMigrationGuideScreen(legacyPackageName: legacyPackage),
+          fullscreenDialog: true,
+        ),
+      );
+      if (!mounted) {
+        return;
+      }
+      if (action == MigrationFlowAction.restoreBackup) {
+        final imported = await _runBackupImportFlow(
+          forcedMode: _BackupImportMode.replaceCurrent,
+        );
+        if (imported) {
+          await _storageService.setHandledPackageMigration(true);
+          await _storageService.setCompletedOnboarding(true);
+        }
+      } else if (action == MigrationFlowAction.skip) {
+        await _storageService.setHandledPackageMigration(true);
+        await _storageService.setCompletedOnboarding(true);
+      }
+    } catch (_) {
+      // Non-critical deferred migration helper.
+    }
+  }
+
+  /// 自绘启动画面已让位（_revealHomeOnce 换入首页），恢复记忆场景。
+  Future<void> _revealMainContent() async {
+    if (!mounted) {
+      return;
+    }
+    await _restoreFairMemoryScene();
+  }
+
+  Future<void> _restoreFairMemoryScene() async {
+    if (_fairMemoryRecoveryHandled) {
+      return;
+    }
+    _fairMemoryRecoveryHandled = true;
+    final snapshot = await FairMemoryService.instance
+        .takePendingRecoverySnapshot();
+    if (!mounted) {
+      return;
+    }
+    if (snapshot != null) {
+      await _restoreFairMemoryBusinessState(snapshot.businessState);
+      if (!mounted) {
+        return;
+      }
+    }
+    final lastRoute = snapshot?.lastNamedRoute;
+    if (lastRoute == null || lastRoute == '/') {
+      return;
+    }
+
+    final navigator = Navigator.of(context);
+    if (lastRoute.startsWith('/settings')) {
+      unawaited(
+        navigator.push<void>(
+          HyperosPageRoute(
+            settings: const RouteSettings(name: '/settings'),
+            builder: (_) => const TimetableSettingsScreen(),
+          ),
+        ),
+      );
+      return;
+    }
+    if (lastRoute.startsWith('/courses/import')) {
+      unawaited(
+        navigator.push<void>(
+          HyperosPageRoute(
+            settings: const RouteSettings(name: '/courses/import'),
+            builder: (_) => const CourseImportScreen(),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _restoreFairMemoryBusinessState(
+    Map<String, Object?> businessState,
+  ) async {
+    final provider = context.read<TimetableProvider>();
+    try {
+      await provider.initialize();
+      final profileId = businessState['activeProfileId'];
+      if (profileId is String &&
+          profileId.isNotEmpty &&
+          profileId != provider.activeProfileId &&
+          provider.profiles.any((profile) => profile.id == profileId)) {
+        await provider.switchProfile(profileId);
+      }
+      final weekValue = businessState['currentWeek'];
+      final week = weekValue is num ? weekValue.toInt() : 0;
+      if (week > 0 && week != provider.currentWeek) {
+        await provider.setCurrentWeek(week);
+      }
+    } catch (_) {
+      // Normal startup state remains the fallback if recovery is incomplete.
+    }
+  }
+
+  Future<bool> _openGuide({required bool markGuideSeenAfterExit}) async {
+    await Navigator.of(context).push<void>(
+      HyperosPageRoute(
+        settings: const RouteSettings(name: '/user-guide'),
+        builder: (_) => const UserGuideScreen(),
+        fullscreenDialog: true,
+      ),
+    );
+
+    if (!mounted) {
+      return false;
+    }
+
+    if (markGuideSeenAfterExit) {
+      await _storageService.setHasSeenUserGuide(true);
+    }
+
+    await _storageService.setCompletedOnboarding(true);
+    return true;
+  }
+
+  Future<bool> _runBackupImportFlow({
+    _BackupImportMode? forcedMode,
+    String? initialContent,
+  }) async {
+    if (!mounted) {
+      return false;
+    }
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.read<TimetableProvider>();
+    final importMode =
+        forcedMode ??
+        await showHyperosDialog<_BackupImportMode>(
+          context: context,
+          title: l10n.selectImportModeTitle,
+          message: l10n.selectImportModeMessage,
+          actions: [
+            HyperosDialogAction(
+              label: l10n.cancelAction,
+              onPressed: () => Navigator.pop(context),
+            ),
+            HyperosDialogAction(
+              label: l10n.replaceCurrentTimetable,
+              isPrimary: true,
+              onPressed: () =>
+                  Navigator.pop(context, _BackupImportMode.replaceCurrent),
+            ),
+            HyperosDialogAction(
+              label: l10n.importAsNewTimetable,
+              onPressed: () =>
+                  Navigator.pop(context, _BackupImportMode.importAsNew),
+            ),
+          ],
+        );
+
+    if (importMode == null || !mounted) {
+      return false;
+    }
+
+    try {
+      late final String content;
+      if (initialContent != null) {
+        content = initialContent;
+      } else {
+        final result = await FilePicker.pickFiles(
+          type: FileType.custom,
+          withData: true,
+          allowedExtensions: const ['json', 'mikcb'],
+        );
+        final file = result?.files.single;
+        if (file == null) {
+          return false;
+        }
+        final bytes = file.bytes;
+        content = bytes == null ? '' : utf8.decode(bytes);
+      }
+      if (content.isEmpty) {
+        throw FormatException(l10n.importFileReadFailed);
+      }
+
+      final message = switch (importMode) {
+        _BackupImportMode.replaceCurrent => await provider.importAppDataBackup(
+          content,
+        ),
+        _BackupImportMode.importAsNew =>
+          await provider.importAppDataBackupAsNewProfile(content),
+      };
+
+      if (!mounted) {
+        return false;
+      }
+      showAppToast(
+        context,
+        message: message != null
+            ? localizeServiceMessage(l10n, message)
+            : (importMode == _BackupImportMode.importAsNew
+                  ? l10n.createdNewTimetableAfterImport
+                  : l10n.backupRestoredSuccess),
+        kind: message != null ? AppToastKind.error : AppToastKind.success,
+      );
+      return message == null;
+    } on FormatException catch (e) {
+      if (mounted) {
+        showAppToast(
+          context,
+          message: localizeServiceMessage(l10n, e.message),
+          kind: AppToastKind.error,
+        );
+      }
+    } catch (_) {
+      if (mounted) {
+        showAppToast(
+          context,
+          message: l10n.importFailedInvalidFile,
+          kind: AppToastKind.error,
+        );
+      }
+    }
+    return false;
+  }
+
+  Future<void> _checkPendingExternalImport() async {
+    try {
+      const channel = MethodChannel('vip.qinghan.withu/miui_live');
+      final payload = await channel.invokeMethod<Map<Object?, Object?>>(
+        'getPendingExternalImport',
+      );
+      if (payload == null || !mounted) {
+        return;
+      }
+
+      final kind = payload['kind'] as String?;
+      switch (kind) {
+        case 'ics':
+          final icsContent = payload['textContent'] as String?;
+          if (icsContent != null && icsContent.isNotEmpty) {
+            await Navigator.of(context).push(
+              HyperosPageRoute(
+                settings: const RouteSettings(
+                  name: '/courses/import/ics-external',
+                ),
+                builder: (_) =>
+                    IcsCourseImportScreen(initialIcsContent: icsContent),
+              ),
+            );
+          }
+        case 'backup':
+          final backupContent = payload['textContent'] as String?;
+          if (backupContent != null && backupContent.isNotEmpty) {
+            await _runBackupImportFlow(initialContent: backupContent);
+          }
+        case 'spreadsheet':
+          final filePath = payload['filePath'] as String?;
+          final fileName = payload['fileName'] as String?;
+          if (filePath != null && filePath.isNotEmpty) {
+            await Navigator.of(context).push(
+              HyperosPageRoute(
+                settings: const RouteSettings(
+                  name: '/courses/import/spreadsheet-external',
+                ),
+                builder: (_) => SpreadsheetCourseImportScreen(
+                  initialFilePath: filePath,
+                  initialFileName: fileName,
+                ),
+              ),
+            );
+          }
+      }
+    } catch (e, stackTrace) {
+      // 非关键功能不中断启动流程，但失败要留痕：否则用户反馈
+      // 「分享导入没反应」时没有任何线索可查。
+      debugPrint('checkPendingExternalImport failed: $e');
+      unawaited(
+        AppLogService.instance.warn(
+          'external_import_check_failed',
+          e.toString(),
+          error: e,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
+  }
+
+  Future<void> _checkPendingWidgetLaunch() async {
+    if (!mounted) {
+      return;
+    }
+    try {
+      final outcome = await WidgetLaunchRouter.handle(context);
+      if (!mounted) {
+        return;
+      }
+      if (outcome == WidgetLaunchOutcome.coupleModeOff) {
+        await _promptCoupleModeOff();
+        return;
+      }
+      if (outcome != WidgetLaunchOutcome.bindingMissing) {
+        return;
+      }
+      showAppToast(
+        context,
+        message: AppLocalizations.of(context)!.homeWidgetBindingMissingToast,
+        kind: AppToastKind.error,
+      );
+    } catch (e) {
+      // 非关键功能：分流失败按普通打开处理。
+      unawaited(
+        AppLogService.instance.warn(
+          'home_widget_launch_route_failed',
+          AppLogMessages.homeWidgetSyncFailed,
+          extras: {'error': '$e'},
+        ),
+      );
+    }
+  }
+
+  /// 情侣模式关闭时点桌面情侣卡片：卡片整块不可用，只把用户带回 App，
+  /// 由这里弹窗引导手动开启（不再由分流逻辑替用户打开开关）。
+  ///
+  /// 弹窗不给按钮，只放一行「情侣模式」+ 开关：开关状态就是设置本身，
+  /// 拨动即落库并刷新卡片快照，弹窗本身不自动关闭（点外部收起）。
+  Future<void> _promptCoupleModeOff() async {
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.read<TimetableProvider>();
+    var enabled = provider.settings.coupleTimetableOverlayEnabled;
+    await showHyperosDialog<void>(
+      context: context,
+      body: StatefulBuilder(
+        builder: (context, setSheetState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(l10n.homeWidgetCoupleModeOffMessage),
+            const SizedBox(height: 12),
+            HyperosSwitchTile(
+              title: l10n.coupleModeTitle,
+              value: enabled,
+              onChanged: (value) {
+                setSheetState(() => enabled = value);
+                unawaited(() async {
+                  await provider.updateSettings(
+                    provider.settings.copyWith(
+                      coupleTimetableOverlayEnabled: value,
+        ),
+                  );
+                  await provider.syncCoupleTimetableWidgetSnapshot();
+                }());
+              },
+        ),
+      ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // 启动品牌 = 自绘启动画面（图标/文字全走应用自己的渲染）；存储与课表
+    // 初始化完成后由 _revealHomeOnce 换入正常界面：首页先完成一帧，
+    // 再与 splash 做同长约 290ms 的交叉淡入淡出。
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        if (_homeRevealed)
+          AnimatedOpacity(
+            opacity: _homeFadeIn ? 1.0 : 0.0,
+            duration: _startupCrossFadeDuration,
+            curve: Curves.easeOut,
+            child: const TimetableScreen(),
+          ),
+        if (!_splashGone)
+          IgnorePointer(
+            child: AnimatedOpacity(
+              opacity: _splashFadingOut ? 0.0 : 1.0,
+              duration: _startupCrossFadeDuration,
+              curve: Curves.easeIn,
+              onEnd: _removeSplashAfterFade,
+              child: const AppStartupSplash(),
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _removeSplashAfterFade() {
+    // 重放路径会先播放一次 0→1 的入场补间，完成后不能误删 splash。
+    if (mounted && _splashFadingOut && !_splashGone) {
+      setState(() => _splashGone = true);
+    }
+  }
+}
+
+enum _BackupImportMode { replaceCurrent, importAsNew }
+
+class _AppLifecycleLogObserver with WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    unawaited(
+      AppLogService.instance.info(
+        'app_lifecycle_state_changed',
+        AppLogMessages.appLifecycleChanged,
+        extras: {'state': state.name},
+      ),
+    );
+  }
+}
+
+class _AppRouteLogObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _log('route_pushed', route, previousRoute);
+    super.didPush(route, previousRoute);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    _log('route_popped', route, previousRoute);
+    super.didPop(route, previousRoute);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    unawaited(
+      AppLogService.instance.info(
+        'route_replaced',
+        AppLogMessages.navigatorRouteReplaced,
+        extras: {
+          'route': _describeRoute(newRoute),
+          'previousRoute': _describeRoute(oldRoute),
+        },
+      ),
+    );
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+  }
+
+  void _log(
+    String category,
+    Route<dynamic>? route,
+    Route<dynamic>? previousRoute,
+  ) {
+    unawaited(
+      AppLogService.instance.debug(
+        category,
+        AppLogMessages.navigatorRouteChanged,
+        extras: {
+          'route': _describeRoute(route),
+          'previousRoute': _describeRoute(previousRoute),
+        },
+      ),
+    );
+  }
+
+  String _describeRoute(Route<dynamic>? route) {
+    if (route == null) {
+      return '';
+    }
+    final name = route.settings.name?.trim();
+    if (name != null && name.isNotEmpty) {
+      return name;
+    }
+    return route.runtimeType.toString();
+  }
+}

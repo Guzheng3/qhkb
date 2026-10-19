@@ -1,0 +1,25 @@
+{
+  "updatedAt": "2026-09-17T07:23:32+00:00",
+  "source": "assets/warehouse/root_index.yaml",
+  "counts": {
+    "total": 2,
+    "schools": 2,
+    "generic": 0
+  },
+  "schools": [
+    {
+      "id": "MYSY",
+      "name": "绵阳师范学院",
+      "initial": "M",
+      "resourceFolder": "MYSY",
+      "category": "school"
+    },
+    {
+      "id": "SCUEC",
+      "name": "中南民族大学",
+      "initial": "Z",
+      "resourceFolder": "SCUEC",
+      "category": "school"
+    }
+  ]
+}

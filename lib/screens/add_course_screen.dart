@@ -1,0 +1,2111 @@
+import 'package:flutter/material.dart';
+import 'package:university_timetable/l10n/app_localizations.dart';
+import 'package:university_timetable/l10n/service_message_localizer.dart';
+import 'package:university_timetable/l10n/enum_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
+import '../models/course.dart';
+import '../models/time_scheme.dart';
+import '../models/timetable_settings.dart';
+import '../providers/timetable_provider.dart';
+import '../utils/app_toast.dart';
+import '../utils/hex_color.dart';
+import '../widgets/about_info_sheet.dart';
+import '../widgets/course_palette_sheet.dart';
+import '../widgets/course_field_picker_sheet.dart';
+import '../widgets/course_template_picker_sheet.dart';
+import '../ui/hyperos/hyperos.dart';
+import '../widgets/miuix_number_picker_sheet.dart';
+import '../widgets/time_scheme_picker_sheet.dart';
+
+enum _WeekSelectionMode { range, custom }
+
+class AddCourseScreen extends StatefulWidget {
+  final Course? course;
+  final CourseGroup? courseGroup;
+  final Course? initialCourse;
+  final int? initialDayOfWeek;
+  final int? initialStartSection;
+  final int? initialWeek;
+
+  const AddCourseScreen({
+    super.key,
+    this.course,
+    this.courseGroup,
+    this.initialCourse,
+    this.initialDayOfWeek,
+    this.initialStartSection,
+    this.initialWeek,
+  });
+
+  @override
+  State<AddCourseScreen> createState() => _AddCourseScreenState();
+}
+
+class _ScheduleEntryData {
+  String id;
+  int dayOfWeek;
+  int startSection;
+  int endSection;
+  String teacher;
+  String location;
+  int startWeek;
+  int endWeek;
+  bool isOddWeek;
+  bool isEvenWeek;
+  _WeekSelectionMode weekSelectionMode;
+  Set<int> selectedCustomWeeks;
+  List<int>? suspendedWeeks;
+  String? note;
+  Map<int, CourseSessionNote>? sessionNotes;
+  String? timeSchemeIdOverride;
+
+  _ScheduleEntryData({
+    required this.id,
+    this.dayOfWeek = 1,
+    this.startSection = 1,
+    this.endSection = 2,
+    this.teacher = '',
+    this.location = '',
+    this.startWeek = 1,
+    this.endWeek = 16,
+    this.isOddWeek = false,
+    this.isEvenWeek = false,
+    this.weekSelectionMode = _WeekSelectionMode.range,
+    Set<int>? selectedCustomWeeks,
+    this.suspendedWeeks,
+    this.note,
+    this.sessionNotes,
+    this.timeSchemeIdOverride,
+  }) : selectedCustomWeeks = selectedCustomWeeks ?? <int>{};
+
+  static _ScheduleEntryData fromCourse(Course course) {
+    final customWeeks = course.normalizedCustomWeeks;
+    return _ScheduleEntryData(
+      id: course.id,
+      dayOfWeek: course.dayOfWeek,
+      startSection: course.startSection,
+      endSection: course.endSection,
+      teacher: course.teacher,
+      location: course.location,
+      startWeek: course.startWeek,
+      endWeek: course.endWeek,
+      isOddWeek: course.isOddWeek,
+      isEvenWeek: course.isEvenWeek,
+      weekSelectionMode: customWeeks != null
+          ? _WeekSelectionMode.custom
+          : _WeekSelectionMode.range,
+      selectedCustomWeeks: customWeeks?.toSet() ?? <int>{},
+      suspendedWeeks: course.normalizedSuspendedWeeks,
+      note: course.note,
+      sessionNotes: course.sessionNotes,
+      timeSchemeIdOverride: course.timeSchemeIdOverride,
+    );
+  }
+
+  Course toCourse({
+    required String name,
+    String? shortName,
+    required String color,
+    required CourseNature courseNature,
+    String? description,
+    required String startTime,
+    required String endTime,
+  }) {
+    List<int>? customWeeks;
+    if (weekSelectionMode == _WeekSelectionMode.custom &&
+        selectedCustomWeeks.isNotEmpty) {
+      customWeeks = selectedCustomWeeks.toList()..sort();
+    }
+    return Course(
+      id: id,
+      name: name,
+      shortName: shortName,
+      teacher: teacher,
+      location: location,
+      dayOfWeek: dayOfWeek,
+      startSection: startSection,
+      endSection: endSection,
+      startTime: startTime,
+      endTime: endTime,
+      color: color,
+      startWeek: customWeeks == null ? startWeek : customWeeks.first,
+      endWeek: customWeeks == null ? endWeek : customWeeks.last,
+      isOddWeek: customWeeks == null ? isOddWeek : false,
+      isEvenWeek: customWeeks == null ? isEvenWeek : false,
+      customWeeks: customWeeks,
+      suspendedWeeks: suspendedWeeks,
+      courseNature: courseNature,
+      description: description,
+      note: note,
+      sessionNotes: sessionNotes,
+      timeSchemeIdOverride: timeSchemeIdOverride,
+    );
+  }
+}
+
+class _AddCourseScreenState extends State<AddCourseScreen> {
+  static const _reuseCourseActionWidth = 108.0;
+  static const _shortNameActionWidth = 76.0;
+
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _shortNameController = TextEditingController();
+  final _teacherController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _descriptionController = TextEditingController();
+
+  CourseNature _courseNature = CourseNature.required;
+  String _selectedColor = '#2196F3';
+  List<_ScheduleEntryData> _scheduleEntries = [];
+  final List<TextEditingController> _entryTeacherControllers = [];
+  final List<TextEditingController> _entryLocationControllers = [];
+
+  List<String> _weekdayLabels(AppLocalizations l10n) => [
+    l10n.weekdayMon,
+    l10n.weekdayTue,
+    l10n.weekdayWed,
+    l10n.weekdayThu,
+    l10n.weekdayFri,
+    l10n.weekdaySat,
+    l10n.weekdaySun,
+  ];
+
+  Color _parseColor(String colorHex) {
+    return parseHexColorOrFallback(colorHex, fallback: const Color(0xFF2196F3));
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    {
+      if (widget.courseGroup != null) {
+        // Editing existing group: load shared fields from the first course.
+        final courses = widget.courseGroup!.courses;
+        // Put the tapped course first so it's immediately visible.
+        final ordered = widget.initialCourse != null
+            ? [
+                widget.initialCourse!,
+                ...courses.where((c) => c.id != widget.initialCourse!.id),
+              ]
+            : courses;
+        final first = ordered.first;
+        _nameController.text = first.name;
+        _shortNameController.text = first.shortName ?? '';
+        _descriptionController.text = first.description ?? first.note ?? '';
+        _courseNature = first.courseNature;
+        _selectedColor = first.color;
+        // Build per-schedule entries from all courses.
+        _scheduleEntries = ordered
+            .map(_ScheduleEntryData.fromCourse)
+            .toList();
+      } else if (widget.course != null) {
+        // Editing a single existing course in group mode: wrap as one entry.
+        _loadCourseData(widget.course!);
+        _scheduleEntries = [_ScheduleEntryData.fromCourse(widget.course!)];
+      } else {
+        // Adding new course: start with one empty schedule entry.
+        _scheduleEntries = [
+          _ScheduleEntryData(
+            id: const Uuid().v4(),
+            dayOfWeek: widget.initialDayOfWeek ?? 1,
+            startSection: widget.initialStartSection ?? 1,
+            endSection: (widget.initialStartSection ?? 1) + 1,
+          ),
+        ];
+      }
+      for (final entry in _scheduleEntries) {
+        _entryTeacherControllers.add(
+          TextEditingController(text: entry.teacher),
+        );
+        _entryLocationControllers.add(
+          TextEditingController(text: entry.location),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _shortNameController.dispose();
+    _teacherController.dispose();
+    _locationController.dispose();
+    _descriptionController.dispose();
+    for (final c in _entryTeacherControllers) {
+      c.dispose();
+    }
+    for (final c in _entryLocationControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final provider = context.watch<TimetableProvider>();
+    final settings = provider.settings;
+
+    return HyperosSubpage(
+      onBack: () => Navigator.pop(context),
+      title: Text(_resolveTitle()),
+      suffixes: [
+        if (widget.courseGroup != null)
+          FHeaderAction(
+            icon: const Icon(Icons.delete_outline_rounded),
+            semanticsLabel: l10n.deleteCourseTitle,
+            onPress: _confirmDeleteGroup,
+          )
+        else if (widget.course != null)
+          FHeaderAction(
+            icon: const Icon(Icons.delete_outline_rounded),
+            semanticsLabel: l10n.deleteCourseTitle,
+            onPress: _confirmDeleteCourse,
+          ),
+        FHeaderAction(
+          icon: const Icon(Icons.check_rounded),
+          semanticsLabel: l10n.saveAction,
+          onPress: () => _saveCourse(provider, settings),
+        ),
+      ],
+      child: Form(
+        key: _formKey,
+        child: _buildGroupEditingBody(provider, settings),
+      ),
+    );
+  }
+
+  Future<void> _confirmDeleteCourse() async {
+    final course = widget.course;
+    if (course == null) {
+      return;
+    }
+
+    final l10n = AppLocalizations.of(context)!;
+    final confirmed = await showHyperosConfirmDialog(
+      context: context,
+      title: l10n.deleteCourseTitle,
+      message: l10n.confirmDeleteCourseMessage(course.name),
+      cancelLabel: l10n.cancelAction,
+      confirmLabel: l10n.deleteAction,
+      destructive: true,
+    );
+
+    if (confirmed != true || !mounted) {
+      return;
+    }
+
+    await context.read<TimetableProvider>().deleteCourse(course.id);
+    if (!mounted) {
+      return;
+    }
+    showAppToast(
+      context,
+      message: AppLocalizations.of(context)!.courseDeleted,
+      kind: AppToastKind.success,
+    );
+    Navigator.pop(context);
+  }
+
+  void _loadCourseData(Course course) {
+    _nameController.text = course.name;
+    _shortNameController.text = course.shortName ?? '';
+    _teacherController.text = course.teacher;
+    _locationController.text = course.location;
+    _descriptionController.text = course.description ?? course.note ?? '';
+    _courseNature = course.courseNature;
+    _selectedColor = course.color;
+  }
+
+  String _resolveTitle() {
+    final l10n = AppLocalizations.of(context)!;
+    return widget.courseGroup != null || widget.course != null
+        ? l10n.editCourseTitle
+        : l10n.addCourseTitle;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Teacher / Location picker — see [showCourseFieldPickerSheet]
+  // ---------------------------------------------------------------------------
+
+  /// Shows a time scheme picker bottom sheet.
+  ///
+  /// [currentValue] is the currently selected time scheme override ID
+  /// (null means "follow profile").
+  /// [onSelected] is called when the user picks a scheme (null = follow profile).
+  // ---------------------------------------------------------------------------
+  // Group editing UI
+  // ---------------------------------------------------------------------------
+
+  List<Widget> _withSpacing(List<Widget> children, {double spacing = 16}) {
+    final spaced = <Widget>[];
+    for (var index = 0; index < children.length; index++) {
+      if (index > 0) {
+        spaced.add(SizedBox(height: spacing));
+      }
+      spaced.add(children[index]);
+    }
+    return spaced;
+  }
+
+  Widget _buildPickerTile({
+    required String label,
+    required String value,
+    required IconData icon,
+    required VoidCallback onPress,
+    bool isPlaceholder = false,
+  }) {
+    return HyperosListTile(
+      icon: icon,
+      title: label,
+      details: isPlaceholder ? null : value,
+      onTap: onPress,
+    );
+  }
+
+  Future<void> _pickFromSelectSheet({
+    required String title,
+    required Map<String, int> items,
+    required int currentValue,
+    required ValueChanged<int> onSelected,
+  }) async {
+    final l10n = AppLocalizations.of(context)!;
+    final selected = await showHyperosSelectSheet<int>(
+      context: context,
+      title: title,
+      items: items,
+      currentValue: currentValue,
+      cancelLabel: l10n.cancelAction,
+    );
+    if (!mounted || selected == null || selected == currentValue) {
+      return;
+    }
+    onSelected(selected);
+  }
+
+  /// Miuix wheel sheet for numeric ranges (sections / weeks) — same picker as
+  /// the semester week count sheet on the settings home page.
+  Future<void> _pickFromNumberWheelSheet({
+    required String title,
+    required int currentValue,
+    required int minValue,
+    required int maxValue,
+    required String Function(int value) label,
+    required ValueChanged<int> onSelected,
+  }) async {
+    final selected = await showMiuixNumberPickerSheet(
+      context,
+      title: title,
+      currentValue: currentValue,
+      minValue: minValue,
+      maxValue: maxValue,
+      label: label,
+    );
+    if (!mounted || selected == null || selected == currentValue) {
+      return;
+    }
+    onSelected(selected);
+  }
+
+  Widget _buildGroupEditingBody(
+    TimetableProvider provider,
+    TimetableSettings settings,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    return HyperosListView(
+      children: [
+        _buildGroupSharedInfoSection(provider, l10n),
+        const HyperosSectionGap(),
+        _buildScheduleEntriesSection(provider, settings, l10n),
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildGroupSharedInfoSection(
+    TimetableProvider provider,
+    AppLocalizations l10n,
+  ) {
+    final typo = context.theme.typography.body;
+    final colors = context.theme.colors;
+    return HyperosControlCard(
+      // Mixed inset fields + full-bleed [HyperosSelectTile]: edge-to-edge card
+      // so the select row applies its own 16dp padding once (not stacked on
+      // [HyperosControlCard.headerlessBodyPadding]).
+      edgeToEdge: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HyperosControlCardScope.defaultHorizontalPadding,
+              HyperosControlCardScope.defaultHorizontalPadding,
+              HyperosControlCardScope.defaultHorizontalPadding,
+              0,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 6),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l10n.sharedInfoTitle,
+                      style: typo.sm.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  IconButton(
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(
+                      minWidth: 32,
+                      minHeight: 32,
+                    ),
+                    tooltip: l10n.sharedInfoHint,
+                    onPressed: () => _showSharedInfoHintSheet(l10n),
+                    icon: Icon(
+                      Icons.info_outline_rounded,
+                      size: 18,
+                      color: colors.mutedForeground,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: HyperosControlCardScope.defaultHorizontalPadding,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _withSpacing([
+                _buildCourseNameField(provider, l10n),
+                _buildShortNameField(l10n),
+              ], spacing: 8),
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Full-bleed preference row; owns its own horizontal insets.
+          HyperosSelectTile<CourseNature>(
+            label: l10n.courseNatureLabel,
+            items: {
+              for (final item in CourseNature.values)
+                courseNatureLabel(l10n, item): item,
+            },
+            value: _courseNature,
+            onChanged: (value) => setState(() => _courseNature = value),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              HyperosControlCardScope.defaultHorizontalPadding,
+              0,
+              HyperosControlCardScope.defaultHorizontalPadding,
+              HyperosControlCardScope.defaultBodyBottomInset,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: _withSpacing([
+                HyperosTextField(
+                  controller: _descriptionController,
+                  label: l10n.courseDescriptionOptional,
+                  minLines: 2,
+                  maxLines: 4,
+                ),
+                HyperosPickerField(
+                  label: l10n.courseColorTitle,
+                  value: _selectedColor.toUpperCase(),
+                  leading: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      color: _parseColor(_selectedColor),
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        color: HyperosColors.outline(context),
+                      ),
+                    ),
+                  ),
+                  onTap: _showFullColorPalette,
+                ),
+              ], spacing: 8),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showSharedInfoHintSheet(AppLocalizations l10n) {
+    showHyperosSheet<void>(
+      context: context,
+      builder: (_) => AboutInfoSheetBody(
+        title: l10n.sharedInfoTitle,
+        items: [
+          l10n.sharedInfoSheetItemCourseName,
+          l10n.sharedInfoSheetItemShortName,
+          l10n.sharedInfoSheetItemSharedSync,
+        ],
+      ),
+    );
+  }
+
+  void _autofillShortNameFromCourseName() {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      return;
+    }
+    setState(() {
+      _shortNameController.text = name.characters.take(2).string;
+    });
+  }
+
+  Widget _buildCourseNameField(
+    TimetableProvider provider,
+    AppLocalizations l10n,
+  ) {
+    final typo = context.theme.typography.body;
+    final colors = context.theme.colors;
+    final showReuseAction = widget.course == null;
+
+    return FormField<String>(
+      validator: (value) {
+        final name = (value ?? _nameController.text).trim();
+        if (name.isEmpty) {
+          return l10n.pleaseEnterCourseName;
+        }
+        return null;
+      },
+      builder: (field) {
+        final helperText = field.hasError
+            ? field.errorText
+            : l10n.courseNameHelper;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              l10n.courseNameLabel,
+              style: typo.sm.copyWith(fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(
+                  child: HyperosTextField(
+                    controller: _nameController,
+                    textInputAction: TextInputAction.next,
+                    onChanged: field.didChange,
+                  ),
+                ),
+                if (showReuseAction) ...[
+                  const SizedBox(width: 8),
+                  SizedBox(
+                    width: _reuseCourseActionWidth,
+                    child: HyperosButton(
+                      label: l10n.reuseExistingCourseLabel,
+                      variant: HyperosButtonVariant.secondary,
+                      dense: true,
+                      expand: true,
+                      fitLabel: true,
+                      onPressed: () => _showCourseTemplateSheet(provider),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+            if (helperText != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                helperText,
+                style: typo.xs2.copyWith(
+                  color: colors.mutedForeground,
+                  height: 1.35,
+                ),
+              ),
+            ],
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildShortNameField(AppLocalizations l10n) {
+    final typo = context.theme.typography.body;
+    final colors = context.theme.colors;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          l10n.courseShortNameOptional,
+          style: typo.sm.copyWith(fontWeight: FontWeight.w500),
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: HyperosTextField(
+                controller: _shortNameController,
+                textInputAction: TextInputAction.next,
+              ),
+            ),
+            const SizedBox(width: 8),
+            SizedBox(
+              width: _shortNameActionWidth,
+              child: HyperosButton(
+                label: l10n.courseShortNameAutoFillAction,
+                variant: HyperosButtonVariant.secondary,
+                dense: true,
+                expand: true,
+                fitLabel: true,
+                onPressed: _autofillShortNameFromCourseName,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 6),
+        Text(
+          l10n.courseShortNameHelper,
+          style: typo.xs2.copyWith(color: colors.mutedForeground, height: 1.35),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildScheduleConflictLinks(int index, AppLocalizations l10n) {
+    final entry = _scheduleEntries[index];
+    final provider = context.read<TimetableProvider>();
+    final partners = provider.courseConflictMap[entry.id] ?? const <Course>[];
+    if (partners.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    // HyperOS preference-row style (not a custom alert banner):
+    // title + optional tag + detail + chevron; whole row is the action.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (
+          var partnerIndex = 0;
+          partnerIndex < partners.length;
+          partnerIndex++
+        )
+          Padding(
+            padding: EdgeInsets.only(top: partnerIndex == 0 ? 4 : 8),
+            child: _ScheduleConflictPartnerRow(
+              partner: partners[partnerIndex],
+              onOpen: () => _openPartnerSchedule(partners[partnerIndex]),
+            ),
+          ),
+      ],
+    );
+  }
+
+  void _openPartnerSchedule(Course partner) {
+    CourseGroup? group;
+    for (final candidate in context.read<TimetableProvider>().courseGroups) {
+      if (candidate.courses.any((course) => course.id == partner.id)) {
+        group = candidate;
+        break;
+      }
+    }
+    if (group == null || !mounted) {
+      return;
+    }
+    Navigator.of(context).push(
+      HyperosPageRoute(
+        settings: const RouteSettings(name: '/course/edit-partner'),
+        builder: (_) =>
+            AddCourseScreen(courseGroup: group, initialCourse: partner),
+      ),
+    );
+  }
+
+  Widget _buildScheduleEntriesSection(
+    TimetableProvider provider,
+    TimetableSettings settings,
+    AppLocalizations l10n,
+  ) {
+    final hasMultipleEntries = _scheduleEntries.length > 1;
+    return HyperosControlCard(
+      title: hasMultipleEntries
+          ? l10n.scheduleEntryTitle(1).replaceFirst(RegExp(r'\s?1$'), '')
+          : l10n.scheduleEntrySingleTitle,
+      subtitle: l10n.scheduleEntryCardSubtitle,
+      child: HyperosControlCardInset(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var i = 0; i < _scheduleEntries.length; i++) ...[
+              if (i > 0) const SizedBox(height: 10),
+              _buildScheduleEntryFields(provider, settings, i, l10n),
+            ],
+            if (_scheduleEntries.isNotEmpty) const SizedBox(height: 8),
+            _buildAddScheduleEntryButton(l10n),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildScheduleEntryFields(
+    TimetableProvider provider,
+    TimetableSettings settings,
+    int index,
+    AppLocalizations l10n,
+  ) {
+    final entry = _scheduleEntries[index];
+    final weekDays = _weekdayLabels(l10n);
+    final sectionNumbers = List.generate(settings.sectionCount, (i) => i + 1);
+    final availableWeeks = settings.availableWeeks;
+    final teacherText = _entryTeacherControllers[index].text;
+    final locationText = _entryLocationControllers[index].text;
+    final hasMultipleEntries = _scheduleEntries.length > 1;
+    final entrySelectedWeeks =
+        entry.weekSelectionMode == _WeekSelectionMode.range
+        ? _buildEntryWeeksFromRange(entry)
+        : (entry.selectedCustomWeeks.toList()..sort());
+    final entryWeekSummary = _selectedWeeksSummaryText(
+      entrySelectedWeeks,
+      availableWeeks,
+      entry.startWeek,
+      entry.endWeek,
+      entry.isOddWeek,
+      entry.isEvenWeek,
+      entry.weekSelectionMode,
+      l10n,
+    );
+
+    final entryFields = _withSpacing([
+      _buildScheduleTimeRow(
+        weekDays: weekDays,
+        sectionNumbers: sectionNumbers,
+        entry: entry,
+        l10n: l10n,
+      ),
+      _buildCompactWeekSummaryRow(
+        label: l10n.scheduleEntryWeeksSectionTitle,
+        summary: entryWeekSummary,
+        onTap: () => _showEntryWeekPickerDialog(entry, availableWeeks, l10n),
+      ),
+      _buildResponsiveFieldPair(
+        spacing: 8,
+        leading: _buildCompactPickerField(
+          label: l10n.teacherLabel,
+          value: teacherText.isEmpty ? l10n.manualInputLabel : teacherText,
+          isPlaceholder: teacherText.isEmpty,
+          onPress: () => showCourseFieldPickerSheet(
+            context,
+            title: l10n.selectTeacherTitle,
+            suggestions: provider.uniqueTeachers,
+            controller: _entryTeacherControllers[index],
+            onConfirmed: () {
+              setState(() {
+                entry.teacher = _entryTeacherControllers[index].text;
+              });
+            },
+          ),
+        ),
+        trailing: _buildCompactPickerField(
+          label: l10n.locationLabel,
+          value: locationText.isEmpty ? l10n.manualInputLabel : locationText,
+          isPlaceholder: locationText.isEmpty,
+          onPress: () => showCourseFieldPickerSheet(
+            context,
+            title: l10n.selectLocationTitle,
+            suggestions: provider.uniqueLocations,
+            controller: _entryLocationControllers[index],
+            onConfirmed: () {
+              setState(() {
+                entry.location = _entryLocationControllers[index].text;
+              });
+            },
+          ),
+        ),
+      ),
+      _buildEntryTimeSchemeField(provider, index, l10n, compact: true),
+      if (hasMultipleEntries)
+        _buildCompactDeleteEntryRow(
+          l10n: l10n,
+          onTap: () => _removeScheduleEntry(index),
+        ),
+      _buildScheduleConflictLinks(index, l10n),
+    ], spacing: 8);
+
+    if (!hasMultipleEntries) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: entryFields,
+      );
+    }
+
+    final colors = context.theme.colors;
+    final typo = context.theme.typography.body;
+    final courseColor = parseHexColorOrFallback(
+      _selectedColor,
+      fallback: colors.primary,
+    );
+    final weekdayLabel =
+        weekDays[entry.dayOfWeek.clamp(1, weekDays.length) - 1];
+    final timePreview =
+        '$weekdayLabel · ${l10n.sectionRangeLabel(entry.startSection, entry.endSection)}';
+
+    // 每条排课记录的内衬底色：极浅中性洗色（浅色模式 5% 墨 / 深色模式 6% 白），
+    // 与 HyperosBlurredHeader.nestedSurfaceTintColor 无模糊分支同源。
+    // 不再用 muted@35% 深灰填充——那会在白卡/深卡上读成一整块死灰色，
+    // 与液态玻璃等通透材质并置时尤其突兀（用户反馈“整个框框是灰色的”）。
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final entryInsetFill = isDark
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.05);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      decoration: BoxDecoration(
+        color: entryInsetFill,
+        borderRadius: BorderRadius.circular(HyperosTokens.cardRadius),
+        border: Border.all(color: HyperosColors.outline(context)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: HyperosTokens.iconBadgeSize,
+                height: HyperosTokens.iconBadgeSize,
+                decoration: BoxDecoration(
+                  color: courseColor.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(
+                    HyperosTokens.iconBadgeRadius,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '${index + 1}',
+                  style: typo.sm.copyWith(
+                    color: courseColor,
+                    fontWeight: FontWeight.w700,
+                    height: 1,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l10n.scheduleEntryTitle(index + 1),
+                      style: typo.sm.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      timePreview,
+                      style: typo.xs2.copyWith(
+                        color: colors.mutedForeground,
+                        height: 1.3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          ...entryFields,
+        ],
+      ),
+    );
+  }
+
+  Widget _buildScheduleTimeRow({
+    required List<String> weekDays,
+    required List<int> sectionNumbers,
+    required _ScheduleEntryData entry,
+    required AppLocalizations l10n,
+  }) {
+    final weekdayItems = {
+      for (var i = 0; i < weekDays.length; i++) weekDays[i]: i + 1,
+    };
+    final weekdaySelect = _buildCompactPickerField(
+      label: l10n.weekdayLabel,
+      value: weekDays[entry.dayOfWeek - 1],
+      onPress: () => _pickFromSelectSheet(
+        title: l10n.weekdayLabel,
+        items: weekdayItems,
+        currentValue: entry.dayOfWeek,
+        onSelected: (value) => setState(() => entry.dayOfWeek = value),
+      ),
+    );
+    final startSelect = _buildCompactPickerField(
+      label: l10n.startSectionLabel,
+      value: l10n.scheduleSectionNumberLabel(entry.startSection),
+      onPress: () => _pickFromNumberWheelSheet(
+        title: l10n.startSectionLabel,
+        currentValue: entry.startSection,
+        minValue: sectionNumbers.first,
+        maxValue: sectionNumbers.last,
+        label: (section) => l10n.scheduleSectionNumberLabel(section),
+        onSelected: (value) {
+          setState(() {
+            entry.startSection = value;
+            if (entry.endSection < entry.startSection) {
+              entry.endSection = entry.startSection;
+            }
+          });
+        },
+      ),
+    );
+    final endSelect = _buildCompactPickerField(
+      label: l10n.endSectionLabel,
+      value: l10n.scheduleSectionNumberLabel(entry.endSection),
+      onPress: () => _pickFromNumberWheelSheet(
+        title: l10n.endSectionLabel,
+        currentValue: entry.endSection,
+        minValue: entry.startSection,
+        maxValue: sectionNumbers.last,
+        label: (section) => l10n.scheduleSectionNumberLabel(section),
+        onSelected: (value) => setState(() => entry.endSection = value),
+      ),
+    );
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < 420) {
+          return Column(
+            children: [
+              weekdaySelect,
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(child: startSelect),
+                  const SizedBox(width: 8),
+                  Expanded(child: endSelect),
+                ],
+              ),
+            ],
+          );
+        }
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(flex: 4, child: weekdaySelect),
+            const SizedBox(width: 8),
+            Expanded(flex: 3, child: startSelect),
+            const SizedBox(width: 8),
+            Expanded(flex: 3, child: endSelect),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _buildCompactPickerField({
+    required String label,
+    required String value,
+    required VoidCallback onPress,
+    bool isPlaceholder = false,
+  }) {
+    final theme = context.theme;
+    final fieldRadius = BorderRadius.circular(HyperosTokens.controlRadius);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: fieldRadius,
+        onTap: onPress,
+        child: Container(
+          constraints: const BoxConstraints(
+            minHeight: HyperosTokens.controlMinHeight,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: fieldRadius,
+            border: Border.all(color: HyperosColors.outline(context)),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    style: theme.typography.body.sm,
+                    children: [
+                      TextSpan(
+                        text: '$label ',
+                        style: TextStyle(color: theme.colors.mutedForeground),
+                      ),
+                      TextSpan(
+                        text: value,
+                        style: TextStyle(
+                          color: isPlaceholder
+                              ? theme.colors.mutedForeground
+                              : null,
+                        ),
+                      ),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactDeleteEntryRow({
+    required AppLocalizations l10n,
+    required VoidCallback onTap,
+  }) {
+    final theme = context.theme;
+    final fieldRadius = BorderRadius.circular(HyperosTokens.controlRadius);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: fieldRadius,
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          constraints: const BoxConstraints(
+            minHeight: HyperosTokens.controlMinHeight,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: fieldRadius,
+            border: Border.all(color: HyperosColors.outline(context)),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Icon(
+                Icons.delete_outline_rounded,
+                size: 16,
+                color: theme.colors.destructive,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                l10n.deleteScheduleEntryAction,
+                style: theme.typography.body.sm.copyWith(
+                  color: theme.colors.destructive,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactWeekSummaryRow({
+    required String label,
+    required String summary,
+    required VoidCallback onTap,
+  }) {
+    final theme = context.theme;
+    final fieldRadius = BorderRadius.circular(HyperosTokens.controlRadius);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: fieldRadius,
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          constraints: const BoxConstraints(
+            minHeight: HyperosTokens.controlMinHeight,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: fieldRadius,
+            border: Border.all(color: HyperosColors.outline(context)),
+          ),
+          alignment: Alignment.centerLeft,
+          child: Row(
+            children: [
+              Expanded(
+                child: Text.rich(
+                  TextSpan(
+                    style: theme.typography.body.sm,
+                    children: [
+                      TextSpan(
+                        text: '$label · ',
+                        style: TextStyle(color: theme.colors.mutedForeground),
+                      ),
+                      TextSpan(text: summary),
+                    ],
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 16,
+                color: theme.colors.mutedForeground,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEntryTimeSchemeField(
+    TimetableProvider provider,
+    int index,
+    AppLocalizations l10n, {
+    bool compact = false,
+  }) {
+    final entry = _scheduleEntries[index];
+    final followLabel =
+        provider.activeTimeScheme?.name ?? l10n.timetableAppName;
+    final locationText = index < _entryLocationControllers.length
+        ? _entryLocationControllers[index].text
+        : entry.location;
+    // Never mutate draft entry during build — use [locationText] for resolve
+    // only. Controllers are flushed to entry on save / picker confirm.
+    final isAutoMode = entry.timeSchemeIdOverride == null;
+    final locationMatch = isAutoMode
+        ? provider.matchLocationTime(locationText)
+        : null;
+    final resolvedScheme = _resolveEntryTimeScheme(
+      provider,
+      entry,
+      locationOverride: locationText,
+    );
+    final sectionCount = resolvedScheme?.sections.length ?? 0;
+    final clockHint =
+        resolvedScheme != null &&
+            entry.startSection >= 1 &&
+            entry.endSection <= sectionCount
+        ? '${resolvedScheme.sections[entry.startSection - 1].startTime}'
+              '-${resolvedScheme.sections[entry.endSection - 1].endTime}'
+        : null;
+
+    // Always surface the *effective* scheme name. "Follow auto" is a mode, not
+    // a scheme — users expect to see which template will actually be used.
+    final String currentName;
+    String? autoResolvedSubtitle;
+    if (!isAutoMode) {
+      currentName =
+          provider.timeSchemes
+              .where((scheme) => scheme.id == entry.timeSchemeIdOverride)
+              .firstOrNull
+              ?.name ??
+          l10n.followCurrentTimetableWithName(followLabel);
+      autoResolvedSubtitle = null;
+    } else if (resolvedScheme != null) {
+      if (locationMatch != null) {
+        currentName = compact
+            ? resolvedScheme.name
+            : l10n.locationTimeMatchedSchemeHint(resolvedScheme.name);
+        autoResolvedSubtitle = l10n.locationTimeAutoResolvedByGroup(
+          locationMatch.groupName,
+          resolvedScheme.name,
+        );
+      } else {
+        currentName = compact
+            ? resolvedScheme.name
+            : l10n.followCurrentTimetableWithName(resolvedScheme.name);
+        autoResolvedSubtitle = l10n.locationTimeAutoResolvedByTimetable(
+          resolvedScheme.name,
+        );
+      }
+    } else {
+      currentName = l10n.followLocationAutoTimeScheme;
+      autoResolvedSubtitle = null;
+    }
+
+    // Compact row is single-line with ellipsis: put the clock first so
+    // truncation eats the scheme name, not the times.
+    final displayValue = clockHint == null
+        ? currentName
+        : compact
+        ? '$clockHint · $currentName'
+        : '$currentName · $clockHint';
+    void onPress() {
+      showTimeSchemePickerSheet(
+        context,
+        currentValue: entry.timeSchemeIdOverride,
+        autoResolvedSubtitle: autoResolvedSubtitle,
+        onSelected: (value) {
+          setState(() {
+            entry.timeSchemeIdOverride = value;
+          });
+        },
+      ).whenComplete(() {
+        if (mounted) setState(() {});
+      });
+    }
+
+    if (compact) {
+      return _buildCompactPickerField(
+        label: l10n.timeSchemeLabel,
+        value: displayValue,
+        onPress: onPress,
+      );
+    }
+    return _buildPickerTile(
+      label: l10n.timeSchemeLabel,
+      value: displayValue,
+      icon: Icons.schedule_rounded,
+      onPress: onPress,
+    );
+  }
+
+  Widget _buildAddScheduleEntryButton(AppLocalizations l10n) {
+    return SizedBox(
+      width: double.infinity,
+      child: HyperosButton(
+        label: l10n.addScheduleEntryAction,
+        variant: HyperosButtonVariant.secondary,
+        expand: true,
+        onPressed: _addScheduleEntry,
+      ),
+    );
+  }
+
+  void _addScheduleEntry() {
+    final last = _scheduleEntries.isNotEmpty ? _scheduleEntries.last : null;
+    setState(() {
+      final newEntry = _ScheduleEntryData(
+        id: const Uuid().v4(),
+        dayOfWeek: last?.dayOfWeek ?? 1,
+        startSection: last?.startSection ?? 1,
+        endSection: last?.endSection ?? 2,
+        startWeek: last?.startWeek ?? 1,
+        endWeek: last?.endWeek ?? 16,
+        teacher: last?.teacher ?? _teacherController.text,
+        location: last?.location ?? _locationController.text,
+      );
+      _scheduleEntries.add(newEntry);
+      _entryTeacherControllers.add(
+        TextEditingController(text: newEntry.teacher),
+      );
+      _entryLocationControllers.add(
+        TextEditingController(text: newEntry.location),
+      );
+    });
+  }
+
+  void _removeScheduleEntry(int index) {
+    setState(() {
+      _scheduleEntries.removeAt(index);
+      _entryTeacherControllers[index].dispose();
+      _entryTeacherControllers.removeAt(index);
+      _entryLocationControllers[index].dispose();
+      _entryLocationControllers.removeAt(index);
+    });
+  }
+
+  Future<void> _confirmDeleteGroup() async {
+    final l10n = AppLocalizations.of(context)!;
+    final name = widget.courseGroup!.name;
+    final confirmed = await showHyperosConfirmDialog(
+      context: context,
+      title: l10n.deleteCourseTitle,
+      message: l10n.confirmDeleteCourseMessage(name),
+      cancelLabel: l10n.cancelAction,
+      confirmLabel: l10n.deleteAction,
+      destructive: true,
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    await context.read<TimetableProvider>().deleteCourseGroup(name);
+    if (!mounted) return;
+    showAppToast(
+      context,
+      message: l10n.courseDeleted,
+      kind: AppToastKind.success,
+    );
+    Navigator.pop(context);
+  }
+
+  void _applyCourseTemplate(Course course) {
+    _nameController.text = course.name;
+    _shortNameController.text = course.shortName ?? '';
+    _teacherController.text = course.teacher;
+    _descriptionController.text = course.description ?? course.note ?? '';
+    _courseNature = course.courseNature;
+    _selectedColor = course.color;
+    // Sync existing schedule entries' teacher/location with shared info.
+    for (var i = 0; i < _scheduleEntries.length; i++) {
+      _scheduleEntries[i].teacher = course.teacher;
+      _entryTeacherControllers[i].text = course.teacher;
+      _scheduleEntries[i].location = course.location;
+      _entryLocationControllers[i].text = course.location;
+    }
+  }
+
+  Future<void> _showCourseTemplateSheet(TimetableProvider provider) async {
+    final l10n = AppLocalizations.of(context)!;
+    if (provider.courseGroups.isEmpty) {
+      showAppLightTip(context, message: l10n.noTemplateCoursesHint);
+      return;
+    }
+    final course = await showCourseTemplatePickerSheet(
+      context,
+      title: l10n.reuseExistingCourseHelper,
+      courseGroups: provider.courseGroups,
+    );
+    if (course != null && mounted) {
+      setState(() => _applyCourseTemplate(course));
+    }
+  }
+
+  Widget _buildResponsiveFieldPair({
+    required Widget leading,
+    required Widget trailing,
+    double spacing = 16,
+    double breakpoint = 420,
+  }) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth < breakpoint) {
+          return Column(
+            children: [
+              leading,
+              SizedBox(height: spacing),
+              trailing,
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: leading),
+            SizedBox(width: spacing),
+            Expanded(child: trailing),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showFullColorPalette() async {
+    final l10n = AppLocalizations.of(context)!;
+    final result = await showCoursePaletteSheet(
+      context,
+      initialColorHex: _selectedColor,
+      previewText: _nameController.text.trim(),
+      title: l10n.courseColorTitle,
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    setState(() {
+      _selectedColor = result;
+    });
+  }
+
+  List<int> _buildEntryWeeksFromRange(_ScheduleEntryData entry) {
+    final weeks = <int>[];
+    for (var w = entry.startWeek; w <= entry.endWeek; w++) {
+      if (entry.isOddWeek && w.isEven) continue;
+      if (entry.isEvenWeek && w.isOdd) continue;
+      weeks.add(w);
+    }
+    return weeks;
+  }
+
+  String _formatWeekList(List<int> weeks) {
+    if (weeks.isEmpty) {
+      return '';
+    }
+    final ranges = <String>[];
+    var rangeStart = weeks.first;
+    var previous = weeks.first;
+    for (var index = 1; index < weeks.length; index++) {
+      final current = weeks[index];
+      if (current == previous + 1) {
+        previous = current;
+        continue;
+      }
+      ranges.add(
+        rangeStart == previous ? '$rangeStart' : '$rangeStart-$previous',
+      );
+      rangeStart = current;
+      previous = current;
+    }
+    ranges.add(
+      rangeStart == previous ? '$rangeStart' : '$rangeStart-$previous',
+    );
+    return ranges.join('、');
+  }
+
+  String _selectedWeeksSummaryText(
+    List<int> selectedWeeks,
+    List<int> availableWeeks,
+    int startWeek,
+    int endWeek,
+    bool isOddWeek,
+    bool isEvenWeek,
+    _WeekSelectionMode mode,
+    AppLocalizations l10n,
+  ) {
+    if (mode == _WeekSelectionMode.range) {
+      final isAll =
+          startWeek == availableWeeks.first &&
+          endWeek == availableWeeks.last &&
+          !isOddWeek &&
+          !isEvenWeek;
+      if (isAll) return l10n.allWeeksFilter;
+      final range = '${l10n.weekLabel(startWeek)}-${l10n.weekLabel(endWeek)}';
+      if (isOddWeek) return '$range · ${l10n.oddWeeksFilter}';
+      if (isEvenWeek) return '$range · ${l10n.evenWeeksFilter}';
+      return range;
+    }
+    if (selectedWeeks.isEmpty) return '';
+    if (selectedWeeks.length == availableWeeks.length) {
+      return l10n.allWeeksFilter;
+    }
+    return _formatWeekList(selectedWeeks);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Week summary row (compact)
+  // ---------------------------------------------------------------------------
+
+  Widget _buildWeekGridTile({
+    required int week,
+    required bool isSelected,
+    required VoidCallback onPress,
+  }) {
+    // Ready-made Miuix button; dense variant is tuned for grid / chip layouts.
+    return HyperosButton(
+      label: '$week',
+      variant: isSelected
+          ? HyperosButtonVariant.primary
+          : HyperosButtonVariant.secondary,
+      dense: true,
+      onPressed: onPress,
+    );
+  }
+
+  Widget _buildWeekModeTileGroup({
+    required _WeekSelectionMode tempMode,
+    required AppLocalizations l10n,
+    required ValueChanged<_WeekSelectionMode> onSelect,
+  }) {
+    return HyperosChoiceGroup(
+      children: [
+        HyperosChoiceTile(
+          prefix: const Icon(Icons.linear_scale_rounded),
+          title: l10n.rangeWeeksLabel,
+          selected: tempMode == _WeekSelectionMode.range,
+          highlightSelectedText: true,
+          onTap: () => onSelect(_WeekSelectionMode.range),
+        ),
+        HyperosChoiceTile(
+          prefix: const Icon(Icons.apps_rounded),
+          title: l10n.customWeeksLabel,
+          selected: tempMode == _WeekSelectionMode.custom,
+          highlightSelectedText: true,
+          onTap: () => onSelect(_WeekSelectionMode.custom),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWeekParityTileGroup({
+    required AppLocalizations l10n,
+    required bool isAllWeeks,
+    required bool isOddWeek,
+    required bool isEvenWeek,
+    required VoidCallback onSelectAll,
+    required VoidCallback onSelectOdd,
+    required VoidCallback onSelectEven,
+  }) {
+    return HyperosChoiceGroup(
+      children: [
+        HyperosChoiceTile(
+          title: l10n.allWeeksFilter,
+          selected: isAllWeeks,
+          highlightSelectedText: true,
+          onTap: onSelectAll,
+        ),
+        HyperosChoiceTile(
+          title: l10n.oddWeeksFilter,
+          selected: isOddWeek,
+          highlightSelectedText: true,
+          onTap: onSelectOdd,
+        ),
+        HyperosChoiceTile(
+          title: l10n.evenWeeksFilter,
+          selected: isEvenWeek,
+          highlightSelectedText: true,
+          onTap: onSelectEven,
+        ),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Entry-week picker dialog (group editing mode)
+  // ---------------------------------------------------------------------------
+
+  Future<void> _showEntryWeekPickerDialog(
+    _ScheduleEntryData entry,
+    List<int> availableWeeks,
+    AppLocalizations l10n,
+  ) async {
+    var tempMode = entry.weekSelectionMode;
+    var tempStartWeek = entry.startWeek;
+    var tempEndWeek = entry.endWeek;
+    var tempIsOddWeek = entry.isOddWeek;
+    var tempIsEvenWeek = entry.isEvenWeek;
+    var tempCustomWeeks = Set<int>.from(entry.selectedCustomWeeks);
+
+    List<int> buildTempWeeksFromRange() {
+      final weeks = <int>[];
+      for (var w = tempStartWeek; w <= tempEndWeek; w++) {
+        if (tempIsOddWeek && w.isEven) continue;
+        if (tempIsEvenWeek && w.isOdd) continue;
+        weeks.add(w);
+      }
+      return weeks;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            final selectedWeeks = tempMode == _WeekSelectionMode.range
+                ? buildTempWeeksFromRange()
+                : (tempCustomWeeks.toList()..sort());
+
+            return Dialog.fullscreen(
+              child: HyperosSubpage(
+                onBack: () => Navigator.pop(context, false),
+                title: Text(l10n.weekPickerTitle),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: HyperosBlurredBodyInset(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                            padding: const EdgeInsets.all(16),
+                            children: [
+                              _buildWeekModeTileGroup(
+                                tempMode: tempMode,
+                                l10n: l10n,
+                                onSelect: (nextMode) {
+                                  setDialogState(() {
+                                    if (nextMode == _WeekSelectionMode.custom &&
+                                        tempCustomWeeks.isEmpty) {
+                                      tempCustomWeeks =
+                                          buildTempWeeksFromRange().toSet();
+                                      if (tempCustomWeeks.isEmpty) {
+                                        tempCustomWeeks = {tempStartWeek};
+                                      }
+                                    }
+                                    if (nextMode == _WeekSelectionMode.range &&
+                                        tempCustomWeeks.isNotEmpty) {
+                                      final sorted = tempCustomWeeks.toList()
+                                        ..sort();
+                                      tempStartWeek = sorted.first;
+                                      tempEndWeek = sorted.last;
+                                      tempIsOddWeek = false;
+                                      tempIsEvenWeek = false;
+                                    }
+                                    tempMode = nextMode;
+                                  });
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              if (tempMode == _WeekSelectionMode.range) ...[
+                                _buildResponsiveFieldPair(
+                                  spacing: 8,
+                                  leading: HyperosPickerField(
+                                    label: l10n.startWeekLabel,
+                                    value: l10n.weekLabel(tempStartWeek),
+                                    onTap: () => _pickFromNumberWheelSheet(
+                                      title: l10n.startWeekLabel,
+                                      currentValue: tempStartWeek,
+                                      minValue: availableWeeks.first,
+                                      maxValue: availableWeeks.last,
+                                      label: (week) => l10n.weekLabel(week),
+                                      onSelected: (value) {
+                                        setDialogState(() {
+                                          tempStartWeek = value;
+                                          if (tempEndWeek < tempStartWeek) {
+                                            tempEndWeek = tempStartWeek;
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  trailing: HyperosPickerField(
+                                    label: l10n.endWeekLabel,
+                                    value: l10n.weekLabel(tempEndWeek),
+                                    onTap: () => _pickFromNumberWheelSheet(
+                                      title: l10n.endWeekLabel,
+                                      currentValue: tempEndWeek,
+                                      minValue: tempStartWeek,
+                                      maxValue: availableWeeks.last,
+                                      label: (week) => l10n.weekLabel(week),
+                                      onSelected: (value) {
+                                        setDialogState(
+                                          () => tempEndWeek = value,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                _buildWeekParityTileGroup(
+                                  l10n: l10n,
+                                  isAllWeeks: !tempIsOddWeek && !tempIsEvenWeek,
+                                  isOddWeek: tempIsOddWeek,
+                                  isEvenWeek: tempIsEvenWeek,
+                                  onSelectAll: () {
+                                    setDialogState(() {
+                                      tempIsOddWeek = false;
+                                      tempIsEvenWeek = false;
+                                    });
+                                  },
+                                  onSelectOdd: () {
+                                    setDialogState(() {
+                                      tempIsOddWeek = true;
+                                      tempIsEvenWeek = false;
+                                    });
+                                  },
+                                  onSelectEven: () {
+                                    setDialogState(() {
+                                      tempIsOddWeek = false;
+                                      tempIsEvenWeek = true;
+                                    });
+                                  },
+                                ),
+                              ] else ...[
+                                LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final width = constraints.maxWidth;
+                                    final crossAxisCount = width < 340
+                                        ? 4
+                                        : width < 420
+                                        ? 5
+                                        : 6;
+                                    return GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: availableWeeks.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: crossAxisCount,
+                                            mainAxisSpacing: 8,
+                                            crossAxisSpacing: 8,
+                                            mainAxisExtent: 44,
+                                          ),
+                                      itemBuilder: (context, i) {
+                                        final week = availableWeeks[i];
+                                        final isSelected = tempCustomWeeks
+                                            .contains(week);
+                                        return _buildWeekGridTile(
+                                          week: week,
+                                          isSelected: isSelected,
+                                          onPress: () {
+                                            setDialogState(() {
+                                              if (isSelected) {
+                                                if (tempCustomWeeks.length >
+                                                    1) {
+                                                  tempCustomWeeks.remove(week);
+                                                }
+                                              } else {
+                                                tempCustomWeeks.add(week);
+                                              }
+                                            });
+                                          },
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 8,
+                                  children: [
+                                    HyperosButton(
+                                      label: l10n.selectAllAction,
+                                      variant: HyperosButtonVariant.secondary,
+                                      dense: true,
+                                      onPressed: () {
+                                        setDialogState(() {
+                                          tempCustomWeeks = availableWeeks
+                                              .toSet();
+                                        });
+                                      },
+                                    ),
+                                    HyperosButton(
+                                      label: l10n.selectOddWeeksAction,
+                                      variant: HyperosButtonVariant.secondary,
+                                      dense: true,
+                                      onPressed: () {
+                                        setDialogState(() {
+                                          tempCustomWeeks = availableWeeks
+                                              .where((week) => week.isOdd)
+                                              .toSet();
+                                        });
+                                      },
+                                    ),
+                                    HyperosButton(
+                                      label: l10n.selectEvenWeeksAction,
+                                      variant: HyperosButtonVariant.secondary,
+                                      dense: true,
+                                      onPressed: () {
+                                        setDialogState(() {
+                                          tempCustomWeeks = availableWeeks
+                                              .where((week) => week.isEven)
+                                              .toSet();
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                              const SizedBox(height: 12),
+                              Text(
+                                l10n.selectedWeeksSummary(
+                                  selectedWeeks.length,
+                                  _formatWeekList(selectedWeeks),
+                                ),
+                                style: HyperosTypography.listDetail(context),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: HyperosButton(
+                                  label: l10n.cancelAction,
+                                  variant: HyperosButtonVariant.secondary,
+                                  expand: true,
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: HyperosButton(
+                                  label: l10n.confirmAction,
+                                  expand: true,
+                                  onPressed: () => Navigator.pop(context, true),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+
+    if (confirmed != true || !mounted) return;
+    setState(() {
+      entry.weekSelectionMode = tempMode;
+      entry.startWeek = tempStartWeek;
+      entry.endWeek = tempEndWeek;
+      entry.isOddWeek = tempIsOddWeek;
+      entry.isEvenWeek = tempIsEvenWeek;
+      entry.selectedCustomWeeks = tempCustomWeeks;
+    });
+  }
+
+  Future<void> _saveCourse(
+    TimetableProvider provider,
+    TimetableSettings settings,
+  ) async {
+    final l10n = AppLocalizations.of(context)!;
+    FocusScope.of(context).unfocus();
+    await Future<void>.delayed(const Duration(milliseconds: 16));
+
+    final trimmedName = _nameController.text.trim();
+    if (trimmedName.isEmpty) {
+      _formKey.currentState?.validate();
+      if (!mounted) return;
+      showAppToast(
+        context,
+        message: l10n.pleaseEnterCourseName,
+        kind: AppToastKind.warning,
+      );
+      return;
+    }
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    await _saveGroup(provider, settings, l10n);
+  }
+
+  Future<void> _saveGroup(
+    TimetableProvider provider,
+    TimetableSettings settings,
+    AppLocalizations l10n,
+  ) async {
+    final name = _nameController.text.trim();
+    final shortName = _shortNameController.text.isEmpty
+        ? null
+        : _shortNameController.text;
+    final description = _descriptionController.text.isEmpty
+        ? null
+        : _descriptionController.text;
+
+    // Validate all entries.
+    for (var i = 0; i < _scheduleEntries.length; i++) {
+      final entry = _scheduleEntries[i];
+      // Sync teacher/location from controllers.
+      entry.teacher = _entryTeacherControllers[i].text;
+      entry.location = _entryLocationControllers[i].text;
+
+      final validationMessage = provider.validateCourseTimeSchemeOverride(
+        timeSchemeId: entry.timeSchemeIdOverride,
+        startSection: entry.startSection,
+        endSection: entry.endSection,
+        location: entry.location,
+      );
+      if (validationMessage != null) {
+        showAppToast(
+          context,
+          message:
+              '${l10n.scheduleEntryTitle(i + 1)}: ${localizeServiceMessage(l10n, validationMessage)}',
+          kind: AppToastKind.warning,
+        );
+        return;
+      }
+
+      if (entry.weekSelectionMode == _WeekSelectionMode.custom &&
+          entry.selectedCustomWeeks.isEmpty) {
+        showAppToast(
+          context,
+          message:
+              '${l10n.scheduleEntryTitle(i + 1)}: ${l10n.selectAtLeastOneWeek}',
+          kind: AppToastKind.warning,
+        );
+        return;
+      }
+    }
+
+    // Build courses from entries.
+    final courses = <Course>[];
+    for (final entry in _scheduleEntries) {
+      final resolvedScheme = _resolveEntryTimeScheme(provider, entry);
+      final startTime = resolvedScheme == null
+          ? settings.sectionAt(entry.startSection).startTime
+          : resolvedScheme.sections[entry.startSection - 1].startTime;
+      final endTime = resolvedScheme == null
+          ? settings.sectionAt(entry.endSection).endTime
+          : resolvedScheme.sections[entry.endSection - 1].endTime;
+
+      courses.add(
+        entry.toCourse(
+          name: name,
+          shortName: shortName,
+          color: _selectedColor,
+          courseNature: _courseNature,
+          description: description,
+          startTime: startTime,
+          endTime: endTime,
+        ),
+      );
+    }
+
+    try {
+      if (widget.courseGroup != null) {
+        // Editing existing group: replace all entries.
+        await provider.updateCourseGroup(widget.courseGroup!.name, courses);
+      } else if (widget.course != null) {
+        // Editing a single existing course: replace every entry of the
+        // ORIGINAL name group with the edited set. Must NOT go through
+        // deleteCourse + addCourse: same-name sibling entries would survive
+        // the delete and addCourse's shared-field step would then resurrect
+        // their OLD color/name/nature over the user's edits — the save toast
+        // still shows success but nothing visibly changes.
+        // updateCourseGroup removes the whole original-name group first, so
+        // no stale sibling remains to overwrite the new shared fields. It is
+        // also atomic under the provider mutation gate.
+        await provider.updateCourseGroup(widget.course!.name, courses);
+      } else {
+        // Adding new courses: add all entries.
+        for (final course in courses) {
+          await provider.addCourse(course);
+        }
+      }
+    } on ArgumentError catch (error) {
+      if (!mounted) return;
+      showAppToast(
+        context,
+        message: error.message != null
+            ? localizeServiceMessage(l10n, error.message! as String)
+            : l10n.saveFailed,
+        kind: AppToastKind.error,
+      );
+      return;
+    }
+
+    if (!mounted) return;
+    showAppToast(
+      context,
+      message: widget.courseGroup == null && widget.course == null
+          ? l10n.courseAddedSuccess
+          : l10n.courseUpdatedSuccess,
+      kind: AppToastKind.success,
+    );
+    Navigator.pop(context);
+  }
+
+  TimeScheme? _resolveEntryTimeScheme(
+    TimetableProvider provider,
+    _ScheduleEntryData entry, {
+    String? locationOverride,
+  }) {
+    // Keep the same priority as runtime resolve:
+    // override > location match > date rule > active timetable scheme.
+    // Using only [activeTimeScheme] here would discard location routing when
+    // the user leaves the entry on "follow auto", and overwrite applied clocks
+    // on the next save.
+    return provider.resolveCourseTimeScheme(
+      Course(
+        id: entry.id,
+        name: '_',
+        teacher: entry.teacher,
+        location: locationOverride ?? entry.location,
+        dayOfWeek: entry.dayOfWeek,
+        startSection: entry.startSection,
+        endSection: entry.endSection,
+        startTime: '08:00',
+        endTime: '09:00',
+        timeSchemeIdOverride: entry.timeSchemeIdOverride,
+      ),
+    );
+  }
+}
+
+/// Compact HyperOS list row for a conflicting partner schedule.
+///
+/// Matches preference navigation chrome: title + status tag + detail + chevron.
+/// Avoids custom red banners and trailing text-as-button.
+class _ScheduleConflictPartnerRow extends StatelessWidget {
+  const _ScheduleConflictPartnerRow({
+    required this.partner,
+    required this.onOpen,
+  });
+
+  final Course partner;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = context.theme;
+    final dayLabel = _weekdayShort(l10n, partner.dayOfWeek);
+    final schedule = l10n.weekdaySectionSummary(
+      dayLabel,
+      partner.startSection,
+      partner.endSection,
+    );
+
+    return Material(
+      color: HyperosColors.secondaryVariant(context),
+      // Nested compact row — use control radius, not settings-group 24.
+      borderRadius: BorderRadius.circular(HyperosTokens.controlRadius),
+      clipBehavior: Clip.antiAlias,
+      child: HyperosPressableRow(
+        onTap: onOpen,
+        backgroundColor: HyperosColors.secondaryVariant(context),
+        highlightColor: HyperosColors.rowHighlight(context),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: HyperosTokens.controlMinHeight,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              partner.name,
+                              style: HyperosTypography.listTitle(context),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          HyperosTag(
+                            label: l10n.conflictLabel,
+                            backgroundColor: theme.colors.destructive
+                                .withValues(alpha: 0.12),
+                            textStyle: HyperosTypography.listDetail(context)
+                                .copyWith(
+                                  color: theme.colors.destructive,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 11,
+                                ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        schedule,
+                        style: HyperosTypography.listDetail(context),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: HyperosTokens.titleChevronGap),
+                const HyperosChevron(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  static String _weekdayShort(AppLocalizations l10n, int dayOfWeek) {
+    return switch (dayOfWeek) {
+      1 => l10n.weekdayShortMonday,
+      2 => l10n.weekdayShortTuesday,
+      3 => l10n.weekdayShortWednesday,
+      4 => l10n.weekdayShortThursday,
+      5 => l10n.weekdayShortFriday,
+      6 => l10n.weekdayShortSaturday,
+      7 => l10n.weekdayShortSunday,
+      _ => dayOfWeek.toString(),
+    };
+  }
+}

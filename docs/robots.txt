@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gzr.xjy.xn--6qq986b3xl/sitemap.xml

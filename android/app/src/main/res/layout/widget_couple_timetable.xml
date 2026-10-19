@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_couple_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 整卡点击兜底层：垫在卡片内容之下，凡内容区没消费掉的触摸
+         （卡片 padding、爱心等）都按左右对半分流到对应一侧。
+         用 FrameLayout 而非普通 View：部分 OEM 桌面应用带普通 View
+         的 RemoteViews 会失败（表现为「载入窗口小部件时出现问题」）。 -->
+    <LinearLayout
+        android:id="@+id/widget_couple_click_shield"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/widget_couple_left_shield"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:id="@+id/widget_couple_right_shield"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/widget_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_couple_bg"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp">
+
+        <LinearLayout
+            android:id="@+id/widget_couple_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout
+                android:id="@+id/widget_couple_left_name_container"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/widget_couple_left_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|center_vertical"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+
+            <ImageView
+                android:id="@+id/widget_couple_heart"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="6dp"
+                android:contentDescription="@null"
+                android:src="@drawable/widget_couple_heart" />
+
+            <FrameLayout
+                android:id="@+id/widget_couple_right_name_container"
+                android:layout_width="0dp"
+                android:layout_height="20dp"
+                android:layout_weight="1">
+
+                <ImageView
+                    android:id="@+id/widget_couple_right_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start|center_vertical"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/widget_couple_columns"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/widget_couple_left_column"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <!-- 列表按内容自适应高度：最后一行以下的空白留在列容器里，
+                     触摸冒泡给可点击的列容器，不留「只有课程行能点」的
+                     死区。课程多到放不下时 ListView 仍会被压回区域内。 -->
+                <FrameLayout
+                    android:id="@+id/widget_couple_left_list_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ListView
+                        android:id="@+id/widget_couple_left_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:dividerHeight="0dp"
+                        android:overScrollMode="never"
+                        android:scrollbars="none" />
+
+                    <TextView
+                        android:id="@+id/widget_couple_left_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="@string/widget_no_course_today"
+                        android:textColor="@color/widget_couple_text_hint"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/widget_couple_left_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/widget_couple_text_secondary"
+                    android:textSize="10sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_couple_right_column"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/widget_couple_right_list_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <ListView
+                        android:id="@+id/widget_couple_right_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:divider="@null"
+                        android:dividerHeight="0dp"
+                        android:overScrollMode="never"
+                        android:scrollbars="none" />
+
+                    <TextView
+                        android:id="@+id/widget_couple_right_empty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:ellipsize="end"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:text="@string/widget_no_course_today"
+                        android:textColor="@color/widget_couple_text_hint"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/widget_couple_right_footer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:textColor="@color/widget_couple_text_secondary"
+                    android:textSize="10sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 整卡不可用态（未开情侣模式 / 未登录 / 对方课表未上传）：
+             收起昵称行与左右两栏，整卡居中显示一句原因，不再分左右。 -->
+        <TextView
+            android:id="@+id/widget_couple_unavailable_hint"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="4"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textColor="@color/widget_couple_text_hint"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+    </LinearLayout>
+</FrameLayout>

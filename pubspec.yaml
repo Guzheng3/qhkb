@@ -1,0 +1,72 @@
+name: university_timetable
+description: 轻屿课表应用 - 支持小米超级岛
+publish_to: 'none'
+version: 5.2.0-0+139
+repository: https://github.com/Guzheng3/mikcb
+homepage: https://github.com/Guzheng3/mikcb
+issue_tracker: https://github.com/Guzheng3/mikcb/issues
+license: GPL-3.0-or-later
+
+environment:
+  sdk: ">=3.12.2 <4.0.0"
+  flutter: ">=3.44.2"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  intl: ^0.20.2
+  uuid: ^4.6.0
+  cupertino_icons: ^1.0.8
+  file_picker: ^11.0.3
+  http: ^1.2.2
+  pub_semver: ^2.2.1
+  package_info_plus: ^9.0.1
+  share_plus: ^12.0.2
+  crypto: ^3.0.6
+  url_launcher: ^6.3.1
+  path_provider: ^2.1.5
+  open_filex: ^4.7.0
+  flutter_markdown: ^0.7.7+1
+  flutter_secure_storage: ^10.3.1
+  webview_flutter: 4.14.1
+  webview_flutter_android: 4.13.0
+  azlistview: ^2.0.0
+  animations: ^2.0.11
+  table_parser: ^1.0.1
+  qr_flutter: ^4.1.0
+  fl_chart: ^1.2.0
+  flutter_svg: ^2.3.0
+  image: ^4.8.0
+  flutter_miuix:
+    git:
+      url: https://github.com/Mutx163/flutter_miuix.git
+      ref: 241bbea65291e2a2f7b36d77946f7f1d16654b0a
+  flutter_blackbox: ^0.7.0
+  image_picker: ^1.2.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  fake_async: ^1.3.3
+
+flutter:
+  uses-material-design: true
+  generate: true
+  assets:
+    - assets/branding/
+    - assets/home_page_wallpaper/
+    - assets/holidays/
+    - assets/warehouse/
+    - assets/warehouse/SCUEC/
+    - assets/warehouse/MYSY/
+    - docs/releases/
+    - assets/templates/
+  fonts:
+    - family: DancingScript
+      fonts:
+        - asset: assets/fonts/DancingScript-Variable.ttf

@@ -1,0 +1,145 @@
+import 'dart:io';
+
+import 'package:flutter_test/flutter_test.dart';
+
+/// 架构守卫棘轮（OPTIMIZATION.md 阶段 0 收尾：度量进 CI）。
+///
+/// 守卫值只许下降不许上涨；确需放宽时，把基线改成新值并在提交信息说明
+/// 理由。下降后欢迎顺手收紧基线。
+void main() {
+  const providerPath = 'lib/providers/timetable_provider.dart';
+  final providerFile = File(providerPath);
+
+  List<File> libDartFiles() {
+    return Directory('lib')
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((file) => file.path.replaceAll('\\', '/').endsWith('.dart'))
+        .toList();
+  }
+
+  test('timetable_provider.dart 行数棘轮：只减不增', () {
+    // 4400→4407: 合并 PR#20——_loadHolidayDataImpl 的 catch 原为静默吞异常，
+    // 补 AppLogService.warn 留痕（+7，error/stackTrace 参数透传所需的 warn
+    // 签名早已存在，全部为日志行），按测试约定记真实值。
+    // 4401→4409: applyCourseRecolors 整对象替换改为按字段 copyWith（+9，
+    // 防过期快照回写非颜色字段），拆分归阶段 3 重构，按测试约定同步基线。
+    // 4409→4422: 桌面卡片按课表绑定快照（e7f77af4）+13——Provider 侧只新增
+    // buildHomeWidgetSnapshotForProfile 转发入口与逐卡签名去重表，快照构建本体
+    // 在 live_activity_controller，属正当增长；拆分归阶段 3 重构。
+    // 4422→4426: eec42680 周次口径修复 +19（当时未同步基线），同批自 CNB
+    // PR#6 内联三个单调用点私有方法（-15）瘦身，净 +4，按测试约定同步基线。
+    // 4426→4398: issue#11 竞态修复（R1 迁移写回包 mutation gate+一致性校验/
+    // R2 周次同步与 setCurrentWeek 包 gate/N5 考试提醒单飞收敛，+55）+
+    // 死代码删除（loadSettings/loadCourses -78）+ 钟点同步逻辑下沉 domain
+    // 薄转发（-70）净 -33，顺手收紧基线到当前真实行数。
+    // 4407→4414: issue#14 性能体检——_init 作业标记落盘改后台 persist
+    // （经 mutation gate 串行），后台任务封装 +9 行，按约定同步基线。
+    // 4419→4433: PR#45 error-handling 的 setCurrentWeek mutation gate /
+    // 一致性校验 / 考试提醒单飞收敛属正当修复增长但未同步基线
+    // （PR#39 的 4419 基于尚未含 #45 的旧 main），合并后实测 4433，
+    // 按测试约定同步真实值。
+    // 4433→4440: main 82f55c9d（issue#52 审核 S4）假期存储损坏时区分
+    // 「暂无」与「损坏」，Provider 侧新增 loadCustomHolidaysOrNull 薄转发
+    // （+7，含注释），合并后实测 4440，按测试约定同步真实值。
+    // 4433→4440: PR#63 成就导出在 main 合入时给 provider 带 +7 行正当
+    // 增长但未同步基线（PR#90 的 4433 基于尚未含 #63 的旧 main），
+    // 合并后实测 4440，按测试约定同步真实值。
+    // 4440→4461: main 上既有漂移（未同步基线，与本次情侣历史课表无关），
+    // 按测试约定并入基线。
+    // 4461→4608: 情侣历史课表（withu-home-heart-nickname 方案 follow-up）
+    // +147——换学期/覆盖导入前的学期快照捕获、restoreCoupleTimetableHistory
+    // 恢复入口与历史读取转发、服务注入参数，属正当功能增长；拆分归阶段 3
+    // 重构，按测试约定同步基线。
+    // 4620→4804: withU couple bidirectional sync +184—provider only adds
+    // restoreMyTimetable forwarding; the main flow lives in the part files.
+    // 4608→4620: TA 课表可切换（移除情侣叠加视图 follow-up）+12——
+    // switchProfile 解除 TA 禁令、activeProfile 回退改写、新增
+    // myTimetableProfile（情侣快照/导出/上传固定指向我的课表），
+    // 属正当功能增长，按测试约定同步基线。
+    const baselineLines = 4804;
+    final lines = providerFile.readAsLinesSync().length;
+    expect(
+      lines,
+      lessThanOrEqualTo(baselineLines),
+      reason:
+          '向上帝类继续堆积被禁止（解耦方案阶段 3 将拆分本类）。'
+          '若确有正当增长，请同步调高本基线并在提交信息说明。',
+    );
+  });
+
+  test('timetable_provider 的 lib 扇入棘轮：只减不增', () {
+    // 48→51：扇入检测原先只匹配相对路径 import，package:university_timetable/
+    // 与 lib 根相对路径可绕过守卫（实际漏网 3 处：main.dart、class_reminder_sheet.dart、
+    // home_menu_catalog.dart）。补漏后按真实扇入 51 设基线，后续只许下降。
+    // 51→52：新增日程安排列表页 schedule_list_screen.dart（任务清单/考试安排的
+    // 同构管理页），与 add_schedule_item_screen 等兄弟页同样需要响应式读取
+    // scheduleItems 与 deleteScheduleItem，属正当的同形依赖；分组排序逻辑
+    // 已下沉纯 Dart domain（schedule_list_grouping），Provider 零改动，
+    // 按测试约定同步真实值。
+    // 52: withU couple sync imports the provider for partner import and
+    // current-timetable upload.
+    const baselineFanIn = 52;
+    final importers = libDartFiles()
+        .where(
+          (file) =>
+              !file.path.replaceAll('\\', '/').endsWith(providerPath) &&
+              RegExp(
+                "import\\s+['\"][^'\"]*providers/timetable_provider\\.dart['\"]",
+              ).hasMatch(file.readAsStringSync()),
+        )
+        .length;
+    expect(
+      importers,
+      lessThanOrEqualTo(baselineFanIn),
+      reason:
+          '新文件不应再直接依赖 TimetableProvider；'
+          '确需依赖时同步调高本基线并说明理由。',
+    );
+  });
+
+  test('_persistActiveProfileState 调用点棘轮：写放大只减不增', () {
+    // 48→49: 情侣历史课表恢复（restoreCoupleTimetableHistory）需要把
+    // 还原后的课程/学期整量写回活动课表，是新的正当全量写路径，按测试
+    // 约定同步基线。
+    const baselineCallSites = 49;
+    final partFiles = [
+      providerFile,
+      File('lib/providers/timetable/import_export_service.dart'),
+      File('lib/providers/timetable/time_scheme_repository.dart'),
+      File('lib/providers/timetable/live_activity_controller.dart'),
+    ];
+    const marker = '_persistActiveProfileState(';
+    var callSites = 0;
+    for (final file in partFiles) {
+      callSites += marker.allMatches(file.readAsStringSync()).length;
+    }
+    expect(
+      callSites,
+      lessThanOrEqualTo(baselineCallSites),
+      reason: '全量覆写调用点是阶段 2 要消灭的写放大指标，不应新增。',
+    );
+  });
+
+  test('lib/domain 保持无 UI 框架依赖（纯领域层）', () {
+    final forbidden = RegExp(
+      r'''import\s+['"]package:flutter/(widgets|material|cupertino)\.dart['"]''',
+    );
+    final violations = <String>[];
+    for (final file in Directory('lib/domain').listSync().whereType<File>()) {
+      if (!file.path.endsWith('.dart')) {
+        continue;
+      }
+      if (forbidden.hasMatch(file.readAsStringSync())) {
+        violations.add(file.path.replaceAll('\\', '/'));
+      }
+    }
+    expect(
+      violations,
+      isEmpty,
+      reason:
+          '领域层只允许纯 Dart 与 models 依赖（flutter/foundation 例外）；'
+          '发现 UI 依赖请上移到 UI 层或改依赖注入。',
+    );
+  });
+}
