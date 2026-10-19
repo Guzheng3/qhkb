@@ -84,6 +84,7 @@ class _TimetablePageSettingsScreenState
                     settings: _draft,
                     week: provider.currentWeek,
                     maxVisibleSections: _draft.sectionCount,
+                    weather: context.watch<WeatherProvider?>(),
                   ),
                 ),
               ),

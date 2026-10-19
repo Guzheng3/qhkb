@@ -20,6 +20,7 @@ import 'logging/app_log_messages.dart';
 import 'models/timetable_settings.dart';
 import 'providers/timetable_provider.dart';
 import 'providers/qhkb_couple_session_provider.dart';
+import 'providers/weather_provider.dart';
 import 'screens/course_import_screen.dart';
 import 'screens/startup_flow_screens.dart';
 import 'screens/user_guide_screen.dart';
@@ -392,6 +393,11 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: timetableProvider),
         ChangeNotifierProvider(create: (_) => QhkbCoupleSessionProvider()),
+        // 天气独立于课表领域：挂在 Navigator 之上，设置页与日/周视图共享同一实例，
+        // 否则改了城市卡片不刷新。
+        ChangeNotifierProvider(
+          create: (_) => WeatherProvider()..initialize(),
+        ),
       ],
       child:
           Selector<

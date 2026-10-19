@@ -9,12 +9,17 @@ import 'package:qhkb/l10n/app_localizations.dart';
 import 'package:qhkb/l10n/holiday_log_localizer.dart';
 import 'package:qhkb/l10n/holiday_name_localizer.dart';
 import 'package:qhkb/l10n/enum_localizations.dart';
+import 'package:qhkb/l10n/weather_location_failure_localizer.dart';
+import 'package:qhkb/providers/weather_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../domain/weather_logic.dart';
+import '../l10n/weather_category_localizer.dart';
 import '../models/holiday_entry.dart';
 import '../models/timetable_settings.dart';
+import '../models/weather_forecast.dart';
 import '../providers/timetable_provider.dart';
 import '../utils/locale_utils.dart';
 import '../services/home_widget_service.dart';
@@ -45,6 +50,7 @@ import '../widgets/bundled_asset_image.dart';
 import '../services/memory_stats_service.dart';
 import 'about_screen.dart';
 import 'couple_timetable_settings_screen.dart';
+import 'weather_city_picker_screen.dart';
 import 'data_transfer_screen.dart';
 import 'memory_stats_screen.dart';
 import 'live_settings_subpages.dart';
@@ -63,6 +69,7 @@ part 'settings/settings_glass_dock_icon_editor.dart';
 part 'settings/settings_reset.dart';
 part 'settings/settings_diagnostics.dart';
 part 'settings/settings_course_card.dart';
+part 'settings/settings_weather.dart';
 part 'settings/settings_general.dart';
 part 'settings/settings_live.dart';
 part 'settings/settings_global.dart';
@@ -163,6 +170,14 @@ class TimetableSettingsScreen extends StatelessWidget {
             context,
             settings: const RouteSettings(name: '/settings/course-card'),
             builder: (_) => const _CourseCardSettingsScreen(),
+          );
+        }
+
+        void openWeatherSettings() {
+          HyperosNavigation.push(
+            context,
+            settings: const RouteSettings(name: '/settings/weather'),
+            builder: (_) => const _WeatherSettingsScreen(),
           );
         }
 
@@ -319,6 +334,7 @@ class TimetableSettingsScreen extends StatelessWidget {
             openProfiles: openProfiles,
             openHolidaySettings: openHolidaySettings,
             openCourseCardSettings: openCourseCardSettings,
+            openWeatherSettings: openWeatherSettings,
             openGlobalTimetableSettings: openGlobalTimetableSettings,
             openTimetablePageSettings: openTimetablePageSettings,
             openHomeNavigation: openHomeNavigation,
@@ -374,6 +390,7 @@ class TimetableSettingsScreen extends StatelessWidget {
     required VoidCallback openProfiles,
     required VoidCallback openHolidaySettings,
     required VoidCallback openCourseCardSettings,
+    required VoidCallback openWeatherSettings,
     required VoidCallback openGlobalTimetableSettings,
     required VoidCallback openTimetablePageSettings,
     required VoidCallback openHomeNavigation,
@@ -522,6 +539,21 @@ class TimetableSettingsScreen extends StatelessWidget {
                 ),
                 title: l10n.courseCardSettingsTitle,
                 onClick: openCourseCardSettings,
+              ),
+              _MiuixSettingsPreference(
+                startAction: _settingsIconBadge(
+                  Icons.wb_sunny_rounded,
+                  HyperosIconColors.blue,
+                ),
+                title: l10n.weatherSettingsEntryTitle,
+                endActions: [
+                  Text(
+                    context.watch<WeatherProvider?>()?.location?.name ??
+                        l10n.weatherCityNotSet,
+                    style: HyperosTypography.listDetail(context),
+                  ),
+                ],
+                onClick: openWeatherSettings,
               ),
               _MiuixSettingsPreference(
                 startAction: _settingsIconBadge(

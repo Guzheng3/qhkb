@@ -30,6 +30,7 @@ import '../models/exam.dart';
 import '../models/schedule_item.dart';
 import '../models/timetable_settings.dart';
 import '../providers/timetable_provider.dart';
+import '../providers/weather_provider.dart';
 import '../providers/qhkb_couple_session_provider.dart';
 import '../services/qhkb_couple_timetable_service.dart';
 import '../services/partner_timetable_service.dart';
@@ -47,6 +48,8 @@ import '../widgets/course_note_sheet.dart';
 import '../widgets/couple_timetable_history_sheet.dart';
 import '../widgets/course_card.dart';
 import '../widgets/course_surface.dart';
+import '../widgets/course_weather_display.dart';
+import '../widgets/day_course_weather_row.dart';
 
 import '../widgets/home_menu_catalog.dart';
 import '../widgets/home_top_menu.dart';
@@ -6258,6 +6261,9 @@ class _TimetableScreenState extends State<TimetableScreen>
       dayOfWeek: dayOfWeek,
       courseItems: displayItems,
     );
+    // 日视图每张课卡的天气行要按「这节课当天的日期」取小时数据；日期在列表
+    // itemBuilder 之外算一次即可，同一天内所有卡片共用。
+    final agendaDate = _dateForWeekDay(settings, week, dayOfWeek);
     // 玻璃坞避让（含底部安全区）：日课表视口全屏，避让以滚动 padding
     // 实现——静止在列表底部时最后一项仍停在玻璃坞上方，滚动中卡片则
     // 连续穿过避让带，不再在边界被硬裁出与磨砂卡片色差明显的空带。
@@ -6283,7 +6289,12 @@ class _TimetableScreenState extends State<TimetableScreen>
       separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, itemIndex) {
         final item = agendaItems[itemIndex];
-        return _buildDayAgendaEntry(week: week, settings: settings, item: item);
+        return _buildDayAgendaEntry(
+          week: week,
+          settings: settings,
+          item: item,
+          date: agendaDate,
+        );
       },
     );
     return agendaList;
@@ -6374,6 +6385,7 @@ class _TimetableScreenState extends State<TimetableScreen>
     required int week,
     required TimetableSettings settings,
     required _DayAgendaItem item,
+    DateTime? date,
   }) {
     final Widget entry;
     if (item.isExam) {
@@ -6529,6 +6541,7 @@ class _TimetableScreenState extends State<TimetableScreen>
                   l10n: l10n,
                   colorScheme: colorScheme,
                   ink: palette.foregroundColor,
+                  date: date,
                   openContainer: openContainer,
                   onOpenNotes: openCourseNotes,
                   opacityScale: effectiveOpacity,
@@ -6541,6 +6554,7 @@ class _TimetableScreenState extends State<TimetableScreen>
                   palette: palette,
                   statusBadges: statusBadges,
                   cardDecoration: cardDecoration,
+                  date: date,
                   openContainer: openContainer,
                   onOpenNotes: openCourseNotes,
                   opacityScale: effectiveOpacity,
@@ -6560,6 +6574,7 @@ class _TimetableScreenState extends State<TimetableScreen>
     required _DayAgendaPalette palette,
     required List<Widget> statusBadges,
     required BoxDecoration cardDecoration,
+    DateTime? date,
     required VoidCallback openContainer,
     required VoidCallback onOpenNotes,
     double opacityScale = 1,
@@ -6671,6 +6686,17 @@ class _TimetableScreenState extends State<TimetableScreen>
                 ink: ink,
               ),
             ],
+            // 天气行自带 5.5 上间距与「拿不到数据就整行消失」逻辑，直接追加即可。
+            DayCourseWeatherRow(
+              date: date,
+              startTime: item.course.startTime,
+              endTime: item.course.endTime,
+              ink: ink,
+              visible: settings.weatherShowOnDayCard,
+              showPhenomenon: settings.weatherShowPhenomenon,
+              showTemperature: settings.weatherShowTemperature,
+              showProbability: settings.weatherShowProbability,
+            ),
           ],
         ),
       ),
@@ -6685,6 +6711,7 @@ class _TimetableScreenState extends State<TimetableScreen>
     required AppLocalizations l10n,
     required ColorScheme colorScheme,
     required Color ink,
+    DateTime? date,
     required VoidCallback openContainer,
     required VoidCallback onOpenNotes,
     double opacityScale = 1,
@@ -6857,6 +6884,17 @@ class _TimetableScreenState extends State<TimetableScreen>
                       ink: ink,
                     ),
                   ],
+                  // 天气行自带 5.5 上间距与「拿不到数据就整行消失」逻辑，直接追加即可。
+                  DayCourseWeatherRow(
+                    date: date,
+                    startTime: item.course.startTime,
+                    endTime: item.course.endTime,
+                    ink: ink,
+                    visible: settings.weatherShowOnDayCard,
+                    showPhenomenon: settings.weatherShowPhenomenon,
+                    showTemperature: settings.weatherShowTemperature,
+                    showProbability: settings.weatherShowProbability,
+                  ),
                 ],
               ),
             ),
@@ -7639,6 +7677,43 @@ class _TimetableScreenState extends State<TimetableScreen>
     );
   }
 
+  /// 首页周视图窄卡的天气内容。
+  ///
+  /// 与周视图预览（`TimetableWeekPreview`）共用同一套密度与开关：两处画的是
+  /// 同一种窄卡，密度不一致会让设置页里看到的和回到课表看到的变成两行字。
+  CourseWeatherDisplay? _weekCardWeatherDisplay(
+    _DayCourseDisplayItem item,
+    DateTime? date,
+    int week,
+    TimetableSettings settings,
+  ) {
+    final weather = context.watch<WeatherProvider?>();
+    final l10n = AppLocalizations.of(context);
+    if (weather == null ||
+        l10n == null ||
+        date == null ||
+        !settings.weatherShowOnWeekCard ||
+        !item.course.isActiveInWeek(week)) {
+      return null;
+    }
+    final display = courseWeatherDisplayFor(
+      l10n: l10n,
+      summary: weather.summaryForCourse(
+        date: date,
+        startTime: item.course.startTime,
+        endTime: item.course.endTime,
+      ),
+      showPhenomenon: settings.weatherShowPhenomenon,
+      showTemperature: settings.weatherShowTemperature,
+      showProbability: settings.weatherShowProbability,
+      textDensity: WeatherTextDensity.compact,
+    );
+    if (display != null) {
+      return display;
+    }
+    return weather.isAwaitingData ? const CourseWeatherDisplay.reserved() : null;
+  }
+
   Widget _buildDayColumn(
     int week,
     int dayOfWeek,
@@ -7712,6 +7787,7 @@ class _TimetableScreenState extends State<TimetableScreen>
               curve: entranceCurve,
               child: CourseCard(
                 course: item.course,
+                weather: _weekCardWeatherDisplay(item, date, week, settings),
                 overrideColorHex: _resolveDisplayCourseColor(
                   item,
                   settings: settings,
