@@ -497,7 +497,7 @@
       }
     }
   },
-  "fileExtensionBullet": "File extension: .{extension}",
+  "fileExtensionBullet": "File extension: .{extension} (backups named .mikcb from before the rename can also be imported)",
   "@fileExtensionBullet": {
     "placeholders": {
       "extension": {
@@ -721,7 +721,7 @@
   "aboutImportMigrationBullet1": "The current version already supports academic system web import for adapted schools; enter Import Courses > Academic System Import, then choose a school and adapter.",
   "aboutImportMigrationBullet2": "If your school is not adapted yet, you can still import into WakeUp or a similar app first, export as a calendar file, and then import it here.",
   "aboutImportMigrationBullet3": "If someone else is already using this app, they can export a full backup and you can restore it directly in Backup & Migration.",
-  "aboutImportMigrationBullet4": "If you know packet capture, web debugging, or JavaScript, you are welcome to contribute adapters in qinghan_warehouse.",
+  "aboutImportMigrationBullet4": "If you know packet capture, web debugging, or JavaScript, you are welcome to help add school adapters.",
   "aboutContributorsTitle": "Contributors",
   "aboutContributorsSubtitle": "Developers and academic system adapter contributors",
   "aboutOpenSourceLicensesTitle": "Open Source Licenses",
@@ -1922,7 +1922,7 @@
   "aboutDevelopersTitle": "Developers",
   "aboutDeveloperMaintainerSubtitle": "Qinghan Timetable development and maintenance",
   "aboutWarehouseMaintainersTitle": "Academic-system adapter maintainers",
-  "aboutWarehouseMaintainersIntro": "The names below are summarized from the maintainer field in the qinghan_warehouse adapter repository. If cached data already exists locally, the cache is shown first and then refreshed in the background",
+  "aboutWarehouseMaintainersIntro": "The names below are summarized from the maintainer field of the bundled adapter scripts. If cached data already exists locally, the cache is shown first and then refreshed in the background",
   "aboutWarehouseMaintainersLoadFailed": "Unable to read the maintainer list right now: {error}",
   "@aboutWarehouseMaintainersLoadFailed": {
     "placeholders": {
@@ -4110,7 +4110,7 @@
     }
   },
   "serviceMsgWarehouseFetchFailedGithub": "Unable to read the adapter repository on GitHub. Check your network or switch to a mirror in Version Update.",
-  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.",
+  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.",
   "serviceMsgManualInputCaptcha": "Enter the captcha manually, then tap Continue.",
   "serviceMsgManualInputPassword": "Enter the password manually. If it was auto-filled, tap Continue.",
   "serviceMsgMacroNoSteps": "No recorded steps.",

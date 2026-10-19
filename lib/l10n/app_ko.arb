@@ -334,7 +334,7 @@
       }
     }
   },
-  "fileExtensionBullet": "파일 확장자: .{extension}",
+  "fileExtensionBullet": "파일 확장자: .{extension} (이름 변경 전의 .mikcb 백업도 가져올 수 있습니다)",
   "@fileExtensionBullet": {
     "placeholders": {
       "extension": {
@@ -589,7 +589,7 @@
   "aboutImportMigrationBullet1": "현재 버전은 대응 학교의 교무 시스템 웹 로그인 가져오기를 지원합니다. '수업 가져오기 > 교무 시스템 가져오기'에서 학교와 어댑터를 선택하세요.",
   "aboutImportMigrationBullet2": "사용하는 학교가 아직 미대응인 경우, WakeUp 등 시간표 앱에서 수업을 가져온 뒤 캘린더 형식으로 내보내고 본 앱에서 가져올 수 있습니다.",
   "aboutImportMigrationBullet3": "다른 사용자가 이미 본 앱을 사용 중인 경우, 전체 백업 파일을 내보내어 '데이터 백업 및 마이그레이션'에서 가져오면 바로 복원됩니다.",
-  "aboutImportMigrationBullet4": "패킷 캡처, 웹 디버깅, JavaScript를 할 수 있다면, qinghan_warehouse에서 교무 적응 보충에 참여해 주세요.",
+  "aboutImportMigrationBullet4": "패킷 캡처, 웹 디버깅, JavaScript를 할 수 있다면, 교무 적응 보충에 참여해 주세요.",
   "aboutContributorsTitle": "코드 기여자",
   "aboutContributorsSubtitle": "개발자 및 교무 가져오기 적응자 목록",
   "aboutOpenSourceLicensesTitle": "오픈소스 라이선스",
@@ -1699,7 +1699,7 @@
   "aboutDevelopersTitle": "개발자",
   "aboutDeveloperMaintainerSubtitle": "清涵 시간표 개발 및 유지보수",
   "aboutWarehouseMaintainersTitle": "교무 가져오기 적응자",
-  "aboutWarehouseMaintainersIntro": "아래 목록은 qinghan_warehouse 적응 저장소의 maintainer 필드에서 집계한 것입니다. 로컬 캐시가 있으면 먼저 캐시를 표시한 뒤 백그라운드에서 갱신합니다",
+  "aboutWarehouseMaintainersIntro": "아래 목록은 내장 적응 스크립트의 maintainer 필드에서 집계한 것입니다. 로컬 캐시가 있으면 먼저 캐시를 표시한 뒤 백그라운드에서 갱신합니다",
   "aboutWarehouseMaintainersLoadFailed": "적응자 목록을 일시적으로 읽을 수 없습니다: {error}",
   "@aboutWarehouseMaintainersLoadFailed": {
     "placeholders": {
@@ -3856,7 +3856,7 @@
     }
   },
   "serviceMsgWarehouseFetchFailedGithub": "Unable to read the adapter repository on GitHub. Check your network or switch to a mirror in Version Update.",
-  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.",
+  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.",
   "serviceMsgManualInputCaptcha": "Enter the captcha manually, then tap Continue.",
   "serviceMsgManualInputPassword": "Enter the password manually. If it was auto-filled, tap Continue.",
   "serviceMsgMacroNoSteps": "No recorded steps.",

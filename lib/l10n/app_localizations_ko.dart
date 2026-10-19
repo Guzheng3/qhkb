@@ -976,7 +976,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String fileExtensionBullet(String extension) {
-    return '파일 확장자: .$extension';
+    return '파일 확장자: .$extension (이름 변경 전의 .mikcb 백업도 가져올 수 있습니다)';
   }
 
   @override
@@ -1383,7 +1383,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '패킷 캡처, 웹 디버깅, JavaScript를 할 수 있다면, qinghan_warehouse에서 교무 적응 보충에 참여해 주세요.';
+      '패킷 캡처, 웹 디버깅, JavaScript를 할 수 있다면, 교무 적응 보충에 참여해 주세요.';
 
   @override
   String get aboutContributorsTitle => '코드 기여자';
@@ -3581,7 +3581,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '아래 목록은 qinghan_warehouse 적응 저장소의 maintainer 필드에서 집계한 것입니다. 로컬 캐시가 있으면 먼저 캐시를 표시한 뒤 백그라운드에서 갱신합니다';
+      '아래 목록은 내장 적응 스크립트의 maintainer 필드에서 집계한 것입니다. 로컬 캐시가 있으면 먼저 캐시를 표시한 뒤 백그라운드에서 갱신합니다';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -6657,7 +6657,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.';
 
   @override
   String get serviceMsgManualInputCaptcha =>

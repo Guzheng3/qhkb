@@ -512,7 +512,7 @@
       }
     }
   },
-  "fileExtensionBullet": "文件后缀：.{extension}",
+  "fileExtensionBullet": "文件后缀：.{extension}（更名前的 .mikcb 备份同样可导入）",
   "@fileExtensionBullet": {
     "placeholders": {
       "extension": {
@@ -767,7 +767,7 @@
   "aboutImportMigrationBullet1": "当前版本已经支持适配学校的教务系统网页登录导入；进入“导入课程 > 教务系统导入”后选择学校和适配器即可",
   "aboutImportMigrationBullet2": "如果你的学校暂时还没适配，仍然可以先在 WakeUp 等课表应用里导入课程，再导出为日历格式，然后在本应用导入",
   "aboutImportMigrationBullet3": "如果其他人已经在用本应用，也可以直接让对方导出完整备份文件，你在“数据备份与迁移”里导入即可直接恢复",
-  "aboutImportMigrationBullet4": "如果你会抓包、网页调试或 JavaScript，也欢迎去 qinghan_warehouse 参与教务适配补充",
+  "aboutImportMigrationBullet4": "如果你会抓包、网页调试或 JavaScript，也欢迎帮忙补充教务适配脚本",
   "aboutContributorsTitle": "代码贡献者",
   "aboutContributorsSubtitle": "开发人员与教务导入适配者名单",
   "aboutOpenSourceLicensesTitle": "开源许可",
@@ -1945,7 +1945,7 @@
   "aboutDevelopersTitle": "开发人员",
   "aboutDeveloperMaintainerSubtitle": "清涵课表开发与维护",
   "aboutWarehouseMaintainersTitle": "教务导入适配者",
-  "aboutWarehouseMaintainersIntro": "以下名单来自 qinghan_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新",
+  "aboutWarehouseMaintainersIntro": "以下名单汇总自内置适配脚本的 maintainer 字段，若本地已有缓存，会先显示缓存，再后台刷新",
   "aboutWarehouseMaintainersLoadFailed": "暂时无法读取适配者名单：{error}",
   "@aboutWarehouseMaintainersLoadFailed": {
     "placeholders": {
@@ -4152,7 +4152,7 @@
     }
   },
   "serviceMsgWarehouseFetchFailedGithub": "暂时无法读取适配仓，当前正在使用 GitHub 原始线路，请检查网络，或在「版本更新」里切到国内镜像后重试",
-  "serviceMsgWarehouseScriptChecksumFailed": "适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qinghan_warehouse 反馈该适配器",
+  "serviceMsgWarehouseScriptChecksumFailed": "适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请反馈该适配器",
   "serviceMsgManualInputCaptcha": "请手动输入验证码；完成后点击继续",
   "serviceMsgManualInputPassword": "请手动输入密码；如已自动填充请直接继续",
   "serviceMsgMacroNoSteps": "没有录制的步骤",

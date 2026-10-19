@@ -334,7 +334,7 @@
       }
     }
   },
-  "fileExtensionBullet": "ファイル拡張子：.{extension}",
+  "fileExtensionBullet": "ファイル拡張子：.{extension}（改名前の .mikcb バックアップも取り込めます）",
   "@fileExtensionBullet": {
     "placeholders": {
       "extension": {
@@ -589,7 +589,7 @@
   "aboutImportMigrationBullet1": "現在のバージョンは対応学校の教務システムWebログインインポートに対応。「授業インポート > 教務システムインポート」から学校とアダプタを選択してください。",
   "aboutImportMigrationBullet2": "お使いの学校がまだ未対応の場合、WakeUpなどの時間割アプリで授業をインポートし、カレンダー形式でエクスポートしてから本アプリでインポート可能。",
   "aboutImportMigrationBullet3": "他のユーザーが本アプリを使用している場合、完全バックアップファイルをエクスポートしてもらい、「データバックアップと移行」からインポートして復元可能。",
-  "aboutImportMigrationBullet4": "パケットキャプチャ、Webデバッグ、JavaScriptができる場合は、qinghan_warehouseで教務適応の補充に参加歓迎。",
+  "aboutImportMigrationBullet4": "パケットキャプチャ、Webデバッグ、JavaScriptができる場合は、教務適応の補充への参加を歓迎します。",
   "aboutContributorsTitle": "コード貢献者",
   "aboutContributorsSubtitle": "開発者と教務インポート適応者の一覧",
   "aboutOpenSourceLicensesTitle": "オープンソースライセンス",
@@ -1699,7 +1699,7 @@
   "aboutDevelopersTitle": "開発者",
   "aboutDeveloperMaintainerSubtitle": "清涵時間割の開発とメンテナンス",
   "aboutWarehouseMaintainersTitle": "教務インポート適応者",
-  "aboutWarehouseMaintainersIntro": "以下のリストはqinghan_warehouse適応倉庫のmaintainerフィールドからの集計，ローカルキャッシュがある場合はキャッシュを先に表示し、バックグラウンドで更新",
+  "aboutWarehouseMaintainersIntro": "以下のリストは内蔵適応スクリプトのmaintainerフィールドからの集計，ローカルキャッシュがある場合はキャッシュを先に表示し、バックグラウンドで更新",
   "aboutWarehouseMaintainersLoadFailed": "適応者リストを一時的に読み込めません：{error}",
   "@aboutWarehouseMaintainersLoadFailed": {
     "placeholders": {
@@ -3856,7 +3856,7 @@
     }
   },
   "serviceMsgWarehouseFetchFailedGithub": "Unable to read the adapter repository on GitHub. Check your network or switch to a mirror in Version Update.",
-  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.",
+  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.",
   "serviceMsgManualInputCaptcha": "Enter the captcha manually, then tap Continue.",
   "serviceMsgManualInputPassword": "Enter the password manually. If it was auto-filled, tap Continue.",
   "serviceMsgMacroNoSteps": "No recorded steps.",

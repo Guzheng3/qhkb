@@ -1847,7 +1847,7 @@ abstract class AppLocalizations {
   /// No description provided for @fileExtensionBullet.
   ///
   /// In zh, this message translates to:
-  /// **'文件后缀：.{extension}'**
+  /// **'文件后缀：.{extension}（更名前的 .mikcb 备份同样可导入）'**
   String fileExtensionBullet(String extension);
 
   /// No description provided for @selectImportModeTitle.
@@ -2552,7 +2552,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutImportMigrationBullet4.
   ///
   /// In zh, this message translates to:
-  /// **'如果你会抓包、网页调试或 JavaScript，也欢迎去 qinghan_warehouse 参与教务适配补充'**
+  /// **'如果你会抓包、网页调试或 JavaScript，也欢迎帮忙补充教务适配脚本'**
   String get aboutImportMigrationBullet4;
 
   /// No description provided for @aboutContributorsTitle.
@@ -6432,7 +6432,7 @@ abstract class AppLocalizations {
   /// No description provided for @aboutWarehouseMaintainersIntro.
   ///
   /// In zh, this message translates to:
-  /// **'以下名单来自 qinghan_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新'**
+  /// **'以下名单汇总自内置适配脚本的 maintainer 字段，若本地已有缓存，会先显示缓存，再后台刷新'**
   String get aboutWarehouseMaintainersIntro;
 
   /// No description provided for @aboutWarehouseMaintainersLoadFailed.
@@ -11682,7 +11682,7 @@ abstract class AppLocalizations {
   /// No description provided for @serviceMsgWarehouseScriptChecksumFailed.
   ///
   /// In zh, this message translates to:
-  /// **'适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qinghan_warehouse 反馈该适配器'**
+  /// **'适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请反馈该适配器'**
   String get serviceMsgWarehouseScriptChecksumFailed;
 
   /// No description provided for @serviceMsgManualInputCaptcha.

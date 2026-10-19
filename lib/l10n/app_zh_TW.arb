@@ -333,7 +333,7 @@
       }
     }
   },
-  "fileExtensionBullet": "檔案後綴：.{extension}",
+  "fileExtensionBullet": "檔案後綴：.{extension}（更名前的 .mikcb 備份同樣可匯入）",
   "@fileExtensionBullet": {
     "placeholders": {
       "extension": {
@@ -588,7 +588,7 @@
   "aboutImportMigrationBullet1": "目前版本已經支持適配學校的教務系統網頁登錄匯入；進入“匯入課程 > 教務系統匯入”後選擇學校和適配器即可",
   "aboutImportMigrationBullet2": "如果你的學校暫時還沒有適配，仍然可以先在 WakeUp 等課表應用裡匯入課程，再匯出為日歷格式，然後在本應用匯入",
   "aboutImportMigrationBullet3": "如果其他人已經在用本應用，也可以直接讓對方匯出完整備份檔案，你在“資料備份與遷移”裡匯入即可直接還原",
-  "aboutImportMigrationBullet4": "如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qinghan_warehouse 參與教務適配補充",
+  "aboutImportMigrationBullet4": "如果你會抓包、網頁偵錯或 JavaScript，也歡迎幫忙補充教務適配腳本",
   "aboutContributorsTitle": "代碼貢獻者",
   "aboutContributorsSubtitle": "開發人員與教務匯入適配者名單",
   "aboutOpenSourceLicensesTitle": "開源許可",
@@ -1696,7 +1696,7 @@
   "aboutDevelopersTitle": "開發人员",
   "aboutDeveloperMaintainerSubtitle": "清涵課表開發與維護",
   "aboutWarehouseMaintainersTitle": "教務匯入適配者",
-  "aboutWarehouseMaintainersIntro": "以下名單来自 qinghan_warehouse 適配倉的 maintainer 字段汇总，若本地已有缓存，会先顯示缓存，再後台刷新",
+  "aboutWarehouseMaintainersIntro": "以下名單彙總自內置適配腳本的 maintainer 字段，若本地已有緩存，會先顯示緩存，再後台刷新",
   "aboutWarehouseMaintainersLoadFailed": "暫時無法讀取適配者名單：{error}",
   "@aboutWarehouseMaintainersLoadFailed": {
     "placeholders": {
@@ -3856,7 +3856,7 @@
     }
   },
   "serviceMsgWarehouseFetchFailedGithub": "Unable to read the adapter repository on GitHub. Check your network or switch to a mirror in Version Update.",
-  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.",
+  "serviceMsgWarehouseScriptChecksumFailed": "Adapter script integrity check failed: downloaded content does not match the repository's declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.",
   "serviceMsgManualInputCaptcha": "Enter the captcha manually, then tap Continue.",
   "serviceMsgManualInputPassword": "Enter the password manually. If it was auto-filled, tap Continue.",
   "serviceMsgMacroNoSteps": "No recorded steps.",

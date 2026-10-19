@@ -951,7 +951,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String fileExtensionBullet(String extension) {
-    return '文件后缀：.$extension';
+    return '文件后缀：.$extension（更名前的 .mikcb 备份同样可导入）';
   }
 
   @override
@@ -1352,7 +1352,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你会抓包、网页调试或 JavaScript，也欢迎去 qinghan_warehouse 参与教务适配补充';
+      '如果你会抓包、网页调试或 JavaScript，也欢迎帮忙补充教务适配脚本';
 
   @override
   String get aboutContributorsTitle => '代码贡献者';
@@ -3478,7 +3478,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名单来自 qinghan_warehouse 适配仓的 maintainer 字段汇总，若本地已有缓存，会先显示缓存，再后台刷新';
+      '以下名单汇总自内置适配脚本的 maintainer 字段，若本地已有缓存，会先显示缓存，再后台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -6488,7 +6488,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      '适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请到 qinghan_warehouse 反馈该适配器';
+      '适配器脚本完整性校验失败：下载内容与仓库声明的 SHA-256 不一致，已阻止执行。请刷新学校列表后重试；若反复出现，请反馈该适配器';
 
   @override
   String get serviceMsgManualInputCaptcha => '请手动输入验证码；完成后点击继续';
@@ -9904,7 +9904,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String fileExtensionBullet(String extension) {
-    return '檔案後綴：.$extension';
+    return '檔案後綴：.$extension（更名前的 .mikcb 備份同樣可匯入）';
   }
 
   @override
@@ -10305,7 +10305,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qinghan_warehouse 參與教務適配補充';
+      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎幫忙補充教務適配腳本';
 
   @override
   String get aboutContributorsTitle => '代碼貢獻者';
@@ -12430,7 +12430,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名單來自 qinghan_warehouse 適配倉的 maintainer 字段匯總，若本地已有緩存，會先顯示緩存，再後台刷新';
+      '以下名單匯總自內置適配腳本的 maintainer 字段，若本地已有緩存，會先顯示緩存，再後台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -15476,7 +15476,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
@@ -18895,7 +18895,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String fileExtensionBullet(String extension) {
-    return '檔案後綴：.$extension';
+    return '檔案後綴：.$extension（更名前的 .mikcb 備份同樣可匯入）';
   }
 
   @override
@@ -19296,7 +19296,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎去 qinghan_warehouse 參與教務適配補充';
+      '如果你會抓包、網頁偵錯或 JavaScript，也歡迎幫忙補充教務適配腳本';
 
   @override
   String get aboutContributorsTitle => '代碼貢獻者';
@@ -21421,7 +21421,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      '以下名單来自 qinghan_warehouse 適配倉的 maintainer 字段汇总，若本地已有缓存，会先顯示缓存，再後台刷新';
+      '以下名單彙總自內置適配腳本的 maintainer 字段，若本地已有緩存，會先顯示緩存，再後台刷新';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -24467,7 +24467,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.';
 
   @override
   String get serviceMsgManualInputCaptcha =>

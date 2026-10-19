@@ -1010,7 +1010,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String fileExtensionBullet(String extension) {
-    return 'File extension: .$extension';
+    return 'File extension: .$extension (backups named .mikcb from before the rename can also be imported)';
   }
 
   @override
@@ -1427,7 +1427,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutImportMigrationBullet4 =>
-      'If you know packet capture, web debugging, or JavaScript, you are welcome to contribute adapters in qinghan_warehouse.';
+      'If you know packet capture, web debugging, or JavaScript, you are welcome to help add school adapters.';
 
   @override
   String get aboutContributorsTitle => 'Contributors';
@@ -3707,7 +3707,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutWarehouseMaintainersIntro =>
-      'The names below are summarized from the maintainer field in the qinghan_warehouse adapter repository. If cached data already exists locally, the cache is shown first and then refreshed in the background';
+      'The names below are summarized from the maintainer field of the bundled adapter scripts. If cached data already exists locally, the cache is shown first and then refreshed in the background';
 
   @override
   String aboutWarehouseMaintainersLoadFailed(String error) {
@@ -6846,7 +6846,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get serviceMsgWarehouseScriptChecksumFailed =>
-      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, report the adapter to qinghan_warehouse.';
+      'Adapter script integrity check failed: downloaded content does not match the repository\'s declared SHA-256, so execution was blocked. Refresh the school list and try again; if it keeps happening, please report the adapter.';
 
   @override
   String get serviceMsgManualInputCaptcha =>
