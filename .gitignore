@@ -1,0 +1,5 @@
+# Claude Code 本地 worktree（会话隔离用，不入库）
+.claude/worktrees/
+
+# 本地覆盖配置
+.claude/settings.local.json
