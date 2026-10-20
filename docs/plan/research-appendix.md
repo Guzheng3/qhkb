@@ -518,7 +518,7 @@
 - WakeUp 官方 App 是否开源；上述项目的字段级数据模型（未逐仓库核对）。
 - 小组件更新周期、Doze／后台限制下的刷新行为（`developer.android.com` 整体不可达）；Jetpack Glance 官方文档与其与 `home_widget` 的配合方式；小组件深色模式的官方适配规范。
 - HyperOS 焦点通知／超级岛的开发者接入 API、申请与审核流程；通知渠道行为、前台服务后台限制、Doze／省电白名单；`POST_PROMOTED_NOTIFICATIONS` 的运行时授权表现与厂商差异；promoted ongoing notifications 与超级岛是否同一实现路径。
-- 高德 Web 服务 API 的具体免费配额数值；高德 SDK 的开源许可证类型；「Key 不得入库」的官方规范；Open-Meteo 免费层是否对单 IP 并发另有限制。
+- 高德 Web 服务 API 的具体免费配额数值（未证实数字）；「Key 不得入库」的官方规范（未证实存在）；Open-Meteo 免费层是否对单 IP 并发另有限制（未证实）。高德 SDK 的许可性质不属此类——已证实为闭源二进制、无开源许可声明（见 C.4.2）。
 - 精确闹钟的降级建议、Android 14 起 `SCHEDULE_EXACT_ALARM` 默认授予策略、`USE_EXACT_ALARM` 的适用条件与 Google Play 政策要求；`EXTRA_SKIP_UI` 在各厂商时钟应用中的实际支持。
 
 ---
