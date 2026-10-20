@@ -98,3 +98,144 @@
   `https://developer.android.com/develop/ui/views/compose/glance` 同上，未证实；
   其作为原生小组件实现路线、以及与 `home_widget` 数据通道的配合方式未证实。
 - 小组件深色模式/主题色的官方适配规范未证实。
+
+## 3. 厂商系统集成现状
+
+**结论**
+
+- **HyperOS「焦点通知 / 超级岛」的开发者接入文档未证实**：小米官方站点 `hyperos.mi.com`
+  是面向消费者的产品页（只营销描述「任务上岛」、超级小爱等），未见开发者 API、申请流程或审核要求。
+  可核实的技术事实是：这套呈现对应的是 **Android 系统的 promoted ongoing notifications
+  （提升型常驻通知）**，自 API 36 引入，API 36.1 补齐权限与请求接口。
+- **系统 API 等级事实**（Google 随 SDK 平台包发布的官方元数据，逐项核对）：
+
+| 符号 | 起始 API |
+| --- | --- |
+| `NotificationManager.canPostPromotedNotifications()` | 36 |
+| `Notification.FLAG_PROMOTED_ONGOING` | 36 |
+| `android.permission.POST_PROMOTED_NOTIFICATIONS` | 36.1 |
+| `Notification.Builder.setRequestPromotedOngoing(boolean)` | 36.1 |
+| `Notification.EXTRA_REQUEST_PROMOTED_ONGOING` | 36.1 |
+| `NotificationManager.isRequestPromotedOngoing()` | 36.1 |
+| `android.permission.POST_NOTIFICATIONS` | 33 |
+
+  注意：`POST_PROMOTED_NOTIFICATIONS` **不出现在 API 36 平台元数据中，只出现在 API 36.1
+  （android-37.0）元数据中**；即声明它需要 compileSdk 达到 36.1 一档，否则只是被忽略的未知权限。
+- **前台服务**：`FOREGROUND_SERVICE`、`FOREGROUND_SERVICE_SPECIAL_USE`（API 34）、
+  `Service.FOREGROUND_SERVICE_TYPE_SPECIAL_USE`（API 34）、
+  `Service.PROPERTY_SPECIAL_USE_FGS_SUBTYPE`（API 34，用于说明 specialUse 的具体用途）。
+- **开源项目的常见做法**（轻屿课表，GPL-3.0）：声明 `POST_PROMOTED_NOTIFICATIONS`、
+  `FOREGROUND_SERVICE`、`FOREGROUND_SERVICE_SPECIAL_USE`、`RECEIVE_BOOT_COMPLETED`、
+  `SCHEDULE_EXACT_ALARM`、`ACCESS_NOTIFICATION_POLICY`、`MODIFY_AUDIO_SETTINGS`；
+  两个 `specialUse` 前台服务（课中实时活动、局域网编辑）都填写了
+  `PROPERTY_SPECIAL_USE_FGS_SUBTYPE` 用途说明；README 还引导用户手动授予
+  「通知与焦点通知权限、后台无限制与自启动、免打扰访问权限」。
+  即：厂商侧的后台保活不是纯代码问题，需要用户侧授权配合。
+- **通知渠道**：官方渠道行为依据未取证，可证实的仅有 `POST_NOTIFICATIONS`（API 33）一项。
+
+**来源**
+
+- Google 官方 SDK 平台元数据（本地已安装 SDK，取证日期 2026-10-20）：
+  `E:\Android\Sdk\platforms\android-36\data\api-versions.xml`、
+  `E:\Android\Sdk\platforms\android-37.0\data\api-versions.xml`
+- 小米 HyperOS 官网（仅消费者内容，无开发者文档）：https://hyperos.mi.com/
+- 轻屿课表 AndroidManifest（权限、前台服务与用途声明）：
+  https://raw.githubusercontent.com/Mutx163/mikcb/main/android/app/src/main/AndroidManifest.xml
+- 轻屿课表 README（用户侧授权要求）：
+  https://raw.githubusercontent.com/Mutx163/mikcb/main/README.md
+
+**未证实（含取证失败原因）**
+
+- HyperOS 焦点通知/超级岛的开发者接入 API、申请与审核流程：未证实（官方站点无开发者文档）。
+- 通知渠道行为、前台服务后台限制、Doze/省电白名单等 Android 官方条目：取证失败
+  （`developer.android.com` 本次整体不可达）。
+- `POST_PROMOTED_NOTIFICATIONS` 的运行时授权表现及各厂商适配差异：未证实。
+
+## 4. 天气与定位数据源官方事实
+
+### 4.1 Open-Meteo
+
+**免费额度与限流**（官方定价页原文）
+
+| 项 | 免费/开放层 |
+| --- | --- |
+| 商用 | ❌ 不允许 |
+| 每分钟 | 600 calls / min |
+| 每小时 | 5,000 calls / hour |
+| 每天 | 10,000 calls / day |
+| 每月 | 300,000 calls / month |
+
+- 付费档：Standard 1M calls/月、Professional 5M calls/月、Enterprise >50M calls/月；
+  付费档走 `customer-api.open-meteo.com` 并以 `&apikey=` 传参，语法与免费档一致，99.9% 可用性目标；
+  **免费层无可用性保证**。
+- **调用计量规则**：通常 1 个 HTTP 请求 = 1 次调用；但单次请求变量数 >10 或时间跨度 >2 周会被折算，
+  官方示例：2 周 × 15 变量 = 1.5 次调用，4 周 = 3.0 次调用。
+
+**许可证与署名**（官方许可页原文）
+
+- API 数据为 **CC BY 4.0**：需署名、提供许可链接、标注是否修改；
+  且**必须在任何展示 Open-Meteo 数据的位置旁给出链接**，官方示例
+  `<a href="https://open-meteo.com/">Weather data by Open-Meteo.com</a>`。
+- 服务端源码为 **AGPLv3**；上游数据源含 DWD、ECMWF、NOAA、CMA 等（多为 CC-BY 系）。
+
+**常用字段**（对官方 `v1/forecast` 端点实测返回，字段名逐字核对）
+
+- `current`：`temperature_2m`(°C)、`relative_humidity_2m`(%)、`apparent_temperature`(°C)、
+  `weather_code`(wmo code)、`wind_speed_10m`(km/h)，另有 `interval`(秒)。
+- `hourly`：`temperature_2m`、`precipitation_probability`(%)、`weather_code`。
+- `daily`：`weather_code`、`temperature_2m_max`、`temperature_2m_min`、`precipitation_probability_max`。
+- 顶层：`latitude`、`longitude`、`timezone`、`utc_offset_seconds`、`elevation`；
+  各分组另返回 `current_units` / `hourly_units` / `daily_units` 标明单位。
+- `forecast_days` 默认 7、最大 16；Open-Meteo 另有 Geocoding API（免费层同样包含）。
+
+### 4.2 高德开放平台
+
+- **天气查询 Web API**：`GET https://restapi.amap.com/v3/weather/weatherInfo`；
+  参数 `key`（必填，Web 服务类型 KEY）、`city`（必填，**adcode**）、
+  `extensions`（可选，`base`=实况 / `all`=预报）。文档最后更新 2025-03-18。
+- **Android 定位 SDK**：官方说明 Flutter 3.0.0 已兼容 Android 定位 SDK ≥5.6.0，并提供 Flutter 插件；
+  定位模式 `AMapLocationMode.Hight_Accuracy` / `Battery_Saving` / `Device_Sensors`，
+  `setInterval` 最小间隔 1000ms；**逆地理编码随定位结果返回**：
+  `getAddress`、`getCountry`、`getProvince`、`getCity`、`getDistrict`、`getStreet`、
+  `getStreetNum`、`getCityCode`、`getAdCode`、`getAOIName`。
+  合规前置：定位 5.6.0 起调用任何接口前必须先调用 `updatePrivacyShow`、`updatePrivacyAgree`。
+- **Key 申请流程**：Web 服务 API 为「控制台 → 应用管理 → 创建新应用 → 添加 Key →
+  服务平台选『Web 服务』」；Android 平台 SDK 为「创建应用 → 添加新 Key →
+  绑定服务选『Android平台SDK』→ 填发布版安全码 SHA1、调试版 SHA1、Package」。
+  `1 个 KEY 只能用于一个应用`（多渠道安装包属于多个应用），多应用共用会调用失败；
+  debug 与 release 的 SHA1 不同，发布 APK 需按发布 keystore 重新配置 Key。
+- **免费配额**：官方「流量限制说明」页**未给出具体数字**，只指向「定价-基础服务配额说明」与控制台
+  「流量分析-配额管理」。具体数值以控制台为准，本文不记录未经文档证实的数字。
+- **许可**：定位 SDK 官方「开发者使用注意事项」明确——法人或非法人组织使用平台服务应事先购买
+  技术服务许可；未购买时平台提供的 KEY 与服务配额**仅供短期、少量的测试目的**；
+  面向公众提供、上架分发、收费或投放广告、长期或大量调用等构成未许可使用。
+- **Key 不入库**：官方只提示「妥善保管你的 Key」，未发现专门的仓库安全规范（未证实存在该规范）。
+  可核实的结构性事实是：Android 平台 Key 必须绑定 SHA1 与 Package，因而必然随 APK 分发，
+  属客户端凭据；Web 服务 Key 在控制台按平台单独授予，属服务端凭据。
+  据此，工程上的合理做法是客户端 Key 走构建期注入（占位符 + 不入库的 `local.properties`/CI 密钥），
+  仓库只提交占位，Web 服务 Key 只放自有服务端、不下发客户端。
+  （此为工程判断，非官方明文要求。）
+
+**来源**
+
+- Open-Meteo 定价（免费档限流、付费档、调用计量）：https://open-meteo.com/en/pricing
+- Open-Meteo 许可（CC BY 4.0、署名示例、AGPLv3 源码）：https://open-meteo.com/en/licence
+- Open-Meteo 天气 API 文档（变量清单、forecast_days）：https://open-meteo.com/en/docs
+- Open-Meteo 端点实测（字段名与单位，2026-10-20 调用）：
+  https://api.open-meteo.com/v1/forecast?latitude=39.9042&longitude=116.4074&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FShanghai&forecast_days=2
+- 高德天气查询文档：https://lbs.amap.com/api/webservice/guide/api/weatherinfo
+- 高德流量限制说明（配额入口）：https://lbs.amap.com/api/webservice/guide/tools/flowlevel
+- 高德 Web 服务 Key 创建流程：https://lbs.amap.com/api/webservice/create-project-and-key
+- 高德 Android 定位 SDK 概述（Flutter 兼容性、字段、隐私合规、技术服务许可）：
+  https://lbs.amap.com/api/android-location-sdk/locationsummary
+- 高德 Android 定位 SDK 获取 Key（SHA1/Package 绑定、1 Key 1 应用）：
+  https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key
+
+**未证实**
+
+- 高德 Web 服务 API 的具体免费配额数值：官方页面未给出，需在控制台查看（未证实具体数字）。
+- 高德 SDK 的开源许可证文本：官方文档只谈技术服务许可与使用限制，未提供 SDK 开源许可声明，
+  SDK 为闭源二进制（未证实其许可证类型）。
+- 「Key 不得入库」的官方规范：未证实存在高德官方仓库安全规范页；仓库保密措施依据
+  GitHub 等平台能力，本次未取证。
+- Open-Meteo 免费层是否对单 IP 并发连接数另有限制：未证实。
