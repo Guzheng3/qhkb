@@ -427,13 +427,28 @@
 
 以下事实用于说明「为什么不用」以及「若将来在服务端代理地理编码需要注意什么」，本项目客户端不引入其任何 SDK 或服务。
 
-- **天气查询 Web API**：`GET https://restapi.amap.com/v3/weather/weatherInfo`；参数 `key`（必填，Web 服务类型 KEY）、`city`（必填，**adcode**）、`extensions`（可选，`base`=实况／`all`=预报）。文档最后更新 2025-03-18。
-- **Android 定位 SDK**：官方说明 Flutter 3.0.0 已兼容 Android 定位 SDK ≥5.6.0，并提供 Flutter 插件；定位模式 `AMapLocationMode.Hight_Accuracy`／`Battery_Saving`／`Device_Sensors`，`setInterval` 最小间隔 1000ms；**逆地理编码随定位结果返回**：`getAddress`、`getCountry`、`getProvince`、`getCity`、`getDistrict`、`getStreet`、`getStreetNum`、`getCityCode`、`getAdCode`、`getAOIName`。合规前置：定位 5.6.0 起调用任何接口前必须先调用 `updatePrivacyShow`、`updatePrivacyAgree`。
-- **分发形态（决定许可结论的关键事实）**：官方《Android Studio 配置工程》给出两种集成方式——把 SDK 的 jar 拷入工程 `libs/` 目录，或在 Gradle 中以 `com.amap.api:location` 依赖引入。**两种方式都把该闭源二进制编译进 APK 并随 APK 分发**；它在应用进程内以 `AMapLocationClient` 被调用，不是应用外部独立运行的网络服务。因此它的许可约束与 GPL-3.0 的源码提供义务无法同时满足——**这是本项目不采用该 SDK 的直接原因**（判定与落点见规划书 7.1、7.6）。
+- **天气查询 Web API**：`GET https://restapi.amap.com/v3/weather/weatherInfo`；参数 `key`（必填，Web 服务类型 KEY）、`city`（必填，**adcode**）、`extensions`（可选，`base`=实况／`all`=预报）。文档最后更新 2025-03-18。**本项目不调用该接口**。
+- **Android 定位 SDK**：官方说明「**Flutter3.0.0版本已发布，兼容Android定位5.6.0**、iOS定位2.8.0、地图8.1.0及以上版本，可前往 Flutter插件下载页面 获取对应版本」；定位模式 `AMapLocationMode.Hight_Accuracy`／`Battery_Saving`（低功耗）／`Device_Sensors`（仅设备），示例中 `setInterval` 注释写「最小间隔支持为1000ms」；**逆地理编码随定位结果返回**：`getAddress`、`getCountry`、`getProvince`、`getCity`、`getDistrict`、`getStreet`、`getStreetNum`、`getCityCode`、`getAdCode`、`getAOIName`（官方对末两项的注释分别为「城市编码」「地区编码」）。合规前置：概述页明确「从定位5.6.0版本起对旧版本SDK不兼容，请务必确保调用SDK任何接口前先调用更新隐私合规 `updatePrivacyShow`、`updatePrivacyAgree` 两个接口，否则可能导致编译不通过等异常情况」。**本项目不采用该 SDK**。
+- **分发形态（决定许可结论的关键事实）**：官方《Android Studio 配置工程》页给出两种集成方式，原文小标题逐字为「**方法1:通过拷贝集成SDK**」与「**方法2:通过Gradle集成SDK**」——
+  - 方法 1 原文：「将下载的定位 SDK jar 文件复制到工程……的 libs 目录下」，并在 `build.gradle` 的 dependencies 中配置 `compile fileTree(include: ['*.jar'], dir: 'libs')`；该页另注明「定位 SDK 无需 so 库文件支持」。
+  - 方法 2 原文：在 Project 的 `build.gradle` 中配置 `jcenter()`／`mavenCentral()` 仓库，在 dependencies 中按表引入依赖，其中「定位」一栏为 `compile 'com.amap.api:location:latest.integration'`。
+  - 由此可判定：两种方式都把该闭源二进制纳入应用的编译与打包产物（jar 被拷入工程 `libs/` 后由 `fileTree` 参与编译；Gradle 依赖由构建工具解析并打进包）。该页本身未使用「随 APK 分发」字样，这一表述是本规划书基于上述集成方式的推论。它在应用进程内以 `AMapLocationClient` 被调用，不是应用外部独立运行的网络服务。因此它的许可约束与 GPL-3.0 的源码提供义务无法同时满足——**这是本项目不采用该 SDK 的直接原因**（判定与落点见规划书 7.1、7.6）。
 - **Key 申请流程**：Web 服务 API 为「控制台 → 应用管理 → 创建新应用 → 添加 Key → 服务平台选『Web 服务』」；Android 平台 SDK 为「创建应用 → 添加新 Key → 绑定服务选『Android平台SDK』→ 填发布版安全码 SHA1、调试版 SHA1、Package」。**1 个 KEY 只能用于一个应用**（多渠道安装包属于多个应用），多应用共用会调用失败；debug 与 release 的 SHA1 不同，发布 APK 需按发布 keystore 重新配置 Key。注意：**Web 服务 Key 不绑定 SHA1 与包名**，打进 APK 可被反编译提取，属服务端凭据，不得下发客户端。
-- **免费配额**：官方「流量限制说明」页**未给出具体数字**，只指向「定价-基础服务配额说明」与控制台「流量分析-配额管理」。具体数值以控制台为准，本文不记录未经文档证实的数字。
-- **许可**：定位 SDK 官方「开发者使用注意事项」明确——法人或非法人组织使用平台服务应事先购买技术服务许可；未购买时平台提供的 KEY 与服务配额**仅供短期、少量的测试目的**；面向公众提供、上架分发、收费或投放广告、长期或大量调用等构成未许可使用。**因其闭源二进制随包分发、与 GPL-3.0 不兼容，本 SDK 不作为本项目依赖**，该技术服务许可问题对本项目不再适用。
-- **Key 不入库**：官方只提示「妥善保管你的 Key」，未发现专门的仓库安全规范（**未证实存在该规范**）。可核实的结构性事实是：Android 平台 Key 必须绑定 SHA1 与 Package，因而必然随 APK 分发，属客户端凭据；Web 服务 Key 在控制台按平台单独授予、不与应用身份绑定，属服务端凭据。（本项目客户端不引入第三方密钥，故不适用；此条保留为将来「服务端代理地理编码」的取证。）
+- **免费配额**：官方《流量限制说明》页正文只有两句——「web平台基础服务调用配额参考，请跳转[定价-基础服务配额说明]」「QPS 配额信息，请在[控制台-流量分析-配额管理]页面查看」（页面标注最后更新时间 2024-07-15）。即该页**确实不给具体数字**，具体数值以控制台为准，本文不记录未经文档证实的数字。
+- **许可**：定位 SDK 概述页「开发者使用注意事项」第 1 条原文——「法人或非法人组织使用平台服务应事先购买技术服务许可以获取许可。若您未购买技术服务许可，平台向您提供的KEY和服务配额仅供您用于短期、少量的测试目的；若您超出前述范围使用平台服务（包括但不限于您开始向第三方或公众销售或提供您的应用、将您的应用用于参与第三方投标、您的应用在应用程序分发平台上架或已经可以被公众获取使用、您的应用开始收费或发布广告或以其他方式获益、在组织内部使用的您的应用已上线运营、您的应用长期或大量调用平台服务等情形），构成未许可使用，平台有权采取相应措施。」**因其闭源二进制随包分发、与 GPL-3.0 不兼容，本 SDK 不作为本项目依赖**，该技术服务许可问题对本项目不再适用。
+- **Key 不入库**：官方抓取到的两个 Key 相关页面**均未出现**「妥善保管你的 Key」这句话，也未提供仓库安全规范页——因此本节此前引用的该句**本次未核实**（未证实）；本文保留的事实只有结构性部分：Android 平台 Key 必须绑定 SHA1 与 Package，Web 服务 Key 在控制台按平台单独授予。官方「控制台 → 应用管理 → 创建新应用 → 添加 Key」的创建流程见对应文档页。**本项目客户端不引入第三方密钥，故本条仅作将来「服务端代理地理编码」的取证。**
+
+**本区块链接与核对记录**（抓取日期 2026-10-20，均 HTTP 200）
+
+| 事实条目 | 可引用来源 | 核对结果 |
+| --- | --- | --- |
+| 分发形态（jar `libs/`／Gradle `com.amap.api:location`） | https://lbs.amap.com/api/android-location-sdk/guide/create-project/android-studio-create-project （页面标注最后更新 2021-01-22） | 已有链接；小标题与配置写法逐字核对一致 |
+| 定位模式、`setInterval` 1000ms、逆地理编码字段、`updatePrivacyShow`／`updatePrivacyAgree`、Flutter 兼容性、技术服务许可条款 | https://lbs.amap.com/api/android-location-sdk/locationsummary （页面标注最后更新 2025-12-03） | 已有链接；逐字核对一致 |
+| SHA1／Package 绑定、1 Key 1 应用、debug 与 release 的 SHA1 不同 | https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key （页面标注最后更新 2026-10-20） | 已有链接；逐字核对一致 |
+| 免费配额页不给数字、只指向定价与控制台 | https://lbs.amap.com/api/webservice/guide/tools/flowlevel （页面标注最后更新 2024-07-15） | 已有链接；逐字核对一致 |
+| 天气查询 Web API 的参数与 adcode | https://lbs.amap.com/api/webservice/guide/api/weatherinfo | 已有链接；未逐字复核（本项目不调用该接口） |
+| Web 服务 Key 创建流程 | https://lbs.amap.com/api/webservice/create-project-and-key | 已有链接；未逐字复核 |
+| 「妥善保管你的 Key」 | **无可引用来源** | 本次未核实，已在正文明示为未证实 |
 
 **来源（保留为「已评估、未采用」的取证记录）**
 
@@ -445,15 +460,14 @@
 - 高德流量限制说明（配额入口）：https://lbs.amap.com/api/webservice/guide/tools/flowlevel
 - 高德 Web 服务 Key 创建流程：https://lbs.amap.com/api/webservice/create-project-and-key
 - 高德 Android 定位 SDK 概述（Flutter 兼容性、字段、隐私合规、技术服务许可）：https://lbs.amap.com/api/android-location-sdk/locationsummary
-- 高德 Android 定位 SDK 获取 Key（SHA1/Package 绑定、1 Key 1 应用）：https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key
-
-**分发形态的来源说明**：官方《Android Studio 配置工程》给出两种集成方式（jar 拷入 `libs/`／Gradle 依赖 `com.amap.api:location`），本次未取得该文档的可引用 URL，故只作事实陈述、不附链接；该文档属高德 Android 定位 SDK 官方文档体系（与上两条同一站点）。
+- 高德 Android 定位 SDK 获取 Key（SHA1/Package 绑定、1 Key 1 应用）：https://lbs.amap.com/api/android-location-sdk/guide/create-project/get-key （页面标注最后更新时间 2026-10-20，抓取于 2026-10-20，HTTP 200）
+- 高德 Android 定位 SDK《Android Studio 配置工程》**（分发形态的唯一依据，本次已取得并逐字核对）**：https://lbs.amap.com/api/android-location-sdk/guide/create-project/android-studio-create-project （页面标注最后更新时间 2021-01-22，抓取于 2026-10-20，HTTP 200）
 
 **未证实**
 
 - 高德 Web 服务 API 的具体免费配额数值：官方页面未给出，需在控制台查看（未证实具体数字）。
 - 高德 SDK 的开源许可文本：官方文档只谈技术服务许可与使用限制，未提供任何开源许可声明——**已证实为闭源二进制、无开源许可声明**，其开源许可证类型不存在（而不是「未证实」）。
-- 「Key 不得入库」的官方规范：未证实存在高德官方仓库安全规范页。
+- 「Key 不得入库」的官方规范：未证实存在高德官方仓库安全规范页；本次抓取到的两个 Key 相关页面也未出现该提示，因此「官方只提示妥善保管你的 Key」这一说法**未核实**，只能确认 Key 与 SHA1／Package 的绑定关系（见 C.4.2 核对表）。
 - Open-Meteo 免费层是否对单 IP 并发连接数另有限制：未证实。
 
 ### C.5 课表提醒与闹钟
@@ -518,7 +532,7 @@
 - WakeUp 官方 App 是否开源；上述项目的字段级数据模型（未逐仓库核对）。
 - 小组件更新周期、Doze／后台限制下的刷新行为（`developer.android.com` 整体不可达）；Jetpack Glance 官方文档与其与 `home_widget` 的配合方式；小组件深色模式的官方适配规范。
 - HyperOS 焦点通知／超级岛的开发者接入 API、申请与审核流程；通知渠道行为、前台服务后台限制、Doze／省电白名单；`POST_PROMOTED_NOTIFICATIONS` 的运行时授权表现与厂商差异；promoted ongoing notifications 与超级岛是否同一实现路径。
-- 高德 Web 服务 API 的具体免费配额数值（未证实数字）；「Key 不得入库」的官方规范（未证实存在）；Open-Meteo 免费层是否对单 IP 并发另有限制（未证实）。高德 SDK 的许可性质不属此类——已证实为闭源二进制、无开源许可声明（见 C.4.2）。
+- 高德 Web 服务 API 的具体免费配额数值（未证实数字）；「Key 不得入库」的官方规范（未证实存在，且「官方只提示妥善保管你的 Key」一说本次未核实）；Open-Meteo 免费层是否对单 IP 并发另有限制（未证实）。高德 SDK 的许可性质不属此类——已证实为闭源二进制、无开源许可声明（见 C.4.2）。
 - 精确闹钟的降级建议、Android 14 起 `SCHEDULE_EXACT_ALARM` 默认授予策略、`USE_EXACT_ALARM` 的适用条件与 Google Play 政策要求；`EXTRA_SKIP_UI` 在各厂商时钟应用中的实际支持。
 
 ---
@@ -559,4 +573,4 @@
 | 26 | Lookus 的会员档位与计费方式 | B | 规划书不引用；理由同第 23 条 |
 | 27 | 检索手段限制（必应中文检索质量、酷安 404、APKPure／Google Play 抓取失败、华为应用市场前端渲染、百度百科 403 等） | A、B | 规划书不引用；对应事实一律进「未证实／未取得」，8.3 已写明不以取证失败推出「不存在」 |
 | 28 | WakeUp 官方 App 是否开源、各开源项目的字段级数据模型 | C | 规划书不引用；4.3 的数据模型与 7.1 的许可判定均按公开 README 与仓库元数据的表述，不依赖字段级核对 |
-| 29 | 「Key 不得入库」的官方规范是否存在 | C | 规划书不引用该规范；7.4 按结构性事实（客户端无第三方密钥、不绑定签名的 Web Key 禁止入包）自行定义密钥纪律 |
+| 29 | 「Key 不得入库」的官方规范是否存在，以及「官方只提示妥善保管你的 Key」一说 | C | 规划书不引用；7.4 按结构性事实（客户端无第三方密钥、不绑定签名的 Web Key 禁止入包）自行定义密钥纪律 |
