@@ -313,7 +313,7 @@
 **结论**
 
 - **ClassIsland**（C#／.NET 8／Avalonia，跨平台，非 Flutter）是模块划分最值得参照的同类项目：功能域拆为「课表信息显示／课表编辑与管理／自定义（组件·插件·主题）／自动化／天气」；课表编辑侧已具备多周轮换、单日或跨天临时换课、预定课表，以及时间表与科目分离维护。
-- **许可证双轨**：应用本体 **GPL-3.0**；`ClassIsland.Core`、`ClassIsland.PluginSdk`、`ClassIsland.Shared`、`ClassIsland.Shared.Ipc` 为 **LGPL-3.0**（便于插件闭源）。同组织集控服务端 `ClassIsland/ManagementServer` 为 **AGPL-3.0**。借鉴其代码会引入强著佐权义务，因此只宜借鉴设计。
+- **许可证双轨**：应用本体 **GPL-3.0**；`ClassIsland.Core`、`ClassIsland.PluginSdk`、`ClassIsland.Shared`、`ClassIsland.Shared.Ipc` 为 **LGPL-3.0**（便于插件闭源）。同组织集控服务端 `ClassIsland/ManagementServer` 为 **AGPL-3.0**。落点：本应用采用 GPL-3.0（规划书 7.1），因此本体、LGPL-3.0 组件与 GPL 系列的代码可并入；仅 AGPL-3.0 的 ManagementServer 不可并入（规划书形态也不需要它）。
 - **数据模型术语**（官方 README 与界面命名）：档案（Profile）、时间表、科目、课表（ClassPlan）、预定课表、跨天换课、组件、自动化。可视为「课程实体／节次时间表／学期周次」三者解耦的证据。
 - **导入方案**：官方支持从 Excel 表格、CSES（`SmartTeachCN/CSES`）及其它软件导入，并可导出 Excel。
 - **WakeUp 生态**：未检索到 WakeUp 官方 App 本体的开源仓库。按 GitHub 仓库搜索 `wakeup 课表`，结果均为围绕 WakeUp 的**导入适配层与第三方实现**，例如 `koishi-plugin-course-schedule`（同时支持 WakeUp／星链／拾光，ICS/JSON 多格式导入）、`PyWakeup`、`nju2wakeup`、`NYIST-CIPS/CourseTable`（MIT）、`ershiyidian/WakeUp_SHU`。WakeUp 的价值在**导入格式与高校适配生态**，不在架构参考。
@@ -498,7 +498,7 @@
 
 以下只列事实依据与取舍点：
 
-1. **许可证是最先要定的约束**：可参照的同类项目许可两极分化（MIT／Apache-2.0 与 GPL-3.0／AGPL-3.0 大体各半）。若要保持宽松许可，只能借鉴 GPL／AGPL 项目的**设计**，不能复制其代码；`home_widget`（BSD-3-Clause）与 Open-Meteo 客户端调用本身不构成许可障碍。
+1. **许可证是最先要定的约束**：可参照的同类项目许可两极分化（MIT／Apache-2.0 与 GPL-3.0／AGPL-3.0 大体各半），选哪一极直接决定哪些代码可以并入。本应用采用 **GPL-3.0**（规划书 7.1）：Apache-2.0、MIT、BSD、MPL-2.0、LGPL-3.0、GPL-3.0 系列的代码与依赖均可并入；需规避 AGPL-3.0 组件、仅 GPL-2.0 组件、闭源组件与含「禁止商用」条款的组件。`home_widget`（BSD-3-Clause）与 Open-Meteo 客户端调用本身不构成许可障碍。
 2. **小组件必须预留原生实现工作量**：`home_widget` 明确不支持用 Flutter 直接写小组件，因此小组件是「Flutter 数据层 + 原生 RemoteViews/AppWidgetProvider」的双份实现，且刷新要显式处理开机、改时间、改时区；相关官方刷新周期与后台限制本次未能取证。
 3. **「对方现在在上什么课」需要跨端数据**：该能力依赖服务端下发对方课表，客户端侧只能决定展示与缓存策略；组件刷新时机与网络请求需要同一条数据通道（`home_widget` 的数据下发接口 + 后台执行插件）。
 4. **天气按商用／非商用分叉**：Open-Meteo 免费档明确不允许商用，且限 600/分、5,000/时、10,000/日、300,000/月；非商用开源项目可落在免费档，一旦涉及商用即需付费档（Standard 1M/月起）。署名是硬义务：**展示 Open-Meteo 数据的每一处都要有指向 open-meteo.com 的链接**（CC BY 4.0）。
