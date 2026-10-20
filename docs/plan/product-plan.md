@@ -229,7 +229,7 @@
 | `compileSdk` | 至少 36.1（`android-37.0` 一档） | `POST_PROMOTED_NOTIFICATIONS` 只出现在 API 36.1 平台元数据中，不到该档声明即被当作未知权限忽略（附录 C.3） |
 | 服务端 | 自有服务端，**本文档不规定实现**；客户端只按第 5 章的接口口径对接 | 任务边界 |
 | 本地存储 | 应用私有数据库（关系型）+ 文件导出 | 见 4.4 |
-| 关键第三方 | `home_widget`（BSD-3-Clause，仅做数据下发与刷新通知）；高德 Android 定位 SDK；Open-Meteo HTTP API | 附录 C.2、C.4 |
+| 关键第三方 | `home_widget`（BSD-3-Clause，仅做数据下发与刷新通知）；Open-Meteo HTTP API（无需密钥） | 附录 C.2、C.4.1 |
 
 `targetSdk` 的最终取值与官方兼容性依据（`developer.android.com` 本次整体取证失败）在 v0.1 动工前补齐，见第 8 章。
 
@@ -258,11 +258,11 @@ platform（Android 原生：小组件 Provider、通知、闹钟、定位、广�
 | `timetable` | 课程、周次、学期、节次模板的领域模型与本地读写 | 网络、UI |
 | `schedule_view` | 周视图／今日视图的布局与时间轴渲染 | 数据来源 |
 | `import_export` | 教务导入、JSON／ICS 导入导出、分享码解析 | 解析器的学校适配内容（社区仓库维护） |
-| `weather` | 定位→地理编码→天气取值→缓存与署名渲染 | 任何后台位置采集 |
+| `weather` | 系统定位 → 天气取值（只用经纬度）→ 缓存与署名渲染 | 任何后台位置采集、逆地理编码 |
 | `reminder` | 课前提醒与系统闹钟的本地调度 | 同伴状态 |
 | `couple` | 绑定关系、可见性、对方课表读取、状态推算与缓存 | 对方数据的写权限 |
 | `sync` | 本地变更队列、版本号、冲突合并、拉取游标 | 业务语义判断 |
-| `platform_bridge` | 小组件数据下发与刷新、通知、广播重排、定位 SDK 封装 | 业务规则 |
+| `platform_bridge` | 小组件数据下发与刷新、通知、广播重排、系统定位封装 | 业务规则 |
 
 ### 4.3 本地数据模型
 
@@ -301,13 +301,13 @@ platform（Android 原生：小组件 Provider、通知、闹钟、定位、广�
 - 对方课表按需拉取并缓存，缓存键为 `(peer_user_id, semester_id, cursor)`；本地缓存是展示来源，服务端是权威来源。
 - 所有推送到服务端的请求带 `Idempotency-Key`，重试不会造成重复课程。
 
-### 4.6 天气链路（Open-Meteo + 高德）
+### 4.6 天气链路（系统定位 + Open-Meteo）
 
-数据分工：**定位与地理编码走高德，天气取值走 Open-Meteo**。
+数据分工：**定位用 Android 系统定位 API，天气取值走 Open-Meteo；不做逆地理编码。**
 
 ```
-高德定位 SDK（一次性定位，前台触发）
-   → 经纬度 + 逆地理编码 getAdCode / getCity
+LocationManager（单次定位，前台触发；GPS／网络 provider）
+   → 经纬度（不取地址、不取 adcode）
    → Open-Meteo /v1/forecast（按经纬度取 temperature_2m、weather_code、
       precipitation_probability 等）
    → 本地缓存（按 (经纬度取整, 日期) 缓存）
@@ -316,12 +316,17 @@ platform（Android 原生：小组件 Provider、通知、闹钟、定位、广�
 
 实现约束：
 
-- 定位只在用户前台触发（打开课表页或手动点刷新），**不做后台持续定位**；定位模式优先低功耗档，间隔取下限以上的保守值。
-- 定位 SDK 调用任何接口前必须先完成隐私合规前置调用（`updatePrivacyShow`、`updatePrivacyAgree`），否则不出结果。
-- 天气取值只依赖经纬度；`adcode` 用于城市级展示与地理编码结果核对，不作为天气请求的必需品。
+- 定位只用系统 API，**不引入任何第三方定位 SDK**，也不依赖 GMS：经 `Context.getSystemService(LOCATION_SERVICE)` 拿 `LocationManager`，按 provider 可用性选择 GPS／网络 provider，取一次坐标即停止。
+- 单次取点的写法按 API 等级分档：**API 26–29** 用 `requestLocationUpdates` 拿到首个有效结果后立即 `removeUpdates`；**API 30+** 优先用 `getCurrentLocation`（可直接回调单次结果）。两条路径都必须保证「取到即停」。
+- 权限：运行时申请 `ACCESS_COARSE_LOCATION`（或 `ACCESS_FINE_LOCATION`）。**仅授予粗略定位时也必须能出天气**，不得把精确定位作为前置条件。
+- 可用性判定：先查 `LocationManager.isProviderEnabled(...)` 与 `getProviders(true)`；无可用 provider 或定位服务被关闭时，天气区显示「暂无天气」，课表全部功能照常可用，不崩溃、不弹错误弹窗。
+- 定位只在用户前台触发（打开课表页或手动点刷新），**不做后台持续定位**、不注册定位类前台服务；离开课表页即不再发起定位。
+- 天气取值只依赖经纬度；不请求也不需要 `adcode` 之类的行政区划编码。
+- 城市名（可选，非验收项）：若界面上需要人类可读的地名，只能用平台 `Geocoder` 的 best-effort 结果，取不到就退化为不显示地名——无 GMS／部分国产 ROM 上 `Geocoder` 可能不可用，因此**不作验收点、不影响天气展示**，也不为此引入服务端代理接口。
 - 天气请求的自变量数量与时间跨度要控制（请求变量数 >10 或跨度 >2 周会被折算成多次调用），只取课表页真正展示的字段。
 - 缓存与去重：同一经纬度同一日期不重复请求；失败时展示「暂无天气」而不是阻塞。
 - 署名是硬义务：**每一处展示 Open-Meteo 数据的位置旁都带 `https://open-meteo.com/` 链接**（CC BY 4.0 要求），这条写进第 7 章的治理条目与 3.3 验收点。
+- 客户端不含任何第三方服务密钥：Open-Meteo 免费档无需密钥，定位走系统 API 也无需密钥。
 
 ### 4.7 桌面小组件实现路径
 
@@ -354,6 +359,7 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 | 课前提醒（应用内调度） | `AlarmManager`；声明 `SCHEDULE_EXACT_ALARM`(31) 或 `USE_EXACT_ALARM`(33)，并在运行时用 `AlarmManager.canScheduleExactAlarms()`(31) 判断是否获准，未获准则降级为非精确提醒 | 已核实（权限与 API 起始等级见附录 C.5） |
 | 写入系统闹钟 | 通过 `android.provider.AlarmClock` 的 `ACTION_SET_ALARM`；发送方声明 `com.android.alarm.permission.SET_ALARM`；Android 11+ 需在 `<queries>` 声明 `android.intent.action.SET_ALARM` 以满足包可见性；`EXTRA_SKIP_UI` 用于跳过确认界面 | 已核实（API 等级与权限名见附录 C.5）；各厂商时钟应用对 `EXTRA_SKIP_UI` 的支持差异未证实 |
 | 通知权限 | `POST_NOTIFICATIONS`(33) 运行时申请 | 已核实 |
+| 定位权限（天气用） | `ACCESS_COARSE_LOCATION` 或 `ACCESS_FINE_LOCATION` 运行时申请；仅授粗略定位也必须能出天气；只做前台单次取点，不申请后台定位权限（`ACCESS_BACKGROUND_LOCATION`） | 已核实（权限名与运行时申请机制）；`Geocoder` 城市名的可用性**未证实**（无 GMS／部分国产 ROM 上可能不可用，故不作验收点） |
 | 课进行中的常驻呈现 | `specialUse` 前台服务（`FOREGROUND_SERVICE`、`FOREGROUND_SERVICE_SPECIAL_USE`、`Service.FOREGROUND_SERVICE_TYPE_SPECIAL_USE`、`Service.PROPERTY_SPECIAL_USE_FGS_SUBTYPE`，均 API 34 起），用途说明必须填写 | 已核实 |
 | 提升型常驻通知 | `Notification.FLAG_PROMOTED_ONGOING` 与 `NotificationManager.canPostPromotedNotifications()`(36)、`POST_PROMOTED_NOTIFICATIONS`(36.1) 与 `setRequestPromotedOngoing()`(36.1) | 已核实（系统 API 层面） |
 | HyperOS 焦点通知／超级岛 | **待验证的适配目标**：未取得任何官方开发者文档（申请流程、API、审核要求均未知）。实现上只预留「提升型常驻通知」这一条系统路径，把超级岛适配列为条件性工作项 | **未证实**（同类产品官网自述适配小米超级岛，属厂商自述，不能当作能力依据） |
@@ -825,8 +831,8 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 ### 6.3 v0.3 天气与定位
 
-- **交付物**：高德定位 SDK 接入（含隐私合规前置调用）；Open-Meteo 取值与缓存；课表页天气渲染；Open-Meteo 署名链接；构建期密钥注入（仓库只留占位）。
-- **验收点**：首次使用弹出定位授权说明并完成合规前置调用；定位成功时课表页出现当日天气；拒绝定位权限后课表功能完全可用且不出现空白报错；**每一处天气展示旁都有指向 open-meteo.com 的链接**；仓库中检索不到任何真实 key。
+- **交付物**：系统定位接入（运行时权限 + 单次定位，API 26–29 与 30+ 两条取点路径）；Open-Meteo 取值与缓存；课表页天气渲染；Open-Meteo 署名链接。
+- **验收点**：首次使用申请系统定位权限并说明用途；仅授予粗略定位（Android 12+「大致位置」）时课表页仍出现当日天气；定位成功时课表页出现当日天气；拒绝定位权限后课表功能完全可用且不出现空白报错；系统定位服务关闭或无可用 provider 时天气区显示「暂无天气」且不崩溃；离开课表页后不再发起定位（无后台持续定位、无定位类前台服务，可在系统权限/耗电面板核对）；**每一处天气展示旁都有指向 open-meteo.com 的链接**；仓库中检索不到任何真实 key，且随 APK 分发的依赖中不含任何第三方定位 SDK 或闭源二进制组件。
 
 ### 6.4 v0.4 单人桌面小组件与提醒
 
