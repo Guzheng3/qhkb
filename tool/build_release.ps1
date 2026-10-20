@@ -337,8 +337,24 @@ Write-Host ""
 $apksigner = Find-BuildTool "apksigner"
 if ($apksigner) {
     Write-Host "签名证书（apksigner）：" -ForegroundColor Green
-    $verifyOutput = & $apksigner verify --print-certs $apkPath 2>&1
+    # 按退出码判定成败。JVM 启动时会因本机 JAVA_TOOL_OPTIONS 往 stderr 打一行
+    # "Picked up ..."；PS 5.1 在 EAP=Stop 下会把经 2>&1 合并的原生命令 stderr
+    # 当成终止错误（NativeCommandError），导致校验成功也会中断脚本。这里仅在本次
+    # 调用期间局部放宽 EAP 并随即恢复，真实失败仍由非零退出码兜住。
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        $verifyOutput = & $apksigner verify --print-certs $apkPath 2>&1
+        $verifyExit = $LASTEXITCODE
+    } finally {
+        $ErrorActionPreference = $prevEap
+    }
     $verifyText = ($verifyOutput | Out-String)
+    if ($verifyExit -ne 0) {
+        Write-Host ("apksigner 校验失败（退出码 {0}），原始输出如下：" -f $verifyExit) -ForegroundColor Red
+        Write-Host $verifyText
+        Fail "apksigner verify 失败（退出码 $verifyExit）：APK 签名校验未通过，请勿据此版本发布。"
+    }
     $certMatch = [regex]::Match($verifyText, "SHA-256 digest:\s*([0-9a-fA-F]{64})")
     if ($certMatch.Success) {
         Write-Host ("  SHA-256: {0}" -f $certMatch.Groups[1].Value)

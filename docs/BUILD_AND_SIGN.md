@@ -149,7 +149,8 @@ versionName = overrideVersionName ?: flutter.versionName
 
 脚本在构建成功后做两项自检，并打印结论：
 
-- 用 `apksigner verify --print-certs` 打印签名证书的 SHA-256。
+- 用 `apksigner verify --print-certs` 打印签名证书的 SHA-256；`apksigner` 退出码非零
+  （APK 未签名 / 签名不匹配 / 不是 APK）会让脚本以非零码退出，并打印其原始报错。
 - 用 `aapt2 dump badging` 校验 `package name='vip.qinghan.withu'`、`application-label`、
   `versionCode` 是否等于第一步算出的期望值；`versionCode` 或包名不符会让脚本以非零码退出。
 
