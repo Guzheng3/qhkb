@@ -427,7 +427,7 @@
 
 以下事实用于说明「为什么不用」以及「若将来在服务端代理地理编码需要注意什么」，本项目客户端不引入其任何 SDK 或服务。
 
-- **天气查询 Web API**：`GET https://restapi.amap.com/v3/weather/weatherInfo`；参数 `key`（必填，Web 服务类型 KEY）、`city`（必填，**adcode**）、`extensions`（可选，`base`=实况／`all`=预报）。文档最后更新 2025-03-18。**本项目不调用该接口**。
+- **天气查询 Web API**：`GET https://restapi.amap.com/v3/weather/weatherInfo`；参数 `key`（必填，Web 服务类型 KEY）、`city`（必填，**adcode**）、`extensions`（可选，`base`=实况／`all`=预报）。页面标注「最后更新 2025-03-18」（该页本次**未逐字复核**）。**本项目不调用该接口**。
 - **Android 定位 SDK**：官方说明「**Flutter3.0.0版本已发布，兼容Android定位5.6.0**、iOS定位2.8.0、地图8.1.0及以上版本，可前往 Flutter插件下载页面 获取对应版本」；定位模式 `AMapLocationMode.Hight_Accuracy`／`Battery_Saving`（低功耗）／`Device_Sensors`（仅设备），示例中 `setInterval` 注释写「最小间隔支持为1000ms」；**逆地理编码随定位结果返回**：`getAddress`、`getCountry`、`getProvince`、`getCity`、`getDistrict`、`getStreet`、`getStreetNum`、`getCityCode`、`getAdCode`、`getAOIName`（官方对末两项的注释分别为「城市编码」「地区编码」）。合规前置：概述页明确「从定位5.6.0版本起对旧版本SDK不兼容，请务必确保调用SDK任何接口前先调用更新隐私合规 `updatePrivacyShow`、`updatePrivacyAgree` 两个接口，否则可能导致编译不通过等异常情况」。**本项目不采用该 SDK**。
 - **分发形态（决定许可结论的关键事实）**：官方《Android Studio 配置工程》页给出两种集成方式，原文小标题逐字为「**方法1:通过拷贝集成SDK**」与「**方法2:通过Gradle集成SDK**」——
   - 方法 1 原文：「将下载的定位 SDK jar 文件复制到工程……的 libs 目录下」，并在 `build.gradle` 的 dependencies 中配置 `compile fileTree(include: ['*.jar'], dir: 'libs')`；该页另注明「定位 SDK 无需 so 库文件支持」。
