@@ -234,19 +234,21 @@
 
 ### 4.2 分层与模块划分
 
-分为四层，依赖方向单向向下：
+分为五层。依赖方向单向向下：**上一层可以调用／依赖下一层，下一层不得反向依赖上一层**。
 
 ```
 presentation（页面与小组件展示模型）
-        ↓
+        ↓ 调用
 application（用例：录入课表、切换周次、测算对方状态、同步编排）
-        ↓
+        ↓ 调用
 domain（纯 Dart：课程/节次模板/学期/可见性/状态推算，无平台依赖）
-        ↓
+        ↓ 调用
 data（本地数据库 + 远端服务端客户端 + 平台能力桥接）
-        ↓
+        ↓ 调用
 platform（Android 原生：小组件 Provider、通知、闹钟、定位、广播接收器）
 ```
+
+读法：箭头方向就是**调用方向**（上层调下层）。`platform` 是被调用方，因此在图上排在 `data` 之下、列表末端。`domain` 不接受任何平台符号，`platform` 不包含业务规则，两者的边界就是「消息与数据结构」。
 
 模块清单（每个模块只负责一件事，跨模块只经 domain 的数据结构通信）：
 
@@ -272,7 +274,7 @@ platform（Android 原生：小组件 Provider、通知、闹钟、定位、广�
 | `time_slot` | `id`、`set_id`、`index`(从 1 起)、`start_minute`、`end_minute` | 节次时间；`*_minute` 为「当日 0 点起的分钟数」（0–1439），不用裸时刻字符串 |
 | `course` | `id`、`semester_id`、`name`、`teacher`、`location`、`color`、`week_pattern`、`weeks`(JSON 数组)、`day_of_week`(1–7)、`slot_start`、`slot_end`、`rev`、`updated_at`、`deleted` | 课程实体；`week_pattern` ∈ `all`/`odd`/`even`/`custom`；`weeks` 与 `custom` 配合使用；节次范围用 `slot_start`/`slot_end` 表达 |
 | `course_override` | `id`、`course_id`、`date`(YYYY-MM-DD)、`type`(`moved`/`cancelled`)、`new_slot_start`、`new_slot_end`、`rev`、`updated_at` | 调休与临时调整，只作用于具体日期 |
-| `couple_link` | `link_id`、`state`、`peer_display_name`、`my_visibility`、`peer_visibility`、`bound_at` | 情侣关系与双方各自的可见性权级，本地缓存 |
+| `couple_link` | `link_id`、`state`(`active`/`unbound`/`none`)、`peer_user_id`、`peer_display_name`、`my_visibility`、`peer_visibility`、`bound_at`、`unbound_at` | 情侣关系与双方各自的可见性权级，本地缓存；`state` 的取值与时机见 5.3 规则 1 补充，两端字段名与 5.4 完全同名 |
 | `pending_change` | `id`、`entity`、`entity_id`、`base_rev`、`patch`(JSON)、`created_at`、`attempts` | 本地变更队列（离线可用与冲突重放） |
 | `conflict_log` | `id`、`entity`、`entity_id`、`server_value`(JSON)、`local_value`(JSON)、`resolved_by` | 冲突落败方的可追溯副本，供用户手动恢复 |
 | `status_cache` | `peer_user_id`、`state`、`course_name`、`ends_at`、`next_course_name`、`next_starts_at`、`fetched_at`、`expires_at`、`etag` | 对方状态缓存，只缓存白名单字段 |
@@ -339,10 +341,10 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 - **刷新分层**：
   1. 小组件刷新本身受系统后台限制，不保证分钟级；对方状态在小部件上的**分钟级推进由本地推算完成**（缓存里已有下课时间与下一节课时间，`in_class → break → free` 可在本机按时间自推），不依赖每次刷新都联网。
   2. 联网校时走后台执行插件（如 `flutter_workmanager` 一类后台执行方案）与 `GET /v1/couple/status`，返回 304 时不重绘。
-  3. 变更驱动：通过 `POST /v1/couple/events` 注册的推送通道收到对方课表变更时，立即触发一次数据下发与刷新。
+  3. 变更驱动：通过 `POST /v1/couple/events` 注册的变化通知（通道待定，见 8.2 Q9）收到对方课表变更时，立即触发一次数据下发与刷新。未注册任何通道（`channel=none`）时，本条缺失，改为依赖下一次拉取时机（见 5.10）。
 - **重排刷新**：必须监听并处理开机、修改系统时间、修改时区三类事件后的小组件重排（`RECEIVE_BOOT_COMPLETED` + `TIME_SET` + `TIMEZONE_CHANGED` 广播，并让小组件 Provider 也响应 `APPWIDGET_UPDATE`），否则设备重启或跨时区后小组件内容与当前周错位。
 - 小组件主题跟随系统深色模式，样式常量放在应用侧 style，原生与 Dart 侧共用同一套色值定义。
-- 小组件的后台刷新周期上限与 Doze 下的行为，官方文档本次取证失败，需在 v0.1 动工前补齐官方依据（第 8 章）。
+- 小组件的后台刷新周期上限与 Doze 下的行为，官方文档本次取证失败，需在 v0.1 动工前补齐官方依据（见 8.2 Q3、Q12）。
 
 ### 4.8 通知与厂商系统集成路径
 
@@ -355,7 +357,7 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 | 提升型常驻通知 | `Notification.FLAG_PROMOTED_ONGOING` 与 `NotificationManager.canPostPromotedNotifications()`(36)、`POST_PROMOTED_NOTIFICATIONS`(36.1) 与 `setRequestPromotedOngoing()`(36.1) | 已核实（系统 API 层面） |
 | HyperOS 焦点通知／超级岛 | **待验证的适配目标**：未取得任何官方开发者文档（申请流程、API、审核要求均未知）。实现上只预留「提升型常驻通知」这一条系统路径，把超级岛适配列为条件性工作项 | **未证实**（同类产品官网自述适配小米超级岛，属厂商自述，不能当作能力依据） |
 
-厂商后台保活不是纯代码问题：需要在设置页提供「后台无限制／自启动／通知权限」的引导项，由用户手动授权，应用内明确说明不授权会导致小组件与提醒不准。
+厂商后台保活不是纯代码问题：需要在设置页提供「后台无限制／自启动／通知权限」的引导项，由用户手动授权，应用内明确说明不授权会导致小组件与提醒不准。**这一项在 v1.0 只验收「引导项存在且跳转可达」（见 6.6），不验收厂商省电策略下的实际常驻效果**。
 
 ### 4.9 与「超范围」的架构隔离
 
@@ -399,20 +401,22 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 ### 5.2 能力清单与接口路径
 
-| # | 能力 | 方法与路径 | 对应功能 | 说明 |
+| # | 能力 | 方法与路径 | 对应功能（见 3.4） | 说明 |
 | --- | --- | --- | --- | --- |
-| 1 | 设备注册／登录 | `POST /v1/auth/device` | 账号 | 匿名设备注册，返回令牌对 |
-| 2 | 令牌续期 | `POST /v1/auth/refresh` | 账号 | 刷新 `access_token` |
-| 3 | 注销账号 | `POST /v1/auth/delete` | 隐私 | 注销并解除关系、删除云端副本 |
-| 4 | 生成邀请码 | `POST /v1/couple/invite` | F1 | 生成一次性邀请码 |
-| 5 | 建立关系 | `POST /v1/couple/bind` | F1 | 用邀请码双向绑定 |
-| 6 | 解除关系 | `POST /v1/couple/unbind` | F1 | 单方即可解绑 |
-| 7 | 读取／设置可见性 | `GET`/`PUT /v1/couple/visibility` | F1、F2 | 双方各自的可见性权级 |
-| 8 | 课表快照上传 | `POST /v1/sync/push` | F1 | 批量 upsert，带版本号 |
-| 9 | 增量拉取 | `GET /v1/sync/pull` | F1 | 按游标拉取，支持拉自己或拉对方 |
-| 10 | 对方状态点查 | `GET /v1/couple/status` | F2 | 返回峰值状态与 ETag |
-| 11 | 变更事件注册 | `POST /v1/couple/events` | F1 | 注册推送通道，对方课表变更时通知 |
-| 12 | 关系与配额自检 | `GET /v1/couple/link` | F1 | 关系状态、双方可见性、绑定时间 |
+| 1 | 设备注册／登录 | `POST /v1/auth/device` | A1 账号与设备 | 匿名设备注册，返回令牌对 |
+| 2 | 令牌续期 | `POST /v1/auth/refresh` | A1 账号与设备 | 刷新 `access_token` |
+| 3 | 注销账号 | `POST /v1/auth/delete` | A1 账号与设备 | 注销并解除关系、删除云端副本 |
+| 4 | 生成邀请码 | `POST /v1/couple/invite` | F3 情侣关系管理 | 生成一次性邀请码 |
+| 5 | 建立关系 | `POST /v1/couple/bind` | F3 情侣关系管理 | 用邀请码双向绑定 |
+| 6 | 解除关系 | `POST /v1/couple/unbind` | F3 情侣关系管理 | 单方即可解绑 |
+| 7 | 读取／设置可见性 | `GET`/`PUT /v1/couple/visibility` | F3 情侣关系管理 | 双方各自的可见性权级 |
+| 8 | 课表快照上传 | `POST /v1/sync/push` | A2 云端课表副本 | 批量 upsert，带版本号 |
+| 9 | 增量拉取 | `GET /v1/sync/pull` | A2 云端课表副本（`scope=self`）、F1 互相查看对方课表（`scope=peer`） | 按游标拉取，支持拉自己或拉对方 |
+| 10 | 对方状态点查 | `GET /v1/couple/status` | F2 对方此刻状态小组件 | 返回峰值状态与 ETag |
+| 11 | 变更事件注册 | `POST /v1/couple/events` | B1 变化通知 | 注册变化通知通道，对方课表变更时通知（通道待定，见 8.2 Q9） |
+| 12 | 关系状态查询 | `GET /v1/couple/link` | F4 关系状态查询 | 关系状态、双方可见性、绑定时间 |
+
+限流不占用单独接口：`429 RATE_LIMITED` 由上述所有接口共用，对应 A3（见 5.8、5.10）。
 
 ### 5.3 情侣关系与可见性规则（服务端必须实现的三条硬规则）
 
@@ -420,6 +424,19 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 - 新建关系后，双方的 `visibility` 默认都是 `off`。绑定成功时对方的课表不可见。
 - 「我能看对方」的充分必要条件是**对方**的 `visibility != off`；不是「我设了就能看」。可见性由被查看方单方面决定并可随时刻修改。
+- 字段命名固定为 `my_visibility`（我允许对方看到什么）与 `peer_visibility`（对方允许我看到什么），两者都是 `off` / `status_only` / `full` 三档之一。任何响应中都不用嵌套的 `peer.visibility` 形式。
+
+**规则 1 补充：关系状态的取值与取值时机。**
+
+| 取值 | 含义 | 何时返回 |
+| --- | --- | --- |
+| `none` | 从未建立过关系 | 仅由 `GET /v1/couple/link` 返回；本机从未绑定过，或对方提交的邀请码从未被使用 |
+| `active` | 关系有效 | `POST /v1/couple/bind` 成功后，直到任一方解绑或任一方注销 |
+| `unbound` | 曾经建立、现已解除 | 任一方 `POST /v1/couple/unbind` 之后、或任一方 `POST /v1/auth/delete` 之后，直到本机建立新关系 |
+
+- `state=none` 与 `state=unbound` 的分工：`none` 是「从来没有」，`unbound` 是「有过但已解除」。客户端对两者的处理一致（都显示未绑定、都清空对方数据缓存），区别只用于「上次已解除」这类提示文案。
+- `GET /v1/couple/link` 在 `none` / `unbound` 时仍返回 200，`link_id` 为 `null`、`peer` 为 `null`、双方可见性为 `off`；其余涉及对方数据的接口（`scope=peer` 的拉取、状态点查）在该场景统一返回 404 `COUPLE_NOT_BOUND`，与规则 3、5.4.9 一致。
+- 无关系时 `GET /v1/couple/status` 是**唯一例外**：返回 200 + `state=no_data`，不报 404（避免小组件异常，见 5.4.10）。
 
 **规则 2：可见性三档，语义固定。**
 
@@ -479,17 +496,19 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 {
   "link_id": "uuid",
   "state": "active",
-  "peer": { "user_id": "uuid", "display_name": "…", "visibility": "off" },
+  "peer": { "user_id": "uuid", "display_name": "…" },
   "my_visibility": "off",
-  "bound_at": "2026-10-20T02:41:00Z"
+  "peer_visibility": "off",
+  "bound_at": "2026-10-20T02:41:00Z",
+  "unbound_at": null
 }
 ```
 
-约束：一个用户同时只能有一个 `active` 关系；已有关系时返回 409 `COUPLE_ALREADY_BOUND`。绑定成功后双方 `visibility` 都为 `off`（规则 1）。
+约束：一个用户同时只能有一个 `active` 关系；已有关系时返回 409 `COUPLE_ALREADY_BOUND`。绑定成功后双方的 `my_visibility` 与 `peer_visibility` 都为 `off`（规则 1）。`peer` 对象只含身份信息，可见性一律用同级的 `peer_visibility` 表达。
 
 #### 5.4.6 `POST /v1/couple/unbind`
 
-请求 `{ "link_id": "uuid" }`；响应 `{ "state": "unbound", "unbound_at": "…" }`。单方即可调用，无对方同意要求。
+请求 `{ "link_id": "uuid" }`；响应 `{ "state": "unbound", "link_id": "uuid", "unbound_at": "…" }`。单方即可调用，无对方同意要求。解绑后 `GET /v1/couple/link` 持续返回 `state=unbound`（见 5.3 规则 1 补充）。
 
 #### 5.4.7 `GET`／`PUT /v1/couple/visibility`
 
@@ -523,13 +542,21 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 }
 ```
 
-响应：
+响应（**HTTP 状态恒为 200**；`applied` 与 `conflicts` 同时存在于同一响应，见 5.6 冲突处理）：
 
 ```json
 {
   "applied": [ { "entity": "course", "id": "uuid", "rev": 5 } ],
   "conflicts": [
-    { "entity": "course", "id": "uuid", "server_value": { }, "server_rev": 6, "your_value": { } }
+    {
+      "entity": "course",
+      "id": "uuid",
+      "server_value": { "name": "高等数学", "location": "教三 201" },
+      "server_rev": 6,
+      "your_value": { "name": "高数（A）", "location": "教三 201" },
+      "merged_value": { "name": "高等数学", "location": "教三 201" },
+      "losers": ["name"]
+    }
   ],
   "cursor": "opaque-cursor",
   "server_time": "2026-10-20T02:41:00Z"
@@ -543,6 +570,9 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 - `start_minute` / `end_minute` 为当日 0 点起的分钟数（0–1439）。
 - `base_rev` 是客户端最后一次见到的该实体版本号；服务端版本号从 1 起单调递增。
 - `deleted` 为软删除标记，客户端不得物理删除后静默重传。
+- `conflicts[]` 的四层语义：`server_value` 是该实体裁决前的服务端版本（三方合并的共同祖先之后的远端值）；`your_value` 是本次提交中**被裁决掉**的本地值；`merged_value` 是服务端最终落库的服务端实体完整状态，也是服务端返回的 `server_rev` 对应的内容；`losers` 列出被裁决掉的字段名。
+- 客户端处理 `conflicts[]`：用 `merged_value` 更新本地实体（连同 `server_rev`），把 `your_value` + `losers` 写入 `conflict_log`，并在界面上提示「有字段冲突，可查看／恢复」。不得用 `your_value` 覆盖本地实体，也不得丢弃 `your_value`。
+- 同步冲突**不使用 409**：只要 `base_rev` 能对上某一历史版本，服务端必定能按 5.6 的裁决规则给出确定结果，因此永远返回 200 + `conflicts[]`。409 只用于关系状态类冲突（`COUPLE_ALREADY_BOUND`）。
 
 #### 5.4.9 `GET /v1/sync/pull`
 
@@ -571,7 +601,14 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 #### 5.4.10 `GET /v1/couple/status`（F2 的唯一数据来源）
 
-查询参数：`at`（可选，ISO 8601；不传为服务端当前时间；只允许查询当前时刻附近，超出允许窗口返回 400 `BAD_REQUEST`）。
+查询参数：`at`（可选，ISO 8601；不传则取服务端当前时间）。
+
+`at` 的允许窗口与判定规则（用于消除客户端时钟偏差，不用于查询历史或未来状态）：
+
+- 判定基准是服务端的当前时间 `T`。允许区间为 **[T−5 分钟, T+5 分钟]**。
+- `at < T−5min` 或 `at > T+5min` → 返回 400 `BAD_REQUEST`，`details.reason = "at_out_of_window"`，`details.allowed_window_seconds = 300`。
+- 客户端只能传「本机时间经 `server_time` 校正后的当前时刻」；不得用 `at` 遍历历史或以未来时间探测对方后续课程。
+- 请求不带 `at` 时按 `T` 计算，与传 `at = T` 等价；窗口判定针对客户端显式传入 `at` 的情况。
 
 响应 `data`（成功且有数据时带 `ETag`）：
 
@@ -602,32 +639,62 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 #### 5.4.11 `POST /v1/couple/events`
 
+用途：注册「变化通知」的送达方式（对应 B1）。通道本身**不是**本接口的契约内容，客户端上报的只是一个通道标识与投递凭据，服务端按标识选择投递实现。
+
 请求：
 
 ```json
-{ "channel": "fcm", "token": "device-push-token", "subscribe": ["peer_schedule_changed", "link_state_changed"] }
+{ "channel": "<channel_id>", "token": "<delivery-token>", "subscribe": ["peer_schedule_changed", "link_state_changed"] }
 ```
 
-响应 `{ "subscribed": ["peer_schedule_changed", "link_state_changed"] }`。
+响应 `{ "channel": "<channel_id>", "subscribed": ["peer_schedule_changed", "link_state_changed"], "expires_at": null }`。
 
-- 事件语义：对方课表发生变更（`peer_schedule_changed`）或关系／可见性变化（`link_state_changed`）时向订阅设备推送。
+| 字段 | 说明 |
+| --- | --- |
+| `channel` | 通道标识，**开放字符串**，不是枚举。取值由服务端与客户端约定，至少包括：`vendor`（厂商推送通道）、`self_hosted`（自建长连接）、`none`（不注册推送，客户端只靠拉取）。服务端必须接受未知标识并返回 200，只把该设备标记为「无可用通道」，不得返回错误——避免新增通道时出现客户端与服务端版本耦合 |
+| `token` | 该通道对应的投递凭据；`channel=none` 时为 `null` |
+| `subscribe` | 订阅的事件类型；服务端对未知事件名忽略并在响应中回显实际生效的列表 |
+| `expires_at` | 凭据失效时间；无失效概念时为 `null` |
+
+- 候选通道与取舍（具体选型见 8.2 Q9）：
+
+| 候选通道 | 覆盖面 | 代价 |
+| --- | --- | --- |
+| 厂商推送通道（各 Android 厂商各自的推送服务） | 国内设备覆盖面最好 | 需要逐厂商申请与配置，接入数量随厂商增加 |
+| 自建长连接 | 不依赖第三方，自控 | 需要常驻连接，受省电策略影响，耗电与保活是持续成本 |
+| 不注册推送（`none`），仅靠拉取 | 无需任何通道依赖 | 变化延迟取决于拉取时机（见 5.10） |
+
+- 明确不采用**依赖 Google 服务的推送通道**作为唯一手段：本应用面向国内高校用户的 Android 设备，该类服务在很多设备上不可用，会把「对方课表变更后尽快看到」变成不可用功能。
 - 推送只做「提醒去拉取」，不承载课表内容；客户端收到事件后走 `GET /v1/sync/pull?scope=peer` 或 `GET /v1/couple/status` 取数据。
-- 客户端不得假设推送必达：所有展示必须能在只有轮询的情况下自洽。
+- 客户端不得假设推送必达：所有展示必须能在只有拉取（或只有本地推算）的情况下自洽。`channel=none` 是合法状态，不是降级异常。
+- 注销/换绑：`DELETE /v1/couple/events` 请求 `{ "channel": "<channel_id>", "token": "<delivery-token>" }` 解除注册（设备卸载、注销账号、解绑时调用）。
 
 #### 5.4.12 `GET /v1/couple/link`
 
-响应：
+有有效关系时（HTTP 200）：
 
 ```json
 {
   "link_id": "uuid", "state": "active",
   "peer": { "user_id": "uuid", "display_name": "…" },
   "my_visibility": "status_only", "peer_visibility": "full",
-  "bound_at": "…", "unbound_at": null
+  "bound_at": "2026-10-20T02:41:00Z", "unbound_at": null
 }
 ```
 
-`state` ∈ `active` / `unbound` / `none`。
+无关系或已解绑时（同为 HTTP 200，不用 404）：
+
+```json
+{
+  "link_id": null, "state": "none",
+  "peer": null,
+  "my_visibility": "off", "peer_visibility": "off",
+  "bound_at": null, "unbound_at": null
+}
+```
+
+- `state` ∈ `active` / `unbound` / `none`，取值与时机见 5.3 规则 1 补充。这一条是**唯一**在无关系时返回 200 的关系类接口；它不返回任何对方课表内容，因此不需要 `COUPLE_NOT_BOUND`。
+- 请求参数：`link_id`（可选）。不传时返回当前账号的关系状态；传已失效的 `link_id` 时按当前状态返回，不返回 404。
 
 ### 5.5 鉴权方式
 
@@ -664,17 +731,19 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 同类产品普遍不公开冲突规则（2.2），因此这里给出完整规则：
 
 1. **并发模型**：以实体（课程／节次模板／学期／调休项）为粒度做乐观并发，每个实体带单调递增 `rev`。
-2. **接受条件**：`base_rev == 服务端当前 rev` → 直接接受，返回新 `rev = base_rev + 1`。
-3. **不匹配时做字段级合并**：把 `base_rev` 对应的服务端版本作为共同祖先，做三方合并。
+2. **接受条件**：`base_rev == 服务端当前 rev` → 直接接受，返回新 `rev = base_rev + 1`，写入 `applied[]`。
+3. **`base_rev` 不匹配时做字段级合并**：把 `base_rev` 对应的服务端历史版本作为共同祖先，做三方合并。服务端只要能在历史版本中找到 `base_rev`，就一定能算出结果，因此**返回 200 + `conflicts[]`，不返回 409**。
    - 只有本地改过的字段 → 取本地值。
    - 只有远端改过的字段 → 取远端值。
    - 两边都改过同一个字段且值不同 → **规则化裁决**（不允许服务端静默丢弃任一方）：
      - `deleted=true` 优先于任何字段修改（删除胜过编辑）。
      - 双方都是普通字段修改时，比较 `updated_at`，较新者胜。
      - `updated_at` 完全相同时，比较 `X-Device-Id` 的字典序，较大者胜（保证双方算出同一结果，不会来回覆盖）。
-4. **冲突落败方的处理**：被裁决掉的本地值不得静默丢弃——服务端在该实体的 `conflicts[].your_value` 中原样返回，客户端写入 `conflict_log`，并在对方课表／本机课表上给出一条「有字段冲突，可查看」的提示；用户可选择保留服务端版本或恢复本地版本。
-5. **禁止项**：不得使用「最后写入优先且无记录」的静默覆盖；不得返回 200 但丢弃 `base_rev` 不匹配的实体。
-6. **幂等**：同一 `Idempotency-Key` 重复提交返回首次结果，不产生第二次 `rev` 自增。
+   - 裁决结果写入 `merged_value`，被裁决掉的字段名写入 `losers`，被裁决掉的本地值原样写入 `your_value`（响应形态见 5.4.8）。
+4. **冲突落败方的处理**：被裁决掉的本地值不得静默丢弃——服务端在 `conflicts[].your_value` 中原样返回，客户端写入 `conflict_log`，并在对方课表／本机课表上给出一条「有字段冲突，可查看」的提示；用户可选择保留服务端版本或恢复本地版本。客户端按 `merged_value` + `server_rev` 更新本地实体。
+5. **服务端无法给出结果的唯一情形**：请求里缺少 `base_rev`、`base_rev` 不是整数、或实体 `id`／`semester_id` 引用不存在。这些属于请求本身不合法，按 400 `BAD_REQUEST` 处理（`details.reason` 分别为 `missing_base_rev` / `unknown_entity_ref`），不进入冲突流程。
+6. **禁止项**：不得使用「最后写入优先且无记录」的静默覆盖；不得返回 200 但丢弃 `base_rev` 不匹配的实体；不得用 409 表达同步冲突。
+7. **幂等**：同一 `Idempotency-Key` 重复提交返回首次结果，不产生第二次 `rev` 自增。
 
 **对方的写入不存在**：客户端不提供写对方数据的通道（与 2.2 中「写入对方日历」的模型相反）；接口层面也没有任何「写 peer 数据」的路径，因此不存在跨账号写冲突，只存在同一账号多设备冲突。
 
@@ -693,18 +762,17 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 | HTTP | `code` | 触发条件 | 客户端行为 |
 | --- | --- | --- | --- |
-| 400 | `BAD_REQUEST` | 参数缺失／格式错／`at` 超出允许窗口 | 修参数，不重试 |
+| 400 | `BAD_REQUEST` | 参数缺失／格式错／`at` 超出允许窗口（±5 分钟，见 5.4.10）／`base_rev` 缺失或非法／实体引用不存在 | 修参数，不重试 |
 | 401 | `UNAUTHENTICATED` | 未带令牌或令牌无效 | 走 refresh 后重放（复用幂等键） |
 | 401 | `TOKEN_EXPIRED` | `refresh_token` 过期或已轮换 | 回设备注册流程，清本地令牌 |
 | 403 | `FORBIDDEN_VISIBILITY` | 对方 `visibility` 不足以完成该请求 | 展示「对方未共享课表」，清对方课表缓存，不重试 |
-| 404 | `COUPLE_NOT_BOUND` | 无关系／已解绑 | 清情侣缓存，入口切回未绑定态 |
+| 404 | `COUPLE_NOT_BOUND` | 无关系／已解绑（`GET /v1/couple/link` 与 `GET /v1/couple/status` 除外，两者返回 200） | 清情侣缓存，入口切回未绑定态 |
 | 409 | `COUPLE_ALREADY_BOUND` | 己方已有 `active` 关系 | 提示先解绑 |
-| 409 | `REV_CONFLICT` | `base_rev` 不匹配且无法自动合并 | 走 5.6 冲突流程 |
 | 410 | `INVITE_EXPIRED` | 邀请码过期／已使用 | 重新生成邀请码 |
 | 429 | `RATE_LIMITED` | 超出限流 | 按 `Retry-After` 退避，不并发重试 |
 | 5xx | `SERVER_ERROR` | 服务端异常 | 保留本地队列，指数退避重试；本地功能不受影响 |
 
-约定：错误响应不计入 `data`；`retryable` 明确标记是否可重试；错误码一经公开不得改语义，只能新增。
+约定：错误响应不计入 `data`；`retryable` 明确标记是否可重试；错误码一经公开不得改语义，只能新增。**409 只用于关系状态冲突**（`COUPLE_ALREADY_BOUND`）；同步冲突一律走 200 + `conflicts[]`（见 5.4.8、5.6），因此不设 `REV_CONFLICT` 这类冲突错误码。
 
 ### 5.9 分页约定
 
@@ -729,74 +797,6 @@ Dart 侧：算出今日课程 / 对方状态 最新快照
 
 - **交付物**：本地课表数据模型与数据库；周视图／今日视图；课程与节次模板维护；周次四态；学期配置；调休与临时调整。
 - **验收点**：离线（飞行模式）下能完成「新建学期 → 建两套节次模板 → 录入 5 门课（含单双周与并行课）→ 切换周次 → 标记一天停课」全过程，且重启应用后数据与操作后一致。
-
-### 6.2 v0.2 导入导出与备份
-
-- **交付物**：JSON 导入导出；ICS 导出（可带提醒参数）；分享码生成与解析；教务导入的插件式入口与社区适配脚本仓库骨架（适配内容由社区贡献）；文件备份与恢复。
-- **验收点**：导出的 JSON 重新导入后课表等价；同一条分享码在本机另一台设备上导入得到同一课表；导出的 ICS 能被系统日历应用打开；备份文件在使用后可完整恢复。
-
-### 6.3 v0.3 天气与定位
-
-- **交付物**：高德定位 SDK 接入（含隐私合规前置调用）；Open-Meteo 取值与缓存；课表页天气渲染；Open-Meteo 署名链接；构建期密钥注入（仓库只留占位）。
-- **验收点**：首次使用弹出定位授权说明并完成合规前置调用；定位成功时课表页出现当日天气；拒绝定位权限后课表功能完全可用且不出现空白报错；**每一处天气展示旁都有指向 open-meteo.com 的链接**；仓库中检索不到任何真实 key。
-
-### 6.4 v0.4 单人桌面小组件与提醒
-
-- **交付物**：原生小组件 Provider（至少紧凑型与列表型两档）；`home_widget` 数据下发与刷新；深色模式跟随；课前提醒（`AlarmManager` + 精确闹钟权限运行时判断）；系统闹钟写入通道；设置页的后台授权引导。
-- **验收点**：桌面添加小组件后显示今日／下一节课；手机重启后小组件内容正确、当前周不错位；修改系统时间与修改时区后小组件自动重排；删除小组件再添加可恢复；未授予精确闹钟权限时提醒降级为非精确且功能可用。
-
-### 6.5 v0.5 账号与同步
-
-- **交付物**：设备注册与令牌刷新；本地变更队列与幂等重试；`sync/push`、`sync/pull`；游标管理；5.6 的冲突合并与 `conflict_log` 提示界面。
-- **验收点**：同一账号两台设备 A／B，A 改课表后 B 在联网下拉后看到变更；两端同时改同一门课的不同字段后合并结果字段级正确且不丢改动；两端同时改同一字段后套用 5.6 的裁决规则且落败值可在冲突提示中查看并恢复；断网改动后联网自动补传且不产生重复课程。
-
-### 6.6 v1.0 情侣特色功能与开源发布
-
-- **交付物**：邀请码与绑定／解绑；可见性三档与权限判定；F1 互相查看对方课表；F2「对方现在在上什么课」桌面小组件；变更事件推送；解绑后的缓存清理；提升型常驻通知路径与厂商授权引导；第 8 章风险清单逐条给出结论或明确的「不做」判定。
-- **验收点（F1）**：绑定后默认双方都看不到对方课表；只有被查看方打开 `status_only` 或 `full` 后对方才能看到对应范围；任一方改为 `off` 后对方立即无法读取；单方解绑后对方立刻退回未绑定态且本地缓存的对方数据被清除。
-- **验收点（F2）**：小组件在 `in_class` 时显示课程名与下课时间、跨到下一节后按本地推算切换、当天无课时显示空闲、未授权／解绑时显示未连接且不泄露任何他人课程内容；同一账号两台设备显示一致。
-- **验收点（发布）**：仓库含许可证、贡献指南、隐私说明与构建说明；按构建说明在干净环境能构建出可安装包；应用内无法进入任何已列入 Out of scope 的情侣玩法。
-
-### 6.7 后续候选（不在本次范围）
-
-按优先级排列，每条都不得进入 v1.0 及其之前的里程碑：
-
-1. 共同空档对比（双人空闲时段比对）。
-2. 双人共同事件与共同待办。
-3. AI 截图识别导入（同类产品已有，作为教务适配之外的另一条兜底通道）。
-4. 厂商「岛／胶囊」类系统集成的实际适配（取决于第 8 章 R6 的结论）。
-5. 互动提醒与纪念日类玩法（与「安静的工具」定位存在张力，且需先解决 7.3 的隐私边界问题）。
-
----
-
-## 7. 开源治理
-
-### 7.1 许可证
-
-- 本应用采用 **Apache-2.0**，与作为参考的公开开源课表项目一致。
-- **只借鉴设计，不复制代码**：可参照的同类项目中存在以 GPL-3.0／AGPL-3.0 许可发布者（例如已实现双人课表比对的公开 Flutter 项目为 GPL-3.0-or-later），复制其代码会引入强著佐权义务，与本项目的 Apache-2.0 目标冲突。因此第 4 章的所有架构决定均按自行实现书写。
-- 依赖许可审查：`home_widget` 为 BSD-3-Clause，与 Apache-2.0 兼容；高德定位 SDK 为闭源二进制且受技术服务许可约束（见 7.5）；Open-Meteo 的客户端调用本身不构成许可障碍。
-- 仓库内维护第三方许可清单，列出直接依赖的包名、版本、许可证与商标声明。
-
-### 7.2 贡献流程
-
-- 一切改动经 Pull Request；主干保持可构建。
-- PR 必须说明：改了什么、为什么、如何验证（可复现步骤）。
-- 教务适配脚本**不放在客户端仓库**：适配内容按社区贡献方式维护在独立仓库，客户端只提供插件式入口与格式约定，避免客户端仓库被适配数据淹没。
-- 提交信息只写结论，不写过程。
-- 新增平台权限、新增网络出口、新增第三方依赖必须单独说明理由与隐私影响。
-
-### 7.3 隐私说明
-
-必须在仓库与应用内同时提供，且内容与实现一致：
-
-- **不采集行为数据**：不上报定位轨迹、不上报用机记录、不上报「对方是否打开了应用」。F2 的状态完全由课表数据与时间推算。
-- **单人使用不联网**：不使用情侣功能时，除天气取值外不发生任何网络请求；不建立账号也能使用全部单人功能。
-- **授权即撤即停**：可见性三档由被查看方单独设置，随时可改；解绑后对方立即无法读取（对应 5.3 规则 1、规则 3）。
-- **最小化下发**：`GET /v1/couple/status` 只返回 F2 展示所需的字段；地点字段只在 `full` 档下发。
-- **数据归属与删除**：注销账号删除云端副本并解除关系（`POST /v1/auth/delete`）；解绑后客户端立即清空对方数据缓存。
-- **耗电披露**：应用内说明后台保活与刷新对续航的影响，并说明不授予后台权限会导致小组件与提醒不准。
-- 不做「不可单方解除」的关系绑定。
 
 ### 7.4 密钥管理
 
