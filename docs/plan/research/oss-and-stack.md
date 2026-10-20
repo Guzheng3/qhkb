@@ -105,8 +105,8 @@
 
 - **HyperOS「焦点通知 / 超级岛」的开发者接入文档未证实**：小米官方站点 `hyperos.mi.com`
   是面向消费者的产品页（只营销描述「任务上岛」、超级小爱等），未见开发者 API、申请流程或审核要求。
-  可核实的技术事实是：这套呈现对应的是 **Android 系统的 promoted ongoing notifications
-  （提升型常驻通知）**，自 API 36 引入，API 36.1 补齐权限与请求接口。
+  可核实的相邻事实是 **Android 系统自 API 36 起提供 promoted ongoing notifications
+  （提升型常驻通知）**，API 36.1 补齐权限与请求接口；两者是否同一实现路径，官方未证实。
 - **系统 API 等级事实**（Google 随 SDK 平台包发布的官方元数据，逐项核对）：
 
 | 符号 | 起始 API |
@@ -150,6 +150,7 @@
 - 通知渠道行为、前台服务后台限制、Doze/省电白名单等 Android 官方条目：取证失败
   （`developer.android.com` 本次整体不可达）。
 - `POST_PROMOTED_NOTIFICATIONS` 的运行时授权表现及各厂商适配差异：未证实。
+- promoted ongoing notifications 与 HyperOS「超级岛/焦点通知」是否为同一实现路径：未证实。
 
 ## 4. 天气与定位数据源官方事实
 
@@ -239,3 +240,104 @@
 - 「Key 不得入库」的官方规范：未证实存在高德官方仓库安全规范页；仓库保密措施依据
   GitHub 等平台能力，本次未取证。
 - Open-Meteo 免费层是否对单 IP 并发连接数另有限制：未证实。
+
+## 5. 课表提醒与闹钟
+
+**结论**
+
+准点提醒有两条**互相独立**的路径，取舍点不同：
+
+**A. 应用内自建闹钟（AlarmManager）**
+
+- API 等级（Google 官方 SDK 平台元数据）：
+
+| 符号 | 起始 API |
+| --- | --- |
+| `android.permission.SCHEDULE_EXACT_ALARM` | 31 |
+| `android.permission.USE_EXACT_ALARM` | 33 |
+| `android.permission.SET_ALARM` | 9 |
+| `AlarmManager.canScheduleExactAlarms()` | 31 |
+| `AlarmManager.setAlarmClock(AlarmManager.AlarmClockInfo, PendingIntent)` | 21 |
+| `AlarmManager.setExactAndAllowWhileIdle(int, long, PendingIntent)` | 23 |
+| `ACTION_SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED` | 31 |
+| `ACTION_REQUEST_SCHEDULE_EXACT_ALARM` | 31 |
+
+- 存在两个不同的精确闹钟权限：`SCHEDULE_EXACT_ALARM`（API 31 引入）与
+  `USE_EXACT_ALARM`（API 33 引入）；`canScheduleExactAlarms()`（API 31）用于运行时判断当前是否获准。
+  两者的适用场景差异与取舍规则属官方指南内容，本次未取证，不作推断。
+- 「精确权限被拒后如何降级」「Android 14 起 `SCHEDULE_EXACT_ALARM` 的默认授予策略」
+  以及 `USE_EXACT_ALARM` 的适用范围与上架审核要求：**取证失败**（见下）。
+
+**B. 写入系统闹钟（AlarmClock）**
+
+- `android.provider.AlarmClock` 类自 API 9 起存在；`ACTION_SET_ALARM` 无 since 标注（自 API 1 起），
+  `ACTION_SHOW_ALARMS` 自 API 19，`ACTION_DISMISS_ALARM` 自 API 23；
+  `AlarmClock.EXTRA_SKIP_UI` 自 API 11（用于跳过系统确认界面）。
+- 实践证据（轻屿课表）：以 Intent action `android.intent.action.SET_ALARM` 与
+  `android.intent.action.SHOW_ALARMS` 声明 `<queries>` 以满足 Android 11+ 包可见性要求；
+  并声明 `com.android.alarm.permission.SET_ALARM` 作为静默写入的发送方权限
+  （该权限不属于 `android.permission` 命名空间，需逐字照写）。
+- 限制：系统闹钟写入的确认界面能否跳过、跳过后的用户可见性风险，以及各厂商时钟应用对
+  `EXTRA_SKIP_UI` 的支持差异：未证实。
+
+**C. 课中/常驻提醒**
+
+- 前台服务 `specialUse`（`FOREGROUND_SERVICE_SPECIAL_USE`、`FOREGROUND_SERVICE_TYPE_SPECIAL_USE`、
+  `PROPERTY_SPECIAL_USE_FGS_SUBTYPE`，均 API 34 起）是「课进行中持续提醒」的可行承载；
+  通知需 `POST_NOTIFICATIONS`（API 33）。
+- 开机与时间变更后必须重排：`RECEIVE_BOOT_COMPLETED` + `TIME_SET` / `TIMEZONE_CHANGED` 广播
+  （实践证据同上）。
+
+**来源**
+
+- Google 官方 SDK 平台元数据（权限与 API 等级，本地 SDK，取证日期 2026-10-20）：
+  `E:\Android\Sdk\platforms\android-36\data\api-versions.xml`、
+  `E:\Android\Sdk\platforms\android-37.0\data\api-versions.xml`
+- 系统闹钟写入的权限、包可见性与重排广播实践：
+  https://raw.githubusercontent.com/Mutx163/mikcb/main/android/app/src/main/AndroidManifest.xml
+
+**未证实（含取证失败原因）**
+
+- 官方「Schedule alarms」指南（`https://developer.android.com/develop/background-work/services/alarms/schedule`）
+  与权限参考页（`https://developer.android.com/reference/android/Manifest.permission#SCHEDULE_EXACT_ALARM`）
+  取证失败：均返回 `fetch failed`（该域名本次整体不可达）。
+  因此**精确闹钟的降级建议、Android 14 起默认授予策略、`USE_EXACT_ALARM` 的适用条件
+  与 Google Play 政策要求**均未证实。
+- `EXTRA_SKIP_UI` 在各厂商时钟应用中的实际支持情况：未证实。
+
+## 6. 选型建议要点
+
+以下只列事实依据与取舍点，供规划书作者定稿。
+
+1. **许可证是最先要定的约束**：可参照的同类项目许可两极分化（MIT/Apache-2.0 与
+   GPL-3.0/AGPL-3.0 大体各半）。若本仓库要保持宽松许可，只能借鉴 GPL/AGPL 项目的**设计**，
+   不能复制其代码；`home_widget`（BSD-3-Clause）与 Open-Meteo 客户端调用本身不构成许可障碍。
+2. **小组件必须预留原生实现工作量**：`home_widget` 明确不支持用 Flutter 直接写小组件，
+   因此小组件是「Flutter 数据层 + 原生 RemoteViews/AppWidgetProvider」的双份实现，
+   且刷新要显式处理开机、改时间、改时区；相关官方刷新周期与后台限制本次未能取证，
+   需在动工前补齐官方依据。
+3. **「对方现在在上什么课」需要跨端数据**：该能力依赖服务端下发对方课表，
+   客户端侧只能决定展示与缓存策略；组件刷新时机与网络请求需要同一条数据通道
+   （`home_widget` 的数据下发接口 + 后台执行插件）。
+4. **天气按商用/非商用分叉**：Open-Meteo 免费档明确不允许商用，且限 600/分、5,000/时、
+   10,000/日、300,000/月；本项目为开源非商用可落在免费档，
+   但一旦涉及商用即需付费档（Standard 1M/月起）。署名是硬义务：**展示 Open-Meteo 数据的每一处
+   都要有指向 open-meteo.com 的链接**（CC BY 4.0）。
+5. **定位与天气分工要顺着高德的接口形状走**：高德天气 API 的必填参数是 `adcode`，
+   而 adcode 恰好由定位 SDK 的逆地理编码结果 `getAdCode` 直接给出；
+   因此「定位 SDK 取点 → 拿 adcode / 经纬度 → 天气取值」是一条顺接口的链路。
+   若改用 Open-Meteo，则经纬度足够，adcode 不是必需，但地理编码需另走
+   Open-Meteo Geocoding API 或高德逆地理编码。
+6. **高德的授权风险要提前确认**：官方明确未购买技术服务许可时，KEY 与配额仅供短期少量测试；
+   上架分发、面向公众提供、收费或广告、长期大量调用都构成未许可使用。
+   这是本项目上线前的合规前置条件，不是技术问题。
+7. **Key 的存放位置由平台决定**：Android 平台 Key 必须绑定 SHA1 与 Package、必然随 APK 分发
+   （客户端凭据），只能在构建期注入、仓库留占位；Web 服务 Key 属服务端凭据，
+   只应放在自有服务端，不下发客户端。这样也顺带满足「key 不入库」。
+8. **提醒有两条路，成本与确定性不同**：自建精确闹钟要处理 `SCHEDULE_EXACT_ALARM` /
+   `USE_EXACT_ALARM` 两个权限与运行时判断（`canScheduleExactAlarms()`，API 31+）；
+   写入系统闹钟则依赖 `EXTRA_SKIP_UI` 与厂商时钟应用的配合，确定性更弱但无需自建调度。
+9. **前台服务与厂商保活是「代码 + 用户授权」两件事**：`specialUse` 前台服务（API 34+）
+   能把「课进行中」做成长驻通知；与超级岛类呈现相关的系统能力目前只有
+   promoted ongoing notifications（API 36 起，`POST_PROMOTED_NOTIFICATIONS` 权限在 API 36.1），
+   且需要用户手动开启后台无限制/自启动——开源项目的普遍做法是把这些写成设置页的引导项。
