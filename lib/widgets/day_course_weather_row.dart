@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../providers/weather_provider.dart';
 import 'course_weather_display.dart';
+import 'weather_glyph.dart';
 
 /// 日视图课卡上的天气行：那节课时段内的天气。
 ///
@@ -133,7 +134,7 @@ class _DayCourseWeatherRowState extends State<DayCourseWeatherRow> {
       child: Padding(
         padding: const EdgeInsets.only(top: DayCourseWeatherRow.topGap),
         child: _DayWeatherInfoRow(
-          icon: display.icon,
+          glyph: display.glyph,
           text: display.text,
           ink: widget.ink,
         ),
@@ -145,12 +146,12 @@ class _DayCourseWeatherRowState extends State<DayCourseWeatherRow> {
 /// 与日视图课卡里其它信息行（教师 / 地点 / 备注）同形：一个图标 + 一行文字。
 class _DayWeatherInfoRow extends StatelessWidget {
   const _DayWeatherInfoRow({
-    required this.icon,
+    required this.glyph,
     required this.text,
     required this.ink,
   });
 
-  final IconData icon;
+  final WeatherGlyph glyph;
   final String text;
   final Color ink;
 
@@ -159,7 +160,11 @@ class _DayWeatherInfoRow extends StatelessWidget {
     final theme = Theme.of(context);
     return Row(
       children: [
-        Icon(icon, size: 14, color: ink.withValues(alpha: 0.82)),
+        WeatherGlyphIcon(
+          glyph: glyph,
+          size: 14,
+          color: ink.withValues(alpha: 0.82),
+        ),
         const SizedBox(width: 6),
         Expanded(
           child: Text(

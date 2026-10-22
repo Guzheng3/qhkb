@@ -8,6 +8,7 @@ import '../utils/hex_color.dart';
 import '../ui/hyperos/hyperos_theme.dart';
 import 'course_surface.dart';
 import 'course_weather_display.dart';
+import 'weather_glyph.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
@@ -764,7 +765,7 @@ class CourseCard extends StatelessWidget {
         _CompactTextLine(
           text: weather.text,
           flex: 2,
-          icon: weather.icon,
+          glyph: weather.glyph,
           // 预留的空位：照样占一行（内容没到时卡片不再长高一格），但不画。
           reserved: weather.isReserved,
           style: TextStyle(
@@ -784,7 +785,7 @@ class CourseCard extends StatelessWidget {
   /// `FittedBox(scaleDown)` 等比缩放，写死的尺寸会让图标在字号调大调小时
   /// 与文字比例失衡。颜色跟随该行的文字色，深色卡面自动可读。
   Widget _compactLineWidget(_CompactTextLine line, TextAlign textAlign) {
-    final icon = line.icon;
+    final glyph = line.glyph;
     // 带图标的行（目前只有天气行）**锁死单行**，超出用省略号。
     //
     // 它与其他行的性质不同：课名/教师/地点折行只是多占一行，而这一行是
@@ -796,19 +797,23 @@ class CourseCard extends StatelessWidget {
       line.text,
       style: line.style,
       textAlign: textAlign,
-      softWrap: icon == null,
-      maxLines: icon == null ? null : 1,
-      overflow: icon == null ? null : TextOverflow.ellipsis,
+      softWrap: glyph == null,
+      maxLines: glyph == null ? null : 1,
+      overflow: glyph == null ? null : TextOverflow.ellipsis,
     );
     final Widget lineChild;
-    if (icon == null) {
+    if (glyph == null) {
       lineChild = text;
     } else {
       final fontSize = line.style.fontSize ?? 9;
       lineChild = Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: fontSize * 1.25, color: line.style.color),
+          WeatherGlyphIcon(
+            glyph: glyph,
+            size: fontSize * 1.25,
+            color: line.style.color,
+          ),
           SizedBox(width: fontSize * 0.5),
           // Flexible 而不是 Expanded：文字按自身宽度收紧，短文案不会把整行撑满，
           // 横向对齐（左/中/右）仍由外层 Column 的 crossAxisAlignment 决定。
@@ -869,7 +874,7 @@ class _CompactTextLine {
   final TextStyle style;
 
   /// 行首图标；null = 纯文字行（绝大多数字段）。目前只有天气行会带。
-  final IconData? icon;
+  final WeatherGlyph? glyph;
 
   /// 这是不是「先占位、内容到了再填」的空位（见 `reserveWeatherSpace`）。
   ///
@@ -881,7 +886,7 @@ class _CompactTextLine {
     required this.text,
     required this.flex,
     required this.style,
-    this.icon,
+    this.glyph,
     this.reserved = false,
   });
 }

@@ -15,6 +15,7 @@ import 'course_followup_sheets.dart';
 import 'course_note_sheet.dart';
 import 'course_action_sheet_reveal.dart';
 import 'course_weather_display.dart';
+import 'weather_glyph.dart';
 
 typedef CourseActionHandler = void Function(Course course);
 typedef CourseAlarmHandler = Future<void> Function(Course course);
@@ -879,8 +880,8 @@ class _CourseActionSheetContent extends StatelessWidget {
             // 下面的格子不会被顶下去。
             child: reserveWeatherSpace(
               reserved: weatherDisplay.isReserved,
-              child: _CourseDetailTile(
-                icon: weatherDisplay.icon,
+              child: _CourseDetailTile.weather(
+                glyph: weatherDisplay.glyph,
                 title: weatherDisplay.text,
                 // 副题说明这几个数取的是「这节课的时段」而不是全天，否则用户会以为
                 // 那是当日天气。
@@ -999,9 +1000,24 @@ class _CourseDetailTile extends StatelessWidget {
     this.subtitle,
     this.trailing,
     this.iconColor,
-  });
+  }) : glyph = null;
 
-  final IconData icon;
+  /// 天气那一格：行首是天气字形而不是 Material 图标。
+  ///
+  /// 天气现象的形状由 `lib/widgets/weather_glyph.dart` 自绘（Material 图标表里没有
+  /// 「云 + 雨」这一族），与另外三格共用一个壳，其余字段含义完全一致。
+  const _CourseDetailTile.weather({
+    required WeatherGlyph this.glyph,
+    this.title,
+    this.subtitle,
+    this.trailing,
+    this.iconColor,
+  }) : icon = null;
+
+  /// 两格里必有一个非空：默认构造给 [icon]，[weather] 构造给 [glyph]。
+  final IconData? icon;
+  final WeatherGlyph? glyph;
+
   final String? title;
   final String? subtitle;
   final Widget? trailing;
@@ -1011,12 +1027,17 @@ class _CourseDetailTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final typo = context.theme.typography.body;
     final colors = context.theme.colors;
+    final ink = iconColor ?? colors.mutedForeground;
+    final glyph = this.glyph;
 
     final content = Padding(
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: iconColor ?? colors.mutedForeground),
+          if (glyph != null)
+            WeatherGlyphIcon(glyph: glyph, size: 18, color: ink)
+          else
+            Icon(icon, size: 18, color: ink),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
