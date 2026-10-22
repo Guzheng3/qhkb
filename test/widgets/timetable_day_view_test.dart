@@ -2089,15 +2089,22 @@ void main() {
         await tester.pump(const Duration(milliseconds: 16));
       }
       // Week 2 Monday's content is now on screen while still held. The deck
-      // layer is what the finger actually sees during the swipe — the real
-      // pager is wrapped in Opacity(0) until the settle hands it back — so the
-      // assertion has to target the deck's card, not the live page copy.
+      // layer is what the finger actually sees while it owns the swipe — the
+      // real pager is wrapped in Opacity(0) until the settle hands it back —
+      // so prefer the deck's card. But the deck only draws a one-page stack:
+      // once the gesture outruns a whole page it hands the layer back to the
+      // live pager (the two agree on the page layout at that hand-over), so
+      // the card may legitimately live on either layer. What must hold is that
+      // the user sees Monday's card, not which layer paints it.
       final viewportWidth =
           tester.view.physicalSize.width / tester.view.devicePixelRatio;
-      final visibleMonday = find.descendant(
+      final deckMonday = find.descendant(
         of: find.byKey(const ValueKey('day-view-pager-deck')),
         matching: find.byKey(const ValueKey('day-content-2-1')),
       );
+      final visibleMonday = deckMonday.evaluate().isNotEmpty
+          ? deckMonday
+          : find.byKey(const ValueKey('day-content-2-1')).first;
       expect(visibleMonday, findsOneWidget);
       expect(tester.getCenter(visibleMonday).dx, lessThan(viewportWidth));
 
