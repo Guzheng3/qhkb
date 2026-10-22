@@ -90,6 +90,10 @@ WeatherCategory weatherCategoryFromWmo(int code) => switch (code) {
 /// 本地化文案必须先归并到同一个 [WeatherCategory]，再走 `WeatherCategoryLocalizer`。
 /// 覆盖官方对照表里的常见取值；带区间的写法（如「小雨-中雨」）取较轻的一端。
 /// 未知文本（含未来新增）兜底到 [WeatherCategory.clear]，与 WMO 未知码同策略。
+///
+/// 下面这张对照表匹配的是**高德返回的中文数据**，不是界面文案：它既没法也没必要
+/// 做 l10n，因此按仓库约定记入 `tool/cjk_hardcode_baseline.txt` 的棘轮基线
+/// （与 `spreadsheet_import_service` 的表头匹配、`statistics_models` 的取值同属一类）。
 WeatherCategory weatherCategoryFromAmapText(String text) {
   final value = text.trim();
   return switch (value) {

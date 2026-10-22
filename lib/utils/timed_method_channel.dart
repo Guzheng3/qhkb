@@ -46,11 +46,18 @@ class TimedMethodChannel extends MethodChannel {
   /// 本通道所有调用的超时上限。
   final Duration timeout;
 
+  /// 超时时抛出，`code` 固定为 [kPlatformChannelTimeoutCode]。
+  ///
+  /// `message` 是给开发者看的调试文案，故意写英文：它不会直接展示给用户——用户
+  /// 看到的失败文案由调用方按 [code] 或自身的失败枚举走 l10n（例如
+  /// `WeatherLocationFailureLocalizer`），这也是仓库里 `lib/` 不新增硬编码中文的
+  /// 约定（见 `tool/audit_cjk_hardcode.py`）。
   Never _onTimeout(String method) => throw PlatformException(
     code: kPlatformChannelTimeoutCode,
     message:
-        '平台通道 $name 的 $method 调用超过 ${timeout.inMilliseconds}ms 未返回'
-        '（原生主线程可能被占用），已放弃本次等待。',
+        'Platform channel $name did not answer $method within '
+        '${timeout.inMilliseconds}ms (native main thread may be blocked); '
+        'gave up waiting.',
   );
 
   @override
