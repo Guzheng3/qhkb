@@ -125,9 +125,13 @@ class _WeatherGlyphPainter extends CustomPainter {
   static const double _cloudWidth = 17;
   static const double _cloudCenterY = 9.3;
 
-  /// 云下符号的横坐标（云底之下那一排）与雨丝的倾斜量。
+  /// 云下那一排符号的顶端纵坐标（雨丝从这条线往下画）与雨丝的倾斜量。
   static const double _belowTop = 15.2;
   static const double _slant = 0.32;
+
+  /// 闪电的宽与高。
+  static const double _boltWidth = 4.8;
+  static const double _boltHeight = 6.4;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -274,10 +278,9 @@ class _WeatherGlyphPainter extends CustomPainter {
     Canvas canvas, {
     required Offset center,
     required double radius,
-    double alpha = 1,
   }) {
-    canvas.drawCircle(center, radius, _fill(alpha: alpha));
-    final stroke = _stroke(radius * 0.5, alpha: alpha);
+    canvas.drawCircle(center, radius, _fill());
+    final stroke = _stroke(radius * 0.5);
     // 日芒的起点落在圆盘边线**以内**：圆头端点因此与圆盘连成一体。起点留在盘外会
     // 留下八根短棒与圆盘之间的一圈缝，缩到窄卡上就是四点孤立像素，太阳看着像散架。
     final inner = radius * 1.18;
@@ -335,12 +338,11 @@ class _WeatherGlyphPainter extends CustomPainter {
   }
 
   /// 云下那一族共用的那朵云。
-  void _paintBigCloud(Canvas canvas, {double alpha = 1}) {
+  void _paintBigCloud(Canvas canvas) {
     _paintCloud(
       canvas,
       center: const Offset(12, _cloudCenterY),
       width: _cloudWidth,
-      alpha: alpha,
     );
   }
 
@@ -401,9 +403,8 @@ class _WeatherGlyphPainter extends CustomPainter {
     Canvas canvas, {
     required Offset center,
     required double radius,
-    double alpha = 1,
   }) {
-    final stroke = _stroke(radius * 0.45, alpha: alpha);
+    final stroke = _stroke(radius * 0.45);
     for (var i = 0; i < 3; i++) {
       final angle = math.pi / 2 + i * math.pi / 3;
       final offset = Offset(math.cos(angle), math.sin(angle)) * radius;
@@ -416,12 +417,11 @@ class _WeatherGlyphPainter extends CustomPainter {
     Canvas canvas, {
     required Offset top,
     required double length,
-    double alpha = 1,
   }) {
     canvas.drawLine(
       top,
       top + Offset(-length * _slant, length),
-      _stroke(length * 0.4, alpha: alpha),
+      _stroke(length * 0.4),
     );
   }
 
@@ -430,25 +430,19 @@ class _WeatherGlyphPainter extends CustomPainter {
     Canvas canvas, {
     required List<Offset> points,
     required double radius,
-    double alpha = 1,
   }) {
     for (final point in points) {
-      canvas.drawCircle(point, radius, _fill(alpha: alpha));
+      canvas.drawCircle(point, radius, _fill());
     }
   }
 
   /// 闪电：一个实心的折线多边形。
   ///
-  /// 顶点按 [width] × [height] 的比例给，形状随尺寸缩放；画实心而不描边，是因为它
-  /// 在窄卡上只有两三个像素宽，描边多边形会细到看不见。
-  void _paintBolt(
-    Canvas canvas, {
-    required Offset origin,
-    double width = 4.8,
-    double height = 6.4,
-    double alpha = 1,
-  }) {
-    Offset at(double fx, double fy) => origin + Offset(width * fx, height * fy);
+  /// 顶点按 [_boltWidth] × [_boltHeight] 的比例给，形状随尺寸缩放；画实心而不描边，
+  /// 是因为它在窄卡上只有两三个像素宽，描边多边形会细到看不见。
+  void _paintBolt(Canvas canvas, {required Offset origin}) {
+    Offset at(double fx, double fy) =>
+        origin + Offset(_boltWidth * fx, _boltHeight * fy);
     final points = [
       at(0.6, 0),
       at(0, 0.53),
@@ -457,7 +451,7 @@ class _WeatherGlyphPainter extends CustomPainter {
       at(1, 0.41),
       at(0.54, 0.41),
     ];
-    canvas.drawPath(Path()..addPolygon(points, true), _fill(alpha: alpha));
+    canvas.drawPath(Path()..addPolygon(points, true), _fill());
   }
 
   /// 雾：一朵云 + 云下两条渐短的横线。
