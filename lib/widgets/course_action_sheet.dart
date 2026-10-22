@@ -1007,12 +1007,14 @@ class _CourseDetailTile extends StatelessWidget {
   /// 天气现象的形状由 `lib/widgets/weather_glyph.dart` 自绘（Material 图标表里没有
   /// 「云 + 雨」这一族），与另外三格共用一个壳，其余字段含义完全一致。这一格不接
   /// [trailing] 与 [iconColor]：尾随区与图标色是给「时间 / 教师 / 地点」那三格用的，
-  /// 天气格不需要，参数留着也没人传（`unused_element_parameter`）。
+  /// 天气格用不上，所以在这里显式留空（参数留着没人传就是 `unused_element_parameter`）。
   const _CourseDetailTile.weather({
     required WeatherGlyph this.glyph,
     this.title,
     this.subtitle,
-  }) : icon = null;
+  }) : icon = null,
+       trailing = null,
+       iconColor = null;
 
   /// 两格里必有一个非空：默认构造给 [icon]，[weather] 构造给 [glyph]。
   final IconData? icon;
