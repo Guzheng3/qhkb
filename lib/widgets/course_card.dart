@@ -812,7 +812,7 @@ class CourseCard extends StatelessWidget {
           WeatherGlyphIcon(
             glyph: glyph,
             size: fontSize * 1.25,
-            color: line.style.color,
+            ink: line.style.color,
           ),
           SizedBox(width: fontSize * 0.5),
           // Flexible 而不是 Expanded：文字按自身宽度收紧，短文案不会把整行撑满，

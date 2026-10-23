@@ -17,7 +17,7 @@ void main() {
             child: WeatherGlyphIcon(
               glyph: glyph,
               size: 20,
-              color: const Color(0xFF334155),
+              ink: const Color(0xFF334155),
             ),
           ),
         ),
@@ -40,7 +40,7 @@ void main() {
               WeatherGlyphIcon(
                 glyph: glyph,
                 size: 10,
-                color: const Color(0xFFFFFFFF),
+                ink: const Color(0xFFFFFFFF),
               ),
           ],
         ),
@@ -48,6 +48,20 @@ void main() {
     );
 
     expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('墨色亮暗两套配色都能画', (tester) async {
+    // 两套配色由墨色明暗选（白墨配深卡、黑墨配浅卡），两条分支都要真的走一遍。
+    for (final ink in const [Color(0xFFFFFFFF), Color(0xFF000000)]) {
+      await tester.pumpWidget(
+        TestApp(
+          home: Center(
+            child: WeatherGlyphIcon(glyph: WeatherGlyph.rain, size: 24, ink: ink),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull, reason: '墨色 $ink 下画不出来');
+    }
   });
 
   test('每一档天气现象都有自己的字形', () {

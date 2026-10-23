@@ -163,7 +163,7 @@ class _DayWeatherInfoRow extends StatelessWidget {
         WeatherGlyphIcon(
           glyph: glyph,
           size: 14,
-          color: ink.withValues(alpha: 0.82),
+          ink: ink.withValues(alpha: 0.82),
         ),
         const SizedBox(width: 6),
         Expanded(

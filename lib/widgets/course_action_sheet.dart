@@ -1037,7 +1037,7 @@ class _CourseDetailTile extends StatelessWidget {
       child: Row(
         children: [
           if (glyph != null)
-            WeatherGlyphIcon(glyph: glyph, size: 18, color: ink)
+            WeatherGlyphIcon(glyph: glyph, size: 18, ink: ink)
           else
             Icon(icon, size: 18, color: ink),
           const SizedBox(width: 10),
