@@ -5,6 +5,8 @@
     <color name="widget_loading_text">#AEA9AF</color>
     <color name="widget_loading_indicator">#64B5F6</color>
     <color name="widget_couple_bg">#141218</color>
+    <color name="widget_couple_track">#3A3A3F</color>
+    <color name="widget_couple_progress_gap">#201F26</color>
     <color name="widget_couple_current_bg">#201F26</color>
     <color name="widget_couple_text_primary">#F2F2F7</color>
     <color name="widget_couple_text_secondary">#AEA9AF</color>

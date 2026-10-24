@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import android.text.TextUtils
 import android.text.TextPaint
+import kotlin.math.floor
 import kotlin.math.roundToInt
 import java.util.Calendar
 
@@ -189,6 +190,29 @@ internal object CoupleTimetableSizingSupport {
     /** 一行课的高度：空态文案贴列首时按这个高度站位。 */
     const val COURSE_ROW_HEIGHT_DP = 52f
     private const val DIVIDER_TOTAL_DP = 5f
+    private const val PARTIAL_MIN_DP = 12f
+
+    /**
+     * 列表区能显示多少行：整行放不下时，只要下一行还能露出 [PARTIAL_MIN_DP]
+     * 就纳入渲染，剩余部分由列容器裁切（与设计预览一致）。
+     */
+    internal fun visibleCourseCount(
+        maxCount: Int,
+        availableHeightPx: Float,
+        hasNotice: Boolean,
+        density: Float,
+    ): Int {
+        if (maxCount <= 0 || availableHeightPx <= 0f) return 0
+        val rowHeightPx = COURSE_ROW_HEIGHT_DP * density
+        val rowStepPx = (COURSE_ROW_HEIGHT_DP + DIVIDER_TOTAL_DP) * density
+        val partialMinPx = PARTIAL_MIN_DP * density
+        val count = if (hasNotice) {
+            floor((availableHeightPx / 2f + rowHeightPx - partialMinPx) / rowStepPx).toInt()
+        } else {
+            floor((availableHeightPx - partialMinPx) / rowStepPx).toInt() + 1
+        }
+        return count.coerceIn(0, maxCount)
+    }
 
     fun calculate(
         context: Context,
@@ -200,21 +224,12 @@ internal object CoupleTimetableSizingSupport {
         val availableHeightPx = availableListHeightPx(context, appWidgetManager, appWidgetId)
         val maxCourseCount = display.items.count { it is CoupleWidgetDisplayItem.Course }
         val hasNotice = display.items.any { it is CoupleWidgetDisplayItem.Notice }
-        val courseCount = if (maxCourseCount == 0) {
-            0
-        } else {
-            val courseAreaHeightPx = if (hasNotice) {
-                availableHeightPx / 2f
-            } else {
-                availableHeightPx
-            }
-            (maxCourseCount downTo 1).firstOrNull { count ->
-                val dividerCount = if (hasNotice) count else (count - 1).coerceAtLeast(0)
-                val requiredHeightPx = count * COURSE_ROW_HEIGHT_DP * density +
-                    dividerCount * DIVIDER_TOTAL_DP * density
-                courseAreaHeightPx >= requiredHeightPx
-            } ?: 0
-        }
+        val courseCount = visibleCourseCount(
+            maxCount = maxCourseCount,
+            availableHeightPx = availableHeightPx,
+            hasNotice = hasNotice,
+            density = density,
+        )
         val dividerCount = if (hasNotice) {
             courseCount
         } else {
@@ -255,21 +270,12 @@ internal object CoupleTimetableSizingSupport {
         val availableHeightPx = availableListHeightPx(context, appWidgetManager, appWidgetId)
         val maxCourseCount = display.items.count { it is CoupleWidgetDisplayItem.Course }
         val hasNotice = display.items.any { it is CoupleWidgetDisplayItem.Notice }
-        val courseAreaHeightPx = if (hasNotice) {
-            availableHeightPx / 2f
-        } else {
-            availableHeightPx
-        }
-        val courseCount = if (maxCourseCount == 0) {
-            0
-        } else {
-            (maxCourseCount downTo 1).firstOrNull { count ->
-                val dividerCount = if (hasNotice) count else (count - 1).coerceAtLeast(0)
-                val requiredHeightPx = count * sharedRowHeightPx +
-                    dividerCount * DIVIDER_TOTAL_DP * density
-                courseAreaHeightPx >= requiredHeightPx
-            } ?: 0
-        }
+        val courseCount = visibleCourseCount(
+            maxCount = maxCourseCount,
+            availableHeightPx = availableHeightPx,
+            hasNotice = hasNotice,
+            density = density,
+        )
         return current.copy(
             visibleCourseCount = courseCount,
             courseRowHeightPx = sharedRowHeightPx,
@@ -283,15 +289,14 @@ internal object CoupleTimetableSizingSupport {
     }
 
     /**
-     * 空态文案占的高度：今日课程已结束且明日无课时铺满整列，文案因此落在列的
-     * 垂直中点（列里没有别的内容，空出来的位置由居中的文案自己吃掉）；其余
-     * 空态仍按一行课的高度贴在列首。
+     * 空态文案占的高度：所有空态都铺满整列，让文案落在列的垂直中点
+     * （与设计预览一致；列里没有别的内容，空出来的位置由居中的文案自己吃掉）。
      */
     fun emptyRowHeightPx(
         availableListHeightPx: Float,
-        courseRowHeightPx: Float,
-        endedNotice: Boolean,
-    ): Float = if (endedNotice) availableListHeightPx else courseRowHeightPx
+        @Suppress("UNUSED_PARAMETER") courseRowHeightPx: Float,
+        @Suppress("UNUSED_PARAMETER") endedNotice: Boolean,
+    ): Float = availableListHeightPx
 
     /** 列表区可用高度（整列去掉卡片内边距、昵称行与页脚后的部分）。 */
     fun availableListHeightPx(
@@ -316,6 +321,27 @@ internal object CoupleTimetableSizingSupport {
             FOOTER_HEIGHT_DP
         val listHeightDp = (heightDp - reservedHeightDp).coerceAtLeast(0f)
         return listHeightDp * context.resources.displayMetrics.density
+    }
+
+    /** 课程行内容区宽度：进度条位图按这个宽度创建，避免 220dp 位图被 fitXY 缩放后课间空档变细。 */
+    fun availableCourseContentWidthPx(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+    ): Float {
+        val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
+        val isPortrait = context.resources.configuration.orientation ==
+            android.content.res.Configuration.ORIENTATION_PORTRAIT
+        val optionWidthDp = if (isPortrait) {
+            options.getInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, 0)
+        } else {
+            options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0)
+        }
+        val widthDp = optionWidthDp.takeIf { it > 0 }
+            ?: appWidgetManager.getAppWidgetInfo(appWidgetId)?.minWidth?.takeIf { it > 0 }
+            ?: 250
+        val contentWidthDp = ((widthDp - 20f - 8f) / 2f - 8f - 4f - 6f).coerceAtLeast(1f)
+        return contentWidthDp * context.resources.displayMetrics.density
     }
 }
 
@@ -356,39 +382,53 @@ internal object CoupleTimetableRenderSupport {
         accentColor: Int,
         course: CoupleWidgetCourse,
         nowMinutes: Int,
+        widthPx: Int,
     ): Bitmap? {
         val start = CoupleTimetableDisplayBuilder.parseClockMinutes(course.startTime) ?: return null
         val end = CoupleTimetableDisplayBuilder.parseClockMinutes(course.endTime) ?: return null
         if (end <= start || nowMinutes !in start until end) return null
 
         val density = context.resources.displayMetrics.density
-        val width = (density * 220f).toInt().coerceAtLeast(1)
+        val width = widthPx.coerceAtLeast(1)
         val height = (density * 3f).toInt().coerceAtLeast(1)
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
-        val trackColor = ContextCompat.getColor(context, R.color.widget_couple_divider)
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = trackColor }
         val radius = height / 2f
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            color = ContextCompat.getColor(context, R.color.widget_couple_track)
+        }
         canvas.drawRoundRect(RectF(0f, 0f, width.toFloat(), height.toFloat()), radius, radius, paint)
 
-        val progress = ((nowMinutes - start).toFloat() / (end - start).toFloat())
-            .coerceIn(0f, 1f)
-        paint.color = accentColor
-        canvas.drawRoundRect(
-            RectF(0f, 0f, width * progress, height.toFloat()),
-            radius,
-            radius,
-            paint
-        )
+        // 课间把进度条断开：逐段填充，空档用白色贯穿已走到和没走到的部分。
+        val boundaries = mutableListOf(start)
+        for (breakTime in course.breaks) {
+            val boundary = CoupleTimetableDisplayBuilder.parseClockMinutes(breakTime.startTime)
+                ?: continue
+            if (boundary > start && boundary < end) boundaries.add(boundary)
+        }
+        boundaries.add(end)
+        boundaries.sort()
+        for (index in 0 until boundaries.size - 1) {
+            val segmentStart = boundaries[index]
+            val segmentEnd = boundaries[index + 1]
+            if (nowMinutes <= segmentStart) continue
+            val fillEnd = minOf(nowMinutes, segmentEnd)
+            val left = width * ((segmentStart - start).toFloat() / (end - start).toFloat())
+            val right = width * ((fillEnd - start).toFloat() / (end - start).toFloat())
+            if (right > left) {
+                paint.color = accentColor
+                canvas.drawRoundRect(RectF(left, 0f, right, height.toFloat()), radius, radius, paint)
+            }
+        }
 
-        val markerWidth = density * 1.2f
-        paint.color = ContextCompat.getColor(context, R.color.widget_couple_current_bg)
+        val gapWidth = density * 2.5f
+        paint.color = ContextCompat.getColor(context, R.color.widget_couple_progress_gap)
         for (breakTime in course.breaks) {
             val boundary = CoupleTimetableDisplayBuilder.parseClockMinutes(breakTime.startTime)
                 ?: continue
             if (boundary <= start || boundary >= end) continue
             val x = width * ((boundary - start).toFloat() / (end - start).toFloat())
-            canvas.drawRect(x - markerWidth / 2f, 0f, x + markerWidth / 2f, height.toFloat(), paint)
+            canvas.drawRect(x - gapWidth / 2f, 0f, x + gapWidth / 2f, height.toFloat(), paint)
         }
         return bitmap
     }
@@ -430,6 +470,7 @@ class CoupleTimetableViewsService : RemoteViewsService() {
         private var items: List<CoupleWidgetDisplayItem> = emptyList()
         private var courseRowHeightPx = 0f
         private var noticeRowHeightPx = 0f
+        private var progressWidthPx = 0f
 
         override fun onCreate() {
             onDataSetChanged()
@@ -443,6 +484,7 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 items = emptyList()
                 courseRowHeightPx = 0f
                 noticeRowHeightPx = 0f
+                progressWidthPx = 0f
             } else {
                 val appWidgetManager = AppWidgetManager.getInstance(context)
                 val oppositeCourses = if (isLeft) snapshot?.partner else snapshot?.mine
@@ -462,6 +504,11 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                     appWidgetId,
                     unconstrainedDisplay,
                     oppositeUnconstrainedDisplay,
+                )
+                progressWidthPx = CoupleTimetableSizingSupport.availableCourseContentWidthPx(
+                    context,
+                    appWidgetManager,
+                    appWidgetId,
                 )
                 val display = CoupleTimetableDisplayBuilder.build(
                     context,
@@ -540,7 +587,7 @@ class CoupleTimetableViewsService : RemoteViewsService() {
             val course = item.course
             views.setTextViewText(
                 R.id.widget_couple_course_name,
-                course.shortName?.takeIf { it.isNotBlank() } ?: course.name
+                displayCourseName(course),
             )
             views.setTextViewText(
                 R.id.widget_couple_course_location,
@@ -555,6 +602,8 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 "setColorFilter",
                 parseCourseColor(course.color, accentColor)
             )
+            // 复用 RemoteViews 时，上一行「进行中」的淡底会残留：每次都先清掉。
+            views.setInt(R.id.widget_couple_course_root, "setBackgroundColor", Color.TRANSPARENT)
             if (item.isOngoing) {
                 views.setInt(
                     R.id.widget_couple_course_root,
@@ -563,11 +612,13 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 )
                 val now = Calendar.getInstance()
                 val nowMinutes = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+                val fallbackWidth = (context.resources.displayMetrics.density * 220f).toInt()
                 val progress = CoupleTimetableRenderSupport.createProgressBitmap(
                     context,
                     accentColor,
                     course,
-                    nowMinutes
+                    nowMinutes,
+                    progressWidthPx.toInt().takeIf { it > 0 } ?: fallbackWidth,
                 )
                 if (progress != null) {
                     views.setImageViewBitmap(R.id.widget_couple_course_progress, progress)
@@ -579,6 +630,15 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 views.setViewVisibility(R.id.widget_couple_course_progress, View.GONE)
             }
             return views
+        }
+
+        private fun displayCourseName(course: CoupleWidgetCourse): String {
+            val text = course.shortName?.takeIf { it.isNotBlank() } ?: course.name
+            return if (text.codePointCount(0, text.length) <= 7) {
+                text
+            } else {
+                text.substring(0, text.offsetByCodePoints(0, 7))
+            }
         }
 
         private fun parseCourseColor(value: String?, fallback: Int): Int {

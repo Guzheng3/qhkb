@@ -76,13 +76,82 @@ class CoupleTimetableDisplayLogicTest {
     }
 
     @Test
-    fun `other empty states keep one course row at the top of the column`() {
+    fun `every empty state fills the column so the text is centred`() {
         val height = CoupleTimetableSizingSupport.emptyRowHeightPx(
             availableListHeightPx = 240f,
             courseRowHeightPx = 52f,
             endedNotice = false,
         )
 
-        assertEquals(52f, height, 0f)
+        assertEquals(240f, height, 0f)
+    }
+
+    // --- visibleCourseCount（部分行） ----------------------------------------
+
+    @Test
+    fun `a next row is kept when at least 12dp is visible`() {
+        // 4×2 185dp：列表区 133dp → 2 整行 + 第 3 行露出 19dp。
+        assertEquals(
+            3,
+            CoupleTimetableSizingSupport.visibleCourseCount(
+                maxCount = 5,
+                availableHeightPx = 133f,
+                hasNotice = false,
+                density = 1f,
+            ),
+        )
+    }
+
+    @Test
+    fun `with a notice the next row only shows if it clears the minimum`() {
+        // 4×2 185dp + 提示：课程区 66.5dp → 1 整行，下一行只露 4.5dp 被省略。
+        assertEquals(
+            1,
+            CoupleTimetableSizingSupport.visibleCourseCount(
+                maxCount = 3,
+                availableHeightPx = 133f,
+                hasNotice = true,
+                density = 1f,
+            ),
+        )
+    }
+
+    @Test
+    fun `4x3 at 279dp fits four full rows`() {
+        assertEquals(
+            4,
+            CoupleTimetableSizingSupport.visibleCourseCount(
+                maxCount = 5,
+                availableHeightPx = 227f,
+                hasNotice = false,
+                density = 1f,
+            ),
+        )
+    }
+
+    @Test
+    fun `4x3 at the 180dp minimum keeps a partial third row`() {
+        assertEquals(
+            3,
+            CoupleTimetableSizingSupport.visibleCourseCount(
+                maxCount = 5,
+                availableHeightPx = 128f,
+                hasNotice = false,
+                density = 1f,
+            ),
+        )
+    }
+
+    @Test
+    fun `4x2 at the 110dp minimum does not keep a 1dp sliver`() {
+        assertEquals(
+            1,
+            CoupleTimetableSizingSupport.visibleCourseCount(
+                maxCount = 5,
+                availableHeightPx = 58f,
+                hasNotice = false,
+                density = 1f,
+            ),
+        )
     }
 }
