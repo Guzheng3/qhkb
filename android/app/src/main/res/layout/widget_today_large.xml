@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  今日课程列表 4×3（320×279dp）：演示卡样式。
+  顶部「今日课程列表 / 第N周」，中部最多 4 条 52dp 课程行，底部页脚钉在下边缘。
+  卡片静态内边距 7dp（上下）×10dp（左右），与演示的 .couple-card 一致；
+  不再做自适应垂直内边距，4 行在 279dp 高度内完整展示。
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_large_root"
     android:layout_width="match_parent"
@@ -8,204 +14,537 @@
         android:id="@+id/widget_large_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/widget_demo_card_bg"
         android:orientation="vertical"
-        android:padding="22dp">
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/widget_large_heading"
-            android:layout_width="wrap_content"
+        <!-- 表头：左侧标题、右侧周数，10sp hint 色。 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/widget_status_chip_strong"
-            android:paddingLeft="10dp"
-            android:paddingTop="4dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="4dp"
-            android:text="今日课程"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:layout_marginBottom="3dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/widget_large_week"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/widget_large_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="今日课程列表"
+                android:textColor="@color/widget_couple_text_hint"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/widget_large_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="第6周"
+                android:textColor="@color/widget_couple_text_hint"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- 列表区：吃掉页脚之上的全部高度；空态文案在整块列表区居中。 -->
+        <LinearLayout
+            android:id="@+id/widget_large_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="end"
-            android:text="第 6 周 · 5/31 · 共5节"
-            android:textSize="12sp" />
+            android:orientation="vertical">
+
+            <!-- 课程行 1 -->
+            <LinearLayout
+                android:id="@+id/widget_large_row_1"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/widget_large_row_1_bar"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/widget_couple_indicator" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_1_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="高等数学"
+                            android:textColor="@color/widget_couple_text_primary"
+                            android:textSize="13.5sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/widget_large_row_1_weather_icon"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginLeft="2dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_1_weather_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:maxLines="1"
+                            android:text="27°"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_1_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/widget_large_row_1_time"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="一教C104"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_1_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:maxLines="1"
+                            android:text="08:00 - 09:35"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/widget_large_row_1_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="2dp"
+                        android:contentDescription="@null"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_large_divider_1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/widget_couple_divider"
+                android:orientation="horizontal" />
+
+            <!-- 课程行 2 -->
+            <LinearLayout
+                android:id="@+id/widget_large_row_2"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/widget_large_row_2_bar"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/widget_couple_indicator" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_2_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="大学英语"
+                            android:textColor="@color/widget_couple_text_primary"
+                            android:textSize="13.5sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/widget_large_row_2_weather_icon"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginLeft="2dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_2_weather_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:maxLines="1"
+                            android:text="27°"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_2_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/widget_large_row_2_time"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="一教C104"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_2_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:maxLines="1"
+                            android:text="10:10 - 11:45"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/widget_large_row_2_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="2dp"
+                        android:contentDescription="@null"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_large_divider_2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/widget_couple_divider"
+                android:orientation="horizontal" />
+
+            <!-- 课程行 3 -->
+            <LinearLayout
+                android:id="@+id/widget_large_row_3"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/widget_large_row_3_bar"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/widget_couple_indicator" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_3_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="程序设计基础"
+                            android:textColor="@color/widget_couple_text_primary"
+                            android:textSize="13.5sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/widget_large_row_3_weather_icon"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginLeft="2dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_3_weather_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:maxLines="1"
+                            android:text="23°"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_3_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/widget_large_row_3_time"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="二教B203"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_3_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:maxLines="1"
+                            android:text="13:30 - 15:05"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/widget_large_row_3_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="2dp"
+                        android:contentDescription="@null"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/widget_large_divider_3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/widget_couple_divider"
+                android:orientation="horizontal" />
+
+            <!-- 课程行 4 -->
+            <LinearLayout
+                android:id="@+id/widget_large_row_4"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <ImageView
+                    android:id="@+id/widget_large_row_4_bar"
+                    android:layout_width="3dp"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/widget_couple_indicator" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="6dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_4_name"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="思想道德与法治"
+                            android:textColor="@color/widget_couple_text_primary"
+                            android:textSize="13.5sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/widget_large_row_4_weather_icon"
+                            android:layout_width="13dp"
+                            android:layout_height="13dp"
+                            android:layout_marginLeft="2dp"
+                            android:contentDescription="@null"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_4_weather_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="1dp"
+                            android:maxLines="1"
+                            android:text="21°"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="1dp">
+
+                        <TextView
+                            android:id="@+id/widget_large_row_4_location"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_centerVertical="true"
+                            android:layout_toLeftOf="@+id/widget_large_row_4_time"
+                            android:ellipsize="end"
+                            android:maxLines="1"
+                            android:text="三教A101"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/widget_large_row_4_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="5dp"
+                            android:maxLines="1"
+                            android:text="15:20 - 16:55"
+                            android:textColor="@color/widget_couple_text_secondary"
+                            android:textSize="12sp" />
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/widget_large_row_4_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="3dp"
+                        android:layout_marginTop="2dp"
+                        android:contentDescription="@null"
+                        android:scaleType="fitXY"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 空态：整个列表区垂直居中。 -->
+            <TextView
+                android:id="@+id/widget_large_empty"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:maxLines="2"
+                android:text="🍵 今天没有课程"
+                android:textColor="@color/widget_couple_text_hint"
+                android:textSize="14sp"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- 页脚：钉在卡片下边缘。 -->
+        <TextView
+            android:id="@+id/widget_large_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingTop="5dp"
+            android:text="今日课程 还剩0/0节"
+            android:textColor="@color/widget_couple_text_secondary"
+            android:textSize="10sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/widget_large_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:maxLines="2"
-        android:text="高等数学"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/widget_large_subtitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:maxLines="2"
-        android:text="08:00 - 09:35"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/widget_large_exam"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:maxLines="1"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/widget_large_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="今日无课"
-        android:textSize="13sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="14dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/widget_large_row_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/widget_large_row_1_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="08:00 - 09:35"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_large_row_1_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="高等数学 · 一教C104"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_large_row_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/widget_large_row_2_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10:10 - 11:45"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_large_row_2_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="大学英语"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_large_row_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/widget_large_row_3_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="13:30 - 15:05"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_large_row_3_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="程序设计基础"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_large_row_4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/widget_large_row_4_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="15:20 - 16:55"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_large_row_4_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="思想道德与法治"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/widget_large_row_5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/widget_large_row_5_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="18:30 - 20:05"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/widget_large_row_5_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:text="工程制图"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </LinearLayout>
-
-    </LinearLayout>
-
 </FrameLayout>
