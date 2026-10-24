@@ -9,13 +9,16 @@
     <string name="widget_couple_today_ended">🌙 Today\'s classes have ended</string>
     <string name="widget_couple_weekend_no_course">🍵 Weekend · No classes today</string>
     <string name="widget_couple_no_course_today">🍵 No classes today</string>
+    <string name="widget_mini_list_next">Up next</string>
+    <string name="widget_mini_list_tomorrow">Tomorrow</string>
+    <string name="widget_mini_list_empty_tomorrow">🌙 No classes tomorrow</string>
     <string name="widget_couple_mode_off">Couple mode is off, so the couple card is unavailable</string>
     <string name="widget_couple_not_logged_in">Please log in to use</string>
     <string name="widget_couple_not_bound">Partner timetable not uploaded</string>
     <string name="widget_today_compact_name">Today main card 2×2</string>
     <string name="widget_today_mini_list_name">Today mini list 2×2</string>
     <string name="widget_today_medium_name">Today overview 2×4</string>
-    <string name="widget_today_large_name">Today course list 4×4</string>
+    <string name="widget_today_large_name">Today course list 4×3</string>
     <string name="widget_stats_compact_name">Course Stats 2×2</string>
     <string name="widget_stats_medium_name">Course Stats 2×4</string>
   <string name="widget_today_strip_name">Today bar 4×1</string>

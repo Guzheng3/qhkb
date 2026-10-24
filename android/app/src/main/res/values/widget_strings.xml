@@ -9,13 +9,16 @@
     <string name="widget_couple_today_ended">🌙 今日课程已结束</string>
     <string name="widget_couple_weekend_no_course">🍵 周末 · 今天没有课程</string>
     <string name="widget_couple_no_course_today">🍵 今天没有课程</string>
+    <string name="widget_mini_list_next">接下来</string>
+    <string name="widget_mini_list_tomorrow">明天</string>
+    <string name="widget_mini_list_empty_tomorrow">🌙 明日无课</string>
     <string name="widget_couple_mode_off">当前未开启情侣模式，情侣卡片暂不可使用</string>
     <string name="widget_couple_not_logged_in">未登录，请登录后使用</string>
     <string name="widget_couple_not_bound">对方课表未上传</string>
     <string name="widget_today_compact_name">今日课程主卡 2×2</string>
     <string name="widget_today_mini_list_name">今日课程迷你列表 2×2</string>
     <string name="widget_today_medium_name">今日课程概览 2×4</string>
-    <string name="widget_today_large_name">今日课程列表 4×4</string>
+    <string name="widget_today_large_name">今日课程列表 4×3</string>
     <string name="widget_stats_compact_name">课程统计 2×2</string>
     <string name="widget_stats_medium_name">课程统计 2×4</string>
   <string name="widget_today_strip_name">今日横条 4×1</string>
