@@ -2451,6 +2451,7 @@
   "homeWidgetTargetExamCard22": "考试倒计时 2×2",
   "homeWidgetTargetTodayWide42": "今日横宽 4×2",
   "homeWidgetTargetCoupleTimetable42": "情侣课表 4×3",
+  "homeWidgetTargetCoupleTimetableWide": "情侣课表 4×2",
   "addCourseSheetTitle": "添加内容",
   "addCourseSheetSubtitle": "空白课表区域不响应点击，请从这里明确选择是加一节临时课、整学期重复课，还是插入一条单次日程",
   "courseWeekdaySectionSummary": "{weekDescription} · {weekday} 第{startSection}-{endSection}节",

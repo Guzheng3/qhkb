@@ -4285,6 +4285,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeWidgetTargetCoupleTimetable42 => '情侣课表 4×3';
 
   @override
+  String get homeWidgetTargetCoupleTimetableWide => '情侣课表 4×2';
+
+  @override
   String get addCourseSheetTitle => '添加内容';
 
   @override
@@ -13438,6 +13441,9 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
 
   @override
   String get homeWidgetTargetCoupleTimetable42 => '情侶課表 4×3';
+
+  @override
+  String get homeWidgetTargetCoupleTimetableWide => '情侶課表 4×2';
 
   @override
   String get addCourseSheetTitle => '新增內容';
@@ -22632,6 +22638,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get homeWidgetTargetCoupleTimetable42 => '情侶課表 4×3';
+
+  @override
+  String get homeWidgetTargetCoupleTimetableWide => '情侶課表 4×2';
 
   @override
   String get addCourseSheetTitle => '新增內容';

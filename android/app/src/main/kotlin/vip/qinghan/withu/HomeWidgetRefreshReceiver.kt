@@ -12,6 +12,7 @@ class HomeWidgetRefreshReceiver : BroadcastReceiver() {
             // 不再每分钟把所有卡片都全量重建一遍。
             ACTION_COUPLE_REFRESH -> {
                 CoupleTimetableWidgetProvider.updateAll(context)
+                CoupleTimetableWideWidgetProvider.updateAll(context)
                 HomeWidgetStorage.scheduleCoupleRefreshOnly(context)
             }
             AppWidgetManager.ACTION_APPWIDGET_UPDATE,

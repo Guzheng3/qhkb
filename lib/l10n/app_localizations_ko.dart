@@ -4397,6 +4397,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeWidgetTargetCoupleTimetable42 => '커플 시간표 4×3';
 
   @override
+  String get homeWidgetTargetCoupleTimetableWide => '커플 시간표 4×2';
+
+  @override
   String get addCourseSheetTitle => '콘텐츠 추가';
 
   @override

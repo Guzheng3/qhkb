@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 
-class CoupleTimetableWidgetProvider : BaseQinghanWidgetProvider() {
+open class CoupleTimetableWidgetProvider : BaseQinghanWidgetProvider() {
     override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         CoupleTimetableWidgetProvider::class.java
 

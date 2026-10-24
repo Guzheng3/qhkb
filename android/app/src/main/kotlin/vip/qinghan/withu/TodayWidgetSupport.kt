@@ -229,7 +229,7 @@ object TodayWidgetSupport {
     }
 
     /**
-     * 全部卡片 Provider（7 个今日系列 + 3 个统计 + 考试倒计时 + 情侣课表），
+     * 全部卡片 Provider（7 个今日系列 + 3 个统计 + 考试倒计时 + 情侣课表 4×3 / 4×2），
      * 用于判断桌面上是否还有任意卡片实例——零卡片时停掉所有后台刷新调度。
      */
     private val ALL_WIDGET_PROVIDER_CLASSES: List<Class<*>> = BINDING_PROVIDER_CLASSES + listOf(
@@ -238,6 +238,7 @@ object TodayWidgetSupport {
         StatsStripWidgetProvider::class.java,
         ExamCountdownWidgetProvider::class.java,
         CoupleTimetableWidgetProvider::class.java,
+        CoupleTimetableWideWidgetProvider::class.java,
     )
 
     /** 桌面上是否存在任意卡片实例。 */
@@ -257,6 +258,7 @@ object TodayWidgetSupport {
         ExamCountdownWidgetProvider.updateAll(context)
         TodayWideWidgetProvider.updateAll(context)
         CoupleTimetableWidgetProvider.updateAll(context)
+        CoupleTimetableWideWidgetProvider.updateAll(context)
     }
 
     fun buildSnapshotFromFlutterState(

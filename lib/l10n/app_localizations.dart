@@ -7873,6 +7873,12 @@ abstract class AppLocalizations {
   /// **'情侣课表 4×3'**
   String get homeWidgetTargetCoupleTimetable42;
 
+  /// No description provided for @homeWidgetTargetCoupleTimetableWide.
+  ///
+  /// In zh, this message translates to:
+  /// **'情侣课表 4×2'**
+  String get homeWidgetTargetCoupleTimetableWide;
+
   /// No description provided for @addCourseSheetTitle.
   ///
   /// In zh, this message translates to:

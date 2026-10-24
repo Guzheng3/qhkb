@@ -4369,6 +4369,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeWidgetTargetCoupleTimetable42 => 'カップル時間割 4×3';
 
   @override
+  String get homeWidgetTargetCoupleTimetableWide => 'カップル時間割 4×2';
+
+  @override
   String get addCourseSheetTitle => 'コンテンツ追加';
 
   @override

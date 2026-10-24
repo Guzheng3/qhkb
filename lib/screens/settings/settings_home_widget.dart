@@ -18,6 +18,8 @@ String _homeWidgetTargetLabel(
     HomeWidgetPinTarget.todayWide42 => l10n.homeWidgetTargetTodayWide42,
     HomeWidgetPinTarget.coupleTimetable42 =>
       l10n.homeWidgetTargetCoupleTimetable42,
+    HomeWidgetPinTarget.coupleTimetableWide =>
+      l10n.homeWidgetTargetCoupleTimetableWide,
   };
 }
 
@@ -159,6 +161,12 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
                         Expanded(
                           child: _buildPinWidgetButton(
                             HomeWidgetPinTarget.coupleTimetable42,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildPinWidgetButton(
+                            HomeWidgetPinTarget.coupleTimetableWide,
                           ),
                         ),
                       ],

@@ -4550,6 +4550,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeWidgetTargetCoupleTimetable42 => 'Couple timetable 4×3';
 
   @override
+  String get homeWidgetTargetCoupleTimetableWide => 'Couple timetable 4×2';
+
+  @override
   String get addCourseSheetTitle => 'Add Content';
 
   @override

@@ -2,6 +2,7 @@
 <resources>
     <string name="widget_loading">授業を読み込み中...</string>
     <string name="widget_couple_timetable_name">カップル時間割 4×3</string>
+    <string name="widget_couple_timetable_wide_name">カップル時間割 4×2</string>
     <string name="widget_couple_tomorrow_count">明日 %1$d コマ</string>
     <string name="widget_couple_today_remaining">今日 残り%1$d/%2$dコマ</string>
     <string name="widget_couple_no_course_tomorrow">明日は授業なし</string>

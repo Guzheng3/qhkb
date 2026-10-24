@@ -170,9 +170,13 @@ object HomeWidgetStorage {
 
     /** 桌面上是否存在情侣课表卡片（决定是否启用按分钟刷新的触发点）。 */
     private fun hasCoupleWidget(context: Context): Boolean {
-        return AppWidgetManager.getInstance(context)
-            .getAppWidgetIds(ComponentName(context, CoupleTimetableWidgetProvider::class.java))
-            .isNotEmpty()
+        val manager = AppWidgetManager.getInstance(context)
+        return listOf(
+            CoupleTimetableWidgetProvider::class.java,
+            CoupleTimetableWideWidgetProvider::class.java,
+        ).any { providerClass ->
+            manager.getAppWidgetIds(ComponentName(context, providerClass)).isNotEmpty()
+        }
     }
 
     private fun cancelFullRefreshAlarm(context: Context) {

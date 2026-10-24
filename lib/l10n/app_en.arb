@@ -2428,6 +2428,7 @@
   "homeWidgetTargetExamCard22": "Exam countdown 2×2",
   "homeWidgetTargetTodayWide42": "Today wide 4×2",
   "homeWidgetTargetCoupleTimetable42": "Couple timetable 4×3",
+  "homeWidgetTargetCoupleTimetableWide": "Couple timetable 4×2",
   "addCourseSheetTitle": "Add Content",
   "addCourseSheetSubtitle": "Blank timetable areas do not respond to taps. Choose clearly whether to add a one-off lesson, a recurring course, or a one-time schedule item",
   "courseWeekdaySectionSummary": "{weekDescription} · {weekday} Sections {startSection}-{endSection}",

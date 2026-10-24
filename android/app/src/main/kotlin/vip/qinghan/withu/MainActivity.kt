@@ -1336,6 +1336,7 @@ class MainActivity : FlutterActivity() {
             "exam_card" -> ExamCountdownWidgetProvider::class.java
             "today_wide" -> TodayWideWidgetProvider::class.java
             "couple_timetable_42" -> CoupleTimetableWidgetProvider::class.java
+            "couple_timetable_wide" -> CoupleTimetableWideWidgetProvider::class.java
             else -> null
         } ?: return null
         return ComponentName(this, providerClass)

@@ -2201,6 +2201,7 @@
   "homeWidgetTargetExamCard22": "考試倒數 2×2",
   "homeWidgetTargetTodayWide42": "今日橫寬 4×2",
   "homeWidgetTargetCoupleTimetable42": "情侶課表 4×3",
+  "homeWidgetTargetCoupleTimetableWide": "情侶課表 4×2",
   "dayAgendaInProgressStatus": "進行中 · 剩餘 {minutes} 分鐘",
   "@dayAgendaInProgressStatus": {
     "placeholders": {
