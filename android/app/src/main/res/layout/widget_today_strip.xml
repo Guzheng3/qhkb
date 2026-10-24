@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 今日横条 4×1：对齐 demo 的「今日横条」（320×93dp、18dp 圆角白卡、
+     7dp/10dp 内边距）。顶部一行「状态 chip | 周数」，下面单条 hero：
+     3dp 课程色条 + 课名/天气 + 地点/时间；进行中叠淡底与 3dp 进度条。 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -8,14 +11,16 @@
         android:id="@+id/widget_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:background="@drawable/widget_demo_card_bg"
         android:orientation="vertical"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp">
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp">
 
-        <!-- 主行：与旧版完全一致的单行形态，矮高度时就是整卡内容。 -->
+        <!-- 顶部：状态 chip 靠左，周数靠右；周数始终可见。 -->
         <LinearLayout
-            android:id="@+id/strip_main_row"
+            android:id="@+id/widget_strip_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -28,103 +33,144 @@
                 android:background="@drawable/widget_status_chip_strong"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:paddingLeft="9dp"
-                android:paddingTop="3dp"
-                android:paddingRight="9dp"
-                android:paddingBottom="3dp"
+                android:paddingLeft="8dp"
+                android:paddingTop="2dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="2dp"
                 android:text="下一节课"
-                android:textColor="#64748B"
-                android:textSize="11sp"
+                android:textColor="#1D4ED8"
+                android:textSize="10sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/widget_strip_course"
+            <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
+                android:layout_height="1dp"
                 android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:minWidth="48dp"
-                android:text="高等数学"
-                android:textColor="#0F172A"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/widget_strip_meta"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:ellipsize="end"
-                android:maxEms="10"
-                android:maxLines="1"
-                android:text="08:00 - 09:40"
-                android:textColor="#64748B"
-                android:textSize="12sp" />
+                android:orientation="horizontal" />
 
             <TextView
                 android:id="@+id/widget_strip_week"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:ellipsize="end"
+                android:layout_marginLeft="6dp"
                 android:maxLines="1"
                 android:text="第6周"
-                android:textColor="#64748B"
-                android:textSize="11sp"
-                android:textStyle="bold" />
-
+                android:textColor="@color/widget_couple_text_hint"
+                android:textSize="10sp" />
         </LinearLayout>
 
-        <!-- 第二行：默认隐藏；启动器给到的高度超过一行所需时由 provider 亮出，
-             避免拉高的横条只剩孤零零一线居中内容。 -->
+        <!-- Hero 行：进行中时整行淡蓝底（8dp 圆角）。 -->
         <LinearLayout
-            android:id="@+id/strip_sub_row"
+            android:id="@+id/widget_strip_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="4dp">
 
-            <TextView
-                android:id="@+id/strip_sub_left"
+            <ImageView
+                android:id="@+id/widget_strip_bar"
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_couple_indicator" />
+
+            <LinearLayout
+                android:id="@+id/widget_strip_main"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="#64748B"
-                android:textSize="11sp" />
-
-            <TextView
-                android:id="@+id/strip_sub_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text=""
-                android:textColor="#64748B"
-                android:textSize="11sp" />
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/widget_strip_course"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="none"
+                        android:maxLines="1"
+                        android:text="高等数学"
+                        android:textColor="@color/widget_couple_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/widget_strip_weather_icon"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginLeft="2dp"
+                        android:contentDescription="@null"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/widget_strip_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:maxLines="1"
+                        android:text="23°"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/widget_strip_meta_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp">
+
+                    <TextView
+                        android:id="@+id/widget_strip_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/widget_strip_time"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="一教C104"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="11sp" />
+
+                    <TextView
+                        android:id="@+id/widget_strip_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:maxLines="1"
+                        android:text="08:00 - 09:40"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="11sp" />
+                </RelativeLayout>
+
+                <!-- 进行中：连续填充（今日快照没有课间数据，不画断口）。 -->
+                <ImageView
+                    android:id="@+id/widget_strip_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+            </LinearLayout>
         </LinearLayout>
-
-        <!-- 第三行：高度充裕时的延伸信息（明日首课/次日第二节/考试倒计时）。 -->
-        <TextView
-            android:id="@+id/strip_sub2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text=""
-            android:textColor="#64748B"
-            android:textSize="11sp"
-            android:visibility="gone" />
-
     </LinearLayout>
-
 </FrameLayout>
