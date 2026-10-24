@@ -21,6 +21,7 @@ data class TodayWidgetCourseInfo(
     val location: String,
     val startTime: String,
     val endTime: String,
+    val color: String? = null,
 )
 
 data class TodayWidgetSnapshotInfo(
@@ -81,6 +82,7 @@ internal data class WidgetSourceCourse(
     val customWeeks: List<Int>?,
     val suspendedWeeks: List<Int>?,
     val courseNature: String = "required",
+    val color: String? = null,
 ) {
     /** 节数 = 结束节 - 开始节 + 1（对齐 Course.sectionCount）。 */
     val sectionCount: Int get() = endSection - startSection + 1
@@ -122,6 +124,7 @@ internal data class WidgetSourceCourse(
             location = location,
             startTime = startTime,
             endTime = endTime,
+            color = color,
         )
     }
 }
@@ -1239,6 +1242,7 @@ object TodayWidgetSupport {
             location = json.optString("location"),
             startTime = json.optString("startTime"),
             endTime = json.optString("endTime"),
+            color = json.optString("color").takeIf { it.isNotBlank() },
         )
     }
 
@@ -1386,6 +1390,7 @@ object TodayWidgetSupport {
                             }
                         },
                         courseNature = item.optString("courseNature", "required"),
+                        color = item.optString("color").takeIf { it.isNotBlank() },
                     )
                 )
             }
