@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  考试倒计时 2×2 · 设计稿白卡：左上蓝色徽章 → 左天数 / 右考试信息 → 分隔线 → 其他考试。
+  卡片静态底色与圆角由 widget_demo_card_bg 提供（夜间自动切换深底），
+  不再使用旧的居中竖排与运行时自适应内边距。
+-->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/widget_root"
     android:layout_width="match_parent"
@@ -8,10 +13,12 @@
         android:id="@+id/widget_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:background="@drawable/widget_demo_card_bg"
         android:orientation="vertical"
-        android:paddingLeft="14dp"
-        android:paddingRight="14dp">
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp">
 
         <TextView
             android:id="@+id/exam_chip"
@@ -20,72 +27,208 @@
             android:background="@drawable/widget_status_chip_strong"
             android:ellipsize="end"
             android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:paddingTop="4dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="4dp"
+            android:paddingLeft="8dp"
+            android:paddingTop="2dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="2dp"
             android:text="考试倒计时"
-            android:textColor="#64748B"
-            android:textSize="11sp"
+            android:textColor="#1D4ED8"
+            android:textSize="10sp"
             android:textStyle="bold" />
 
+        <!-- 主考试：左巨型天数，右考试名/日期/地点 -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:gravity="bottom"
+            android:id="@+id/exam_hero"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/exam_days"
+            <LinearLayout
+                android:id="@+id/exam_countdown"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:text="12"
-                android:textColor="#0F172A"
-                android:textSize="44sp"
-                android:textStyle="bold" />
+                android:gravity="bottom|center_horizontal"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/exam_day_unit"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/exam_days"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="12"
+                    android:textColor="#0F172A"
+                    android:textSize="40sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/exam_day_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginBottom="6dp"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:text="天"
+                    android:textColor="#64748B"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                android:background="@color/widget_couple_divider" />
+
+            <LinearLayout
+                android:id="@+id/exam_info"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginBottom="6dp"
-                android:maxLines="1"
-                android:text="天"
-                android:textColor="#64748B"
-                android:textSize="13sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:paddingLeft="10dp">
+
+                <TextView
+                    android:id="@+id/exam_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:text="高等数学"
+                    android:textColor="#0F172A"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/exam_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="06-25 周四"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+
+                <TextView
+                    android:id="@+id/exam_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="一教C104"
+                    android:textColor="#64748B"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/exam_name"
+        <View
+            android:id="@+id/exam_divider"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="高等数学期末"
-            android:textColor="#0F172A"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:layout_height="1dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
+            android:background="@color/widget_couple_divider" />
 
-        <TextView
-            android:id="@+id/exam_meta"
+        <!-- 其他考试：3dp 色条 + 名称 + 剩余天数（最多两条） -->
+        <LinearLayout
+            android:id="@+id/exam_row1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            android:ellipsize="end"
+            android:layout_height="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/exam_row1_bar"
+                android:layout_width="3dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="6dp"
+                android:background="#3B82F6" />
+
+            <TextView
+                android:id="@+id/exam_row1_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="大学英语"
+                android:textColor="#0F172A"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/exam_row1_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="19 天"
+                android:textColor="#64748B"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/exam_row2"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/exam_row2_bar"
+                android:layout_width="3dp"
+                android:layout_height="20dp"
+                android:layout_marginRight="6dp"
+                android:background="#8B5CF6" />
+
+            <TextView
+                android:id="@+id/exam_row2_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="数据结构"
+                android:textColor="#0F172A"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/exam_row2_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="26 天"
+                android:textColor="#64748B"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <!-- 空态：只有徽章 + 居中提示 -->
+        <TextView
+            android:id="@+id/exam_empty"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="06-25 · 一教C104"
+            android:maxLines="2"
+            android:text="暂无考试安排"
             android:textColor="#64748B"
-            android:textSize="11sp" />
+            android:textSize="15sp"
+            android:visibility="gone" />
 
     </LinearLayout>
 
