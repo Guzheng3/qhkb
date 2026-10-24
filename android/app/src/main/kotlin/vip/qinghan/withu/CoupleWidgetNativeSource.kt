@@ -23,6 +23,8 @@ internal object CoupleWidgetNativeSource {
     private const val KEY_TIME_SCHEMES = "flutter.time_schemes"
     private const val KEY_LOCATION_TIME_GROUPS = "flutter.location_time_groups"
     private const val KEY_PARTNER_BINDING = "flutter.partner_timetable_binding"
+    private const val KEY_WEATHER_ENABLED = "flutter.weather_enabled_v1"
+    private const val KEY_WEATHER_FORECAST = "flutter.weather_forecast_v1"
 
     private var cachedDayStart = Long.MIN_VALUE
     private var cachedProfiles: String? = null
@@ -30,6 +32,8 @@ internal object CoupleWidgetNativeSource {
     private var cachedGroups: String? = null
     private var cachedBinding: String? = null
     private var cachedActiveProfileId: String? = null
+    private var cachedWeatherEnabled = false
+    private var cachedWeatherForecast: String? = null
     private var cachedResult: CoupleWidgetRebuiltDays? = null
     private var cachedResolved = false
 
@@ -52,6 +56,8 @@ internal object CoupleWidgetNativeSource {
         val groupsJson = prefs.getString(KEY_LOCATION_TIME_GROUPS, null).orEmpty()
         val bindingJson = prefs.getString(KEY_PARTNER_BINDING, null).orEmpty()
         val activeProfileId = prefs.getString(KEY_ACTIVE_PROFILE_ID, null)
+        val weatherEnabled = prefs.getBoolean(KEY_WEATHER_ENABLED, false)
+        val weatherForecast = prefs.getString(KEY_WEATHER_FORECAST, null).orEmpty()
         val dayStart = CoupleWidgetNativeBuilder.dayStartMillis(nowMillis)
 
         val cacheHit = cachedResolved &&
@@ -60,13 +66,27 @@ internal object CoupleWidgetNativeSource {
             schemesJson == cachedSchemes &&
             groupsJson == cachedGroups &&
             bindingJson == cachedBinding &&
-            activeProfileId == cachedActiveProfileId
+            activeProfileId == cachedActiveProfileId &&
+            weatherEnabled == cachedWeatherEnabled &&
+            weatherForecast == cachedWeatherForecast
         if (cacheHit) {
             return cachedResult
         }
 
         val result = try {
-            build(profilesJson, schemesJson, groupsJson, bindingJson, activeProfileId, nowMillis)
+            build(
+                profilesJson = profilesJson,
+                schemesJson = schemesJson,
+                groupsJson = groupsJson,
+                bindingJson = bindingJson,
+                activeProfileId = activeProfileId,
+                nowMillis = nowMillis,
+                weatherLookup = if (weatherEnabled) {
+                    CoupleWidgetWeatherSource.lookup(context, nowMillis)
+                } else {
+                    null
+                },
+            )
         } catch (_: Exception) {
             // 档案损坏（半写入 / 旧版本结构）时静默回落到快照，绝不因解析失败清空卡片。
             null
@@ -78,6 +98,8 @@ internal object CoupleWidgetNativeSource {
         cachedGroups = groupsJson
         cachedBinding = bindingJson
         cachedActiveProfileId = activeProfileId
+        cachedWeatherEnabled = weatherEnabled
+        cachedWeatherForecast = weatherForecast
         cachedResult = result
         cachedResolved = true
         return result
@@ -90,6 +112,7 @@ internal object CoupleWidgetNativeSource {
         bindingJson: String,
         activeProfileId: String?,
         nowMillis: Long,
+        weatherLookup: ((Long, String, String) -> CoupleWidgetWeather?)?,
     ): CoupleWidgetRebuiltDays? {
         val profiles = parseProfiles(JSONArray(profilesJson))
         if (profiles.isEmpty()) {
@@ -104,6 +127,7 @@ internal object CoupleWidgetNativeSource {
             partnerProfileId = binding?.stringOrNull("partnerProfileId"),
             partnerWeekOffset = binding?.optInt("weekOffset", 0) ?: 0,
             nowMillis = nowMillis,
+            weatherLookup = weatherLookup,
         )
     }
 
@@ -182,6 +206,8 @@ internal object CoupleWidgetNativeSource {
                 json.optLong("semesterStartDate", 0L).takeIf { it > 0L }
             },
             semesterWeekCount = json.optInt("semesterWeekCount", 20),
+            weatherShowPhenomenon = json.optBoolean("weatherShowPhenomenon", true),
+            weatherShowTemperature = json.optBoolean("weatherShowTemperature", true),
         )
     }
 

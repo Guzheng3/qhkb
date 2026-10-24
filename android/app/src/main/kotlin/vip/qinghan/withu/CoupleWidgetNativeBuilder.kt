@@ -63,6 +63,8 @@ internal data class CoupleNativeSettings(
     val sections: List<CoupleNativeSectionTime>,
     val semesterStartMillis: Long?,
     val semesterWeekCount: Int,
+    val weatherShowPhenomenon: Boolean = true,
+    val weatherShowTemperature: Boolean = true,
 )
 
 internal data class CoupleNativeCourse(
@@ -123,6 +125,7 @@ internal object CoupleWidgetNativeBuilder {
         partnerProfileId: String?,
         partnerWeekOffset: Int,
         nowMillis: Long,
+        weatherLookup: ((Long, String, String) -> CoupleWidgetWeather?)? = null,
     ): CoupleWidgetRebuiltDays? {
         val myProfile = resolveMyProfile(profiles, activeProfileId) ?: return null
         val partnerProfile = profiles.firstOrNull {
@@ -161,21 +164,21 @@ internal object CoupleWidgetNativeBuilder {
             mine = CoupleWidgetDayCourses(
                 today = buildDayCourses(
                     myProfile, todayStart, myWeek(todayStart),
-                    schemes, locationGroups, activeCourses,
+                    schemes, locationGroups, activeCourses, weatherLookup,
                 ),
                 tomorrow = buildDayCourses(
                     myProfile, tomorrowStart, myWeek(tomorrowStart),
-                    schemes, locationGroups, activeCourses,
+                    schemes, locationGroups, activeCourses, weatherLookup,
                 ),
             ),
             partner = CoupleWidgetDayCourses(
                 today = buildDayCourses(
                     partnerProfile, todayStart, partnerWeek(todayStart),
-                    schemes, locationGroups, activeCourses,
+                    schemes, locationGroups, activeCourses, weatherLookup,
                 ),
                 tomorrow = buildDayCourses(
                     partnerProfile, tomorrowStart, partnerWeek(tomorrowStart),
-                    schemes, locationGroups, activeCourses,
+                    schemes, locationGroups, activeCourses, weatherLookup,
                 ),
             ),
         )
@@ -257,6 +260,7 @@ internal object CoupleWidgetNativeBuilder {
         schemes: List<CoupleNativeTimeScheme>,
         locationGroups: List<CoupleNativeLocationGroup>,
         activeCourses: List<CoupleNativeCourse>,
+        weatherLookup: ((Long, String, String) -> CoupleWidgetWeather?)?,
     ): List<CoupleWidgetCourse> {
         val weekday = weekdayOf(dateMillis)
         val courses = profile.courses
@@ -269,6 +273,7 @@ internal object CoupleWidgetNativeBuilder {
             if (startTime.isEmpty() || endTime.isEmpty()) {
                 return@mapNotNull null
             }
+            val weather = weatherLookup?.invoke(dateMillis, startTime, endTime)
             CoupleWidgetCourse(
                 id = course.id,
                 name = course.name,
@@ -280,6 +285,9 @@ internal object CoupleWidgetNativeBuilder {
                 startTime = startTime,
                 endTime = endTime,
                 breaks = buildBreaks(course, sections),
+                weatherKind = weather?.kind?.takeIf { profile.settings.weatherShowPhenomenon },
+                weatherTempC = weather?.temperatureC
+                    ?.takeIf { profile.settings.weatherShowTemperature },
             )
         }
     }

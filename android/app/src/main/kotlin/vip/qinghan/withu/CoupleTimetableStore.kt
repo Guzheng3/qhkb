@@ -9,6 +9,12 @@ data class CoupleWidgetBreak(
     val endTime: String,
 )
 
+/** 课程窗口内的紧凑天气：4~6 种可绘制字形 + 平均温度。 */
+data class CoupleWidgetWeather(
+    val kind: String,
+    val temperatureC: Int?,
+)
+
 data class CoupleWidgetCourse(
     val id: String,
     val name: String,
@@ -20,6 +26,8 @@ data class CoupleWidgetCourse(
     val startTime: String,
     val endTime: String,
     val breaks: List<CoupleWidgetBreak> = emptyList(),
+    val weatherKind: String? = null,
+    val weatherTempC: Int? = null,
 )
 
 data class CoupleWidgetDayCourses(
@@ -141,6 +149,13 @@ object CoupleTimetableStore {
                         startTime = course.stringOrEmpty("startTime"),
                         endTime = course.stringOrEmpty("endTime"),
                         breaks = parseBreaks(course.optJSONArray("breaks")),
+                        weatherKind = course.stringOrEmpty("weatherKind")
+                            .takeIf { it.isNotBlank() },
+                        weatherTempC = if (course.has("weatherTemp") && !course.isNull("weatherTemp")) {
+                            course.optInt("weatherTemp")
+                        } else {
+                            null
+                        },
                     )
                 )
             }

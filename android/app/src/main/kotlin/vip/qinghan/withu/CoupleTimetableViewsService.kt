@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.os.Build
 import android.util.TypedValue
@@ -433,6 +434,101 @@ internal object CoupleTimetableRenderSupport {
         return bitmap
     }
 
+    fun createWeatherBitmap(context: Context, kind: String): Bitmap {
+        val density = context.resources.displayMetrics.density
+        val size = (density * 13f).roundToInt().coerceAtLeast(1)
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        canvas.scale(size / 24f, size / 24f)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG)
+        val sun = ContextCompat.getColor(context, R.color.widget_weather_sun)
+        val ray = ContextCompat.getColor(context, R.color.widget_weather_ray)
+        val cloud = ContextCompat.getColor(context, R.color.widget_weather_cloud)
+        val rain = ContextCompat.getColor(context, R.color.widget_weather_rain)
+        val snow = ContextCompat.getColor(context, R.color.widget_weather_snow)
+        val bolt = ContextCompat.getColor(context, R.color.widget_weather_bolt)
+
+        fun drawSun(cx: Float, cy: Float, radius: Float) {
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 2f
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.color = ray
+            if (cx == 12f) {
+                canvas.drawLine(12f, 2.2f, 12f, 4.6f, paint)
+                canvas.drawLine(12f, 19.4f, 12f, 21.8f, paint)
+                canvas.drawLine(2.2f, 12f, 4.6f, 12f, paint)
+                canvas.drawLine(19.4f, 12f, 21.8f, 12f, paint)
+                canvas.drawLine(5.1f, 5.1f, 6.8f, 6.8f, paint)
+                canvas.drawLine(17.2f, 17.2f, 18.9f, 18.9f, paint)
+                canvas.drawLine(18.9f, 5.1f, 17.2f, 6.8f, paint)
+                canvas.drawLine(6.8f, 17.2f, 5.1f, 18.9f, paint)
+            } else {
+                canvas.drawLine(cx, 2.5f, cx, 4.3f, paint)
+                canvas.drawLine(cx - 6.5f, cy, cx - 4.7f, cy, paint)
+                canvas.drawLine(cx - 4.5f, cy - 4.5f, cx - 3.2f, cy - 3.2f, paint)
+                canvas.drawLine(cx + 4.5f, cy - 4.5f, cx + 3.2f, cy - 3.2f, paint)
+            }
+            paint.style = Paint.Style.FILL
+            paint.color = sun
+            canvas.drawCircle(cx, cy, radius, paint)
+        }
+
+        fun drawCloud() {
+            paint.style = Paint.Style.FILL
+            paint.color = cloud
+            canvas.drawCircle(9f, 9.8f, 3.2f, paint)
+            canvas.drawCircle(13.3f, 8.8f, 4f, paint)
+            canvas.drawRoundRect(RectF(6.6f, 9.4f, 18.4f, 14f), 2.3f, 2.3f, paint)
+        }
+
+        when (kind) {
+            "clear" -> drawSun(12f, 12f, 4.4f)
+            "partlyCloudy" -> {
+                drawSun(9f, 9f, 3.4f)
+                paint.style = Paint.Style.FILL
+                paint.color = cloud
+                canvas.drawCircle(10.5f, 14.6f, 3.1f, paint)
+                canvas.drawCircle(14.4f, 13.5f, 3.8f, paint)
+                canvas.drawRoundRect(RectF(8.4f, 14.2f, 18.6f, 18.4f), 2.1f, 2.1f, paint)
+            }
+            "rain" -> {
+                drawCloud()
+                paint.style = Paint.Style.STROKE
+                paint.strokeWidth = 1.9f
+                paint.strokeCap = Paint.Cap.ROUND
+                paint.color = rain
+                canvas.drawLine(8.6f, 16.8f, 7.6f, 19.3f, paint)
+                canvas.drawLine(13f, 16.8f, 12f, 19.3f, paint)
+                canvas.drawLine(17.4f, 16.8f, 16.4f, 19.3f, paint)
+            }
+            "snow" -> {
+                drawCloud()
+                paint.style = Paint.Style.FILL
+                paint.color = snow
+                for (x in floatArrayOf(8.6f, 13f, 17.4f)) {
+                    canvas.drawCircle(x, 18f, 1.3f, paint)
+                }
+            }
+            "storm" -> {
+                drawCloud()
+                paint.style = Paint.Style.FILL
+                paint.color = bolt
+                val path = Path().apply {
+                    moveTo(13.6f, 14.2f)
+                    lineTo(9.8f, 19.4f)
+                    lineTo(12.2f, 19.4f)
+                    lineTo(10.8f, 23f)
+                    lineTo(15.6f, 17.4f)
+                    lineTo(13.1f, 17.4f)
+                    close()
+                }
+                canvas.drawPath(path, paint)
+            }
+            else -> drawCloud()
+        }
+        return bitmap
+    }
+
     private fun sp(context: Context, value: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_SP,
@@ -471,6 +567,7 @@ class CoupleTimetableViewsService : RemoteViewsService() {
         private var courseRowHeightPx = 0f
         private var noticeRowHeightPx = 0f
         private var progressWidthPx = 0f
+        private val weatherBitmaps = mutableMapOf<String, Bitmap>()
 
         override fun onCreate() {
             onDataSetChanged()
@@ -524,6 +621,7 @@ class CoupleTimetableViewsService : RemoteViewsService() {
 
         override fun onDestroy() {
             items = emptyList()
+            weatherBitmaps.clear()
         }
 
         override fun getCount(): Int = items.size
@@ -589,6 +687,32 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 R.id.widget_couple_course_name,
                 displayCourseName(course),
             )
+            val weatherKind = course.weatherKind
+            if (weatherKind != null) {
+                views.setImageViewBitmap(
+                    R.id.widget_couple_course_weather_icon,
+                    weatherBitmap(weatherKind),
+                )
+                views.setViewVisibility(
+                    R.id.widget_couple_course_weather_icon,
+                    View.VISIBLE,
+                )
+            } else {
+                views.setViewVisibility(R.id.widget_couple_course_weather_icon, View.GONE)
+            }
+            val weatherTemp = course.weatherTempC
+            if (weatherTemp != null) {
+                views.setTextViewText(
+                    R.id.widget_couple_course_weather_text,
+                    "$weatherTemp°",
+                )
+                views.setViewVisibility(
+                    R.id.widget_couple_course_weather_text,
+                    View.VISIBLE,
+                )
+            } else {
+                views.setViewVisibility(R.id.widget_couple_course_weather_text, View.GONE)
+            }
             views.setTextViewText(
                 R.id.widget_couple_course_location,
                 course.location.takeIf { it.isNotBlank() } ?: " "
@@ -630,6 +754,13 @@ class CoupleTimetableViewsService : RemoteViewsService() {
                 views.setViewVisibility(R.id.widget_couple_course_progress, View.GONE)
             }
             return views
+        }
+
+        private fun weatherBitmap(kind: String): Bitmap {
+            weatherBitmaps[kind]?.let { return it }
+            val created = CoupleTimetableRenderSupport.createWeatherBitmap(context, kind)
+            weatherBitmaps[kind] = created
+            return created
         }
 
         private fun displayCourseName(course: CoupleWidgetCourse): String {
