@@ -62,7 +62,7 @@
         <LinearLayout
             android:id="@+id/widget_strip_row"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="48dp"
             android:layout_marginTop="2dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -183,7 +183,7 @@
         <LinearLayout
             android:id="@+id/widget_course42_row1"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
@@ -192,7 +192,7 @@
             <ImageView
                 android:id="@+id/widget_course42_bar1"
                 android:layout_width="3dp"
-                android:layout_height="18dp"
+                android:layout_height="match_parent"
                 android:contentDescription="@null"
                 android:scaleType="fitXY"
                 android:src="@drawable/widget_couple_indicator" />
@@ -225,7 +225,7 @@
         <LinearLayout
             android:id="@+id/widget_course42_row2"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="48dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
@@ -234,7 +234,7 @@
             <ImageView
                 android:id="@+id/widget_course42_bar2"
                 android:layout_width="3dp"
-                android:layout_height="18dp"
+                android:layout_height="match_parent"
                 android:contentDescription="@null"
                 android:scaleType="fitXY"
                 android:src="@drawable/widget_couple_indicator" />
