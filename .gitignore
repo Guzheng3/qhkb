@@ -189,3 +189,4 @@ AGENTS.md
 
 # 自适应图标生成脚本的预览产物（tool/generate_adaptive_icon.py，不入库）
 /.tmp_adaptive_preview/
+/android/*.jks
