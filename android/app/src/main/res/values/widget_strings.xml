@@ -18,6 +18,7 @@
     <string name="widget_today_mini_list_name">今日课程迷你列表 2×2</string>
     <string name="widget_today_large_name">今日课程列表 4×3</string>
   <string name="widget_today_strip_name">今日横条 4×1</string>
+    <string name="widget_today_course_42_name">今日课程 4×2</string>
   <string name="widget_exam_card_name">考试倒计时 2×2</string>
   <string name="widget_exam_card_chip">考试倒计时</string>
   <string name="widget_exam_unit_day">天</string>

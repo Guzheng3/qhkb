@@ -7825,6 +7825,12 @@ abstract class AppLocalizations {
   /// **'今日横条 4×1'**
   String get homeWidgetTargetTodayStrip41;
 
+  /// No description provided for @homeWidgetTargetTodayCourse42.
+  ///
+  /// In zh, this message translates to:
+  /// **'今日课程 4×2'**
+  String get homeWidgetTargetTodayCourse42;
+
   /// No description provided for @homeWidgetTargetExamCard22.
   ///
   /// In zh, this message translates to:

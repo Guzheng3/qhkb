@@ -133,6 +133,7 @@ object TodayWidgetSupport {
     private const val FLUTTER_PREFS_NAME = "FlutterSharedPreferences"
     private const val KEY_TIMETABLE_PROFILES = "flutter.timetable_profiles"
     private const val KEY_ACTIVE_PROFILE_ID = "flutter.active_timetable_profile_id"
+    private const val PROFILE_KIND_PARTNER = "partnerImported"
     private const val KEY_CUSTOM_HOLIDAYS = "flutter.custom_holidays"
     private const val KEY_HOLIDAY_DATA_PREFIX = "flutter.holiday_data_"
 
@@ -216,6 +217,7 @@ object TodayWidgetSupport {
         TodayMiniListWidgetProvider::class.java,
         TodayLargeWidgetProvider::class.java,
         TodayStripWidgetProvider::class.java,
+        TodayCourse42WidgetProvider::class.java,
     )
 
     /** 桌面上仍然存在的、支持绑定的卡片 id 全集（用于对账孤儿绑定档案）。 */
@@ -229,7 +231,7 @@ object TodayWidgetSupport {
     }
 
     /**
-     * 全部卡片 Provider（迷你列表 2×2 + 列表 4×3 + 横条 4×1 + 考试倒计时 + 情侣课表 4×3 / 4×2），
+     * 全部卡片 Provider（迷你列表 2×2 + 列表 4×3 + 横条 4×1 + 今日课程 4×2 + 考试倒计时 + 情侣课表 4×3 / 4×2），
      * 用于判断桌面上是否还有任意卡片实例——零卡片时停掉所有后台刷新调度。
      */
     private val ALL_WIDGET_PROVIDER_CLASSES: List<Class<*>> = BINDING_PROVIDER_CLASSES + listOf(
@@ -250,6 +252,7 @@ object TodayWidgetSupport {
         TodayMiniListWidgetProvider.updateAll(context)
         TodayLargeWidgetProvider.updateAll(context)
         TodayStripWidgetProvider.updateAll(context)
+        TodayCourse42WidgetProvider.updateAll(context)
         ExamCountdownWidgetProvider.updateAll(context)
         CoupleTimetableWidgetProvider.updateAll(context)
         CoupleTimetableWideWidgetProvider.updateAll(context)
@@ -260,7 +263,7 @@ object TodayWidgetSupport {
         nowMillis: Long = System.currentTimeMillis(),
         profileJson: JSONObject? = null,
     ): TodayWidgetSnapshotInfo? {
-        val profile = profileJson ?: readActiveProfileJson(context) ?: return null
+        val profile = profileJson ?: readOwnProfileJson(context) ?: return null
         val settingsJson = profile.optJSONObject("settings") ?: JSONObject()
         val nowCalendar = Calendar.getInstance().apply { timeInMillis = nowMillis }
         val todayDateStr = widgetFormatDate(
@@ -532,7 +535,7 @@ object TodayWidgetSupport {
         nowMillis: Long = System.currentTimeMillis(),
         profileJson: JSONObject? = null,
     ): Long? {
-        val profile = profileJson ?: readActiveProfileJson(context) ?: return null
+        val profile = profileJson ?: readOwnProfileJson(context) ?: return null
         val settingsJson = profile.optJSONObject("settings") ?: JSONObject()
         val nowCalendar = Calendar.getInstance().apply { timeInMillis = nowMillis }
         val todayDateStr = widgetFormatDate(
@@ -1244,46 +1247,34 @@ object TodayWidgetSupport {
         )
     }
 
-    /**
-     * 读取活动档案的原始 JSON 字符串（仍处于 JSONArray 包裹结构内，未解析）。
-     * 供考试卡片列表读取同一份档案，解析与否由调用方决定。
-     */
-    fun readActiveProfileRawJson(context: Context): String? {
-        val flutterPrefs = context.getSharedPreferences(FLUTTER_PREFS_NAME, Context.MODE_PRIVATE)
-        val profilesPayload = flutterPrefs.getString(KEY_TIMETABLE_PROFILES, null) ?: return null
-        val activeProfileId = flutterPrefs.getString(KEY_ACTIVE_PROFILE_ID, null)
-        return try {
-            val profiles = JSONArray(profilesPayload)
-            var fallbackRaw: String? = null
-            for (index in 0 until profiles.length()) {
-                val profile = profiles.optJSONObject(index) ?: continue
-                val raw = profile.toString()
-                if (fallbackRaw == null) {
-                    fallbackRaw = raw
-                }
-                if (!activeProfileId.isNullOrBlank() &&
-                    profile.optString("id") == activeProfileId
-                ) {
-                    return raw
-                }
-            }
-            fallbackRaw
-        } catch (_: Exception) {
-            null
-        }
-    }
+    /** 考试卡片列表用的课表原始 JSON（与单人卡片同一份档案）。 */
+    fun readOwnProfileRawJson(context: Context): String? =
+        readOwnProfileJson(context)?.toString()
 
-    fun readActiveProfileJson(context: Context): JSONObject? {
+    /**
+     * 单人卡片（今日课程、考试）读的课表：优先当前课表，但当前课表是 TA 的
+     * 导入副本时退回第一份普通课表——情侣卡片右半会把当前课表切到 TA，
+     * 不能让桌面上的单人卡片跟着变成对方的课表。
+     */
+    fun readOwnProfileJson(context: Context): JSONObject? {
         val flutterPrefs = context.getSharedPreferences(FLUTTER_PREFS_NAME, Context.MODE_PRIVATE)
         val profilesPayload = flutterPrefs.getString(KEY_TIMETABLE_PROFILES, null) ?: return null
         return try {
             val activeProfileId = flutterPrefs.getString(KEY_ACTIVE_PROFILE_ID, null)
             val profiles = JSONArray(profilesPayload)
-            var fallbackProfile: JSONObject? = null
+            var ownFallback: JSONObject? = null
+            var anyFallback: JSONObject? = null
             for (index in 0 until profiles.length()) {
                 val profile = profiles.optJSONObject(index) ?: continue
-                if (fallbackProfile == null) {
-                    fallbackProfile = profile
+                if (anyFallback == null) {
+                    anyFallback = profile
+                }
+                val isPartner = profile.optString("profileKind") == PROFILE_KIND_PARTNER
+                if (isPartner) {
+                    continue
+                }
+                if (ownFallback == null) {
+                    ownFallback = profile
                 }
                 if (!activeProfileId.isNullOrBlank() &&
                     profile.optString("id") == activeProfileId
@@ -1291,7 +1282,7 @@ object TodayWidgetSupport {
                     return profile
                 }
             }
-            fallbackProfile
+            ownFallback ?: anyFallback
         } catch (_: Exception) {
             null
         }

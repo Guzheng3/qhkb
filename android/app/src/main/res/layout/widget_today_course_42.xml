@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 今日课程 4×2：与 4×1 横条同一套头部与 hero，多出来的高度放两行「接下来」，
+     两行同用情侣卡片的色条 + 课名 + 时间样式。 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/widget_card"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/widget_demo_card_bg"
+        android:orientation="vertical"
+        android:paddingLeft="10dp"
+        android:paddingTop="7dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="7dp">
+
+        <!-- 顶部：状态 chip 靠左，周数靠右（与 4×1 共用同一套 id）。 -->
+        <LinearLayout
+            android:id="@+id/widget_strip_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/widget_strip_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/widget_status_chip_strong"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingLeft="8dp"
+                android:paddingTop="2dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="2dp"
+                android:text="下一节课"
+                android:textColor="#1D4ED8"
+                android:textSize="8sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:orientation="horizontal" />
+
+            <TextView
+                android:id="@+id/widget_strip_week"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="第6周"
+                android:textColor="@color/widget_couple_text_hint"
+                android:textSize="8.5sp" />
+        </LinearLayout>
+
+        <!-- Hero 行：与 4×1 完全一致（id 相同，渲染逻辑复用）。 -->
+        <LinearLayout
+            android:id="@+id/widget_strip_row"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="2dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingTop="4dp"
+            android:paddingRight="6dp"
+            android:paddingBottom="4dp">
+
+            <ImageView
+                android:id="@+id/widget_strip_bar"
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_couple_indicator" />
+
+            <LinearLayout
+                android:id="@+id/widget_strip_main"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/widget_strip_course"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="none"
+                        android:maxLines="1"
+                        android:text="高等数学"
+                        android:textColor="@color/widget_couple_text_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/widget_strip_weather_icon"
+                        android:layout_width="13dp"
+                        android:layout_height="13dp"
+                        android:layout_marginLeft="2dp"
+                        android:contentDescription="@null"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/widget_strip_temp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:maxLines="1"
+                        android:text="23°"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="9.5sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@+id/widget_strip_meta_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1dp">
+
+                    <TextView
+                        android:id="@+id/widget_strip_location"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/widget_strip_time"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="一教C104"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="10sp" />
+
+                    <TextView
+                        android:id="@+id/widget_strip_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="5dp"
+                        android:maxLines="1"
+                        android:text="08:00 - 09:40"
+                        android:textColor="@color/widget_couple_text_secondary"
+                        android:textSize="10sp" />
+                </RelativeLayout>
+
+                <ImageView
+                    android:id="@+id/widget_strip_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="2dp"
+                    android:contentDescription="@null"
+                    android:scaleType="fitXY"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/widget_course42_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="1dp"
+            android:contentDescription="@null"
+            android:background="@color/widget_couple_divider" />
+
+        <!-- 接下来第 1 行 -->
+        <LinearLayout
+            android:id="@+id/widget_course42_row1"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="6dp">
+
+            <ImageView
+                android:id="@+id/widget_course42_bar1"
+                android:layout_width="3dp"
+                android:layout_height="18dp"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_couple_indicator" />
+
+            <TextView
+                android:id="@+id/widget_course42_name1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="大学英语"
+                android:textColor="@color/widget_couple_text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_course42_time1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="10:10 - 11:45"
+                android:textColor="@color/widget_couple_text_secondary"
+                android:textSize="10sp" />
+        </LinearLayout>
+
+        <!-- 接下来第 2 行 -->
+        <LinearLayout
+            android:id="@+id/widget_course42_row2"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="4dp"
+            android:paddingRight="6dp">
+
+            <ImageView
+                android:id="@+id/widget_course42_bar2"
+                android:layout_width="3dp"
+                android:layout_height="18dp"
+                android:contentDescription="@null"
+                android:scaleType="fitXY"
+                android:src="@drawable/widget_couple_indicator" />
+
+            <TextView
+                android:id="@+id/widget_course42_name2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="程序设计基础"
+                android:textColor="@color/widget_couple_text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/widget_course42_time2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
+                android:maxLines="1"
+                android:text="13:30 - 15:05"
+                android:textColor="@color/widget_couple_text_secondary"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

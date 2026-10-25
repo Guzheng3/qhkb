@@ -4345,6 +4345,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeWidgetTargetTodayStrip41 => '今日バー 4×1';
 
   @override
+  String get homeWidgetTargetTodayCourse42 => '今日の授業 4×2';
+
+  @override
   String get homeWidgetTargetExamCard22 => '試験カウントダウン 2×2';
 
   @override

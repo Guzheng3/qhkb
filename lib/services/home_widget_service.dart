@@ -12,6 +12,7 @@ enum HomeWidgetPinTarget {
   miniList22('mini_list'),
   large44('large'),
   todayStrip41('today_strip'),
+  todayCourse42('today_course_42'),
   examCard22('exam_card'),
   coupleTimetable42('couple_timetable_42'),
   coupleTimetableWide('couple_timetable_wide');

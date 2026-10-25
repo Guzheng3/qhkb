@@ -4373,6 +4373,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeWidgetTargetTodayStrip41 => '오늘 바 4×1';
 
   @override
+  String get homeWidgetTargetTodayCourse42 => '오늘 수업 4×2';
+
+  @override
   String get homeWidgetTargetExamCard22 => '시험 카운트다운 2×2';
 
   @override

@@ -1226,6 +1226,7 @@ class MainActivity : FlutterActivity() {
         "mini_list" to TodayMiniListWidgetProvider::class.java,
         "large" to TodayLargeWidgetProvider::class.java,
         "today_strip" to TodayStripWidgetProvider::class.java,
+        "today_course_42" to TodayCourse42WidgetProvider::class.java,
     )
 
     private fun listTodayWidgetInstances(): List<Map<String, Any?>> {
@@ -1312,6 +1313,7 @@ class MainActivity : FlutterActivity() {
             "mini_list" -> TodayMiniListWidgetProvider::class.java
             "large" -> TodayLargeWidgetProvider::class.java
             "today_strip" -> TodayStripWidgetProvider::class.java
+            "today_course_42" -> TodayCourse42WidgetProvider::class.java
             "exam_card" -> ExamCountdownWidgetProvider::class.java
             "couple_timetable_42" -> CoupleTimetableWidgetProvider::class.java
             "couple_timetable_wide" -> CoupleTimetableWideWidgetProvider::class.java

@@ -79,7 +79,7 @@ internal object ExamWidgetList {
     }
 
     private fun readUpcomingExams(context: Context, nowMillis: Long): List<ExamWidgetEntry> {
-        val raw = TodayWidgetSupport.readActiveProfileRawJson(context) ?: return emptyList()
+        val raw = TodayWidgetSupport.readOwnProfileRawJson(context) ?: return emptyList()
         val profile = runCatching { JSONObject(raw) }.getOrNull() ?: return emptyList()
         val examArray = profile.optJSONArray("exams") ?: return emptyList()
         val courseColors = readCourseColors(profile)

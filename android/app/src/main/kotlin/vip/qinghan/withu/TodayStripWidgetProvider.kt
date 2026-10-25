@@ -16,9 +16,21 @@ import java.util.Calendar
  * ——3dp 课程色条 + 课名 + 天气，第二行地点/时间。进行中的课整行淡蓝底并追加
  * 3dp 进度条。今日快照没有课间（breaks）数据，进度条按连续填充绘制，不编造断口。
  */
-class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
+open class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
     override fun providerClass(): Class<out BaseQinghanWidgetProvider> =
         TodayStripWidgetProvider::class.java
+
+    /** 4×2 变体只在布局与下方追加行上有差别，其余渲染完全复用本类。 */
+    protected open val layoutResId: Int get() = R.layout.widget_today_strip
+
+    /** 子类在 hero 之后追加自己的内容（4×2 用来补「接下来」的课程行）。 */
+    protected open fun bindExtras(
+        context: Context,
+        views: RemoteViews,
+        snapshot: TodayWidgetSnapshotInfo?,
+        nowMillis: Long,
+    ) {
+    }
 
     companion object {
         private const val NAME_MAX_CODE_POINTS = 7
@@ -37,7 +49,7 @@ class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int,
     ) {
-        val views = RemoteViews(context.packageName, R.layout.widget_today_strip)
+        val views = RemoteViews(context.packageName, layoutResId)
         val snapshot = TodayWidgetSupport.readSnapshotForWidget(context, appWidgetId)
         val profile = TodayWidgetSupport.sizeProfile(appWidgetManager, appWidgetId)
         val nowMillis = System.currentTimeMillis()
@@ -136,6 +148,8 @@ class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
                 fallbackAccent = fallbackAccent,
             )
         }
+
+        bindExtras(context, views, snapshot, nowMillis)
 
         views.setOnClickPendingIntent(
             R.id.widget_root,

@@ -9,6 +9,7 @@ String _homeWidgetTargetLabel(
     HomeWidgetPinTarget.miniList22 => l10n.homeWidgetTargetMiniList22,
     HomeWidgetPinTarget.large44 => l10n.homeWidgetTargetLarge44,
     HomeWidgetPinTarget.todayStrip41 => l10n.homeWidgetTargetTodayStrip41,
+    HomeWidgetPinTarget.todayCourse42 => l10n.homeWidgetTargetTodayCourse42,
     HomeWidgetPinTarget.examCard22 => l10n.homeWidgetTargetExamCard22,
     HomeWidgetPinTarget.coupleTimetable42 =>
       l10n.homeWidgetTargetCoupleTimetable42,
@@ -175,6 +176,16 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
                         ),
                       ),
                       const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildPinWidgetButton(
+                          HomeWidgetPinTarget.todayCourse42,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
                       Expanded(
                         child: _buildPinWidgetButton(
                           HomeWidgetPinTarget.examCard22,
