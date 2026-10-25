@@ -75,7 +75,7 @@ class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
             R.id.widget_strip_status,
             TodayWidgetSupport.statusChipTextColor(chipState, "solid", context),
         )
-        TodayWidgetSupport.setTextSizeSp(views, R.id.widget_strip_status, 10f)
+        TodayWidgetSupport.setTextSizeSp(views, R.id.widget_strip_status, 8f)
 
         // 周数始终可见：320dp 宽度下 chip 与「第N周」不会互相挤压。
         views.setTextViewText(
@@ -83,7 +83,7 @@ class TodayStripWidgetProvider : BaseQinghanWidgetProvider() {
             context.getString(R.string.widget_week_number, snapshot?.currentWeek ?: 1),
         )
         views.setTextColor(R.id.widget_strip_week, hintColor)
-        TodayWidgetSupport.setTextSizeSp(views, R.id.widget_strip_week, 10f)
+        TodayWidgetSupport.setTextSizeSp(views, R.id.widget_strip_week, 8.5f)
         views.setViewVisibility(R.id.widget_strip_week, View.VISIBLE)
 
         // hero 选择与 demo 同序：今日进行中/下一节 → 明日首课 → 空态。

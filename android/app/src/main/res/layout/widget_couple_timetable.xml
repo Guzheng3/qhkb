@@ -127,7 +127,7 @@
                         android:maxLines="2"
                         android:text="@string/widget_no_course_today"
                         android:textColor="@color/widget_couple_text_hint"
-                        android:textSize="11sp"
+                        android:textSize="13.5sp"
                         android:visibility="gone" />
                 </FrameLayout>
 
@@ -139,7 +139,7 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@color/widget_couple_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="8.5sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -174,7 +174,7 @@
                         android:maxLines="2"
                         android:text="@string/widget_no_course_today"
                         android:textColor="@color/widget_couple_text_hint"
-                        android:textSize="11sp"
+                        android:textSize="13.5sp"
                         android:visibility="gone" />
                 </FrameLayout>
 
@@ -186,7 +186,7 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:textColor="@color/widget_couple_text_secondary"
-                    android:textSize="10sp" />
+                    android:textSize="8.5sp" />
             </LinearLayout>
         </LinearLayout>
 
@@ -203,7 +203,7 @@
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:textColor="@color/widget_couple_text_hint"
-            android:textSize="12sp"
+            android:textSize="13.5sp"
             android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>

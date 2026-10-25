@@ -52,7 +52,7 @@ internal object CoupleTimetableDisplayBuilder {
      * 提示文案（「今日课程已结束」Notice 与整列空态文案）的字号。同一条
      * 文案在卡片上有两种落法，字号只留这一处，避免两处各改一半后不一样大。
      */
-    const val HINT_TEXT_SIZE_SP = 16f
+    const val HINT_TEXT_SIZE_SP = 13.5f
 
     /**
      * 整卡不可用时的原因文案（未开情侣模式 / 未登录 / 对方课表未上传）。
@@ -353,7 +353,7 @@ internal object CoupleTimetableRenderSupport {
         val density = context.resources.displayMetrics.density
         val paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
             this.color = color
-            textSize = sp(context, 13f)
+            textSize = sp(context, 11f)
             typeface = ResourcesCompat.getFont(context, R.font.pacifico)
             setShadowLayer(
                 density,

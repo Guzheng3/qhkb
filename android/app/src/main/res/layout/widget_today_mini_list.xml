@@ -32,7 +32,7 @@
                 android:maxLines="1"
                 android:text="接下来"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="10sp" />
+                android:textSize="8.5sp" />
 
             <TextView
                 android:id="@+id/widget_mini_week"
@@ -42,7 +42,7 @@
                 android:maxLines="1"
                 android:text="第6周"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="10sp" />
+                android:textSize="8.5sp" />
         </LinearLayout>
 
         <FrameLayout
@@ -96,7 +96,7 @@
                                 android:maxLines="1"
                                 android:text="高等数学"
                                 android:textColor="@color/widget_couple_text_primary"
-                                android:textSize="12sp"
+                                android:textSize="13sp"
                                 android:textStyle="bold" />
 
                             <ImageView
@@ -129,7 +129,7 @@
                             android:maxLines="1"
                             android:text="08:00 - 09:40"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="9.5sp" />
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -172,7 +172,7 @@
                                 android:maxLines="1"
                                 android:text="大学英语"
                                 android:textColor="@color/widget_couple_text_primary"
-                                android:textSize="12sp"
+                                android:textSize="13sp"
                                 android:textStyle="bold" />
 
                             <ImageView
@@ -205,7 +205,7 @@
                             android:maxLines="1"
                             android:text="10:10 - 11:50"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="9.5sp" />
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -248,7 +248,7 @@
                                 android:maxLines="1"
                                 android:text="程序设计"
                                 android:textColor="@color/widget_couple_text_primary"
-                                android:textSize="12sp"
+                                android:textSize="13sp"
                                 android:textStyle="bold" />
 
                             <ImageView
@@ -281,7 +281,7 @@
                             android:maxLines="1"
                             android:text="13:30 - 15:10"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="9.5sp" />
+                            android:textSize="11sp" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -297,7 +297,7 @@
                 android:paddingRight="2dp"
                 android:text="🍵 今天没有课程"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="13sp"
+                android:textSize="13.5sp"
                 android:visibility="gone" />
         </FrameLayout>
 
@@ -311,7 +311,7 @@
             android:maxLines="1"
             android:text="还有 2 节"
             android:textColor="@color/widget_couple_text_secondary"
-            android:textSize="10sp"
+            android:textSize="8.5sp"
             android:visibility="gone" />
     </LinearLayout>
 </FrameLayout>

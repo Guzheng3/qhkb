@@ -38,7 +38,7 @@
                 android:maxLines="1"
                 android:text="今日课程列表"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="10sp" />
+                android:textSize="8.5sp" />
 
             <TextView
                 android:id="@+id/widget_large_week"
@@ -48,7 +48,7 @@
                 android:maxLines="1"
                 android:text="第6周"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="10sp" />
+                android:textSize="8.5sp" />
         </LinearLayout>
 
         <!-- 列表区：吃掉页脚之上的全部高度；空态文案在整块列表区居中。 -->
@@ -100,7 +100,7 @@
                             android:maxLines="1"
                             android:text="高等数学"
                             android:textColor="@color/widget_couple_text_primary"
-                            android:textSize="13.5sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -119,7 +119,7 @@
                             android:maxLines="1"
                             android:text="27°"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -140,7 +140,7 @@
                             android:maxLines="1"
                             android:text="一教C104"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_1_time"
@@ -152,7 +152,7 @@
                             android:maxLines="1"
                             android:text="08:00 - 09:35"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -218,7 +218,7 @@
                             android:maxLines="1"
                             android:text="大学英语"
                             android:textColor="@color/widget_couple_text_primary"
-                            android:textSize="13.5sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -237,7 +237,7 @@
                             android:maxLines="1"
                             android:text="27°"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -258,7 +258,7 @@
                             android:maxLines="1"
                             android:text="一教C104"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_2_time"
@@ -270,7 +270,7 @@
                             android:maxLines="1"
                             android:text="10:10 - 11:45"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -336,7 +336,7 @@
                             android:maxLines="1"
                             android:text="程序设计基础"
                             android:textColor="@color/widget_couple_text_primary"
-                            android:textSize="13.5sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -355,7 +355,7 @@
                             android:maxLines="1"
                             android:text="23°"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -376,7 +376,7 @@
                             android:maxLines="1"
                             android:text="二教B203"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_3_time"
@@ -388,7 +388,7 @@
                             android:maxLines="1"
                             android:text="13:30 - 15:05"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -454,7 +454,7 @@
                             android:maxLines="1"
                             android:text="思想道德与法治"
                             android:textColor="@color/widget_couple_text_primary"
-                            android:textSize="13.5sp"
+                            android:textSize="13sp"
                             android:textStyle="bold" />
 
                         <ImageView
@@ -473,7 +473,7 @@
                             android:maxLines="1"
                             android:text="21°"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp"
+                            android:textSize="9.5sp"
                             android:textStyle="bold"
                             android:visibility="gone" />
                     </LinearLayout>
@@ -494,7 +494,7 @@
                             android:maxLines="1"
                             android:text="三教A101"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_4_time"
@@ -506,7 +506,7 @@
                             android:maxLines="1"
                             android:text="15:20 - 16:55"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="12sp" />
+                            android:textSize="11sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -530,7 +530,7 @@
                 android:maxLines="2"
                 android:text="🍵 今天没有课程"
                 android:textColor="@color/widget_couple_text_hint"
-                android:textSize="14sp"
+                android:textSize="13.5sp"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -545,6 +545,6 @@
             android:paddingTop="5dp"
             android:text="今日课程 还剩0/0节"
             android:textColor="@color/widget_couple_text_secondary"
-            android:textSize="10sp" />
+            android:textSize="8.5sp" />
     </LinearLayout>
 </FrameLayout>

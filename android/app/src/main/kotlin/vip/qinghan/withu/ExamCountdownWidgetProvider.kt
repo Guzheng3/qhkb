@@ -55,7 +55,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
             R.id.exam_chip,
             TodayWidgetSupport.statusChipTextColor("upcoming", "solid", context),
         )
-        TodayWidgetSupport.setTextSizeSp(views, R.id.exam_chip, 10f)
+        TodayWidgetSupport.setTextSizeSp(views, R.id.exam_chip, 8f)
 
         if (snapshot == null || snapshot.nextExamName.isNullOrBlank()) {
             renderEmptyState(context, views, profile, secondaryColor)
@@ -88,7 +88,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         TodayWidgetSupport.setTextSizeSp(
             views,
             R.id.exam_empty,
-            if (profile.isShort) 13f else 15f,
+            if (profile.isShort) 11f else 13.5f,
         )
     }
 
@@ -123,9 +123,9 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
             views,
             R.id.exam_days,
             when {
-                !numericDays -> if (profile.isShort) 20f else 26f
-                daysUntil >= 100 -> 32f
-                else -> 40f
+                !numericDays -> if (profile.isShort) 17f else 22f
+                daysUntil >= 100 -> 27f
+                else -> 34f
             },
         )
         views.setTextColor(R.id.exam_days, primaryColor)
@@ -141,7 +141,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
             TodayWidgetSupport.setTextSizeSp(
                 views,
                 R.id.exam_day_unit,
-                if (profile.isShort) 10f else 12f,
+                if (profile.isShort) 8.5f else 10f,
             )
         }
 
@@ -154,7 +154,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         TodayWidgetSupport.setTextSizeSp(
             views,
             R.id.exam_name,
-            if (profile.isShort) 12f else 14f,
+            if (profile.isShort) 10f else 12f,
         )
 
         // 倒计时显示「06-25 周四」，今天/进行中改用考试时间，与设计稿一致。
@@ -170,7 +170,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         TodayWidgetSupport.setTextSizeSp(
             views,
             R.id.exam_date,
-            if (profile.isShort) 10f else 11f,
+            if (profile.isShort) 8.5f else 9.5f,
         )
 
         views.setTextViewText(R.id.exam_location, location.orEmpty())
@@ -182,7 +182,7 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         TodayWidgetSupport.setTextSizeSp(
             views,
             R.id.exam_location,
-            if (profile.isShort) 10f else 11f,
+            if (profile.isShort) 8.5f else 9.5f,
         )
 
         bindOtherExams(context, views, snapshot, profile, primaryColor, secondaryColor)
@@ -260,14 +260,14 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         TodayWidgetSupport.setTextSizeSp(
             views,
             nameId,
-            if (profile.isShort) 11f else 12f,
+            if (profile.isShort) 9.5f else 10f,
         )
         views.setTextViewText(
             daysId,
             "${entry.daysUntil} ${context.getString(R.string.widget_exam_unit_day)}",
         )
         views.setTextColor(daysId, secondaryColor)
-        TodayWidgetSupport.setTextSizeSp(views, daysId, 10f)
+        TodayWidgetSupport.setTextSizeSp(views, daysId, 8.5f)
     }
 
     private fun cleanNullable(raw: String?): String? {
