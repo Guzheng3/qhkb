@@ -301,17 +301,9 @@ class TodayLargeWidgetProvider : BaseQinghanWidgetProvider() {
             .coerceIn(0f, 1f)
     }
 
-    /** 课名最多 7 个 Unicode 码点；超出按演示稿直接截断。 */
+    /** 列表卡课名不数字数：显示全名，行内放不下时由 TextView 尾部省略。 */
     private fun displayCourseName(course: TodayWidgetCourseInfo): String {
-        val text = course.shortName?.takeIf { it.isNotBlank() } ?: course.name
-        if (text.isEmpty()) {
-            return text
-        }
-        return if (text.codePointCount(0, text.length) <= 7) {
-            text
-        } else {
-            text.substring(0, text.offsetByCodePoints(0, 7))
-        }
+        return course.shortName?.takeIf { it.isNotBlank() } ?: course.name
     }
 
     private fun parseCourseColor(value: String?, fallback: Int): Int {

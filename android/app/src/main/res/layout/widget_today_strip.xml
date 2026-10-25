@@ -146,7 +146,7 @@
                         android:maxLines="1"
                         android:text="一教C104"
                         android:textColor="@color/widget_couple_text_secondary"
-                        android:textSize="11sp" />
+                        android:textSize="10sp" />
 
                     <TextView
                         android:id="@+id/widget_strip_time"
@@ -158,7 +158,7 @@
                         android:maxLines="1"
                         android:text="08:00 - 09:40"
                         android:textColor="@color/widget_couple_text_secondary"
-                        android:textSize="11sp" />
+                        android:textSize="10sp" />
                 </RelativeLayout>
 
                 <!-- 进行中：连续填充（今日快照没有课间数据，不画断口）。 -->

@@ -1225,12 +1225,19 @@ object TodayWidgetSupport {
         }
     }
 
+    /**
+     * JSON null 经 optString 会变成字符串 "null"，课名/简称/地点一律先判空，
+     * 否则没填简称的课程会把「null」当成简称显示到卡片上。
+     */
+    private fun JSONObject.optText(key: String): String =
+        if (isNull(key)) "" else optString(key)
+
     private fun parseCourse(json: JSONObject): TodayWidgetCourseInfo {
         return TodayWidgetCourseInfo(
             id = json.optString("id"),
-            name = json.optString("name"),
-            shortName = json.optString("shortName").takeIf { it.isNotBlank() },
-            location = json.optString("location"),
+            name = json.optText("name"),
+            shortName = json.optText("shortName").takeIf { it.isNotBlank() },
+            location = json.optText("location"),
             startTime = json.optString("startTime"),
             endTime = json.optString("endTime"),
             color = json.optString("color").takeIf { it.isNotBlank() },
@@ -1348,9 +1355,9 @@ object TodayWidgetSupport {
                 add(
                     WidgetSourceCourse(
                         id = item.optString("id"),
-                        name = item.optString("name"),
-                        shortName = item.optString("shortName").takeIf { it.isNotBlank() },
-                        location = item.optString("location"),
+                        name = item.optText("name"),
+                        shortName = item.optText("shortName").takeIf { it.isNotBlank() },
+                        location = item.optText("location"),
                         startTime = item.optString("startTime"),
                         endTime = item.optString("endTime"),
                         dayOfWeek = item.optInt("dayOfWeek", 1),

@@ -140,7 +140,7 @@
                             android:maxLines="1"
                             android:text="一教C104"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_1_time"
@@ -152,7 +152,7 @@
                             android:maxLines="1"
                             android:text="08:00 - 09:35"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -258,7 +258,7 @@
                             android:maxLines="1"
                             android:text="一教C104"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_2_time"
@@ -270,7 +270,7 @@
                             android:maxLines="1"
                             android:text="10:10 - 11:45"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -376,7 +376,7 @@
                             android:maxLines="1"
                             android:text="二教B203"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_3_time"
@@ -388,7 +388,7 @@
                             android:maxLines="1"
                             android:text="13:30 - 15:05"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </RelativeLayout>
 
                     <ImageView
@@ -494,7 +494,7 @@
                             android:maxLines="1"
                             android:text="三教A101"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
 
                         <TextView
                             android:id="@+id/widget_large_row_4_time"
@@ -506,7 +506,7 @@
                             android:maxLines="1"
                             android:text="15:20 - 16:55"
                             android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="11sp" />
+                            android:textSize="10sp" />
                     </RelativeLayout>
 
                     <ImageView
