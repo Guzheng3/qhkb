@@ -78,7 +78,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/widget_couple_text_secondary"
-                android:textSize="11sp" />
+                android:textSize="10.5sp" />
 
             <TextView
                 android:id="@+id/widget_couple_course_time"
@@ -89,7 +89,7 @@
                 android:layout_marginLeft="5dp"
                 android:maxLines="1"
                 android:textColor="@color/widget_couple_text_secondary"
-                android:textSize="11sp" />
+                android:textSize="10.5sp" />
         </RelativeLayout>
 
         <ImageView
