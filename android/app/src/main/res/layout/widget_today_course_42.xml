@@ -62,9 +62,8 @@
         <LinearLayout
             android:id="@+id/widget_strip_row"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="60dp"
             android:layout_marginTop="2dp"
-            android:layout_weight="1"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
@@ -184,7 +183,7 @@
         <LinearLayout
             android:id="@+id/widget_course42_row1"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
@@ -226,7 +225,7 @@
         <LinearLayout
             android:id="@+id/widget_course42_row2"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="40dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
