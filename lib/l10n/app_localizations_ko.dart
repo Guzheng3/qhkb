@@ -4364,34 +4364,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get widgetBackgroundStyleGradient => '그라데이션 카드';
 
   @override
-  String get homeWidgetTargetCompact22 => '메인 카드 2×2';
-
-  @override
   String get homeWidgetTargetMiniList22 => '미니 목록 2×2';
 
   @override
-  String get homeWidgetTargetMedium24 => '개요 2×4';
-
-  @override
-  String get homeWidgetTargetLarge44 => '목록 4×4';
-
-  @override
-  String get homeWidgetTargetStats22 => '통계 2×2';
-
-  @override
-  String get homeWidgetTargetStats24 => '통계 개요 2×4';
+  String get homeWidgetTargetLarge44 => '목록 4×3';
 
   @override
   String get homeWidgetTargetTodayStrip41 => '오늘 바 4×1';
 
   @override
-  String get homeWidgetTargetStatsStrip41 => '통계 바 4×1';
-
-  @override
   String get homeWidgetTargetExamCard22 => '시험 카운트다운 2×2';
-
-  @override
-  String get homeWidgetTargetTodayWide42 => '오늘 와이드 4×2';
 
   @override
   String get homeWidgetTargetCoupleTimetable42 => '커플 시간표 4×3';

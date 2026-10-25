@@ -4336,34 +4336,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get widgetBackgroundStyleGradient => 'グラデーションカード';
 
   @override
-  String get homeWidgetTargetCompact22 => 'メインカード2×2';
-
-  @override
   String get homeWidgetTargetMiniList22 => 'ミニリスト2×2';
 
   @override
-  String get homeWidgetTargetMedium24 => '概要2×4';
-
-  @override
-  String get homeWidgetTargetLarge44 => 'リスト4×4';
-
-  @override
-  String get homeWidgetTargetStats22 => '統計 2×2';
-
-  @override
-  String get homeWidgetTargetStats24 => '統計概要 2×4';
+  String get homeWidgetTargetLarge44 => 'リスト4×3';
 
   @override
   String get homeWidgetTargetTodayStrip41 => '今日バー 4×1';
 
   @override
-  String get homeWidgetTargetStatsStrip41 => '統計バー 4×1';
-
-  @override
   String get homeWidgetTargetExamCard22 => '試験カウントダウン 2×2';
-
-  @override
-  String get homeWidgetTargetTodayWide42 => '今日ワイド 4×2';
 
   @override
   String get homeWidgetTargetCoupleTimetable42 => 'カップル時間割 4×3';

@@ -4517,34 +4517,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get widgetBackgroundStyleGradient => 'Gradient card';
 
   @override
-  String get homeWidgetTargetCompact22 => 'Main card 2×2';
-
-  @override
   String get homeWidgetTargetMiniList22 => 'Mini list 2×2';
 
   @override
-  String get homeWidgetTargetMedium24 => 'Overview 2×4';
-
-  @override
-  String get homeWidgetTargetLarge44 => 'List 4×4';
-
-  @override
-  String get homeWidgetTargetStats22 => 'Stats 2×2';
-
-  @override
-  String get homeWidgetTargetStats24 => 'Stats overview 2×4';
+  String get homeWidgetTargetLarge44 => 'List 4×3';
 
   @override
   String get homeWidgetTargetTodayStrip41 => 'Today bar 4×1';
 
   @override
-  String get homeWidgetTargetStatsStrip41 => 'Stats bar 4×1';
-
-  @override
   String get homeWidgetTargetExamCard22 => 'Exam countdown 2×2';
-
-  @override
-  String get homeWidgetTargetTodayWide42 => 'Today wide 4×2';
 
   @override
   String get homeWidgetTargetCoupleTimetable42 => 'Couple timetable 4×3';

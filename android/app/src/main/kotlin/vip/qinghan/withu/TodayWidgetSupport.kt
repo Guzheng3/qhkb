@@ -213,12 +213,9 @@ object TodayWidgetSupport {
      * 绑定档案全局共享且只有这些卡片会写，对账孤儿绑定必须用它们的 id 全集。
      */
     private val BINDING_PROVIDER_CLASSES: List<Class<*>> = listOf(
-        TodayCompactWidgetProvider::class.java,
         TodayMiniListWidgetProvider::class.java,
-        TodayMediumWidgetProvider::class.java,
         TodayLargeWidgetProvider::class.java,
         TodayStripWidgetProvider::class.java,
-        TodayWideWidgetProvider::class.java,
     )
 
     /** 桌面上仍然存在的、支持绑定的卡片 id 全集（用于对账孤儿绑定档案）。 */
@@ -232,13 +229,10 @@ object TodayWidgetSupport {
     }
 
     /**
-     * 全部卡片 Provider（7 个今日系列 + 3 个统计 + 考试倒计时 + 情侣课表 4×3 / 4×2），
+     * 全部卡片 Provider（迷你列表 2×2 + 列表 4×3 + 横条 4×1 + 考试倒计时 + 情侣课表 4×3 / 4×2），
      * 用于判断桌面上是否还有任意卡片实例——零卡片时停掉所有后台刷新调度。
      */
     private val ALL_WIDGET_PROVIDER_CLASSES: List<Class<*>> = BINDING_PROVIDER_CLASSES + listOf(
-        StatsCompactWidgetProvider::class.java,
-        StatsMediumWidgetProvider::class.java,
-        StatsStripWidgetProvider::class.java,
         ExamCountdownWidgetProvider::class.java,
         CoupleTimetableWidgetProvider::class.java,
         CoupleTimetableWideWidgetProvider::class.java,
@@ -253,13 +247,10 @@ object TodayWidgetSupport {
     }
 
     fun updateAll(context: Context) {
-        TodayCompactWidgetProvider.updateAll(context)
         TodayMiniListWidgetProvider.updateAll(context)
-        TodayMediumWidgetProvider.updateAll(context)
         TodayLargeWidgetProvider.updateAll(context)
         TodayStripWidgetProvider.updateAll(context)
         ExamCountdownWidgetProvider.updateAll(context)
-        TodayWideWidgetProvider.updateAll(context)
         CoupleTimetableWidgetProvider.updateAll(context)
         CoupleTimetableWideWidgetProvider.updateAll(context)
     }
@@ -1248,7 +1239,7 @@ object TodayWidgetSupport {
 
     /**
      * 读取活动档案的原始 JSON 字符串（仍处于 JSONArray 包裹结构内，未解析）。
-     * 供 StatsWidgetSupport 做同轮刷新缓存——key 用原始字符串，解析与否由调用方决定。
+     * 供考试卡片列表读取同一份档案，解析与否由调用方决定。
      */
     fun readActiveProfileRawJson(context: Context): String? {
         val flutterPrefs = context.getSharedPreferences(FLUTTER_PREFS_NAME, Context.MODE_PRIVATE)

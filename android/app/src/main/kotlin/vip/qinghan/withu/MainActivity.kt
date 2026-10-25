@@ -682,19 +682,6 @@ class MainActivity : FlutterActivity() {
                         HomeWidgetStorage.clearSnapshot(applicationContext)
                         result.success(true)
                     }
-                    "syncStatsSnapshot" -> {
-                        val data = call.arguments as? Map<String, Any?>
-                        if (data != null) {
-                            StatsWidgetSupport.syncSnapshot(applicationContext, data)
-                            result.success(true)
-                        } else {
-                            result.error("INVALID_ARGUMENTS", "Missing stats widget snapshot", null)
-                        }
-                    }
-                    "clearStatsSnapshot" -> {
-                        StatsWidgetSupport.clearSnapshot(applicationContext)
-                        result.success(true)
-                    }
                     "syncCoupleSnapshot" -> {
                         val snapshot = call.arguments as? Map<String, Any?>
                         if (snapshot != null) {
@@ -1236,12 +1223,9 @@ class MainActivity : FlutterActivity() {
 
     /** 今日课程类卡型的 widgetType → Provider 映射（与 resolveWidgetProvider 对齐）。 */
     private fun todayWidgetProviders(): List<Pair<String, Class<*>>> = listOf(
-        "compact" to TodayCompactWidgetProvider::class.java,
         "mini_list" to TodayMiniListWidgetProvider::class.java,
-        "medium" to TodayMediumWidgetProvider::class.java,
         "large" to TodayLargeWidgetProvider::class.java,
         "today_strip" to TodayStripWidgetProvider::class.java,
-        "today_wide" to TodayWideWidgetProvider::class.java,
     )
 
     private fun listTodayWidgetInstances(): List<Map<String, Any?>> {
@@ -1325,16 +1309,10 @@ class MainActivity : FlutterActivity() {
 
     private fun resolveWidgetProvider(widgetType: String): ComponentName? {
         val providerClass = when (widgetType) {
-            "compact" -> TodayCompactWidgetProvider::class.java
             "mini_list" -> TodayMiniListWidgetProvider::class.java
-            "medium" -> TodayMediumWidgetProvider::class.java
             "large" -> TodayLargeWidgetProvider::class.java
-            "stats_compact" -> StatsCompactWidgetProvider::class.java
-            "stats_medium" -> StatsMediumWidgetProvider::class.java
             "today_strip" -> TodayStripWidgetProvider::class.java
-            "stats_strip" -> StatsStripWidgetProvider::class.java
             "exam_card" -> ExamCountdownWidgetProvider::class.java
-            "today_wide" -> TodayWideWidgetProvider::class.java
             "couple_timetable_42" -> CoupleTimetableWidgetProvider::class.java
             "couple_timetable_wide" -> CoupleTimetableWideWidgetProvider::class.java
             else -> null

@@ -55,19 +55,19 @@ void main() {
       handlerRegistry['listTodayWidgetInstances'] = (_) => [
         {
           'appWidgetId': 11,
-          'widgetType': 'compact',
+          'widgetType': 'mini_list',
           'boundProfileId': 'profile-a',
         },
-        {'appWidgetId': 12, 'widgetType': 'today_wide', 'boundProfileId': null},
+        {'appWidgetId': 12, 'widgetType': 'large', 'boundProfileId': null},
       ];
       const service = HomeWidgetBindingService();
       final instances = await service.listTodayWidgetInstances();
 
       expect(instances, hasLength(2));
       expect(instances[0].appWidgetId, 11);
-      expect(instances[0].widgetType, HomeWidgetType.compact);
+      expect(instances[0].widgetType, HomeWidgetType.miniList);
       expect(instances[0].boundProfileId, 'profile-a');
-      expect(instances[1].widgetType, HomeWidgetType.todayWide);
+      expect(instances[1].widgetType, HomeWidgetType.large);
       expect(instances[1].boundProfileId, isNull);
     });
 

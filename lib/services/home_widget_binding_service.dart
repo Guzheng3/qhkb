@@ -10,12 +10,9 @@ import 'home_widget_snapshot_service.dart';
 
 /// 今日课程类卡片的类型标识（与原生 resolveWidgetProvider/todayWidgetProviders 对齐）。
 enum HomeWidgetType {
-  compact('compact'),
   miniList('mini_list'),
-  medium('medium'),
   large('large'),
-  todayStrip('today_strip'),
-  todayWide('today_wide');
+  todayStrip('today_strip');
 
   const HomeWidgetType(this.value);
 

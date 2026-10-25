@@ -33,7 +33,6 @@ class WidgetRefreshWorker(
         }
         return try {
             TodayWidgetSupport.updateAll(applicationContext)
-            StatsWidgetSupport.updateAll(applicationContext)
             HomeWidgetStorage.rescheduleRefresh(applicationContext)
             Result.success()
         } catch (e: Exception) {

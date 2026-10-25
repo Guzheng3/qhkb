@@ -1131,12 +1131,10 @@ Future<void> _liveSyncHomeWidgetSnapshot(
   TimetableProvider host, {
   _LiveSurfaceScope? scope,
 }) async {
-  // 统计小组件与今日小组件共用这一入口：冷启动、回前台、课表变更都会走到，
-  // 否则用户不进统计页时桌面统计组件永远读不到快照。
+  // 今日小组件入口：冷启动、回前台、课表变更都会走到。
   // 今日/统计小组件与超级岛同域（「我的课表」）：绑定指定课表的卡片另有
   // [_liveSyncBoundWidgetSnapshots] 单独处理，不受这里影响。
   final activeScope = scope ?? _liveSurfaceScope(host);
-  await _liveSyncStatsWidgetSnapshot(host, scope: activeScope);
   await _liveSyncCoupleWidgetSnapshot(host);
   if (activeScope == null) {
     if (host._lastHomeWidgetSnapshotSignature != null) {
@@ -1378,26 +1376,6 @@ List<CoupleTimetableWidgetCourse> _liveBuildCoupleCoursesForDate(
 Future<void> _liveSyncCoupleWidgetSnapshot(TimetableProvider host) async {
   final snapshot = await _liveBuildCoupleWidgetSnapshot(host);
   await CoupleTimetableWidgetService.syncSnapshot(snapshot);
-}
-
-Future<void> _liveSyncStatsWidgetSnapshot(
-  TimetableProvider host, {
-  _LiveSurfaceScope? scope,
-}) async {
-  final activeScope = scope ?? _liveSurfaceScope(host);
-  final snapshot = activeScope == null
-      ? null
-      : StatsWidgetSnapshot.fromCourses(
-          courses: activeScope.courses,
-          currentWeek: activeScope.currentWeek,
-          semesterWeekCount: activeScope.settings.semesterWeekCount,
-          profileName: activeScope.profile.name,
-        );
-  if (snapshot == null) {
-    await StatsWidgetService.clearSnapshot();
-    return;
-  }
-  await StatsWidgetService.syncSnapshot(snapshot);
 }
 
 Future<void> _liveRefreshNow(

@@ -6,16 +6,10 @@ String _homeWidgetTargetLabel(
 ) {
   final l10n = AppLocalizations.of(context)!;
   return switch (target) {
-    HomeWidgetPinTarget.compact22 => l10n.homeWidgetTargetCompact22,
     HomeWidgetPinTarget.miniList22 => l10n.homeWidgetTargetMiniList22,
-    HomeWidgetPinTarget.medium24 => l10n.homeWidgetTargetMedium24,
     HomeWidgetPinTarget.large44 => l10n.homeWidgetTargetLarge44,
-    HomeWidgetPinTarget.stats22 => l10n.homeWidgetTargetStats22,
-    HomeWidgetPinTarget.stats24 => l10n.homeWidgetTargetStats24,
     HomeWidgetPinTarget.todayStrip41 => l10n.homeWidgetTargetTodayStrip41,
-    HomeWidgetPinTarget.statsStrip41 => l10n.homeWidgetTargetStatsStrip41,
     HomeWidgetPinTarget.examCard22 => l10n.homeWidgetTargetExamCard22,
-    HomeWidgetPinTarget.todayWide42 => l10n.homeWidgetTargetTodayWide42,
     HomeWidgetPinTarget.coupleTimetable42 =>
       l10n.homeWidgetTargetCoupleTimetable42,
     HomeWidgetPinTarget.coupleTimetableWide =>
@@ -143,13 +137,13 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
                     children: [
                       Expanded(
                         child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.compact22,
+                          HomeWidgetPinTarget.miniList22,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.miniList22,
+                          HomeWidgetPinTarget.large44,
                         ),
                       ),
                     ],
@@ -177,61 +171,13 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
                     children: [
                       Expanded(
                         child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.medium24,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.large44,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.stats22,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.stats24,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildPinWidgetButton(
                           HomeWidgetPinTarget.todayStrip41,
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.statsStrip41,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildPinWidgetButton(
                           HomeWidgetPinTarget.examCard22,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildPinWidgetButton(
-                          HomeWidgetPinTarget.todayWide42,
                         ),
                       ),
                     ],
@@ -467,13 +413,10 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
 
   HomeWidgetPinTarget _pinTargetForType(HomeWidgetType? type) {
     return switch (type) {
-      HomeWidgetType.compact => HomeWidgetPinTarget.compact22,
       HomeWidgetType.miniList => HomeWidgetPinTarget.miniList22,
-      HomeWidgetType.medium => HomeWidgetPinTarget.medium24,
       HomeWidgetType.large => HomeWidgetPinTarget.large44,
       HomeWidgetType.todayStrip => HomeWidgetPinTarget.todayStrip41,
-      HomeWidgetType.todayWide => HomeWidgetPinTarget.todayWide42,
-      null => HomeWidgetPinTarget.compact22,
+      null => HomeWidgetPinTarget.miniList22,
     };
   }
 

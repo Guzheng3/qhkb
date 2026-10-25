@@ -15,16 +15,10 @@
     <string name="widget_couple_mode_off">Couple mode is off, so the couple card is unavailable</string>
     <string name="widget_couple_not_logged_in">Please log in to use</string>
     <string name="widget_couple_not_bound">Partner timetable not uploaded</string>
-    <string name="widget_today_compact_name">Today main card 2×2</string>
     <string name="widget_today_mini_list_name">Today mini list 2×2</string>
-    <string name="widget_today_medium_name">Today overview 2×4</string>
     <string name="widget_today_large_name">Today course list 4×3</string>
-    <string name="widget_stats_compact_name">Course Stats 2×2</string>
-    <string name="widget_stats_medium_name">Course Stats 2×4</string>
   <string name="widget_today_strip_name">Today bar 4×1</string>
-  <string name="widget_stats_strip_name">Stats bar 4×1</string>
   <string name="widget_exam_card_name">Exam countdown 2×2</string>
-  <string name="widget_today_wide_name">Today wide 4×2</string>
   <string name="widget_exam_card_chip">Exam countdown</string>
   <string name="widget_exam_unit_day">day</string>
   <string name="widget_exam_none">No upcoming exams</string>
@@ -90,19 +84,4 @@
     <string name="widget_no_schedule_today">No classes scheduled today</string>
     <string name="widget_today_ended_short">Today\'s classes have ended</string>
     <string name="widget_today_count">%1$d classes today</string>
-    <string name="widget_stats_week">Week %1$d</string>
-    <string name="widget_stats_week_sections">%1$d sections this week</string>
-    <string name="widget_stats_vs_last_up">+%1$d vs last week</string>
-    <string name="widget_stats_vs_last_down">-%1$d vs last week</string>
-    <string name="widget_stats_vs_last_flat">Same as last week</string>
-    <string name="widget_stats_progress">%1$d of %2$d sections</string>
-    <string name="widget_stats_progress_short">%1$d/%2$d sections</string>
-    <string name="widget_stats_percent">%1$d%% done</string>
-    <string name="widget_stats_daily">~%1$s/day</string>
-    <string name="widget_stats_delta_short_up">+%1$d</string>
-    <string name="widget_stats_delta_short_down">-%1$d</string>
-    <string name="widget_stats_delta_short_flat">Same</string>
-    <string name="widget_stats_nature">Required %1$d · Elective %2$d</string>
-    <string name="widget_stats_streak">Longest streak %1$d days</string>
-    <string name="widget_stats_no_data">No course data</string>
 </resources>

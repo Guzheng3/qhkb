@@ -7807,41 +7807,17 @@ abstract class AppLocalizations {
   /// **'渐变卡片'**
   String get widgetBackgroundStyleGradient;
 
-  /// No description provided for @homeWidgetTargetCompact22.
-  ///
-  /// In zh, this message translates to:
-  /// **'主卡 2×2'**
-  String get homeWidgetTargetCompact22;
-
   /// No description provided for @homeWidgetTargetMiniList22.
   ///
   /// In zh, this message translates to:
   /// **'迷你列表 2×2'**
   String get homeWidgetTargetMiniList22;
 
-  /// No description provided for @homeWidgetTargetMedium24.
-  ///
-  /// In zh, this message translates to:
-  /// **'概览 2×4'**
-  String get homeWidgetTargetMedium24;
-
   /// No description provided for @homeWidgetTargetLarge44.
   ///
   /// In zh, this message translates to:
-  /// **'列表 4×4'**
+  /// **'列表 4×3'**
   String get homeWidgetTargetLarge44;
-
-  /// No description provided for @homeWidgetTargetStats22.
-  ///
-  /// In zh, this message translates to:
-  /// **'统计 2×2'**
-  String get homeWidgetTargetStats22;
-
-  /// No description provided for @homeWidgetTargetStats24.
-  ///
-  /// In zh, this message translates to:
-  /// **'统计概览 2×4'**
-  String get homeWidgetTargetStats24;
 
   /// No description provided for @homeWidgetTargetTodayStrip41.
   ///
@@ -7849,23 +7825,11 @@ abstract class AppLocalizations {
   /// **'今日横条 4×1'**
   String get homeWidgetTargetTodayStrip41;
 
-  /// No description provided for @homeWidgetTargetStatsStrip41.
-  ///
-  /// In zh, this message translates to:
-  /// **'统计横条 4×1'**
-  String get homeWidgetTargetStatsStrip41;
-
   /// No description provided for @homeWidgetTargetExamCard22.
   ///
   /// In zh, this message translates to:
   /// **'考试倒计时 2×2'**
   String get homeWidgetTargetExamCard22;
-
-  /// No description provided for @homeWidgetTargetTodayWide42.
-  ///
-  /// In zh, this message translates to:
-  /// **'今日横宽 4×2'**
-  String get homeWidgetTargetTodayWide42;
 
   /// No description provided for @homeWidgetTargetCoupleTimetable42.
   ///

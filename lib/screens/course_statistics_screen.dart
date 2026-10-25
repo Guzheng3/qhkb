@@ -7,7 +7,6 @@ import '../models/statistics_models.dart';
 import '../providers/timetable_provider.dart';
 import '../services/statistics_service.dart';
 import '../services/statistics_share_service.dart';
-import '../services/stats_widget_service.dart';
 import 'statistics_settings_screen.dart';
 import '../widgets/statistics/achievement_badge.dart';
 import '../widgets/statistics/data_story_card.dart';
@@ -100,17 +99,6 @@ class _CourseStatisticsScreenState extends State<CourseStatisticsScreen> {
         );
 
         final hasData = courses.isNotEmpty;
-
-        // 同步桌面统计小组件快照（与课表变更时的推送共用同一计算口径；幂等、失败静默）
-        final statsWidgetSnapshot = StatsWidgetSnapshot.fromCourses(
-          courses: courses,
-          currentWeek: currentWeek,
-          semesterWeekCount: semesterWeekCount,
-          profileName: provider.activeProfile?.name ?? '',
-        );
-        if (statsWidgetSnapshot != null) {
-          StatsWidgetService.syncSnapshot(statsWidgetSnapshot);
-        }
 
         return HyperosSubpage(
           onBack: () => Navigator.pop(context),

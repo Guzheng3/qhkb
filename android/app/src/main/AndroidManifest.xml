@@ -260,18 +260,6 @@
         </receiver>
 
         <receiver
-            android:name=".TodayCompactWidgetProvider"
-            android:label="@string/widget_today_compact_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_today_compact_info" />
-        </receiver>
-
-        <receiver
             android:name=".TodayMiniListWidgetProvider"
             android:label="@string/widget_today_mini_list_name"
             android:exported="true">
@@ -281,18 +269,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_today_mini_list_info" />
-        </receiver>
-
-        <receiver
-            android:name=".TodayMediumWidgetProvider"
-            android:label="@string/widget_today_medium_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_today_medium_info" />
         </receiver>
 
         <receiver
@@ -308,30 +284,6 @@
         </receiver>
 
         <receiver
-            android:name=".StatsCompactWidgetProvider"
-            android:label="@string/widget_stats_compact_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_stats_compact_info" />
-        </receiver>
-
-        <receiver
-            android:name=".StatsMediumWidgetProvider"
-            android:label="@string/widget_stats_medium_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_stats_medium_info" />
-        </receiver>
-
-        <receiver
             android:name=".TodayStripWidgetProvider"
             android:label="@string/widget_today_strip_name"
             android:exported="true">
@@ -344,18 +296,6 @@
         </receiver>
 
         <receiver
-            android:name=".StatsStripWidgetProvider"
-            android:label="@string/widget_stats_strip_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_stats_strip_info" />
-        </receiver>
-
-        <receiver
             android:name=".ExamCountdownWidgetProvider"
             android:label="@string/widget_exam_card_name"
             android:exported="true">
@@ -365,18 +305,6 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_exam_card_info" />
-        </receiver>
-
-        <receiver
-            android:name=".TodayWideWidgetProvider"
-            android:label="@string/widget_today_wide_name"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_today_wide_info" />
         </receiver>
 
         <receiver

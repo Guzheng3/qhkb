@@ -9,16 +9,10 @@ import 'app_log_service.dart';
 import 'home_widget_snapshot_service.dart';
 
 enum HomeWidgetPinTarget {
-  compact22('compact'),
   miniList22('mini_list'),
-  medium24('medium'),
   large44('large'),
-  stats22('stats_compact'),
-  stats24('stats_medium'),
   todayStrip41('today_strip'),
-  statsStrip41('stats_strip'),
   examCard22('exam_card'),
-  todayWide42('today_wide'),
   coupleTimetable42('couple_timetable_42'),
   coupleTimetableWide('couple_timetable_wide');
 

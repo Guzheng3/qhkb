@@ -40,7 +40,6 @@ import '../services/class_reminder_service.dart';
 import '../services/couple_timetable_widget_service.dart';
 import '../services/exam_reminder_service.dart';
 import '../services/partner_timetable_service.dart';
-import '../services/stats_widget_service.dart';
 import '../services/storage_service.dart';
 import '../services/sync_operation_gate.dart';
 import '../services/qhkb_couple_session_store.dart';
