@@ -67,9 +67,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
-            android:paddingTop="4dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="4dp">
+            android:paddingRight="6dp">
 
             <ImageView
                 android:id="@+id/widget_strip_bar"
@@ -187,9 +185,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
-            android:paddingTop="4dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="4dp">
+            android:paddingRight="6dp">
 
             <ImageView
                 android:id="@+id/widget_course42_bar1"
@@ -231,9 +227,7 @@
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="4dp"
-            android:paddingTop="4dp"
-            android:paddingRight="6dp"
-            android:paddingBottom="4dp">
+            android:paddingRight="6dp">
 
             <ImageView
                 android:id="@+id/widget_course42_bar2"
