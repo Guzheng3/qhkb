@@ -32,6 +32,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
                 root = R.id.widget_mini_row_1,
                 bar = R.id.widget_mini_row_1_bar,
                 name = R.id.widget_mini_row_1_name,
+                location = R.id.widget_mini_row_1_location,
                 time = R.id.widget_mini_row_1_time,
                 weatherIcon = R.id.widget_mini_row_1_weather_icon,
                 weatherText = R.id.widget_mini_row_1_weather_text,
@@ -40,6 +41,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
                 root = R.id.widget_mini_row_2,
                 bar = R.id.widget_mini_row_2_bar,
                 name = R.id.widget_mini_row_2_name,
+                location = R.id.widget_mini_row_2_location,
                 time = R.id.widget_mini_row_2_time,
                 weatherIcon = R.id.widget_mini_row_2_weather_icon,
                 weatherText = R.id.widget_mini_row_2_weather_text,
@@ -48,6 +50,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
                 root = R.id.widget_mini_row_3,
                 bar = R.id.widget_mini_row_3_bar,
                 name = R.id.widget_mini_row_3_name,
+                location = R.id.widget_mini_row_3_location,
                 time = R.id.widget_mini_row_3_time,
                 weatherIcon = R.id.widget_mini_row_3_weather_icon,
                 weatherText = R.id.widget_mini_row_3_weather_text,
@@ -65,6 +68,13 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
         appWidgetId: Int,
     ) {
         val views = RemoteViews(context.packageName, R.layout.widget_today_mini_list)
+        val profile = TodayWidgetSupport.sizeProfile(appWidgetManager, appWidgetId)
+        TodayWidgetSupport.applySquareLetterbox(
+            views,
+            R.id.widget_mini_root,
+            profile,
+            context.resources.displayMetrics.density,
+        )
         val snapshot = TodayWidgetSupport.readSnapshotForWidget(context, appWidgetId)
         val primaryColor = ContextCompat.getColor(context, R.color.widget_couple_text_primary)
         val secondaryColor = ContextCompat.getColor(context, R.color.widget_couple_text_secondary)
@@ -100,6 +110,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
                     secondaryColor = secondaryColor,
                     fallbackBarColor = fallbackBarColor,
                     weather = null,
+                    showLocation = true,
                 )
             }
         } else {
@@ -169,6 +180,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
                     secondaryColor = secondaryColor,
                     fallbackBarColor = fallbackBarColor,
                     weather = weather,
+                    showLocation = snapshot.showLocation,
                 )
             }
         }
@@ -189,6 +201,7 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
         secondaryColor: Int,
         fallbackBarColor: Int,
         weather: CoupleWidgetWeather?,
+        showLocation: Boolean,
     ) {
         if (course == null) {
             views.setViewVisibility(ids.root, View.GONE)
@@ -200,6 +213,16 @@ class TodayMiniListWidgetProvider : BaseQinghanWidgetProvider() {
         views.setTextViewText(ids.name, miniCourseName(course))
         views.setTextColor(ids.time, secondaryColor)
         views.setTextViewText(ids.time, "${course.startTime} - ${course.endTime}")
+
+        val location = course.location.takeIf { showLocation && it.isNotBlank() }
+        if (location == null) {
+            views.setTextViewText(ids.location, "")
+            views.setViewVisibility(ids.location, View.GONE)
+        } else {
+            views.setTextColor(ids.location, secondaryColor)
+            views.setTextViewText(ids.location, location)
+            views.setViewVisibility(ids.location, View.VISIBLE)
+        }
 
         if (weather != null) {
             views.setImageViewBitmap(
@@ -245,6 +268,7 @@ private data class MiniRowIds(
     val root: Int,
     val bar: Int,
     val name: Int,
+    val location: Int,
     val time: Int,
     val weatherIcon: Int,
     val weatherText: Int,

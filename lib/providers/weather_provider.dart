@@ -7,6 +7,7 @@ import '../logging/app_debug_log.dart';
 import '../services/app_log_service.dart';
 import '../models/weather_forecast.dart';
 import '../services/device_location_service.dart';
+import '../services/qhkb_couple_auth_service.dart';
 import '../services/weather_preferences.dart';
 import '../services/weather_service.dart';
 
@@ -34,8 +35,10 @@ class WeatherProvider extends ChangeNotifier {
     WeatherService? service,
     DeviceLocationService? locationService,
     DateTime Function()? clock,
+    QhkbCoupleAuthService? authService,
   }) {
-    final resolvedService = service ?? WeatherService();
+    final resolvedService =
+        service ?? WeatherService(authService: authService);
     return WeatherProvider._(
       resolvedService,
       service == null,
@@ -55,8 +58,8 @@ class WeatherProvider extends ChangeNotifier {
     this._locationService,
   );
 
-  /// 预报的保鲜期。Open-Meteo 逐小时更新，3 小时内取值变化用户无感；单城市 +
-  /// 3 小时 → 一天最多 8 次请求，离免费额度 10000 次/天极远。
+  /// 预报的保鲜期。逐小时预报 3 小时内取值变化用户无感；单城市 +
+  /// 3 小时 → 一天最多 8 次请求，对自有服务端是完全可以承受的量。
   static const Duration forecastTtl = Duration(hours: 3);
 
   /// 失败后的退避。日视图一屏有 5~8 张卡，每张都会请求一次「过期就刷」；
@@ -81,6 +84,9 @@ class WeatherProvider extends ChangeNotifier {
   bool _lastLocateWasEstimated = false;
   Future<DeviceLocationFailure?>? _locateInFlight;
 
+  /// 上一次已知的 withU 登录态；null 表示还没收到过通知。
+  bool? _lastSessionConnected;
+
   bool get enabled => _enabled;
 
   WeatherLocation? get location => _location;
@@ -88,14 +94,11 @@ class WeatherProvider extends ChangeNotifier {
   /// 当前内存里的预报（可能来自缓存、可能已过期）；没有则为 null。
   WeatherForecast? get forecast => _forecast;
 
-  /// 所选城市的**实况**天气（高德）；未配置 Key / 未取到时为 null。
+  /// 所选城市的**实况**天气（服务端）；未取到时为 null。
   /// 不落盘：实况每次刷新时重取，缓存它没有意义。
   CurrentWeather? get currentWeather => _currentWeather;
 
   WeatherStatus get status => _status;
-
-  /// 高德 Key 是否已配置。未配置时城市搜索 / 定位 / 实况不可用，预报仍可用。
-  bool get isConfigured => _service.isConfigured;
 
   /// 「这一格该有天气、但数据还没到手」——三个显示面据此**预留一行的空位**。
   ///
@@ -177,6 +180,23 @@ class WeatherProvider extends ChangeNotifier {
   Future<void> retry() {
     _nextRetryNotBefore = null;
     return ensureFresh(force: true);
+  }
+
+  /// 登录态变化时由 `main.dart` 的 ProxyProvider 调用。
+  ///
+  /// 未连接时 `_refresh` 不会发请求（见那里的说明）；连接后主动补拉一次，
+  /// 否则首页已经挂载的课卡要等下一次重建才显示天气。只处理 false → true
+  /// 的跃迁，会话刷新/头像更新带来的重复通知不会触发请求。
+  void onSessionChanged(bool connected) {
+    final previous = _lastSessionConnected;
+    _lastSessionConnected = connected;
+    if (previous == connected || !connected) {
+      return;
+    }
+    _nextRetryNotBefore = null;
+    // Provider 的 update 回调可能发生在 build 期间：推迟到本轮同步代码结束后
+    // 再发请求，避免 _refresh 里的 notifyListeners 在 build 中触发监听者重建。
+    scheduleMicrotask(() => unawaited(ensureFresh()));
   }
 
   /// 开关。打开时才补拉数据（关着的时候一次请求都不该发）。
@@ -318,6 +338,15 @@ class WeatherProvider extends ChangeNotifier {
     }
     _status = WeatherStatus.loading;
     notifyListeners();
+    // 未连接 withU 时不发请求：天气依赖 withU 会话，401/403 不是「服务坏了」。
+    // 用 failed 但不进退避——用户登录后下一次 ensureFresh 应能立刻重试；有缓存
+    // 时 summaryForCourse 照常返回旧数据。
+    if (!await _service.hasSession()) {
+      _status = WeatherStatus.failed;
+      _nextRetryNotBefore = null;
+      notifyListeners();
+      return;
+    }
 
     // 实况与预报并行取：预报告诉我们「未来怎么说」，实况是「此刻怎么样」。
     // 实况失败不影响预报（两个来源互不依赖）。

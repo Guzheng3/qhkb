@@ -9072,10 +9072,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherRetryAction => '重试';
 
   @override
-  String get weatherCoverageNote => '预报只覆盖未来 16 天，更远的日期不显示天气。';
+  String get weatherCoverageNote => '超出预报窗口的日期不显示天气。';
 
   @override
-  String get weatherAttribution => '实况天气来自高德；预报数据来自 Open-Meteo.com';
+  String get weatherAttribution => '天气数据由清涵课表服务端提供';
 
   @override
   String get weatherSectionDisplayTitle => '显示';
@@ -9154,8 +9154,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get weatherSectionCurrent => '当前天气';
 
   @override
-  String get weatherAmapNotConfigured =>
-      '未配置高德 API Key：既搜不了城市，也用不了定位，因此不会显示天气。';
+  String get weatherWithuRequired => '连接 withU 后才能查看天气。';
 
   @override
   String weatherCurrentHumidity(int humidity) {
@@ -18254,10 +18253,10 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get weatherRetryAction => '重試';
 
   @override
-  String get weatherCoverageNote => '預報只涵蓋未來 16 天，更遠的日期不顯示天氣。';
+  String get weatherCoverageNote => '超出預報窗口的日期不顯示天氣。';
 
   @override
-  String get weatherAttribution => '實況天氣來自高德；預報資料來自 Open-Meteo.com';
+  String get weatherAttribution => '天氣資料由清涵課表服務端提供';
 
   @override
   String get weatherSectionDisplayTitle => '顯示';
@@ -18336,8 +18335,7 @@ class AppLocalizationsZhHk extends AppLocalizationsZh {
   String get weatherSectionCurrent => '當前天氣';
 
   @override
-  String get weatherAmapNotConfigured =>
-      '未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。';
+  String get weatherWithuRequired => '連接 withU 後才能查看天氣。';
 
   @override
   String weatherCurrentHumidity(int humidity) {
@@ -27436,10 +27434,10 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get weatherRetryAction => '重試';
 
   @override
-  String get weatherCoverageNote => '預報只涵蓋未來 16 天，更遠的日期不顯示天氣。';
+  String get weatherCoverageNote => '超出預報窗口的日期不顯示天氣。';
 
   @override
-  String get weatherAttribution => '實況天氣來自高德；預報資料來自 Open-Meteo.com';
+  String get weatherAttribution => '天氣資料由清涵課表服務端提供';
 
   @override
   String get weatherSectionDisplayTitle => '顯示';
@@ -27518,8 +27516,7 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get weatherSectionCurrent => '目前天氣';
 
   @override
-  String get weatherAmapNotConfigured =>
-      '未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。';
+  String get weatherWithuRequired => '連接 withU 後才能查看天氣。';
 
   @override
   String weatherCurrentHumidity(int humidity) {

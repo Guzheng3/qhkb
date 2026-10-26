@@ -60,10 +60,10 @@
                 <LinearLayout
                     android:id="@+id/widget_mini_row_1"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="36dp"
                     android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="4dp">
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp">
 
                     <ImageView
                         android:id="@+id/widget_mini_row_1_bar"
@@ -120,26 +120,46 @@
                                 android:visibility="gone" />
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/widget_mini_row_1_time"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="08:00 - 09:40"
-                            android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp" />
+                            android:layout_marginTop="1dp">
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_1_location"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/widget_mini_row_1_time"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="高博学楼327"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_1_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:maxLines="1"
+                                android:text="08:00 - 09:40"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/widget_mini_row_2"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="36dp"
                     android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="4dp">
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp">
 
                     <ImageView
                         android:id="@+id/widget_mini_row_2_bar"
@@ -196,26 +216,46 @@
                                 android:visibility="gone" />
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/widget_mini_row_2_time"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="10:10 - 11:50"
-                            android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp" />
+                            android:layout_marginTop="1dp">
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_2_location"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/widget_mini_row_2_time"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="一教C104"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_2_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:maxLines="1"
+                                android:text="10:10 - 11:50"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/widget_mini_row_3"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
+                    android:layout_height="36dp"
                     android:orientation="horizontal"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="4dp">
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp">
 
                     <ImageView
                         android:id="@+id/widget_mini_row_3_bar"
@@ -272,16 +312,36 @@
                                 android:visibility="gone" />
                         </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/widget_mini_row_3_time"
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="1dp"
-                            android:ellipsize="end"
-                            android:maxLines="1"
-                            android:text="13:30 - 15:10"
-                            android:textColor="@color/widget_couple_text_secondary"
-                            android:textSize="10sp" />
+                            android:layout_marginTop="1dp">
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_3_location"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentLeft="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toLeftOf="@+id/widget_mini_row_3_time"
+                                android:ellipsize="end"
+                                android:maxLines="1"
+                                android:text="二教B203"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+
+                            <TextView
+                                android:id="@+id/widget_mini_row_3_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentRight="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginLeft="5dp"
+                                android:maxLines="1"
+                                android:text="13:30 - 15:10"
+                                android:textColor="@color/widget_couple_text_secondary"
+                                android:textSize="10sp" />
+                        </RelativeLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -305,7 +365,7 @@
             android:id="@+id/widget_mini_more"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"

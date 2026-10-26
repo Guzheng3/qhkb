@@ -1,6 +1,6 @@
 import '../models/weather_forecast.dart';
 
-/// 天气现象分类（由 WMO 码 / 高德现象文本归并而来）。
+/// 天气现象分类（由 WMO 码 / 服务端返回的现象文本归并而来）。
 ///
 /// 粒度取「图标能区分 + 用户需要知道差别」为准：小雨/中雨/大雨分开（要不要带伞
 /// 的决策强度不同），毛毛雨与阵雨单列（阵雨是"下一阵就停"）。
@@ -84,17 +84,17 @@ WeatherCategory weatherCategoryFromWmo(int code) => switch (code) {
   _ => WeatherCategory.clear,
 };
 
-/// 高德实况的天气现象文本 → 分类。
+/// 服务端实况的天气现象文本 → 分类。
 ///
-/// 高德只返回中文文本（见官方天气结果对照表），不返回数值码，所以实况要显示成
-/// 本地化文案必须先归并到同一个 [WeatherCategory]，再走 `WeatherCategoryLocalizer`。
-/// 覆盖官方对照表里的常见取值；带区间的写法（如「小雨-中雨」）取较轻的一端。
-/// 未知文本（含未来新增）兜底到 [WeatherCategory.clear]，与 WMO 未知码同策略。
+/// 服务端当前返回中文文本，不返回数值码，所以实况要显示成本地化文案必须先归并到
+/// 同一个 [WeatherCategory]，再走 `WeatherCategoryLocalizer`。覆盖常见取值；
+/// 带区间的写法（如「小雨-中雨」）取较轻的一端。未知文本（含未来新增）兜底到
+/// [WeatherCategory.clear]，与 WMO 未知码同策略。
 ///
-/// 下面这张对照表匹配的是**高德返回的中文数据**，不是界面文案：它既没法也没必要
+/// 下面这张对照表匹配的是**服务端返回的中文数据**，不是界面文案：它既没法也没必要
 /// 做 l10n，因此按仓库约定记入 `tool/cjk_hardcode_baseline.txt` 的棘轮基线
 /// （与 `spreadsheet_import_service` 的表头匹配、`statistics_models` 的取值同属一类）。
-WeatherCategory weatherCategoryFromAmapText(String text) {
+WeatherCategory weatherCategoryFromText(String text) {
   final value = text.trim();
   return switch (value) {
     '晴' || '无' || '平静' => WeatherCategory.clear,

@@ -394,55 +394,48 @@ void main() {
     });
   });
 
-  group('CurrentWeather（高德实况）', () {
+  group('CurrentWeather（服务端实况）', () {
     test('解析实况字段', () {
-      final weather = CurrentWeather.fromAmapLive({
-        'province': '浙江',
-        'city': '杭州市',
-        'adcode': '330100',
+      final weather = CurrentWeather.fromServerJson({
         'weather': '晴',
         'temperature': '23',
-        'winddirection': '东南',
-        'windpower': '≤3',
         'humidity': '58',
         'reporttime': '2026-09-18 08:00:00',
       });
       expect(weather.text, '晴');
       expect(weather.temperatureC, 23);
       expect(weather.humidity, 58);
-      expect(weather.windDirection, '东南');
-      expect(weather.windPower, '≤3');
       expect(weather.reportTime, '2026-09-18 08:00:00');
     });
 
     test('缺现象或温度时抛 FormatException', () {
       expect(
-        () => CurrentWeather.fromAmapLive(const {'temperature': '23'}),
+        () => CurrentWeather.fromServerJson(const {'temperature': '23'}),
         throwsFormatException,
       );
       expect(
-        () => CurrentWeather.fromAmapLive(const {'weather': '晴'}),
+        () => CurrentWeather.fromServerJson(const {'weather': '晴'}),
         throwsFormatException,
       );
       expect(
-        () => CurrentWeather.fromAmapLive(const {'weather': '   ', 'temperature': '23'}),
+        () => CurrentWeather.fromServerJson(
+          const {'weather': '   ', 'temperature': '23'},
+        ),
         throwsFormatException,
       );
     });
 
-    test('可选的湿度 / 风 / 发布时间缺失时为 null', () {
-      final weather = CurrentWeather.fromAmapLive(const {
+    test('可选的湿度 / 发布时间缺失时为 null', () {
+      final weather = CurrentWeather.fromServerJson(const {
         'weather': '多云',
         'temperature': '18',
       });
       expect(weather.humidity, isNull);
-      expect(weather.windDirection, isNull);
-      expect(weather.windPower, isNull);
       expect(weather.reportTime, isNull);
     });
 
     test('温度是数值而非字符串时也能解析', () {
-      final weather = CurrentWeather.fromAmapLive(const {
+      final weather = CurrentWeather.fromServerJson(const {
         'weather': '晴',
         'temperature': 21,
         'humidity': 40,

@@ -394,9 +394,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: timetableProvider),
         ChangeNotifierProvider(create: (_) => QhkbCoupleSessionProvider()),
         // 天气独立于课表领域：挂在 Navigator 之上，设置页与日/周视图共享同一实例，
-        // 否则改了城市卡片不刷新。
-        ChangeNotifierProvider(
-          create: (_) => WeatherProvider()..initialize(),
+        // 否则改了城市卡片不刷新。天气请求复用 withU 登录态，因此借用同一个
+        // authService（Cookie / 401 / 403 处理与课表接口一致）。
+        ChangeNotifierProxyProvider<QhkbCoupleSessionProvider, WeatherProvider>(
+          create: (context) => WeatherProvider(
+            authService: context.read<QhkbCoupleSessionProvider>().authService,
+          )..initialize(),
+          update: (_, session, weather) {
+            weather?.onSessionChanged(session.isLoggedIn);
+            return weather!;
+          },
         ),
       ],
       child:

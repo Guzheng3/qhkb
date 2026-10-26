@@ -9585,11 +9585,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get weatherCoverageNote =>
-      'Forecasts only cover the next 16 days; weather is hidden beyond that.';
+      'Weather is hidden for dates outside the forecast window.';
 
   @override
   String get weatherAttribution =>
-      'Current weather from Amap; forecast from Open-Meteo.com';
+      'Weather data is provided by the Qinghan timetable server';
 
   @override
   String get weatherSectionDisplayTitle => 'Display';
@@ -9675,8 +9675,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get weatherSectionCurrent => 'Current conditions';
 
   @override
-  String get weatherAmapNotConfigured =>
-      'Amap API key not configured. You cannot search for a city or use your location, so no weather will be shown.';
+  String get weatherWithuRequired => 'Connect to withU to see weather.';
 
   @override
   String weatherCurrentHumidity(int humidity) {

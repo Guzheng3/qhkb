@@ -5574,8 +5574,8 @@
   "weatherStatusLoading": "날씨 업데이트 중",
   "weatherStatusFailed": "지난 업데이트 실패",
   "weatherRetryAction": "다시 시도",
-  "weatherCoverageNote": "예보는 앞으로 16일까지만 제공되며, 그 이후 날짜에는 날씨를 표시하지 않습니다.",
-  "weatherAttribution": "현재 날씨는 아마프(Amap), 예보는 Open-Meteo.com 제공",
+  "weatherCoverageNote": "예보 범위를 벗어난 날짜에는 날씨를 표시하지 않습니다.",
+  "weatherAttribution": "날씨 데이터는 칭한 시간표 서버에서 제공됩니다",
   "weatherSectionDisplayTitle": "표시",
   "weatherShowOnDayCardTitle": "일간 보기 카드",
   "weatherShowOnWeekCardTitle": "주간 보기 카드",
@@ -5601,6 +5601,6 @@
   "weatherLocationAddressUnavailable": "위치는 확인했지만 지명을 찾지 못했습니다. 도시를 검색해 주세요",
   "weatherLocationEstimated": "네트워크 위치로 추정했습니다. 정확하지 않을 수 있습니다",
   "weatherSectionCurrent": "현재 날씨",
-  "weatherAmapNotConfigured": "아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색도 위치 사용도 불가능해 날씨가 표시되지 않습니다.",
+  "weatherWithuRequired": "날씨를 보려면 withU에 연결해 주세요.",
   "weatherCurrentHumidity": "습도 {humidity}%"
 }

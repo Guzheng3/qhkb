@@ -39,6 +39,12 @@ class ExamCountdownWidgetProvider : BaseQinghanWidgetProvider() {
         val views = RemoteViews(context.packageName, R.layout.widget_exam_card)
         val snapshot = TodayWidgetSupport.readSnapshot(context)
         val profile = TodayWidgetSupport.sizeProfile(appWidgetManager, appWidgetId)
+        TodayWidgetSupport.applySquareLetterbox(
+            views,
+            R.id.widget_root,
+            profile,
+            context.resources.displayMetrics.density,
+        )
         // 设计稿固定白卡（夜间走 drawable-night 深底），文字与芯片统一按 solid 配色，
         // 避免用户选择 gradient/glass 后白底配白字。
         val primaryColor = TodayWidgetSupport.primaryTextColor("solid", context)

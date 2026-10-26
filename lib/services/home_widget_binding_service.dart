@@ -12,7 +12,8 @@ import 'home_widget_snapshot_service.dart';
 enum HomeWidgetType {
   miniList('mini_list'),
   large('large'),
-  todayStrip('today_strip');
+  todayStrip('today_strip'),
+  todayCourse42('today_course_42');
 
   const HomeWidgetType(this.value);
 

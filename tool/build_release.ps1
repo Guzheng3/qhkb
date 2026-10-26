@@ -7,20 +7,18 @@
 #   pwsh -NoProfile -File tool/build_release.ps1 -DryRun
 #   pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties"
 #   pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties" -Tag v5.2.0
-#   pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties" -AmapKey <32位十六进制Key>
 #
 # 说明文档：docs/BUILD_AND_SIGN.md
 #
 # 签名材料可以来自三处，优先级：-KeyPropertiesPath > android/key.properties > 环境变量。
 # 指定 -KeyPropertiesPath 时，文件里的相对 storeFile 相对该 key.properties 所在目录解析。
 #
-# 高德 Key（天气的城市搜索 / 实况用）可选：取值优先级 -AmapKey > 环境变量 AMAP_KEY，
-# 都没有时不注入，构建照常进行。注入方式为追加 --dart-define=AMAP_KEY=<key>。
+# 天气数据由 withU 服务端获取，客户端不再需要任何第三方天气 Key，因此本脚本
+# 不再注入 AMAP_KEY 之类的构建期常量。
 
 param(
     [string]$KeyPropertiesPath = "",
     [string]$Tag = "",
-    [string]$AmapKey = "",
     [switch]$DryRun
 )
 
@@ -237,44 +235,9 @@ foreach ($w in $warnings) {
 Write-Host ""
 
 # ---------------------------------------------------------------------------
-# 2.5 解析高德 Key（可选：天气的城市搜索 / 实况用）
-# ---------------------------------------------------------------------------
-# 取值优先级：-AmapKey 参数 > 环境变量 AMAP_KEY；都没有时不注入，行为与以往完全一致。
-# Key 是构建期写入二进制的常量，会随 APK 分发出去、可被反编译提取，因此只当普通配置，
-# 不要视为真正的秘密。本脚本全程不回显 Key 明文，也不把它写进任何文件。
-$amapKeyResolved = ""
-$amapKeySource = ""
-if ($AmapKey) {
-    $amapKeyResolved = $AmapKey.Trim()
-    $amapKeySource = "-AmapKey 参数"
-} elseif ($env:AMAP_KEY) {
-    $amapKeyResolved = $env:AMAP_KEY.Trim()
-    $amapKeySource = "环境变量 AMAP_KEY"
-}
-
-$amapKeyInjected = $false
-Write-Host "高德 Key：" -ForegroundColor Green
-if ($amapKeyResolved) {
-    # 只接受 32 位十六进制。不合格时在构建前报错退出；报错信息只给长度，不含 Key 明文。
-    if ($amapKeyResolved -notmatch "^[0-9a-fA-F]{32}$") {
-        Fail ("高德 Key 格式不对（应为 32 位十六进制，当前长度 {0}）：来源 {1}" -f $amapKeyResolved.Length, $amapKeySource)
-    }
-    $amapKeyInjected = $true
-    Write-Host ("  状态：已注入（32 位，值已隐藏；来源 {0}）" -f $amapKeySource)
-} else {
-    Write-Host "  状态：未提供（不追加 --dart-define=AMAP_KEY，天气功能运行时优雅降级）"
-}
-Write-Host ""
-
-# ---------------------------------------------------------------------------
 # 3. DryRun：打印到此处即结束
 # ---------------------------------------------------------------------------
 if ($DryRun) {
-    if ($amapKeyInjected) {
-        Write-Host "DryRun：将注入高德 Key（32 位，值已隐藏）"
-    } else {
-        Write-Host "DryRun：未提供高德 Key，不会追加 --dart-define=AMAP_KEY"
-    }
     if ($Tag) {
         Write-Host ("DryRun：编译通过后将创建本地附注标签 {0}（不推送）" -f $Tag)
     } else {
@@ -308,15 +271,7 @@ $buildArgs = @(
     "build", "apk", "--release", "--flavor", "prod", "--target-platform", "android-arm64"
 )
 
-# 有 Key 时追加 --dart-define=AMAP_KEY=<key>。打印用同一份参数的副本但把值替换为 ***，
-# 保证命令行回显里不出现 Key 明文。
 $buildArgsDisplay = $buildArgs -join " "
-if ($amapKeyInjected) {
-    $buildArgs += "--dart-define=AMAP_KEY=$amapKeyResolved"
-    $buildArgsDisplay = "$buildArgsDisplay --dart-define=AMAP_KEY=***"
-    Write-Host "已注入高德 Key（32 位，值已隐藏）" -ForegroundColor Green
-}
-
 Write-Host ("开始构建：flutter {0}" -f $buildArgsDisplay) -ForegroundColor Cyan
 & flutter @buildArgs
 if ($LASTEXITCODE -ne 0) {

@@ -9367,11 +9367,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weatherRetryAction => '다시 시도';
 
   @override
-  String get weatherCoverageNote =>
-      '예보는 앞으로 16일까지만 제공되며, 그 이후 날짜에는 날씨를 표시하지 않습니다.';
+  String get weatherCoverageNote => '예보 범위를 벗어난 날짜에는 날씨를 표시하지 않습니다.';
 
   @override
-  String get weatherAttribution => '현재 날씨는 아마프(Amap), 예보는 Open-Meteo.com 제공';
+  String get weatherAttribution => '날씨 데이터는 칭한 시간표 서버에서 제공됩니다';
 
   @override
   String get weatherSectionDisplayTitle => '표시';
@@ -9452,8 +9451,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get weatherSectionCurrent => '현재 날씨';
 
   @override
-  String get weatherAmapNotConfigured =>
-      '아마프(Amap) API 키가 설정되지 않았습니다. 도시 검색도 위치 사용도 불가능해 날씨가 표시되지 않습니다.';
+  String get weatherWithuRequired => '날씨를 보려면 withU에 연결해 주세요.';
 
   @override
   String weatherCurrentHumidity(int humidity) {

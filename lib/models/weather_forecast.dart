@@ -5,9 +5,8 @@ import 'dart:convert';
 /// 只保留「选城市」需要的字段：显示名、行政区、国家、经纬度、时区、行政区编码。
 /// [admin1] 是区分同名地点的依据之一。
 ///
-/// 数据来源：手动搜索（高德输入提示，带 [district] 与 [adcode]）与定位反查
-/// （高德逆地理，带 [district] 与 [adcode]）。[adcode] 供实况天气（高德按 adcode
-/// 查询）使用；预报走 Open-Meteo，只用经纬度。
+/// 数据来源：服务端的地点搜索与定位反查（带 [district] 与 [adcode]）。
+/// [adcode] 供实况天气按行政区查询使用；预报只用经纬度。
 class WeatherLocation {
   const WeatherLocation({
     required this.name,
@@ -35,10 +34,10 @@ class WeatherLocation {
 
   /// IANA 时区名，如 `Asia/Shanghai`；缺失时按设备时区处理。
   ///
-  /// 高德不返回时区，一律为 null，预报接口用 `timezone=auto` 按坐标自行解析。
+  /// 服务端未返回时区时为 null，由服务端按坐标自行解析。
   final String? timezone;
 
-  /// 高德行政区划编码（六位），实况天气（按 adcode 查询）需要它。
+  /// 行政区划编码（六位），实况天气按它查询时需要。
   final String? adcode;
 
   /// 经纬度差小于该值即视为同一地点（换城市判定用）。
@@ -150,7 +149,7 @@ class WeatherLocation {
 
 /// 预报序列里的一个逐小时点。
 ///
-/// 字段语义（Open-Meteo 口径，聚合算法依赖它，勿改）：
+/// 字段语义（聚合算法依赖它，服务端契约须沿用这套口径，勿改）：
 /// - [time] 为 `T` 时，[temperatureC] 与 [weatherCode] 是 **T 时刻的瞬时值**；
 /// - [precipitationMm]、[snowfallCm]、[precipitationProbability] 是
 ///   **`(T-1h, T]` 区间的累计量 / 概率**。
@@ -273,23 +272,26 @@ class WeatherForecast {
     );
   }
 
-  /// 解析 Open-Meteo `/v1/forecast` 的原始响应。
+  /// 解析服务端 `mode=hourly` 的 `data`。
   ///
-  /// 厂商把 6 个平行数组放在 `hourly` 子对象里，且不返回 `fetchedAt`（由调用方
-  /// 在请求成功那一刻传入）。放在模型里而不是服务里，是为了让「列式数组怎么读」
-  /// 只有一份实现——服务只管发请求与取字段。
-  factory WeatherForecast.fromOpenMeteoResponse(
+  /// 结构与旧 Open-Meteo 响应同构（`latitude` / `longitude` / `hourly` 列式
+  /// 数组），这样聚合与缓存逻辑不用改。经纬度优先用 [requestLatitude] /
+  /// [requestLongitude]：服务端可能回填格点或城市中心坐标，而
+  /// [matchesLocation] 要拿它和用户所选城市比较，用请求坐标才不会误判换城。
+  factory WeatherForecast.fromHourlyResponse(
     Map<String, dynamic> json, {
     required DateTime fetchedAt,
+    double? requestLatitude,
+    double? requestLongitude,
   }) {
     final hourly = json['hourly'];
     if (hourly is! Map) {
       throw const FormatException('weather forecast: missing hourly block');
     }
-    // 经纬度用响应里回填的格点中心，而不是请求坐标——后续判断「缓存是不是这个
-    // 城市的」时才不会因为格点偏移误判为换城。
-    final latitude = (json['latitude'] as num?)?.toDouble();
-    final longitude = (json['longitude'] as num?)?.toDouble();
+    final latitude =
+        requestLatitude ?? (json['latitude'] as num?)?.toDouble();
+    final longitude =
+        requestLongitude ?? (json['longitude'] as num?)?.toDouble();
     if (latitude == null || longitude == null) {
       throw const FormatException('weather forecast: missing coordinates');
     }
@@ -395,12 +397,12 @@ class WeatherForecast {
   }
 }
 
-/// 一个地点的**实况**天气（高德 `weatherInfo?extensions=base`）。
+/// 一个地点的**实况**天气。
 ///
-/// 与 [WeatherForecast] 分开：实况只描述「此刻」，没有逐小时序列，来源也不同
-/// （高德按 adcode 查）。高德返回的天气现象是**中文文本**（如「晴」「多云」），
-/// 文案随语言变化的部分交给 domain 的 `weatherCategoryFromAmapText` 映射后再本地化，
-/// 这里只原样保留 [text]。
+/// 与 [WeatherForecast] 分开：实况只描述「此刻」，没有逐小时序列。服务端当前
+/// 返回的天气现象是**中文文本**（如「晴」「多云」），文案随语言变化的部分交给
+/// domain 的 `weatherCategoryFromText` 映射后再本地化，这里只原样保留 [text]。
+/// 若服务端契约改为返回数值码，在这里补解析分支，不要改动展示层。
 class CurrentWeather {
   const CurrentWeather({
     required this.text,
@@ -409,9 +411,10 @@ class CurrentWeather {
     this.windDirection,
     this.windPower,
     this.reportTime,
+    this.wmoCode,
   });
 
-  /// 高德返回的天气现象原文（中文），如「晴」「小雨」。
+  /// 服务端返回的天气现象原文（中文），如「晴」「小雨」。
   final String text;
 
   /// 实时气温（摄氏度，四舍五入到整数）。
@@ -426,16 +429,27 @@ class CurrentWeather {
   /// 风力级别；缺报为 null。
   final String? windPower;
 
-  /// 数据发布时间（高德原文）；缺报为 null。
+  /// 数据发布时间；缺报为 null。
   final String? reportTime;
 
-  /// 解析高德 `lives[0]`。缺现象或温度时抛 [FormatException]。
-  factory CurrentWeather.fromAmapLive(Map<String, dynamic> json) {
-    final text = json['weather'];
+  /// 服务端由和风图标码映射出的 WMO 码；缺报为 null。
+  ///
+  /// 有它时优先用它归类（比中文文本稳定），没有时才回落到 [text]。
+  final int? wmoCode;
+
+  /// 解析服务端 `mode=now` 的 `data`。
+  ///
+  /// 字段口径同时兼容两套命名：`weather` / `temperature` / `humidity` /
+  /// `winddirection` / `windpower` / `reporttime`（Amap lives[0] 兼容字段）与
+  /// `desc` / `temp` / `windDir` / `windScale` / `obsTime`（withU 网页沿用字段）。
+  /// `wmo_code` 有则带上，供展示层优先按数值码归类。缺现象或温度时抛
+  /// [FormatException]。
+  factory CurrentWeather.fromServerJson(Map<String, dynamic> json) {
+    final text = json['weather'] ?? json['desc'];
     if (text is! String || text.trim().isEmpty) {
       throw const FormatException('current weather: missing weather text');
     }
-    final temperature = json['temperature'];
+    final temperature = json['temperature'] ?? json['temp'];
     final parsed = temperature is String
         ? int.tryParse(temperature.trim())
         : (temperature is num ? temperature.round() : null);
@@ -446,21 +460,25 @@ class CurrentWeather {
     final humidity = humidityRaw is String
         ? int.tryParse(humidityRaw.trim())
         : (humidityRaw is num ? humidityRaw.round() : null);
-    String? text1(Object? v) {
-      if (v is! String) {
+    final wmoRaw = json['wmo_code'];
+    final wmoCode = wmoRaw is num ? wmoRaw.round() : int.tryParse('$wmoRaw');
+
+    String? textOf(Object? value) {
+      if (value is! String) {
         return null;
       }
-      final t = v.trim();
-      return t.isEmpty ? null : t;
+      final trimmed = value.trim();
+      return trimmed.isEmpty ? null : trimmed;
     }
 
     return CurrentWeather(
       text: text.trim(),
       temperatureC: parsed,
       humidity: humidity,
-      windDirection: text1(json['winddirection']),
-      windPower: text1(json['windpower']),
-      reportTime: text1(json['reporttime']),
+      windDirection: textOf(json['winddirection'] ?? json['windDir']),
+      windPower: textOf(json['windpower'] ?? json['windScale']),
+      reportTime: textOf(json['reporttime'] ?? json['obsTime']),
+      wmoCode: wmoCode,
     );
   }
 }

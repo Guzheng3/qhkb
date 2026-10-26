@@ -1,6 +1,7 @@
 package vip.qinghan.withu
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.view.View
 import android.widget.RemoteViews
@@ -25,6 +26,7 @@ class TodayCourse42WidgetProvider : TodayStripWidgetProvider() {
 
     companion object {
         private const val MAX_NAME_CODE_POINTS = 7
+        private const val DAY_MILLIS = 86_400_000L
 
         fun updateAll(context: Context) {
             TodayCourse42WidgetProvider().updateAll(context)
@@ -41,11 +43,37 @@ class TodayCourse42WidgetProvider : TodayStripWidgetProvider() {
         val primaryColor = ContextCompat.getColor(context, R.color.widget_couple_text_primary)
         val secondaryColor = ContextCompat.getColor(context, R.color.widget_couple_text_secondary)
         val fallbackAccent = ContextCompat.getColor(context, R.color.widget_couple_male_accent)
+        val showLocation = snapshot?.showLocation ?: true
+        val weatherLookup = CoupleWidgetWeatherSource.lookup(context)
+        val weatherDateMillis = if (snapshot != null &&
+            TodayWidgetSupport.isShowingTomorrowCourses(snapshot, nowMillis)
+        ) {
+            nowMillis + DAY_MILLIS
+        } else {
+            nowMillis
+        }
+        val weatherBitmaps = HashMap<String, Bitmap>()
 
         val rowIds = intArrayOf(R.id.widget_course42_row1, R.id.widget_course42_row2)
+        val dividerIds = intArrayOf(
+            R.id.widget_course42_divider,
+            R.id.widget_course42_divider2,
+        )
         val barIds = intArrayOf(R.id.widget_course42_bar1, R.id.widget_course42_bar2)
         val nameIds = intArrayOf(R.id.widget_course42_name1, R.id.widget_course42_name2)
+        val locationIds = intArrayOf(
+            R.id.widget_course42_location1,
+            R.id.widget_course42_location2,
+        )
         val timeIds = intArrayOf(R.id.widget_course42_time1, R.id.widget_course42_time2)
+        val weatherIconIds = intArrayOf(
+            R.id.widget_course42_weather_icon1,
+            R.id.widget_course42_weather_icon2,
+        )
+        val weatherTempIds = intArrayOf(
+            R.id.widget_course42_weather_temp1,
+            R.id.widget_course42_weather_temp2,
+        )
 
         rowIds.indices.forEach { index ->
             val course = rows.getOrNull(index)
@@ -60,6 +88,48 @@ class TodayCourse42WidgetProvider : TodayStripWidgetProvider() {
             views.setTextColor(timeIds[index], secondaryColor)
             views.setInt(barIds[index], "setColorFilter", parseColor(course.color, fallbackAccent))
             views.setViewVisibility(barIds[index], View.VISIBLE)
+
+            val location = course.location.takeIf { showLocation && it.isNotBlank() }
+            if (location == null) {
+                views.setTextViewText(locationIds[index], "")
+                views.setViewVisibility(locationIds[index], View.GONE)
+            } else {
+                views.setTextViewText(locationIds[index], location)
+                views.setTextColor(locationIds[index], secondaryColor)
+                views.setViewVisibility(locationIds[index], View.VISIBLE)
+            }
+
+            val weather = weatherLookup?.invoke(
+                weatherDateMillis,
+                course.startTime,
+                course.endTime,
+            )
+            if (weather == null) {
+                views.setViewVisibility(weatherIconIds[index], View.GONE)
+                views.setViewVisibility(weatherTempIds[index], View.GONE)
+            } else {
+                val bitmap = weatherBitmaps.getOrPut(weather.kind) {
+                    CoupleTimetableRenderSupport.createWeatherBitmap(context, weather.kind)
+                }
+                views.setImageViewBitmap(weatherIconIds[index], bitmap)
+                views.setViewVisibility(weatherIconIds[index], View.VISIBLE)
+                val temperature = weather.temperatureC
+                if (temperature == null) {
+                    views.setViewVisibility(weatherTempIds[index], View.GONE)
+                } else {
+                    views.setTextViewText(weatherTempIds[index], "$temperature°")
+                    views.setTextColor(weatherTempIds[index], secondaryColor)
+                    views.setViewVisibility(weatherTempIds[index], View.VISIBLE)
+                }
+            }
+        }
+
+        // 分割线跟随实际行数：没有接下来课程时不留悬空的线。
+        dividerIds.forEachIndexed { index, dividerId ->
+            views.setViewVisibility(
+                dividerId,
+                if (rows.size > index) View.VISIBLE else View.GONE,
+            )
         }
     }
 

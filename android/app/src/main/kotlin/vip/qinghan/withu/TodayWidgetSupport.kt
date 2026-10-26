@@ -686,6 +686,24 @@ object TodayWidgetSupport {
         )
     }
 
+    /**
+     * 2×2 卡片按短边收成正方形并居中。
+     *
+     * 启动器的 2×2 格位不保证等宽高（本机实测 152×185dp），卡片铺满会呈竖长条。
+     * 在根视图补内边距把卡片压成正方形，多出来的空间留给桌面壁纸。
+     */
+    fun applySquareLetterbox(
+        views: RemoteViews,
+        rootId: Int,
+        profile: TodayWidgetSizeProfile,
+        density: Float,
+    ) {
+        val side = minOf(profile.widthDp, profile.heightDp).coerceAtLeast(1)
+        val horizontal = ((profile.widthDp - side) / 2f * density).toInt().coerceAtLeast(0)
+        val vertical = ((profile.heightDp - side) / 2f * density).toInt().coerceAtLeast(0)
+        views.setViewPadding(rootId, horizontal, vertical, horizontal, vertical)
+    }
+
     fun setTextSizeSp(views: RemoteViews, viewId: Int, sizeSp: Float) {
         views.setTextViewTextSize(viewId, TypedValue.COMPLEX_UNIT_SP, sizeSp)
     }

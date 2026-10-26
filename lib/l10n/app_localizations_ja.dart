@@ -9328,10 +9328,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weatherRetryAction => '再試行';
 
   @override
-  String get weatherCoverageNote => '予報は今後 16 日分のみです。それより先の日付では天気を表示しません。';
+  String get weatherCoverageNote => '予報期間外の日付では天気を表示しません。';
 
   @override
-  String get weatherAttribution => '実況は高徳（Amap）、予報は Open-Meteo.com より提供';
+  String get weatherAttribution => '天気データは清涵課表サーバーから提供されます';
 
   @override
   String get weatherSectionDisplayTitle => '表示';
@@ -9412,8 +9412,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get weatherSectionCurrent => '現在の天気';
 
   @override
-  String get weatherAmapNotConfigured =>
-      '高徳（Amap）API キーが未設定です。都市の検索も位置情報の利用もできないため、天気は表示されません。';
+  String get weatherWithuRequired => '天気を見るには withU に接続してください。';
 
   @override
   String weatherCurrentHumidity(int humidity) {

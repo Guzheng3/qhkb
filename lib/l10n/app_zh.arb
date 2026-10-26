@@ -5652,8 +5652,8 @@
   "weatherStatusLoading": "正在更新天气",
   "weatherStatusFailed": "上次更新失败",
   "weatherRetryAction": "重试",
-  "weatherCoverageNote": "预报只覆盖未来 16 天，更远的日期不显示天气。",
-  "weatherAttribution": "实况天气来自高德；预报数据来自 Open-Meteo.com",
+  "weatherCoverageNote": "超出预报窗口的日期不显示天气。",
+  "weatherAttribution": "天气数据由清涵课表服务端提供",
   "weatherSectionDisplayTitle": "显示",
   "weatherShowOnDayCardTitle": "日视图课卡",
   "weatherShowOnWeekCardTitle": "周视图课卡",
@@ -5679,7 +5679,7 @@
   "weatherLocationAddressUnavailable": "已定位，但解析不出地名，请改用手动搜索城市",
   "weatherLocationEstimated": "已按网络位置估算，可能不精确",
   "weatherSectionCurrent": "当前天气",
-  "weatherAmapNotConfigured": "未配置高德 API Key：既搜不了城市，也用不了定位，因此不会显示天气。",
+  "weatherWithuRequired": "连接 withU 后才能查看天气。",
   "weatherCurrentHumidity": "湿度 {humidity}%",
   "@weatherCurrentHumidity": {
     "placeholders": {

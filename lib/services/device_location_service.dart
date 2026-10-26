@@ -26,7 +26,7 @@ enum DeviceLocationFailure {
   /// 没有 `PermissionDeniedForeverException`，别写成 catch。
   permissionDeniedForever,
 
-  /// 实时定位与网络估算都没拿到可用位置。
+  /// 实时定位没拿到可用位置（服务端契约没有按 IP 估算这一种模式）。
   timeout,
 
   /// 其它异常（含插件未在清单里声明权限等）。
@@ -202,9 +202,10 @@ class NativeDeviceLocationSource implements DeviceLocationSource {
 /// 顺序：
 /// ```
 /// 权限/开关 → 实时定位（原生通道：网络优先、12 秒总预算、内部缓存兜底）
-///          → 网络 IP 估算（标注为估算）
 ///          → 才失败
 /// ```
+/// 服务端天气契约没有「按网络出口 IP 估算位置」这一种模式，因此实时定位拿不到
+/// 时不再猜城市（[NetworkGeocode] 目前返回 null），宁可如实报定位失败。
 /// 缓存只在前面的实时定位拿不到时兜底——否则换了城市仍会停在旧定位。缓存策略在
 /// 原生侧一处维护（见 `LocationFix.kt`）。
 ///

@@ -16442,13 +16442,13 @@ abstract class AppLocalizations {
   /// No description provided for @weatherCoverageNote.
   ///
   /// In zh, this message translates to:
-  /// **'预报只覆盖未来 16 天，更远的日期不显示天气。'**
+  /// **'超出预报窗口的日期不显示天气。'**
   String get weatherCoverageNote;
 
   /// No description provided for @weatherAttribution.
   ///
   /// In zh, this message translates to:
-  /// **'实况天气来自高德；预报数据来自 Open-Meteo.com'**
+  /// **'天气数据由清涵课表服务端提供'**
   String get weatherAttribution;
 
   /// No description provided for @weatherSectionDisplayTitle.
@@ -16601,11 +16601,11 @@ abstract class AppLocalizations {
   /// **'当前天气'**
   String get weatherSectionCurrent;
 
-  /// No description provided for @weatherAmapNotConfigured.
+  /// No description provided for @weatherWithuRequired.
   ///
   /// In zh, this message translates to:
-  /// **'未配置高德 API Key：既搜不了城市，也用不了定位，因此不会显示天气。'**
-  String get weatherAmapNotConfigured;
+  /// **'连接 withU 后才能查看天气。'**
+  String get weatherWithuRequired;
 
   /// No description provided for @weatherCurrentHumidity.
   ///

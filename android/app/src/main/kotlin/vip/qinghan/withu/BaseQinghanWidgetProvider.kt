@@ -9,7 +9,7 @@ import android.content.Intent
 /**
  * 全部桌面卡片的公共基类。
  *
- * 10 个 Provider 的 onUpdate / onAppWidgetOptionsChanged / onReceive /
+ * 7 张卡片的 onUpdate / onAppWidgetOptionsChanged / onReceive /
  * onDeleted 逻辑完全同构，只有布局与渲染参数不同——下沉到基类后子类只覆写
  * [renderWidget]，并声明自身类型供按类查询 widget id。
  *

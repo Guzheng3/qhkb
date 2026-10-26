@@ -5595,8 +5595,8 @@
   "weatherStatusLoading": "Updating weather",
   "weatherStatusFailed": "Last update failed",
   "weatherRetryAction": "Retry",
-  "weatherCoverageNote": "Forecasts only cover the next 16 days; weather is hidden beyond that.",
-  "weatherAttribution": "Current weather from Amap; forecast from Open-Meteo.com",
+  "weatherCoverageNote": "Weather is hidden for dates outside the forecast window.",
+  "weatherAttribution": "Weather data is provided by the Qinghan timetable server",
   "weatherSectionDisplayTitle": "Display",
   "weatherShowOnDayCardTitle": "Day view cards",
   "weatherShowOnWeekCardTitle": "Week view cards",
@@ -5622,6 +5622,6 @@
   "weatherLocationAddressUnavailable": "Located, but couldn't resolve a place name. Search for a city instead",
   "weatherLocationEstimated": "Estimated from your network location, so it may be off",
   "weatherSectionCurrent": "Current conditions",
-  "weatherAmapNotConfigured": "Amap API key not configured. You cannot search for a city or use your location, so no weather will be shown.",
+  "weatherWithuRequired": "Connect to withU to see weather.",
   "weatherCurrentHumidity": "Humidity {humidity}%"
 }

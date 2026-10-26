@@ -5574,8 +5574,8 @@
   "weatherStatusLoading": "正在更新天氣",
   "weatherStatusFailed": "上次更新失敗",
   "weatherRetryAction": "重試",
-  "weatherCoverageNote": "預報只涵蓋未來 16 天，更遠的日期不顯示天氣。",
-  "weatherAttribution": "實況天氣來自高德；預報資料來自 Open-Meteo.com",
+  "weatherCoverageNote": "超出預報窗口的日期不顯示天氣。",
+  "weatherAttribution": "天氣資料由清涵課表服務端提供",
   "weatherSectionDisplayTitle": "顯示",
   "weatherShowOnDayCardTitle": "日檢視課卡",
   "weatherShowOnWeekCardTitle": "週檢視課卡",
@@ -5601,6 +5601,6 @@
   "weatherLocationAddressUnavailable": "已定位，但解析不出地名，請改用手動搜尋城市",
   "weatherLocationEstimated": "已按網絡位置估算，可能不精確",
   "weatherSectionCurrent": "當前天氣",
-  "weatherAmapNotConfigured": "未配置高德 API Key：無法搜尋城市，也無法使用定位，因此不會顯示天氣。",
+  "weatherWithuRequired": "連接 withU 後才能查看天氣。",
   "weatherCurrentHumidity": "濕度 {humidity}%"
 }

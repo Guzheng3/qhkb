@@ -6,16 +6,17 @@ import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../l10n/weather_location_failure_localizer.dart';
 import '../models/weather_forecast.dart';
+import '../providers/qhkb_couple_session_provider.dart';
 import '../providers/weather_provider.dart';
 import '../ui/hyperos/hyperos.dart';
 import '../utils/app_toast.dart';
 
 /// 选城市页：搜索 + 结果列表。
 ///
-/// 搜索走高德输入提示，为同名地点会返回不同行政区，所以每一行都必须带行政区
+/// 搜索走服务端地点接口，为同名地点会返回不同行政区，所以每一行都必须带行政区
 /// （[WeatherLocation.regionLabel]），只显示城市名会让用户没法区分。
 ///
-/// 未配置高德 Key 时搜索不可用：页内直接给出「未配置」提示，输入框禁用。
+/// 未连接 withU 时搜索不可用：页内直接给出提示，输入框不渲染。
 class WeatherCityPickerScreen extends StatefulWidget {
   const WeatherCityPickerScreen({super.key});
 
@@ -115,8 +116,9 @@ class _WeatherCityPickerScreenState extends State<WeatherCityPickerScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final provider = context.watch<WeatherProvider?>();
+    final session = context.watch<QhkbCoupleSessionProvider?>();
     final locating = provider?.isLocating ?? false;
-    final configured = provider?.isConfigured ?? false;
+    final connected = session?.isLoggedIn ?? false;
 
     return HyperosSubpage(
       onBack: () => Navigator.pop(context),
@@ -126,10 +128,10 @@ class _WeatherCityPickerScreenState extends State<WeatherCityPickerScreen> {
       child: HyperosListView(
         pageStorageKey: const PageStorageKey<String>('weather-city-picker'),
         children: [
-          // 未配置高德 Key 时，搜索与定位都不可用：给出明确提示，不再渲染输入框。
-          if (!configured) ...[
+          // 未连接 withU 时，搜索与定位都不可用：给出明确提示，不再渲染输入框。
+          if (!connected) ...[
             const HyperosSectionGap(),
-            HyperosSectionDescription(text: l10n.weatherAmapNotConfigured),
+            HyperosSectionDescription(text: l10n.weatherWithuRequired),
           ] else ...[
             // 定位入口排在搜索之前：它是「我不挑，就用我在的地方」那条更短的路。
             const HyperosSectionGap(),

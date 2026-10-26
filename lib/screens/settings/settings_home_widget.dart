@@ -427,6 +427,7 @@ class _HomeWidgetSettingsScreenState extends State<_HomeWidgetSettingsScreen>
       HomeWidgetType.miniList => HomeWidgetPinTarget.miniList22,
       HomeWidgetType.large => HomeWidgetPinTarget.large44,
       HomeWidgetType.todayStrip => HomeWidgetPinTarget.todayStrip41,
+      HomeWidgetType.todayCourse42 => HomeWidgetPinTarget.todayCourse42,
       null => HomeWidgetPinTarget.miniList22,
     };
   }

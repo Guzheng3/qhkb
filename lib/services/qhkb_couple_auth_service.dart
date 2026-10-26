@@ -10,11 +10,23 @@ class QhkbCoupleApiException implements Exception {
   final String code;
   final String? serverMessage;
 
-  const QhkbCoupleApiException(this.code, {this.serverMessage});
+  /// 服务端响应体里的稳定错误码（如天气接口的 `weather_not_configured`）。
+  ///
+  /// 与 [code] 分开：后者是客户端归并后的类别（会话过期 / 网络失败等），
+  /// 前者保留服务端原值，供需要区分具体业务错误的调用方使用。
+  final String? serverError;
+
+  const QhkbCoupleApiException(
+    this.code, {
+    this.serverMessage,
+    this.serverError,
+  });
 
   @override
   String toString() =>
-      'QhkbCoupleApiException: $code${serverMessage == null ? '' : ': $serverMessage'}';
+      'QhkbCoupleApiException: $code'
+      '${serverError == null ? '' : ' ($serverError)'}'
+      '${serverMessage == null ? '' : ': $serverMessage'}';
 }
 
 class QhkbCoupleUser {
@@ -84,6 +96,9 @@ class QhkbCoupleAuthService {
   /// 登录：小请求，但用户在等结果，别急着判失败。
   static const Duration loginTimeout = Duration(seconds: 20);
 
+  /// 天气：只读小请求；天气是装饰性信息，不值得让单飞槽挂 60 秒。
+  static const Duration weatherTimeout = Duration(seconds: 15);
+
   /// 其余请求（bootstrap / 课表拉取与上传 / 历史 / 回滚）：可能携带最多 2MB 的
   /// 课表内容，慢网下需要更宽裕。
   static const Duration defaultTimeout = Duration(seconds: 60);
@@ -97,6 +112,7 @@ class QhkbCoupleAuthService {
     return switch (action) {
       'logout' => logoutTimeout,
       'login' => loginTimeout,
+      'weather' => weatherTimeout,
       _ => defaultTimeout,
     };
   }
@@ -203,11 +219,14 @@ class QhkbCoupleAuthService {
     );
   }
 
-  Future<Map<String, dynamic>> getJson(String action) async {
+  Future<Map<String, dynamic>> getJson(
+    String action, {
+    Map<String, String>? query,
+  }) async {
     final session = await _requireSession();
     final config = await _configStore.load();
     return (await _request(
-      uri: _actionUri(config.apiUri, action),
+      uri: _actionUri(config.apiUri, action, query: query),
       method: 'GET',
       session: session,
     )).payload;
@@ -314,6 +333,7 @@ class QhkbCoupleAuthService {
       throw QhkbCoupleApiException(
         errorCode,
         serverMessage: _messageOf(payload),
+        serverError: _errorOf(payload),
       );
     }
     if (payload == null) {
@@ -323,6 +343,7 @@ class QhkbCoupleAuthService {
       throw QhkbCoupleApiException(
         'qhkb_request_failed',
         serverMessage: _messageOf(payload),
+        serverError: _errorOf(payload),
       );
     }
 
@@ -351,6 +372,15 @@ class QhkbCoupleAuthService {
 
   String? _messageOf(Map<String, dynamic>? payload) =>
       payload?['message'] as String?;
+
+  String? _errorOf(Map<String, dynamic>? payload) {
+    final value = payload?['error'];
+    if (value is! String) {
+      return null;
+    }
+    final trimmed = value.trim();
+    return trimmed.isEmpty ? null : trimmed;
+  }
 
   Future<QhkbCoupleSession> _requireSession() async {
     final session = await loadSession();
@@ -382,9 +412,17 @@ class QhkbCoupleAuthService {
     }
   }
 
-  Uri _actionUri(Uri base, String action) {
+  Uri _actionUri(
+    Uri base,
+    String action, {
+    Map<String, String>? query,
+  }) {
     return base.replace(
-      queryParameters: {...base.queryParameters, 'action': action},
+      queryParameters: {
+        ...base.queryParameters,
+        'action': action,
+        ...?query,
+      },
     );
   }
 

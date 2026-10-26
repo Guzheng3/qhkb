@@ -59,16 +59,18 @@ void main() {
           'boundProfileId': 'profile-a',
         },
         {'appWidgetId': 12, 'widgetType': 'large', 'boundProfileId': null},
+        {'appWidgetId': 13, 'widgetType': 'today_course_42', 'boundProfileId': null},
       ];
       const service = HomeWidgetBindingService();
       final instances = await service.listTodayWidgetInstances();
 
-      expect(instances, hasLength(2));
+      expect(instances, hasLength(3));
       expect(instances[0].appWidgetId, 11);
       expect(instances[0].widgetType, HomeWidgetType.miniList);
       expect(instances[0].boundProfileId, 'profile-a');
       expect(instances[1].widgetType, HomeWidgetType.large);
       expect(instances[1].boundProfileId, isNull);
+      expect(instances[2].widgetType, HomeWidgetType.todayCourse42);
     });
 
     test('listTodayWidgetInstances 通道不可用时返回空列表不抛出', () async {

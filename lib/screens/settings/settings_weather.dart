@@ -4,8 +4,8 @@ part of '../timetable_settings_screen.dart';
 /// 覆盖范围说明与数据来源署名。
 ///
 /// 卡片上刻意不显示任何错误态（一屏 5~8 张卡，错误提示会变成视觉灾难），
-/// 所以这里是把「为什么没有天气」讲清楚的唯一出口，也是未配置高德 Key 时给出
-/// 「未配置」提示的唯一入口。
+/// 所以这里是把「为什么没有天气」讲清楚的唯一出口，也是未连接 withU 时给出
+/// 「不可用」提示的唯一入口。
 ///
 /// 结构遵循设置页惯例：**每个区块 = `HyperosSectionGap` + `HyperosSectionLabel`
 /// + 一个 `HyperosListGroup`**，说明文字（`HyperosSectionDescription`）挂在它所属的
@@ -17,13 +17,15 @@ class _WeatherSettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final weather = context.watch<WeatherProvider?>();
+    final session = context.watch<QhkbCoupleSessionProvider?>();
     final timetable = context.watch<TimetableProvider>();
     final settings = timetable.settings;
     // 天气没开时下面那些显示项一律无效（数据都不会拉），整组禁用而不是藏起来：
     // 用户能看到「原来还有这些选项」，也知道为什么点不动。
     final enabled = weather?.enabled ?? false;
-    // 高德 Key 未配置时，城市搜索 / 定位 / 实况都不可用；预报仍可用（但需要先有城市）。
-    final configured = weather?.isConfigured ?? false;
+    // 天气数据经 withU 的 action=weather 获取，必须先连接 withU；未连接时
+    // 城市搜索 / 定位 / 实况都不可用。
+    final connected = session?.isLoggedIn ?? false;
     final current = weather?.currentWeather;
     // 开关与显示项的落盘失败会 reject（updateSettings 里 await 持久化无 try/catch），
     // 这里统一兜住并提示，避免「开关看起来生效、重启回旧值」。
@@ -67,8 +69,8 @@ class _WeatherSettingsScreen extends StatelessWidget {
                     ),
                 ],
                 // 定位中整行禁用：系统级动作会弹权限框、要十几秒，防重复触发。
-                // 未配置 Key 时定位也无意义（反查要 Key），一并禁用。
-                onClick: (weather == null || !configured || weather.isLocating)
+                // 未连接 withU 时定位也无意义（反查不可用），一并禁用。
+                onClick: (weather == null || !connected || weather.isLocating)
                     ? null
                     : () => unawaited(_locateWeather(context, weather)),
               ),
@@ -86,7 +88,7 @@ class _WeatherSettingsScreen extends StatelessWidget {
                     style: HyperosTypography.listDetail(context),
                   ),
                 ],
-                onClick: (weather == null || !configured)
+                onClick: (weather == null || !connected)
                     ? null
                     : () => HyperosNavigation.push(
                         context,
@@ -98,7 +100,7 @@ class _WeatherSettingsScreen extends StatelessWidget {
               ),
               // 取数失败时的重试。放在数据来源区块内：它本来就是「这份数据没拿到」
               // 的补救动作。
-              if (weather?.status == WeatherStatus.failed)
+              if (connected && weather?.status == WeatherStatus.failed)
                 _MiuixSettingsPreference(
                   startAction: _settingsIconBadge(
                     Icons.refresh_rounded,
@@ -115,16 +117,16 @@ class _WeatherSettingsScreen extends StatelessWidget {
                 ),
             ],
           ),
-          // 实况（高德 base）：有才显示，作为来源区块的一条补充说明。
+          // 实况（服务端）：有才显示，作为来源区块的一条补充说明。
           if (current != null)
             HyperosSectionDescription(
               text: _currentWeatherSummary(l10n, current),
             ),
-          // 未配置 Key 时给明确提示；配置了才是数据许可（CC BY 4.0）要求的署名。
+          // 未连接 withU 时给明确提示；连接后显示服务端数据来源说明。
           HyperosSectionDescription(
-            text: configured
+            text: connected
                 ? l10n.weatherAttribution
-                : l10n.weatherAmapNotConfigured,
+                : l10n.weatherWithuRequired,
           ),
 
           const HyperosSectionGap(),
@@ -137,8 +139,14 @@ class _WeatherSettingsScreen extends StatelessWidget {
                 value: enabled,
                 onChanged: weather == null
                     ? null
-                    : (value) =>
-                          unawaited(_toggleWeather(context, weather, value)),
+                    : (value) => unawaited(
+                        _toggleWeather(
+                          context,
+                          weather,
+                          value,
+                          connected: connected,
+                        ),
+                      ),
               ),
               // 「显示在哪」三个开关与总开关同组：它们回答的都是「显不显示」，
               // 与下一组「显示什么内容」是两件事。
@@ -215,13 +223,14 @@ class _WeatherSettingsScreen extends StatelessWidget {
 
 /// 把实况拼成一行「当前天气 · 现象 温度 · 湿度%」。
 ///
-/// 高德实况的现象是中文文本，先映射成 [WeatherCategory] 再本地化，保证非中文
-/// 语言下也显示本地文案；风力方向高德只给中文（如「西北」），无法本地化，不展示。
+/// 服务端实况的现象是中文文本，先映射成 [WeatherCategory] 再本地化，保证非中文
+/// 语言下也显示本地文案；风力方向若返回中文（如「西北」），无法本地化，不展示。
 String _currentWeatherSummary(AppLocalizations l10n, CurrentWeather current) {
-  final label = WeatherCategoryLocalizer.label(
-    l10n,
-    weatherCategoryFromAmapText(current.text),
-  );
+  final wmoCode = current.wmoCode;
+  final category = wmoCode == null
+      ? weatherCategoryFromText(current.text)
+      : weatherCategoryFromWmo(wmoCode);
+  final label = WeatherCategoryLocalizer.label(l10n, category);
   final parts = <String>[
     label,
     l10n.weatherTemperatureValue(current.temperatureC),
@@ -238,18 +247,19 @@ String _currentWeatherSummary(AppLocalizations l10n, CurrentWeather current) {
 /// - 已有城市时绝不去动它——用户手选的城市比定位更可信，也不该被覆盖；
 /// - 关闭时什么都不做——关掉还要弹一个权限框是纯粹的打扰。
 ///
-/// 未配置高德 Key 时不触发定位（反查要 Key），避免弹了权限框也拿不到地名。
+/// 未连接 withU 时不触发定位：反查地名同样不可用，弹了权限框也拿不到结果。
 Future<void> _toggleWeather(
   BuildContext context,
   WeatherProvider weather,
-  bool enabled,
-) async {
+  bool enabled, {
+  required bool connected,
+}) async {
   await weather.setEnabled(enabled);
   // await 之后 context 可能已失效（用户在这期间切走了页面）。
   if (!context.mounted || !enabled || weather.location != null) {
     return;
   }
-  if (!weather.isConfigured) {
+  if (!connected) {
     return;
   }
   await _locateWeather(context, weather);

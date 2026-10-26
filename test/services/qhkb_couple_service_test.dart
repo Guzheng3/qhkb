@@ -249,6 +249,36 @@ void main() {
     );
   });
 
+  test('weather GET carries session cookies and query without CSRF', () async {
+    const weatherUrl =
+        'https://qhkb.example.com/api/timetable.php'
+        '?action=weather&mode=now&lat=30.29&lng=120.15';
+    final client = _FakeClient({
+      _loginUrl: _loginResponse(),
+      weatherUrl: _jsonResponse({
+        'success': true,
+        'data': {'weather': '晴', 'temperature': '21'},
+      }),
+    });
+    final service = await _connectedAuthService(client, _MemorySecureStorage());
+
+    final payload = await service.getJson(
+      'weather',
+      query: {'mode': 'now', 'lat': '30.29', 'lng': '120.15'},
+    );
+
+    expect(payload['success'], isTrue);
+    final request = client.requests.last;
+    expect(request.method, 'GET');
+    expect(request.url.toString(), weatherUrl);
+    expect(
+      request.headers['Cookie'],
+      'PHPSESSID=session-id; withu_device=device-token',
+    );
+    // 只读 GET 不带 CSRF；带上反而会被服务端当成写请求。
+    expect(request.headers.containsKey('X-CSRF-Token'), isFalse);
+  });
+
   test('login stores cookies and CSRF token from the login response', () async {
     final storage = _MemorySecureStorage();
     final client = _FakeClient({_loginUrl: _loginResponse()});
@@ -1543,6 +1573,10 @@ void main() {
       QhkbCoupleAuthService.logoutTimeout,
     );
     expect(auth.timeoutForAction('login'), QhkbCoupleAuthService.loginTimeout);
+    expect(
+      auth.timeoutForAction('weather'),
+      QhkbCoupleAuthService.weatherTimeout,
+    );
     expect(
       auth.timeoutForAction('save'),
       QhkbCoupleAuthService.defaultTimeout,

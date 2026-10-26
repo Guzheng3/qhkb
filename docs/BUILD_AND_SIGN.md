@@ -92,7 +92,6 @@ pwsh -NoProfile -File tool/build_release.ps1 -Tag v5.2.0
 |------|------|
 | `-KeyPropertiesPath <path>` | 可选。指定外部 key.properties；缺省时按优先级用仓库内 `android/key.properties` 或环境变量 |
 | `-Tag <name>` | 可选。编译并自检通过后创建**本地**附注标签；只打印 `git push origin <name>` 供你自己决定是否推送 |
-| `-AmapKey <key>` | 可选。注入高德 Key（32 位十六进制），追加 `--dart-define=AMAP_KEY=<key>`；不传时回退环境变量 `AMAP_KEY`，都没有则不注入 |
 | `-DryRun` | 只做校验与打印，不编译、不打标签 |
 
 ## 二、版本号与打标签
@@ -157,61 +156,24 @@ versionName = overrideVersionName ?: flutter.versionName
 `apksigner` / `aapt2` 从 `ANDROID_HOME`、`ANDROID_SDK_ROOT` 或常见安装路径的
 `build-tools/<版本>/` 下查找。找不到时相应自检会被跳过，并打印明确提示，不会静默通过。
 
-## 四、注入高德 Key（天气）
+## 四、天气数据与构建
 
-天气的城市搜索与实况取自**高德 Web 服务**，需要一个高德 Key。它由**构建期**通过
-`--dart-define=AMAP_KEY=<key>` 写入二进制，天气服务用 `String.fromEnvironment('AMAP_KEY')`
-读取。不注入时该常量为空串，天气的城市搜索 / 实况在运行时优雅降级，构建本身不受影响。
-
-### 1. 怎么注入
-
-两种方式，优先级：**`-AmapKey` 参数 > 环境变量 `AMAP_KEY`**；两者都没有时不追加任何
-`--dart-define`，行为与不带该功能的构建完全一致。
+天气数据统一由 withU 服务端的 `action=weather` 提供，和风 Key / Token 只存在
+服务端，客户端**不需要**任何天气相关的 `--dart-define`，构建脚本与 CI 也不再
+注入 `AMAP_KEY`。构建命令就是普通的签名构建：
 
 ```powershell
-# 方式一：脚本参数（推荐）
-pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties" -AmapKey <你的32位Key>
-
-# 方式二：环境变量（适合本机长期固定，不想每次敲参数）
-$env:AMAP_KEY = "<你的32位Key>"
 pwsh -NoProfile -File tool/build_release.ps1 -KeyPropertiesPath "D:/keys/android/key.properties"
 ```
 
-Key 必须是 **32 位十六进制**。格式不符时脚本在**开始构建之前**报错退出，报错信息只给长度，
-不回显 Key 明文。构建日志里也只打印「已注入高德 Key（32 位，值已隐藏）」，不会出现 Key 本身。
+客户端仍需要已连接 withU 才能使用天气；这与构建配置无关，是运行时登录态的事情。
+详见 [WEATHER.md](./WEATHER.md)。
 
-### 2. 为什么发正式包需要它
+### 红线：仓库与 CI 里不得存放真实密钥
 
-开发调试可以不注入（城市搜索 / 实况不可用，其余照样跑）。但**对外发布的正式包**要能用天气的
-城市搜索与实况，就必须在签名构建时把它编进去——运行时拿不到它。
-
-### 3. 风险：这不是真正的秘密
-
-`--dart-define` 生成的是**编译期常量**，Key 会随 APK 一起分发出去，任何人都能反编译
-`libapp.so` 把它提取出来（高德 Web 服务 Key 本身就是设计成前端可见的）。因此：
-
-- 把它当成**普通配置**对待，**不要**当真正的密钥去保护，也不要指望它泄露后无损失。
-- 一旦怀疑泄露（例如误提交、被公开），**立刻到高德开放平台后台重置该 Key**，再重新构建发版。
-- 高德 Web 服务 Key 可绑定包名 / 域名限制，建议在后台配好包名白名单，降低被冒用风险。
-
-### 4. 怎么验证注入生效
-
-构建完成后，把 APK 里的 `libapp.so` 解出来搜一下 Key 字符串，计数大于 0 即已编入：
-
-```bash
-# 注入版本：计数应大于 0
-unzip -o -j build/app/outputs/flutter-apk/app-prod-release.apk lib/arm64-v8a/libapp.so -d /tmp/qhkb-check
-grep -a -o "<你的32位Key>" /tmp/qhkb-check/libapp.so | wc -l
-
-# 对照：不传 -AmapKey 且不设 AMAP_KEY 重新构建，同一命令计数应为 0
-```
-
-### 5. 红线：仓库与 CI 里不得存放真实 Key
-
-- 真实 Key **不得**写进仓库任何文件（源码、`key.properties`、脚本、文档、测试）。
-- **不得**把它提交进仓库，也**不得**作为常量写进 CI 配置；需要时用 CI 的加密 Secret /
-  环境变量在构建步骤里以 `AMAP_KEY` 形式注入。
-- 提交前自查：`git status --short`、`git ls-files` 里不应出现任何真实 Key。
+- 和风 Key / Token / 私钥、高德 Key 等都**不得**写进仓库任何文件（源码、脚本、
+  文档、测试、CI 配置）。
+- 服务端凭据只放服务端配置；客户端仓库与 APK 中检索不到任何第三方天气密钥。
 
 ## 相关文档
 

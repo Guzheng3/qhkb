@@ -115,7 +115,7 @@ void main() {
     });
   });
 
-  group('高德现象文本映射', () {
+  group('服务端现象文本映射', () {
     test('常见现象文本映射到期望分类', () {
       const expected = <String, WeatherCategory>{
         '晴': WeatherCategory.clear,
@@ -142,7 +142,7 @@ void main() {
       };
       for (final entry in expected.entries) {
         expect(
-          weatherCategoryFromAmapText(entry.key),
+          weatherCategoryFromText(entry.key),
           entry.value,
           reason: entry.key,
         );
@@ -150,22 +150,22 @@ void main() {
     });
 
     test('区间写法取较轻的一端', () {
-      expect(weatherCategoryFromAmapText('小雨-中雨'), WeatherCategory.lightRain);
-      expect(weatherCategoryFromAmapText('中雨-大雨'), WeatherCategory.rain);
-      expect(weatherCategoryFromAmapText('小雪-中雪'), WeatherCategory.lightSnow);
-      expect(weatherCategoryFromAmapText('大雪-暴雪'), WeatherCategory.heavySnow);
+      expect(weatherCategoryFromText('小雨-中雨'), WeatherCategory.lightRain);
+      expect(weatherCategoryFromText('中雨-大雨'), WeatherCategory.rain);
+      expect(weatherCategoryFromText('小雪-中雪'), WeatherCategory.lightSnow);
+      expect(weatherCategoryFromText('大雪-暴雪'), WeatherCategory.heavySnow);
     });
 
     test('容忍首尾空白', () {
       expect(
-        weatherCategoryFromAmapText('  小雨  '),
+        weatherCategoryFromText('  小雨  '),
         WeatherCategory.lightRain,
       );
     });
 
     test('未知文本兜底为 clear，不猜成恶劣天气', () {
-      expect(weatherCategoryFromAmapText('未来新增的现象'), WeatherCategory.clear);
-      expect(weatherCategoryFromAmapText(''), WeatherCategory.clear);
+      expect(weatherCategoryFromText('未来新增的现象'), WeatherCategory.clear);
+      expect(weatherCategoryFromText(''), WeatherCategory.clear);
     });
   });
 

@@ -5574,8 +5574,8 @@
   "weatherStatusLoading": "天気を更新中",
   "weatherStatusFailed": "前回の更新に失敗しました",
   "weatherRetryAction": "再試行",
-  "weatherCoverageNote": "予報は今後 16 日分のみです。それより先の日付では天気を表示しません。",
-  "weatherAttribution": "実況は高徳（Amap）、予報は Open-Meteo.com より提供",
+  "weatherCoverageNote": "予報期間外の日付では天気を表示しません。",
+  "weatherAttribution": "天気データは清涵課表サーバーから提供されます",
   "weatherSectionDisplayTitle": "表示",
   "weatherShowOnDayCardTitle": "日表示のカード",
   "weatherShowOnWeekCardTitle": "週表示のカード",
@@ -5601,6 +5601,6 @@
   "weatherLocationAddressUnavailable": "位置は取得できましたが地名を解決できません。都市を検索してください",
   "weatherLocationEstimated": "ネットワーク位置から推定しました。正確でない場合があります",
   "weatherSectionCurrent": "現在の天気",
-  "weatherAmapNotConfigured": "高徳（Amap）API キーが未設定です。都市の検索も位置情報の利用もできないため、天気は表示されません。",
+  "weatherWithuRequired": "天気を見るには withU に接続してください。",
   "weatherCurrentHumidity": "湿度 {humidity}%"
 }

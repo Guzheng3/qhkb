@@ -20,6 +20,7 @@ import '../l10n/weather_category_localizer.dart';
 import '../models/holiday_entry.dart';
 import '../models/timetable_settings.dart';
 import '../models/weather_forecast.dart';
+import '../providers/qhkb_couple_session_provider.dart';
 import '../providers/timetable_provider.dart';
 import '../utils/locale_utils.dart';
 import '../services/home_widget_service.dart';
